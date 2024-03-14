@@ -11,7 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,6 +59,9 @@ public class Food {
     @JoinColumn(name = "TrainerID")
     private Trainer trainer;
 
+    @OneToMany(mappedBy = "food")
+    private List<FoodTag> foodTags;
+
     public Food(String foodName, int foodCalories, String description, String foodPhoto, String foodVideo, int foodTimeProcess, String status, Trainer trainer) {
         this.foodName = foodName;
         this.foodCalories = foodCalories;
@@ -72,5 +77,4 @@ public class Food {
         this.foodID = foodID;
     }
 
-    
 }

@@ -22,18 +22,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(CustomerMenu.class)
-@Table(name = "CustomerMenu")
-public class CustomerMenu {
+@IdClass(TagLimitation.class)
+@Table(name = "TagLimitation")
+public class TagLimitation {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "CustomerID")
-    private Customer customer;
+    @JoinColumn(name = "TagID")
+    private Tag tag;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "FoodID")
-    private Food food;
-    
+    @JoinColumn(name = "LimitationID")
+    private Limitation limitation;
 }

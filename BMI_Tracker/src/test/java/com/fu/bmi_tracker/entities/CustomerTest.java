@@ -31,9 +31,9 @@ public class CustomerTest {
 
     @Test
     public void should_find_no_customer_if_repository_is_empty() {
-        Iterable<Customer> foods = repository.findAll();
+        Iterable<Customer> customers = repository.findAll();
 
-        assertThat(foods).isEmpty();
+        assertThat(customers).isEmpty();
     }
 
     @Test

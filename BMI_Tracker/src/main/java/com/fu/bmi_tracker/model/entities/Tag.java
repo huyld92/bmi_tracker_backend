@@ -4,11 +4,11 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id; 
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,18 +22,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(CustomerMenu.class)
-@Table(name = "CustomerMenu")
-public class CustomerMenu {
+@Table(name = "Tag")
+public class Tag {
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "CustomerID")
-    private Customer customer;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "TagID")
+    private int tagID;
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "FoodID")
-    private Food food;
-    
+    @Column(name = "TagName")
+    private String tagName;
+
+    @Column(name = "Status")
+    private String status;
+
 }
