@@ -67,4 +67,9 @@ public class Customer {
         this.lastUpdatedTime = lastUpdatedTime;
     }
 
+    public Customer(int customerID) {
+        this.customerID = customerID;
+    }
+
+    
 }

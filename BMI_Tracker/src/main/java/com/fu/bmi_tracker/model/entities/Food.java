@@ -68,4 +68,9 @@ public class Food {
         this.trainer = trainer;
     }
 
+    public Food(int foodID) {
+        this.foodID = foodID;
+    }
+
+    
 }

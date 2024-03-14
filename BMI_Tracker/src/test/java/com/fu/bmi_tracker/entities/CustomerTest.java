@@ -57,7 +57,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void testFindAll() {
+    public void should_find_all_customers() {
         // Create a new customer
         Customer customer1 = new Customer();
         customer1.setAccountID(2); // Set account ID
