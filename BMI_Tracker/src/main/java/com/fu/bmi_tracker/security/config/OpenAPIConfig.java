@@ -53,7 +53,9 @@ public class OpenAPIConfig {
         Components components = new Components().addSecuritySchemes("Bearer Authentication",
                 createAPIKeyScheme());
 
-        return new OpenAPI().addSecurityItem(securityRequirement).components(components).info(info).servers(List.of(devServer, prodServer));
+        return new OpenAPI().addSecurityItem(securityRequirement)
+                .components(components)
+                .info(info).servers(List.of(devServer, prodServer));
     }
 
     private SecurityScheme createAPIKeyScheme() {

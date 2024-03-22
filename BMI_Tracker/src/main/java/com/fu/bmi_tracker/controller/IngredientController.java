@@ -1,0 +1,170 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.fu.bmi_tracker.controller;
+
+import com.fu.bmi_tracker.model.entities.Account;
+import com.fu.bmi_tracker.model.entities.Ingredient;
+import com.fu.bmi_tracker.payload.request.CreateIngredientRequest;
+import com.fu.bmi_tracker.services.FileStorageService;
+import com.fu.bmi_tracker.services.IngredientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ *
+ * @author Duc Huy
+ */
+@Tag(name = "Ingredient", description = "Ingredient management APIs")
+@CrossOrigin(origins = "http://localhost:8080")
+@RestController
+@RequestMapping("/api/test/ingredients")
+public class IngredientController {
+
+    @Autowired
+    IngredientService service;
+
+    @Autowired
+    private FileStorageService fileStorageService;
+
+    @Operation(
+            summary = "Create new ingredient with form",
+            description = "Create new ingredient with form: include MultiplePath for ingredient photo",
+            tags = {"Ingredient"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/createNew", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> createNewIngredient(@io.swagger.v3.oas.annotations.parameters.RequestBody CreateIngredientRequest createIngredientRequest) {
+        Ingredient ingredient = new Ingredient(createIngredientRequest);
+
+        try {
+            String filePath = fileStorageService.store(createIngredientRequest.getIngredientPhoto(),
+                    createIngredientRequest.getIngredientName().trim());
+            ingredient.setIngredientPhoto(filePath);
+        } catch (IOException ex) {
+            return new ResponseEntity<>("Failed to store ingredient photo", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Ingredient ingredientSave = service.save(ingredient);
+
+        if (ingredientSave == null) {
+            return new ResponseEntity<>("Failed to create new ingredient", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+        return new ResponseEntity<>(ingredientSave, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Retrieve all Ingredients", tags = {"Ingredient"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Ingredients", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAllIngredients() {
+
+        Iterable ingredients = service.findAll();
+
+        if (!ingredients.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(ingredients, HttpStatus.OK);
+
+    }
+
+    @Operation(
+            summary = "Retrieve a Ingredient by Id",
+            description = "Get a Ingredient object by specifying its id. The response is Ingredient object",
+            tags = {"Ingredient"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getByID/{id}")
+    public ResponseEntity<?> getIngredientById(@PathVariable("id") int id) {
+        Optional<Ingredient> ingredient = service.findById(id);
+
+        if (ingredient.isPresent()) {
+            return new ResponseEntity<>(ingredient, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Cannot find ingredient with id{" + id + "}", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Update a Ingredient by Id", tags = {"Ingredient"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping("/update")
+    public ResponseEntity<?> updateIngredient(@RequestBody Ingredient ingredientRequest) {
+        Optional<Ingredient> ingredient = service.findById(ingredientRequest.getIngredientID());
+
+        if (ingredient.isPresent()) {
+            ingredient.get().update(ingredientRequest);
+            return new ResponseEntity<>(service.save(ingredient.get()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Cannot find ingredient with id{" + ingredientRequest.getIngredientID() + "}", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Delete a Ingredient by Id", tags = {"Tutorial"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<?> deleteIngredient(@PathVariable("id") int id) {
+        Optional<Ingredient> ingredient = service.findById(id);
+
+        if (ingredient.isPresent()) {
+            ingredient.get().setStatus("InActive");
+            return new ResponseEntity<>(service.save(ingredient.get()), HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>("Cannot find ingredient with id{" + id + "}", HttpStatus.NOT_FOUND);
+        }
+    }
+}

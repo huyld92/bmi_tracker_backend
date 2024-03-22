@@ -4,10 +4,10 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi.tracker.payload.request.LoginRequest;
-import com.fu.bmi.tracker.payload.request.RegisterRequest;
-import com.fu.bmi.tracker.payload.response.LoginResponse;
-import com.fu.bmi.tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.payload.request.LoginRequest;
+import com.fu.bmi_tracker.payload.request.RegisterRequest;
+import com.fu.bmi_tracker.payload.response.LoginResponse;
+import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.model.enums.EGender;

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  *
@@ -104,6 +105,7 @@ public class ControllerExceptionHandler {
 
         return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
     }
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorMessage> handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -127,4 +129,14 @@ public class ControllerExceptionHandler {
 //
 //        return new ResponseEntity<>(message, HttpStatus.CONFLICT);
 //    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorMessage> handleMaxSizeException(MaxUploadSizeExceededException ex) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.EXPECTATION_FAILED.value(),
+                new Date(),
+                "File too large!",
+                ex.getMessage());
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+    }
 }

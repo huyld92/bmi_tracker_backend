@@ -4,8 +4,11 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.model.enums.EMealType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +30,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "MealLog")
 public class MealLog {
-     @Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MealLogID")
     private int mealLogID;
@@ -42,7 +46,8 @@ public class MealLog {
     private Date dateOfMeal;
 
     @Column(name = "MealType")
-    private String mealType;
+    @Enumerated(EnumType.STRING)
+    private EMealType mealType;
 
     @Column(name = "Quantity")
     private String quantity;
