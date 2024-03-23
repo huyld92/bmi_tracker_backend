@@ -35,7 +35,7 @@ public class CreateIngredientRequest {
 
     @NotNull
     @Positive(message = "Ingredient calories must be positive")
-    @Schema(name = "ingredientCalories", example = "0")
+    @Schema(name = "ingredientCalories",minContains = 0, example = "0")
     private int ingredientCalories;
 
     @NotBlank(message = "Ingredient type is required")

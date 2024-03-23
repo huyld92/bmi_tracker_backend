@@ -1,0 +1,108 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.fu.bmi_tracker.controller;
+
+import com.fu.bmi_tracker.model.entities.Tag;
+import com.fu.bmi_tracker.services.TagService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ *
+ * @author Duc Huy
+ */
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Tag", description = "Tag management APIs")
+@CrossOrigin(origins = "http://localhost:8080")
+@RestController
+@RequestMapping("/api/tags")
+public class TagController {
+
+    @Autowired
+    TagService service;
+
+    @Operation(
+            summary = "Create new tag with form",
+            description = "Create new tag with form: include MultiplePath for tag photo",
+            tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = Tag.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/createNew")
+    public ResponseEntity<?> createNewTag(@RequestParam String tagName) {
+
+        Tag tag = new Tag(tagName);
+
+        Tag tagSave = service.save(tag);
+
+        if (tagSave == null) {
+            return new ResponseEntity<>("Failed to create new tag", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+        return new ResponseEntity<>(tagSave, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Retrieve all Tags", tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Tag.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAllTags() {
+
+        Iterable tags = service.findAll();
+
+        if (!tags.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(tags, HttpStatus.OK);
+
+    }
+
+    @Operation(
+            summary = "Retrieve a Tag by Id",
+            description = "Get a Tag object by specifying its id. The response is Tag object",
+            tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Tag.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getByID/{id}")
+    public ResponseEntity<?> getTagById(@PathVariable("id") int id) {
+        Optional<Tag> tag = service.findById(id);
+
+        if (tag.isPresent()) {
+            return new ResponseEntity<>(tag, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Cannot find tag with id{" + id + "}", HttpStatus.NOT_FOUND);
+        }
+    }
+
+}

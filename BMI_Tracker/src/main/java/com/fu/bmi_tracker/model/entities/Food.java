@@ -58,7 +58,10 @@ public class Food {
     @ManyToOne
     @JoinColumn(name = "TrainerID")
     private Trainer trainer;
-
+    
+    @OneToMany(mappedBy = "food")
+    private List<Recipe> recipes;
+    
     @OneToMany(mappedBy = "food")
     private List<FoodTag> foodTags;
 

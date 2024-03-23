@@ -6,6 +6,8 @@ package com.fu.bmi_tracker.entities;
 
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.FoodTag;
+import com.fu.bmi_tracker.model.entities.Ingredient;
+import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.model.entities.Trainer;
 import com.fu.bmi_tracker.repository.FoodRepository;
@@ -24,30 +26,31 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FoodTest {
-    
+
     @Autowired
     private TestEntityManager entityManager;
-    
+
     @Autowired
     private FoodRepository repository;
-    
+
     @Test
     public void should_find_no_foods_if_repository_is_empty() {
         Iterable<Food> foods = repository.findAll();
-        
+
         assertThat(foods).isEmpty();
     }
-    
+
     @Test
     public void should_store_a_food() {
         Trainer trainer = new Trainer();
-        trainer.setTrainerID(6);
+//        trainer.setTrainerID(6);
+
         Food food = new Food("Egg bold", 50,
                 "Healthy food", "egg.jpg", "egg.mp4",
                 5, "Active", trainer);
-        
+
         Food foodResult = repository.save(food);
-        
+
         assertThat(foodResult)
                 .hasFieldOrPropertyWithValue("foodName", "Egg bold")
                 .hasFieldOrPropertyWithValue("foodCalories", 50)
@@ -58,7 +61,7 @@ public class FoodTest {
                 .hasFieldOrPropertyWithValue("status", "Active")
                 .hasFieldOrPropertyWithValue("trainer", trainer);
     }
-    
+
     @Test
     public void should_store_a_food_with_foodTags() {
         Trainer trainer = new Trainer();
@@ -71,11 +74,11 @@ public class FoodTest {
         Tag tag1 = new Tag();
         tag1.setTagName("Healthy");
         tag1.setStatus("Active");
-        
+
         Tag tag2 = new Tag();
         tag2.setTagName("Vegan");
         tag2.setStatus("Active");
-        
+
         Food food = new Food();
         food.setFoodName("Salad");
         food.setFoodCalories(200);
@@ -85,15 +88,15 @@ public class FoodTest {
         food.setFoodTimeProcess(10);
         food.setStatus("Available");
         food.setFoodTags(new ArrayList<>());
-        
+
         FoodTag foodTag1 = new FoodTag();
         foodTag1.setTag(tag1);
         foodTag1.setFood(food);
-        
+
         FoodTag foodTag2 = new FoodTag();
         foodTag2.setTag(tag2);
         foodTag2.setFood(food);
-        
+
         food.getFoodTags().add(foodTag1);
         food.getFoodTags().add(foodTag2);
 
@@ -106,16 +109,55 @@ public class FoodTest {
         assertThat(savedFood.getFoodTags()).isNotEmpty();
         assertThat(savedFood.getFoodTags()).hasSize(2);
     }
-    
+
+    @Test
+    public void should_store_a_food_with_recipes() {
+  
+        // Given
+        Food food = new Food();
+        food.setFoodName("Salad");
+        food.setFoodCalories(200);
+        food.setDescription("Fresh and healthy salad");
+        food.setFoodPhoto("salad.jpg");
+        food.setFoodVideo("salad.mp4");
+        food.setFoodTimeProcess(10);
+        food.setStatus("Available");
+        food.setRecipes(new ArrayList<>());
+
+        Ingredient ingredient1 = new Ingredient("Ingredient1", "photo1.jpg", "grams", 100, "Type1", "Active");
+        Ingredient ingredient2 = new Ingredient("Ingredient2", "photo2.jpg", "grams", 200, "Type2", "Active");
+
+        Recipe recipe1 = new Recipe();
+        recipe1.setFood(food);
+        recipe1.setIngredient(ingredient1);
+
+        Recipe recipe2 = new Recipe();
+        recipe2.setFood(food);
+        recipe1.setIngredient(ingredient2);
+
+        food.getRecipes().add(recipe1);
+        food.getRecipes().add(recipe2);
+        
+        // When
+        Food savedFood = repository.save(food);
+
+        // Then
+        assertThat(savedFood).isNotNull();
+        assertThat(savedFood.getFoodID()).isGreaterThan(0);
+        assertThat(savedFood.getRecipes()).isNotEmpty();
+        assertThat(savedFood.getRecipes()).hasSize(2);
+    }
+
     @Test
     public void should_find_all_foods() {
         // Given
         Trainer trainer = new Trainer();
-        trainer.setTrainerID(6);
+//        trainer.setTrainerID(6);
         Food food1 = new Food("Apple", 50, "Healthy fruit",
                 "apple.jpg", "apple.mp4", 5, "Active", trainer);
         Food food2 = new Food("Banana", 80, "Another healthy fruit",
                 "banana.jpg", "banana.mp4", 3, "Active", trainer);
+        entityManager.persist(trainer);
         entityManager.persist(food1);
         entityManager.persist(food2);
 

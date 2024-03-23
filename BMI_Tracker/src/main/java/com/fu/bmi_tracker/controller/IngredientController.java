@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.payload.request.CreateIngredientRequest;
 import com.fu.bmi_tracker.services.FileStorageService;
@@ -14,14 +13,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import io.swagger.v3.oas.annotations.tags.Tag; 
+import java.io.IOException; 
+import java.util.Optional; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,11 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestMapping; 
+import org.springframework.web.bind.annotation.RestController; 
 
 /**
  *
@@ -150,7 +141,7 @@ public class IngredientController {
         }
     }
 
-    @Operation(summary = "Delete a Ingredient by Id", tags = {"Tutorial"})
+    @Operation(summary = "Delete a Ingredient by Id", tags = {"Ingredient"})
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
