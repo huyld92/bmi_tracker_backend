@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.services.TagService;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag save(Tag t) {
         return repository.save(t);
+    }
+
+    @Override
+    public List<Tag> findByTagIDIn(List<Integer> tagIds) {
+        return repository.findByTagIDIn(tagIds);
     }
 
 }

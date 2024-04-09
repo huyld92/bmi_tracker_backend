@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -25,13 +26,14 @@ import lombok.NoArgsConstructor;
 @IdClass(FoodTag.class)
 @Table(name = "FoodTag")
 public class FoodTag {
-    
+
     @Id
     @ManyToOne
     @JoinColumn(name = "TagID")
     private Tag tag;
 
     @Id
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "FoodID")
     private Food food;

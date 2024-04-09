@@ -4,8 +4,7 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.Ingredient;
-import java.util.List;
+import com.fu.bmi_tracker.model.entities.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {
-
-    public List<Ingredient> findByIngredientIDIn(List<Integer> ingredientIds);
+public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
 
 }

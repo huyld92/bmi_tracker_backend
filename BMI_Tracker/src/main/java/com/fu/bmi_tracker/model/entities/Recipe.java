@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -30,11 +31,14 @@ public class Recipe {
     @Id
     @ManyToOne
     @JoinColumn(name = "FoodID")
+    @JsonIgnore
     private Food food;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "IngredientID")
     private Ingredient ingredient;
-}
 
+    @Column(name = "quantity")
+    private Integer quantity;
+}

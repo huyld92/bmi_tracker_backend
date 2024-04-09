@@ -11,7 +11,8 @@ import java.util.List;
  *
  * @author Duc Huy
  */
-public interface TagService extends GeneralService<Tag>{
+public interface TagService extends GeneralService<Tag> {
 
-     
+    public List<Tag> findByTagIDIn(List<Integer> tagIds);
+
 }

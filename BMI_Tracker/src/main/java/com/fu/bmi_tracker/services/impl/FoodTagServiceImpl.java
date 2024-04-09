@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.FoodTag;
 import com.fu.bmi_tracker.repository.FoodTagRepository;
 import com.fu.bmi_tracker.services.FoodTagService;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class FoodTagServiceImpl implements FoodTagService {
     @Override
     public FoodTag save(FoodTag t) {
         return repository.save(t);
+    }
+
+    @Override
+    public List<FoodTag> saveAll(List<FoodTag> foodTags) {
+        return repository.saveAll(foodTags);
     }
 
 }

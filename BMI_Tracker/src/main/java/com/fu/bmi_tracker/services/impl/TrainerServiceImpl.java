@@ -32,4 +32,9 @@ public class TrainerServiceImpl implements TrainerService {
         return repository.save(t);
     }
 
+    @Override
+    public Trainer findByAccountID(Integer accountID) {
+        return repository.findByAccountID(accountID);
+    }
+
 }

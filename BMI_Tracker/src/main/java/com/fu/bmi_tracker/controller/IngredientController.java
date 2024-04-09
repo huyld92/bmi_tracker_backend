@@ -13,9 +13,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag; 
-import java.io.IOException; 
-import java.util.Optional; 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping; 
-import org.springframework.web.bind.annotation.RestController; 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
@@ -42,9 +42,6 @@ public class IngredientController {
     @Autowired
     IngredientService service;
 
-    @Autowired
-    private FileStorageService fileStorageService;
-
     @Operation(
             summary = "Create new ingredient with form",
             description = "Create new ingredient with form: include MultiplePath for ingredient photo",
@@ -56,18 +53,10 @@ public class IngredientController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @PostMapping(value = "/createNew", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createNewIngredient(@io.swagger.v3.oas.annotations.parameters.RequestBody CreateIngredientRequest createIngredientRequest) {
+    @PostMapping(value = "/createNew")
+    public ResponseEntity<?> createNewIngredient(@RequestBody CreateIngredientRequest createIngredientRequest) {
         Ingredient ingredient = new Ingredient(createIngredientRequest);
-
-        try {
-            String filePath = fileStorageService.store(createIngredientRequest.getIngredientPhoto(),
-                    createIngredientRequest.getIngredientName().trim());
-            ingredient.setIngredientPhoto(filePath);
-        } catch (IOException ex) {
-            return new ResponseEntity<>("Failed to store ingredient photo", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+ 
         Ingredient ingredientSave = service.save(ingredient);
 
         if (ingredientSave == null) {

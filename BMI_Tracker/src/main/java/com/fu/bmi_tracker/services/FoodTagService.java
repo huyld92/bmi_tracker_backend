@@ -5,11 +5,13 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.FoodTag;
+import java.util.List;
 
 /**
  *
  * @author Duc Huy
  */
-public interface FoodTagService extends GeneralService<FoodTag>{
-    
+public interface FoodTagService extends GeneralService<FoodTag> {
+
+    public List<FoodTag> saveAll(List<FoodTag> foodTags);
 }

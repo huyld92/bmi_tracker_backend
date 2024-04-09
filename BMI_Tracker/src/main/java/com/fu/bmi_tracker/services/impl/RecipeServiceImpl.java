@@ -4,38 +4,38 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.Ingredient;
-import com.fu.bmi_tracker.repository.IngredientRepository;
-import com.fu.bmi_tracker.services.IngredientService;
+import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.repository.RecipeRepository;
+import com.fu.bmi_tracker.services.RecipeService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class IngredientServiceImpl implements IngredientService {
+public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
-    IngredientRepository repository;
+    RecipeRepository repository;
 
     @Override
-    public Iterable<Ingredient> findAll() {
+    public Iterable<Recipe> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<Ingredient> findById(Integer id) {
+    public Optional<Recipe> findById(Integer id) {
         return repository.findById(id);
     }
 
     @Override
-    public Ingredient save(Ingredient t) {
+    public Recipe save(Recipe t) {
         return repository.save(t);
     }
 
     @Override
-    public List<Ingredient> findByIngredientIDIn(List<Integer> ingredientIds) {
-        return repository.findByIngredientIDIn(ingredientIds);
+    public List<Recipe> saveAll(List<Recipe> recipes) {
+        return repository.saveAll(recipes);
     }
 
 }

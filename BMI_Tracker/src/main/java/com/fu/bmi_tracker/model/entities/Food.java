@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -58,12 +59,6 @@ public class Food {
     @ManyToOne
     @JoinColumn(name = "TrainerID")
     private Trainer trainer;
-    
-    @OneToMany(mappedBy = "food")
-    private List<Recipe> recipes;
-    
-    @OneToMany(mappedBy = "food")
-    private List<FoodTag> foodTags;
 
     public Food(String foodName, int foodCalories, String description, String foodPhoto, String foodVideo, int foodTimeProcess, String status, Trainer trainer) {
         this.foodName = foodName;
@@ -78,6 +73,20 @@ public class Food {
 
     public Food(int foodID) {
         this.foodID = foodID;
+    }
+
+    public Food(CreateFoodRequest createFoodRequest) {
+        this.foodName = createFoodRequest.getFoodName();
+        this.foodCalories = createFoodRequest.getFoodCalories();
+        this.description = createFoodRequest.getDescription();
+        this.foodPhoto = createFoodRequest.getFoodPhoto();
+        this.foodVideo = createFoodRequest.getFoodVideo();
+        this.foodTimeProcess = createFoodRequest.getFoodTimeProcess();
+        this.status = "Active";
+    }
+
+    public void update(Food foodRequest) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

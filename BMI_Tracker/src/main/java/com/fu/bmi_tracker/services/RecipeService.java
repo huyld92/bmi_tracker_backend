@@ -4,13 +4,14 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.Trainer;
+import com.fu.bmi_tracker.model.entities.Recipe;
+import java.util.List;
 
 /**
  *
  * @author Duc Huy
  */
-public interface TrainerService extends GeneralService<Trainer> {
+public interface RecipeService extends GeneralService<Recipe>{
+        public List<Recipe> saveAll(List<Recipe> recipes);
 
-    public Trainer findByAccountID(Integer accountID);
 }

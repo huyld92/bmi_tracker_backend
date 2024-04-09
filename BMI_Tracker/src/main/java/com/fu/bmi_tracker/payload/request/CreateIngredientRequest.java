@@ -35,7 +35,7 @@ public class CreateIngredientRequest {
 
     @NotNull
     @Positive(message = "Ingredient calories must be positive")
-    @Schema(name = "ingredientCalories",minContains = 0, example = "0")
+    @Schema(name = "ingredientCalories", minContains = 0, example = "0")
     private int ingredientCalories;
 
     @NotBlank(message = "Ingredient type is required")
@@ -43,7 +43,9 @@ public class CreateIngredientRequest {
     @Schema(name = "ingredientType", example = "Spices and Herbs")
     private String ingredientType;
 
-    @NotNull(message = "Ingredient photo cannot be null")
-    private MultipartFile ingredientPhoto;
+    @NotBlank(message = "Ingredient photo url is required")
+    @Size(max = 100, message = "Ingreadient photo url must not exceed 100 characters")
+    @Schema(name = "ingredientPhotoUrl", example = "photourl.com")
+    private String ingredientPhotoUrl;
 
 }
