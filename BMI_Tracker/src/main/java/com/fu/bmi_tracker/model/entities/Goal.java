@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.payload.request.CreateGoalRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  *
  * @author Duc Huy
@@ -37,4 +39,10 @@ public class Goal {
 
     @Column(name = "Status")
     private String status;
+
+    public Goal(CreateGoalRequest createGoalRequest) {
+        this.goalName = createGoalRequest.getGoalName();
+        this.description = createGoalRequest.getDescription();
+        this.status = "Active";
+    }
 }

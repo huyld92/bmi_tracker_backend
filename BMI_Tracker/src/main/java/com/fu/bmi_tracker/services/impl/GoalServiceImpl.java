@@ -4,39 +4,32 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.repository.FoodRepository;
-import com.fu.bmi_tracker.services.FoodService;
-import java.util.List;
+import com.fu.bmi_tracker.model.entities.Goal;
+import com.fu.bmi_tracker.repository.GoalRepository;
+import com.fu.bmi_tracker.services.GoalService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FoodServiceImpl implements FoodService {
-    
+public class GoalServiceImpl implements GoalService {
+
     @Autowired
-    FoodRepository repository;
-    
+    GoalRepository repository;
+
     @Override
-    
-    public Iterable<Food> findAll() {
+    public Iterable<Goal> findAll() {
         return repository.findAll();
     }
-    
+
     @Override
-    public Optional<Food> findById(Integer id) {
+    public Optional<Goal> findById(Integer id) {
         return repository.findById(id);
     }
-    
+
     @Override
-    public Food save(Food t) {
+    public Goal save(Goal t) {
         return repository.save(t);
     }
-    
-    @Override
-    public List<Food> findByFoodIDIn(List<Integer> foodIds) {
-        return repository.findByFoodIDIn(foodIds);
-    }
-    
+
 }

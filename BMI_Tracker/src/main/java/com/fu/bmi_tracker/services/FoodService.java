@@ -5,11 +5,14 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Food;
+import java.util.List;
 
 /**
  *
  * @author Duc Huy
  */
-public interface FoodService extends GeneralService<Food>{
-    
+public interface FoodService extends GeneralService<Food> {
+
+    public List<Food> findByFoodIDIn(List<Integer> foodIds);
+
 }
