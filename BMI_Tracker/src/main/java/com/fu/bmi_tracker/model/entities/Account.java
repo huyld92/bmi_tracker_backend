@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "[Account]")
 public class Account {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AccountID")
@@ -57,23 +57,26 @@ public class Account {
     @Column(name = "DateOfBirth")
     private Date birthday;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "IsVerified")
+    private Boolean isVerified;
+
+    @Column(name = "IsActive")
+    private Boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "RoleID")
     private Role role;
 
-    public Account(String fullName, String email, String phoneNumber, String password, EGender gender, Date birthday, String status, Role role) {
+    public Account(String fullName, String email, String phoneNumber, String password, EGender gender, Date birthday, Boolean isActive, Role role) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.gender = gender;
         this.birthday = birthday;
-        this.status = status;
+        this.isActive = isActive;
+        this.isVerified = false;
         this.role = role;
     }
-    
-    
+
 }

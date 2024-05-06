@@ -52,7 +52,7 @@ public class FoodResponse {
         this.foodPhoto = foodSave.getFoodPhoto();
         this.foodVideo = foodSave.getFoodVideo();
         this.foodTimeProcess = foodSave.getFoodTimeProcess();
-        this.status = foodSave.getStatus();
+        this.status = foodSave.getIsActive() ? "Active" : "Inative";
         this.trainer = foodSave.getTrainer();
         this.foodTags = foodTags;
         this.recipes = recipes;

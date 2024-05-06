@@ -141,7 +141,7 @@ public class IngredientController {
         Optional<Ingredient> ingredient = service.findById(id);
 
         if (ingredient.isPresent()) {
-            ingredient.get().setStatus("InActive");
+            ingredient.get().setIsActive(Boolean.FALSE);
             return new ResponseEntity<>(service.save(ingredient.get()), HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>("Cannot find ingredient with id{" + id + "}", HttpStatus.NOT_FOUND);

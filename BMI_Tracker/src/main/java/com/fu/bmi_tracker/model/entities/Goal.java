@@ -37,12 +37,12 @@ public class Goal {
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "IsActive")
+    private Boolean isActive;
 
     public Goal(CreateGoalRequest createGoalRequest) {
         this.goalName = createGoalRequest.getGoalName();
         this.description = createGoalRequest.getDescription();
-        this.status = "Active";
+        this.isActive = true;
     }
 }

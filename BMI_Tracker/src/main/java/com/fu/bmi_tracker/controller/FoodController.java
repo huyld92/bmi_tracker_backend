@@ -187,12 +187,12 @@ public class FoodController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping("/delete/{id}")
+    @PutMapping("/delete/{id}")
     public ResponseEntity<?> deleteFood(@PathVariable("id") int id) {
         Optional<Food> food = service.findById(id);
 
         if (food.isPresent()) {
-            food.get().setStatus("InActive");
+            food.get().setIsActive(Boolean.FALSE);
             return new ResponseEntity<>(service.save(food.get()), HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>("Cannot find food with id{" + id + "}", HttpStatus.NOT_FOUND);

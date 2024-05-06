@@ -46,16 +46,16 @@ public class Ingredient {
     @Column(name = "IngredientType")
     private String ingredientType;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "IsActive")
+    private Boolean isActive;
 
-    public Ingredient(String ingredientName, String ingredientPhoto, String unitOfMeasurement, int ingredientCalories, String ingredientType, String status) {
+    public Ingredient(String ingredientName, String ingredientPhoto, String unitOfMeasurement, int ingredientCalories, String ingredientType, Boolean isActive) {
         this.ingredientName = ingredientName.trim();
         this.ingredientPhoto = ingredientPhoto.trim();
         this.unitOfMeasurement = unitOfMeasurement.trim();
         this.ingredientCalories = ingredientCalories;
         this.ingredientType = ingredientType.trim();
-        this.status = status;
+        this.isActive = isActive;
     }
 
     public Ingredient(CreateIngredientRequest ingredientRequest) {
@@ -64,7 +64,7 @@ public class Ingredient {
         this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement().trim();
         this.ingredientCalories = ingredientRequest.getIngredientCalories();
         this.ingredientType = ingredientRequest.getIngredientType().trim();
-        this.status = "Active";
+        this.isActive = true;
     }
 
     public void update(Ingredient ingredientRequest) {

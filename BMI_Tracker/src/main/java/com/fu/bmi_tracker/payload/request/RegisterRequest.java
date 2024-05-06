@@ -57,4 +57,11 @@ public class RegisterRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Schema(name = "birthday", example = "yyyy-MM-dd")
     private Date birthday;
+
+    private Integer goalID;
+    private Integer limitrationID;
+    private Integer heigh;
+    private Integer weigh;
+    
+
 }

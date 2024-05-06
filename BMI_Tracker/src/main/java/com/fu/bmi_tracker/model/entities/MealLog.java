@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.model.enums.EMealType;
+import com.fu.bmi_tracker.payload.request.CreateMealLogRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -60,6 +61,13 @@ public class MealLog {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "FoodID")
+    @JoinColumn(name = "FoodID", nullable = true)
     private Food food;
+
+    public MealLog(CreateMealLogRequest createMealLogRequest) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
+    
 }

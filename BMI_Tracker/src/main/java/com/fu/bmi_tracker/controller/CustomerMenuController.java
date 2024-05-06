@@ -53,7 +53,7 @@ public class CustomerMenuController {
 
     @Operation(
             summary = "Create new customer menu with form",
-            description = "Create new customer menu with form: include MultiplePath for customerMenu photo",
+            description = "Create new customer menu with form",
             tags = {"CustomerMenu"})
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -92,7 +92,7 @@ public class CustomerMenuController {
 
     @Operation(
             summary = "Get menu of customer",
-            description = "Give customer id to retrieve ",
+            description = "Give customer id to retrieve list menu",
             tags = {"CustomerMenu"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Menus retrieved successfully",

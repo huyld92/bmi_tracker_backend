@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.exceptions.TokenRefreshException;
 import com.fu.bmi_tracker.payload.request.LoginRequest;
 import com.fu.bmi_tracker.payload.request.RegisterRequest;
 import com.fu.bmi_tracker.payload.response.LoginResponse;
@@ -16,6 +17,10 @@ import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.repository.RoleRepository;
 import com.fu.bmi_tracker.security.jwt.JwtUtils;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.RefreshToken;
+import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
+import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
+import com.fu.bmi_tracker.services.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -64,6 +69,9 @@ public class AuthenticationController {
 
     @Autowired
     JwtUtils jwtUtils;
+    
+    @Autowired
+    RefreshTokenService refreshTokenService;
 
     @Operation(
             summary = "login by phone number and password",
@@ -87,9 +95,7 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // generate mã jwt 
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        System.out.println(jwt);
+        String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
 
         CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
 
@@ -101,13 +107,27 @@ public class AuthenticationController {
 
         // Lấy quyền đầu tiên và gán nó cho biến role
         String role = stringList.get(0);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
-        return ResponseEntity.ok(new LoginResponse(jwt,
+        return ResponseEntity.ok(new LoginResponse(
                 accountDetails.getId(),
                 accountDetails.getEmail(),
-                role));
+                role, refreshToken.getToken(), jwt
+        ));
     }
 
+    @Operation(
+            summary = "Register",
+            description = "Register account with default role customer",
+            tags = {"Authentication"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
 
@@ -130,11 +150,40 @@ public class AuthenticationController {
                 registerRequest.getEmail(), registerRequest.getPhoneNumber(),
                 encoder.encode(registerRequest.getPassword()),
                 EGender.Other, registerRequest.getBirthday(),
-                "Active", accountRole);
+                true, accountRole);
 
         accountRepository.save(account);
 
         return ResponseEntity.ok(new MessageResponse("Account registered successfully!"));
     }
+
+    @Operation(
+            summary = "Refresh token",
+            description = "Using refresh token to get new access token when expired",
+            tags = {"Authentication"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
+        String requestRefreshToken = tokenRefreshRequest.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(refreshToken -> refreshToken.getAccount())
+                .map(account -> {
+                    String token = jwtUtils.generateJwtToken(account.getEmail());
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                "Refresh token is not in database!"));
+    }
+
 
 }

@@ -38,6 +38,6 @@ public class Service {
     @Column(name = "Price")
     private float price;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "IsActive")
+    private Boolean isActive;
 }

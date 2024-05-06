@@ -8,7 +8,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id; 
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -55,7 +57,11 @@ public class Customer {
     @Temporal(TemporalType.TIMESTAMP)
     private Instant lastUpdatedTime;
 
-    public Customer(int accountID, int goalID, int targetWeight, int tdee, int calories, boolean isPrivate, Instant lastUpdatedTime) {
+    @ManyToOne
+    @JoinColumn(name = "DietaryPreferenceID")
+    private DietaryPreference dietaryPreference;
+
+    public Customer(int accountID, int goalID, int targetWeight, int tdee, int calories, boolean isPrivate, Instant lastUpdatedTime, DietaryPreference dietaryPreference) {
         this.accountID = accountID;
         this.goalID = goalID;
         this.targetWeight = targetWeight;
@@ -63,11 +69,11 @@ public class Customer {
         this.calories = calories;
         this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
+        this.dietaryPreference = dietaryPreference;
     }
 
     public Customer(int customerID) {
         this.customerID = customerID;
     }
 
-    
 }

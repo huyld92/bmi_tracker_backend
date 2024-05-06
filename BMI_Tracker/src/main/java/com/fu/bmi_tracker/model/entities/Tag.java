@@ -33,12 +33,12 @@ public class Tag {
     @Column(name = "TagName")
     private String tagName;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "IsActive")
+    private Boolean isActive;
 
     public Tag(String tagName) {
         this.tagName = tagName;
-        this.status = "Active";
+        this.isActive = true;
 
     }
 

@@ -5,12 +5,11 @@
 package com.fu.bmi_tracker.model.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,23 +22,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Notification")
-public class Notification {
+@Table(name = "DietaryPreference")
+public class DietaryPreference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "NotificationID")
-    private int notificationID;
+    @Column(name = "DietaryPreferenceID")
+    private int dietaryPreferenceID;
 
-    @Column(name = "Content")
-    private String content;
+    @Column(name = "DietaryPreferenceName")
+    private String dietaryPreferenceName;
 
-    @Column(name = "Title")
-    private String title;
-
-    @Column(name = "CreatedTime")
-    private Instant createdTime;
+    @Column(name = "Description")
+    private String description;
 
     @Column(name = "IsActive")
-    private Boolean isActive;
+    private Boolean isActive; 
 }

@@ -131,7 +131,7 @@ public class GoalController {
         Optional<Goal> goal = service.findById(id);
 
         if (goal.isPresent()) {
-            goal.get().setStatus("InActive");
+            goal.get().setIsActive(Boolean.FALSE);
             return new ResponseEntity<>(service.save(goal.get()), HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>("Cannot find goal with id{" + id + "}", HttpStatus.NOT_FOUND);

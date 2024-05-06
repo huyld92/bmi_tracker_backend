@@ -53,21 +53,21 @@ public class Food {
     @Column(name = "FoodTimeProcess")
     private int foodTimeProcess;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "IsActive")
+    private Boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "TrainerID")
     private Trainer trainer;
 
-    public Food(String foodName, int foodCalories, String description, String foodPhoto, String foodVideo, int foodTimeProcess, String status, Trainer trainer) {
+    public Food(String foodName, int foodCalories, String description, String foodPhoto, String foodVideo, int foodTimeProcess, Boolean isActive, Trainer trainer) {
         this.foodName = foodName;
         this.foodCalories = foodCalories;
         this.description = description;
         this.foodPhoto = foodPhoto;
         this.foodVideo = foodVideo;
         this.foodTimeProcess = foodTimeProcess;
-        this.status = status;
+        this.isActive = isActive;
         this.trainer = trainer;
     }
 
@@ -82,7 +82,7 @@ public class Food {
         this.foodPhoto = createFoodRequest.getFoodPhoto();
         this.foodVideo = createFoodRequest.getFoodVideo();
         this.foodTimeProcess = createFoodRequest.getFoodTimeProcess();
-        this.status = "Active";
+        this.isActive = true;
     }
 
     public void update(Food foodRequest) {

@@ -9,10 +9,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.List;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,25 +24,25 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Limitation")
-public class Limitation {
+@Table(name = "RefreshToken")
+public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LimitationID")
-    private int limitationID;
+    @Column(name = "RefreshTokenID")
+    private Integer refreshTokenID;
 
-    @Column(name = "LimitationName")
-    private String limitationName;
+    @OneToOne
+    @JoinColumn(name = "AccountID" )
+    private Account account;
 
-    @Column(name = "Description")
-    private String description;
+    @Column(name = "Token", nullable = false, unique = true)
+    private String token;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "ExpiryDate", nullable = false)
+    private Instant expiryDate;
 
-    @OneToMany(mappedBy = "limitation")
-    private List<TagLimitation> tagLimitations;
 }

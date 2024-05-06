@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import com.fu.bmi_tracker.model.entities.RefreshToken;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,19 +15,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class TokenRefreshResponse {
 
-    private Integer id;
-    private String email;
-    private String role;
-    private String refreshToken;
     private String accessToken;
+    private String refreshToken;
+    private String tokenType = "Bearer";
 
-    public LoginResponse(String accessToken, Integer id, String email, String role) {
+    public TokenRefreshResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
-        this.id = id;
-        this.email = email;
-        this.role = role;
+        this.refreshToken = refreshToken;
     }
-
+    
+    
 }
