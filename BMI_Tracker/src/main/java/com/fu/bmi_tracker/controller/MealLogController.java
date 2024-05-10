@@ -4,9 +4,9 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.model.entities.CustomerMenu;
+import com.fu.bmi_tracker.model.entities.UserMenu;
 import com.fu.bmi_tracker.model.entities.MealLog;
-import com.fu.bmi_tracker.payload.request.CreateCustomerMenuRequest;
+import com.fu.bmi_tracker.payload.request.CreateUserMenuRequest;
 import com.fu.bmi_tracker.payload.request.CreateMealLogRequest;
 import com.fu.bmi_tracker.services.MealLogService;
 import io.swagger.v3.oas.annotations.Operation;

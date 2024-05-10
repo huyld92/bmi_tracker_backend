@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.DietaryPreference;
+import com.fu.bmi_tracker.model.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface LimitationRepository extends JpaRepository<DietaryPreference, Integer>{
-    
+public interface UserRepository extends JpaRepository<User, Integer> {
+
 }

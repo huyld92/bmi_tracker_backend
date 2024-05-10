@@ -9,7 +9,7 @@ package com.fu.bmi_tracker.model.enums;
  * @author Duc Huy
  */
 public enum ERole {
-    ROLE_CUSTOMER,
+    ROLE_USER,
     ROLE_TRAINER,
     ROLE_ADMIN,
 }

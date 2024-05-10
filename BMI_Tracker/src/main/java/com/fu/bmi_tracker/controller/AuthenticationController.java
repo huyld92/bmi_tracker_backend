@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.exceptions.TokenRefreshException;
+import com.fu.bmi_tracker.exceptions.TokenException;
 import com.fu.bmi_tracker.payload.request.LoginRequest;
 import com.fu.bmi_tracker.payload.request.RegisterRequest;
 import com.fu.bmi_tracker.payload.response.LoginResponse;
@@ -69,7 +69,7 @@ public class AuthenticationController {
 
     @Autowired
     JwtUtils jwtUtils;
-    
+
     @Autowired
     RefreshTokenService refreshTokenService;
 
@@ -80,9 +80,11 @@ public class AuthenticationController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "404", content = {
+        @ApiResponse(responseCode = "400", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
@@ -107,6 +109,8 @@ public class AuthenticationController {
 
         // Lấy quyền đầu tiên và gán nó cho biến role
         String role = stringList.get(0);
+
+        refreshTokenService.findByToken(role);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
         return ResponseEntity.ok(new LoginResponse(
@@ -118,7 +122,7 @@ public class AuthenticationController {
 
     @Operation(
             summary = "Register",
-            description = "Register account with default role customer",
+            description = "Register account with default role user",
             tags = {"Authentication"})
     @ApiResponses({
         @ApiResponse(responseCode = "200"),
@@ -142,7 +146,7 @@ public class AuthenticationController {
                     .body(new MessageResponse("Error: Phone number is already taken!"));
         }
 
-        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_CUSTOMER);
+        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_USER);
 //                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         // Create new user's account
@@ -181,9 +185,28 @@ public class AuthenticationController {
                     String token = jwtUtils.generateJwtToken(account.getEmail());
                     return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
                 })
-                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                .orElseThrow(() -> new TokenException(requestRefreshToken,
                 "Refresh token is not in database!"));
     }
 
+    @Operation(
+            summary = "Log out",
+            description = "Log out of the system",
+            tags = {"Authentication"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        Integer accountID = accountDetails.getId();
+        refreshTokenService.deleteByAccountID(accountID);
+        return ResponseEntity.ok(new MessageResponse("Log out successful!"));
+    }
 }

@@ -5,6 +5,8 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.RefreshToken;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,10 +16,11 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Integer>{
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Integer> {
 
     public Optional<RefreshToken> findByToken(String token);
 
     public void deleteByAccount_AccountID(Integer accountID);
-    
+
+    public void deleteByExpiryDateLessThan(Instant now);
 }

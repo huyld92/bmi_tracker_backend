@@ -4,7 +4,8 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.Customer;
+import com.fu.bmi_tracker.model.entities.UserMenu;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+public interface UserMenuRepository extends JpaRepository<UserMenu, Integer> {
+
+    public List<UserMenu> findAllByUserUserID(Integer userID);
+
+    public void deleteByUserUserIDAndFoodFoodID(int userID, int foodID);
 
 }

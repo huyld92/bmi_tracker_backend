@@ -40,23 +40,35 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            if (jwt != null) {
+                int result = jwtUtils.validateJwtToken(jwt);
+                switch (result) {
+                    case 0 -> {
+                        String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-                UserDetails userDetails = accountDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication
-                        = new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        UserDetails userDetails = accountDetailsService.loadUserByUsername(username);
+                        UsernamePasswordAuthenticationToken authentication
+                                = new UsernamePasswordAuthenticationToken(
+                                        userDetails,
+                                        null,
+                                        userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                    case 1 ->
+                        request.setAttribute("ERROR", "Invalid JWT token");
+                    case 2 ->
+                        request.setAttribute("ERROR", "JWT token is expired");
+                    case 3 ->
+                        request.setAttribute("ERROR", "JWT token is unsupported");
+                    default ->
+                        throw new AssertionError();
+                }
             }
         } catch (UsernameNotFoundException e) {
             logger.error("Cannot set account authentication: {}", e);
         }
-
         filterChain.doFilter(request, response);
     }
 

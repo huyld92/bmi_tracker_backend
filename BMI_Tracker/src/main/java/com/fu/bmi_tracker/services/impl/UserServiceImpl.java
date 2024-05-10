@@ -4,31 +4,31 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.Customer;
-import com.fu.bmi_tracker.repository.CustomerRepository;
-import com.fu.bmi_tracker.services.CustomerService;
+import com.fu.bmi_tracker.model.entities.User;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fu.bmi_tracker.services.UserService;
+import com.fu.bmi_tracker.repository.UserRepository;
 
 @Service
-public class CustomerServiceImpl implements CustomerService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
-    CustomerRepository repository;
+    UserRepository repository;
 
     @Override
-    public Iterable<Customer> findAll() {
+    public Iterable<User> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<Customer> findById(Integer id) {
+    public Optional<User> findById(Integer id) {
         return repository.findById(id);
     }
 
     @Override
-    public Customer save(Customer t) {
+    public User save(User t) {
         return repository.save(t);
     }
 

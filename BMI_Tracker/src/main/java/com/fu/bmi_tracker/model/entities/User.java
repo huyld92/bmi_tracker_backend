@@ -27,13 +27,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Customer")
-public class Customer {
+@Table(name = "User")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CustomerID")
-    private int customerID;
+    @Column(name = "UserID")
+    private int userID;
 
     @Column(name = "AccountID")
     private int accountID;
@@ -61,7 +61,7 @@ public class Customer {
     @JoinColumn(name = "DietaryPreferenceID")
     private DietaryPreference dietaryPreference;
 
-    public Customer(int accountID, int goalID, int targetWeight, int tdee, int calories, boolean isPrivate, Instant lastUpdatedTime, DietaryPreference dietaryPreference) {
+    public User(int accountID, int goalID, int targetWeight, int tdee, int calories, boolean isPrivate, Instant lastUpdatedTime, DietaryPreference dietaryPreference) {
         this.accountID = accountID;
         this.goalID = goalID;
         this.targetWeight = targetWeight;
@@ -72,8 +72,8 @@ public class Customer {
         this.dietaryPreference = dietaryPreference;
     }
 
-    public Customer(int customerID) {
-        this.customerID = customerID;
+    public User(int userID) {
+        this.userID = userID;
     }
 
 }

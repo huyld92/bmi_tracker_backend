@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCustomerMenuRequest {
+public class CreateUserMenuRequest {
 
-    @NotNull(message = "customerID cannot be null")
-    private Integer customerID;
+    @NotNull(message = "userID cannot be null")
+    private Integer userID;
 
     @NotEmpty(message = "foodIDs cannot be empty")
     private List<Integer> foodIDs;

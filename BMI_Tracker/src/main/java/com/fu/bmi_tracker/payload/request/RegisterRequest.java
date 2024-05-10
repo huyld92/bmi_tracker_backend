@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.sql.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,17 +51,9 @@ public class RegisterRequest {
     @Schema(name = "gender", examples = {"Male", "Female", "Other"})
     private String gender;
 
-    @NotNull(message = "The birthday must not null")
-    @Past(message = "The birthday must be in the past.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Schema(name = "birthday", example = "yyyy-MM-dd")
-    private Date birthday;
-
-    private Integer goalID;
-    private Integer limitrationID;
-    private Integer heigh;
-    private Integer weigh;
-    
+    @NotNull
+    @Past
+    @Schema(name = "birthday", example = "1990-01-01")
+    private LocalDate birthday;
 
 }
