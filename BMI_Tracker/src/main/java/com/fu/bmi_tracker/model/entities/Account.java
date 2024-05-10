@@ -15,7 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.sql.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,7 +55,7 @@ public class Account {
     private EGender gender;
 
     @Column(name = "DateOfBirth")
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(name = "IsVerified")
     private Boolean isVerified;
@@ -63,11 +63,14 @@ public class Account {
     @Column(name = "IsActive")
     private Boolean isActive;
 
+    @Column(name = "CreationDate")
+    private LocalDate creationDate;
+
     @ManyToOne
     @JoinColumn(name = "RoleID")
     private Role role;
 
-    public Account(String fullName, String email, String phoneNumber, String password, EGender gender, Date birthday, Boolean isActive, Role role) {
+    public Account(String fullName, String email, String phoneNumber, String password, EGender gender, LocalDate birthday, Boolean isActive, Role role) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -75,6 +78,7 @@ public class Account {
         this.gender = gender;
         this.birthday = birthday;
         this.isActive = isActive;
+        this.creationDate = LocalDate.now();
         this.isVerified = false;
         this.role = role;
     }

@@ -22,14 +22,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(CustomerMenu.class)
-@Table(name = "CustomerMenu")
-public class CustomerMenu {
+@IdClass(UserMenu.class)
+@Table(name = "UserMenu")
+public class UserMenu {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "CustomerID")
-    private Customer customer;
+    @JoinColumn(name = "UserID")
+    private User user;
 
     @Id
     @ManyToOne

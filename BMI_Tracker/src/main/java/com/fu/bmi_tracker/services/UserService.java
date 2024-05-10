@@ -4,12 +4,12 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.Customer;
+import com.fu.bmi_tracker.model.entities.User;
 
 /**
  *
  * @author Duc Huy
  */
-public interface CustomerService  extends GeneralService<Customer>{
+public interface UserService  extends GeneralService<User>{
     
 }

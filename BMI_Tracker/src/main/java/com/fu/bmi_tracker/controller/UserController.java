@@ -5,9 +5,8 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.MealLog;
-import com.fu.bmi_tracker.payload.request.CreateCustomerRequest;
+import com.fu.bmi_tracker.payload.request.CreateUserRequest;
 import com.fu.bmi_tracker.payload.request.CreateMealLogRequest;
-import com.fu.bmi_tracker.services.CustomerService;
 import com.fu.bmi_tracker.services.MealLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.fu.bmi_tracker.services.UserService;
 
 /**
  *
@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/api/test/customer")
-public class CustomerController {
+public class UserController {
 
     @Autowired
-    CustomerService customerService;
+    UserService customerService;
 
     @Autowired
     MealLogService mealLogService;
@@ -95,7 +95,7 @@ public class CustomerController {
 //        @ApiResponse(responseCode = "500", content = {
 //            @Content(schema = @Schema())})})
 //    @PostMapping(value = "/createNew")
-//    public ResponseEntity<?> createNewCustomer(@Valid @RequestBody CreateCustomerRequest createCustomerRequest) {
+//    public ResponseEntity<?> createNewCustomer(@Valid @RequestBody CreateUserRequest createCustomerRequest) {
 //        // Kiểm tra User ID 
 //        // tính BMI
 //        // tính tdee 

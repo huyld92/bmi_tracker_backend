@@ -53,5 +53,5 @@ public class CustomerBodyMass {
 
     @ManyToOne
     @JoinColumn(name = "CustomerID")
-    private Customer customer;
+    private User customer;
 }

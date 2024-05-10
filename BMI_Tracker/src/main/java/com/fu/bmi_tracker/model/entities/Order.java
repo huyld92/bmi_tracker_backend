@@ -46,8 +46,8 @@ public class Order {
     private Instant dateOrder;
 
     @ManyToOne
-    @JoinColumn(name = "CustomerID")
-    private Customer customer;
+    @JoinColumn(name = "UserID")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "TrainerServiceID")

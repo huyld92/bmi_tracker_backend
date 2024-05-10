@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,21 +54,42 @@ public class ControllerExceptionHandler {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.FORBIDDEN.value(),
                 new Date(),
-                "Incorrect emmail or password.",
+                ex.getMessage(),
                 request.getDescription(false));
-
         return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorMessage> badCredentialsExceptionHandler(BadCredentialsException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
-                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 "Incorrect emmail or password.",
                 request.getDescription(false));
 
-        return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorMessage> usernameNotFoundExceptionHandler(UsernameNotFoundException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ErrorMessage> disabledExceptionHandler(DisabledException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.UNAUTHORIZED.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
 //
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -112,7 +135,7 @@ public class ControllerExceptionHandler {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
-                "IllegalArgumentException",
+                "IllegalArgumentException: " + ex.getMessage(),
                 ex.getMessage());
 
         return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
@@ -140,9 +163,9 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
     }
 
-    @ExceptionHandler(value = TokenRefreshException.class)
+    @ExceptionHandler(value = TokenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorMessage handleTokenRefreshException(TokenRefreshException ex, WebRequest request) {
+    public ErrorMessage handleTokenException(TokenException ex, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.FORBIDDEN.value(),
                 new Date(),
