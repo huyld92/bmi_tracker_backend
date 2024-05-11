@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import java.sql.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,11 +39,11 @@ public class CreateMealLogRequest {
     @NotNull
     @PastOrPresent
     @Schema(name = "dateOfMeal", example = "2024-04-17")
-    private Date dateOfMeal;
+    private LocalDate dateOfMeal;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Schema(name = "mealType", example = "BREAKFAST")
+    @Schema(name = "mealType", example = "Breakfast")
     private EMealType mealType;
 
     @NotBlank

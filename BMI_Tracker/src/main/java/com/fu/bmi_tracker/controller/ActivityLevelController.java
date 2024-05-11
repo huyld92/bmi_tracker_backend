@@ -4,9 +4,9 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.model.entities.UserMenu;
-import com.fu.bmi_tracker.model.entities.DietaryPreference;
-import com.fu.bmi_tracker.services.DietaryPreferenceService;
+import com.fu.bmi_tracker.model.entities.ActivityLevel;
+import com.fu.bmi_tracker.model.entities.ActivityLevel;
+import com.fu.bmi_tracker.services.ActivityLevelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,37 +26,37 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Dietary Preference", description = "Dietary preference management APIs")
+@Tag(name = "Activity Level", description = "Activity level management APIs")
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping("/api/test/user/menu")
-public class DietaryPreferenceController {
+@RequestMapping("/api/test/activity")
+public class ActivityLevelController {
 
     @Autowired
-    DietaryPreferenceService service;
+    ActivityLevelService activityLevelService;
 
     @Operation(
-            summary = "Get all dietary preference",
-            description = "Get list dietary preference",
+            summary = "Get all activity level",
+            description = "Only USER and Admin using",
             tags = {"USER", "ADMIN"})
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
-                    @Content(schema = @Schema(implementation = DietaryPreference.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = ActivityLevel.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> getAllDietaryPreference() {
+    public ResponseEntity<?> getAllActivityLevel() {
 
-        Iterable<DietaryPreference> dietaryPreferences = service.findAll();
+        Iterable<ActivityLevel> activityLevels = activityLevelService.findAll();
 
-        if (!dietaryPreferences.iterator().hasNext()) {
+        if (!activityLevels.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(dietaryPreferences, HttpStatus.OK);
+        return new ResponseEntity<>(activityLevels, HttpStatus.OK);
     }
 }

@@ -16,6 +16,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,9 +26,10 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "User")
+@Table(name = "[User]")
 public class User {
 
     @Id
@@ -45,10 +47,13 @@ public class User {
     private int targetWeight;
 
     @Column(name = "TDEE")
-    private int tdee;
+    private double tdee;
 
-    @Column(name = "Calories")
-    private int calories;
+    @Column(name = "BMR")
+    private double bmr;
+
+    @Column(name = "DefaultCalories")
+    private int defaultCalories;
 
     @Column(name = "IsPrivate")
     private boolean isPrivate;
@@ -56,20 +61,26 @@ public class User {
     @Column(name = "LastUpdatedTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Instant lastUpdatedTime;
+ 
+    @Column(name = "DietaryPreferenceID")
+    private int dietaryPreferenceID;
 
-    @ManyToOne
-    @JoinColumn(name = "DietaryPreferenceID")
-    private DietaryPreference dietaryPreference;
+    @Column(name = "ActivityLevelID")
+    private int activityLevelID;
 
-    public User(int accountID, int goalID, int targetWeight, int tdee, int calories, boolean isPrivate, Instant lastUpdatedTime, DietaryPreference dietaryPreference) {
+    public User(int accountID, int goalID, int targetWeight, double tdee, double bmr,
+            int defaultCalories, boolean isPrivate, Instant lastUpdatedTime,
+            int dietaryPreferenceID, int activityLevelID) {
         this.accountID = accountID;
         this.goalID = goalID;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
-        this.calories = calories;
-        this.isPrivate = isPrivate;
-        this.lastUpdatedTime = lastUpdatedTime;
-        this.dietaryPreference = dietaryPreference;
+        this.bmr = bmr;
+        this.defaultCalories = defaultCalories;
+        this.isPrivate = false;
+        this.lastUpdatedTime = Instant.now();
+        this.dietaryPreferenceID = dietaryPreferenceID;
+        this.activityLevelID = activityLevelID;
     }
 
     public User(int userID) {

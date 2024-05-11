@@ -37,5 +37,9 @@ public class DietaryPreference {
     private String description;
 
     @Column(name = "IsActive")
-    private Boolean isActive; 
+    private Boolean isActive;
+
+    public DietaryPreference(Integer dietaryPreferenceID) {
+        this.dietaryPreferenceID = dietaryPreferenceID;
+    }
 }
