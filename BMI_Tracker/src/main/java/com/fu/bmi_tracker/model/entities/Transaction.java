@@ -9,10 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,19 +31,35 @@ public class Transaction {
     @Column(name = "TransactionID")
     private int transactionID;
 
-    @Column(name = "Amount")
-    private float amount;
+    @Column(name = "BankCode", nullable = false)
+    private String bankCode;
 
-    @Column(name = "TimeStamp")
-    private Instant timeStamp;
+    @Column(name = "BankTranNo", nullable = false)
+    private String bankTranNo;
 
-    @Column(name = "Description")
-    private String description;
+    @Column(name = "CardType", nullable = false)
+    private String cardType;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "Amount", nullable = false)
+    private int amount;
 
-    @ManyToOne
-    @JoinColumn(name = "OrderID")
-    private Order order;
+    @Column(name = "OrderInfo", nullable = false)
+    private String orderInfo;
+
+    @Column(name = "PayDate", nullable = false)
+    private LocalDateTime payDate;
+
+    @Column(name = "UserID", nullable = false)
+    private int userID;
+
+    public Transaction(String bankCode, String bankTranNo, String cardType, int amount, String orderInfo, LocalDateTime payDate, int userID) {
+        this.bankCode = bankCode;
+        this.bankTranNo = bankTranNo;
+        this.cardType = cardType;
+        this.amount = amount;
+        this.orderInfo = orderInfo;
+        this.payDate = payDate;
+        this.userID = userID;
+    }
+
 }

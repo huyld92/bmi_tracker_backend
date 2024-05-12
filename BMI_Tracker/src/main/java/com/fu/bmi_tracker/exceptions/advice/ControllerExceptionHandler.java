@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.fu.bmi_tracker.exceptions;
+package com.fu.bmi_tracker.exceptions.advice;
 
+import com.fu.bmi_tracker.exceptions.ErrorMessage;
+import com.fu.bmi_tracker.exceptions.TokenException;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import org.springframework.http.HttpStatus;
