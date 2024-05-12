@@ -2,8 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.fu.bmi_tracker.exceptions;
+package com.fu.bmi_tracker.exceptions.advice;
 
+import com.fu.bmi_tracker.exceptions.ErrorMessage;
+import com.fu.bmi_tracker.exceptions.TokenException;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,18 +39,17 @@ public class ControllerExceptionHandler {
 
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-//
-//    @ExceptionHandler(ResourceNotFoundException.class)
-//    public ResponseEntity<ErrorMessage> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-//        ErrorMessage message = new ErrorMessage(
-//                HttpStatus.NOT_FOUND.value(),
-//                new Date(),
-//                ex.getMessage(),
-//                request.getDescription(false));
-//
-//        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-//    }
-//
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ErrorMessage> resourceNotFoundException(DateTimeParseException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorMessage> authenticationExceptionHandler(AuthenticationException ex, WebRequest request) {

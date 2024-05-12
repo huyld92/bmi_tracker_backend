@@ -5,6 +5,8 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -29,15 +31,21 @@ public class CreateUserRequest {
     @NotNull
     @Positive
     @Schema(name = "height", example = "180")
-    private Integer heigh;
+    private Integer height;
 
     @NotNull
     @Positive
     @Schema(name = "weight", example = "75")
-    private Integer weigh;
+    private Integer weight;
 
     @NotNull
     @Positive
-    @Schema(name = "weightGoal", example = "70")
-    private Integer weighGoal;
+    @Schema(name = "targetWeight", example = "70")
+    private Integer targetWeight;
+
+
+    @NotNull
+    @Positive
+    @Schema(name = "activityLevelID", example = "1")
+    private Integer activityLevelID;
 }

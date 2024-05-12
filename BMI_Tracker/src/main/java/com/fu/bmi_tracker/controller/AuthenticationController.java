@@ -155,6 +155,8 @@ public class AuthenticationController {
                 encoder.encode(registerRequest.getPassword()),
                 EGender.Other, registerRequest.getBirthday(),
                 true, accountRole);
+        // xóa khi verfied email có
+        account.setIsVerified(true);
 
         accountRepository.save(account);
 

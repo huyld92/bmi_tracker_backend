@@ -4,12 +4,21 @@
  */
 package com.fu.bmi_tracker.services;
 
+import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.MealLog;
+import com.fu.bmi_tracker.model.enums.EMealType;
+import java.time.LocalDate;
 
 /**
  *
  * @author Duc Huy
  */
-public interface MealLogService extends GeneralService<MealLog>{
-    
+public interface MealLogService extends GeneralService<MealLog> {
+
+    public Iterable<MealLog> findAllByDateOfMeal(LocalDate dateOfMeal);
+
+    public Iterable<MealLog> findAllByDateOfMealAndUser_UserID(LocalDate dateOfMeal, int userID);
+
+    public Iterable<Integer> findFoodIDByDateOfMealAndUserIDAndMealType(LocalDate dateOfMeal, int userID, EMealType mealType);
+
 }

@@ -32,4 +32,14 @@ public class UserServiceImpl implements UserService {
         return repository.save(t);
     }
 
+    @Override
+    public boolean existsByAccountID(int accountID) {
+        return repository.existsByAccountID(accountID);
+    }
+
+    @Override
+    public Optional<User> findByAccountID(int accountID) {
+        return repository.findByAccountID(accountID);
+    }
+
 }

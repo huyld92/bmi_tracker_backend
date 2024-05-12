@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +43,6 @@ public class RefreshToken {
     private String token;
 
     @Column(name = "ExpiryDate", nullable = false)
-    private Instant expiryDate;
+    private LocalDateTime expiryDate;
 
 }

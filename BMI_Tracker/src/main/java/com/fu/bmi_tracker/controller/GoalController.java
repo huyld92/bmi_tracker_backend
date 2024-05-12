@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,7 @@ public class GoalController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-    public ResponseEntity<?> createNewGoal(@RequestBody CreateGoalRequest createGoalRequest) {
+    public ResponseEntity<?> createNewGoal(@Valid @RequestBody CreateGoalRequest createGoalRequest) {
         Goal goal = new Goal(createGoalRequest);
 
         Goal goalResponse = service.save(goal);

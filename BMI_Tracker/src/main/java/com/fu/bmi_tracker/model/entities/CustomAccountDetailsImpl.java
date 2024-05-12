@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -27,13 +28,17 @@ public class CustomAccountDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private LocalDate birthday;
+
     private Collection<? extends GrantedAuthority> authorities;
 
-    public CustomAccountDetailsImpl(Integer id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomAccountDetailsImpl(Integer id, String email, String password, LocalDate birthday, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.birthday = birthday;
         this.authorities = authorities;
+
     }
 
     public static CustomAccountDetailsImpl build(Account account) {
@@ -44,6 +49,7 @@ public class CustomAccountDetailsImpl implements UserDetails {
                 account.getAccountID(),
                 account.getEmail(),
                 account.getPassword(),
+                account.getBirthday(),
                 authorities);
     }
 

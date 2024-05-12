@@ -4,17 +4,15 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.User;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author Duc Huy
  */
-public interface UserService extends GeneralService<User> {
+public interface VNPayService {
 
-    public boolean existsByAccountID(int accountID);
+    public String makePayment(int total, String orderInfor, String urlReturn);
 
-    public Optional<User> findByAccountID(int accountID);
-
+    public  int orderReturn(HttpServletRequest request);
 }

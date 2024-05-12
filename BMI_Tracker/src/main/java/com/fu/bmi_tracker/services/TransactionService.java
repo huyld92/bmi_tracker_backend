@@ -4,17 +4,12 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.User;
-import java.util.Optional;
+import com.fu.bmi_tracker.model.entities.Transaction;
 
 /**
  *
  * @author Duc Huy
  */
-public interface UserService extends GeneralService<User> {
-
-    public boolean existsByAccountID(int accountID);
-
-    public Optional<User> findByAccountID(int accountID);
-
+public interface TransactionService extends GeneralService<Transaction>{
+    
 }
