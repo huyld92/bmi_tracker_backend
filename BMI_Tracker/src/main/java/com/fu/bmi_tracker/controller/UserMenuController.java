@@ -123,9 +123,20 @@ public class UserMenuController {
             @Content(schema = @Schema())})})
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteFoodMenu(@RequestParam int userID, @RequestParam int foodID) {
-        service.deleteByUserUserIdAndFoodFoodID(userID, foodID);
+        service.deleteByUserUserIDAndFoodFoodID(userID, foodID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
+    @Operation(summary = "Delete a menu of user by list food Id", tags = {"UserMenu"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<?> deleteAllFoodMenu(@RequestParam int userID) {
+        service.deleteAllByUserUserID(userID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

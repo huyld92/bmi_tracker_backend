@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.security;
 
-
 import com.fu.bmi_tracker.security.jwt.AuthEntryPointJwt;
 import com.fu.bmi_tracker.security.jwt.AuthTokenFilter;
 import com.fu.bmi_tracker.services.impl.AccountDetailsServiceImpl;
@@ -68,6 +67,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth
                         -> auth.requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/loginUser").permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/refreshtoken").permitAll()
                         .requestMatchers("/api/auth/vnpay-payment").permitAll()

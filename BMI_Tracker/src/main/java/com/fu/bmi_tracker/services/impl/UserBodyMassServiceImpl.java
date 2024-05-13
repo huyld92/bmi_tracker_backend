@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.UserBodyMass;
 import com.fu.bmi_tracker.repository.UserBodyMassRepository;
 import com.fu.bmi_tracker.services.UserBodyMassService;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class UserBodyMassServiceImpl implements UserBodyMassService {
     @Override
     public UserBodyMass save(UserBodyMass t) {
         return repository.save(t);
+    }
+
+    @Override
+    public Optional<UserBodyMass> findTopByOrderByDateInputDesc() {
+        return repository.findTopByOrderByDateInputDesc();
     }
 
 }

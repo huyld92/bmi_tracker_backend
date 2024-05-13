@@ -39,4 +39,10 @@ public class ActivityLevel {
     @Column(name = "IsActive")
     private boolean isActive;
 
+    public ActivityLevel(int activityLevelID) {
+        this.activityLevelID = activityLevelID;
+    }
+    
+    
+
 }

@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.User;
 import com.fu.bmi_tracker.model.entities.UserBodyMass;
@@ -32,6 +33,7 @@ import com.fu.bmi_tracker.services.UserService;
 import com.fu.bmi_tracker.util.BMIUtils;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -135,6 +137,7 @@ public class UserController {
         // calculateDefault default Calories
         int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createUserRequest.getTargetWeight());
 
+        LocalDateTime now = LocalDateTime.now();
         // Save user
         User user = new User(principal.getId(), createUserRequest.getGoalID(),
                 createUserRequest.getTargetWeight(),
@@ -142,9 +145,9 @@ public class UserController {
                 bmr,
                 defaultCalories,
                 false,
-                Instant.now(),
+                now,
                 createUserRequest.getDietaryPreferenceID(),
-                createUserRequest.getActivityLevelID());
+                new ActivityLevel(createUserRequest.getActivityLevelID()));
 
         User userSaved = userService.save(user);
 
@@ -152,7 +155,7 @@ public class UserController {
         UserBodyMass bodyMass = new UserBodyMass(createUserRequest.getHeight(),
                 createUserRequest.getWeight(),
                 age, bmi,
-                Instant.now(), userSaved);
+                now, userSaved);
 
         userBodyMassService.save(bodyMass);
 

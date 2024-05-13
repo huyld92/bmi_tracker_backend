@@ -20,4 +20,6 @@ public interface UserMenuRepository extends JpaRepository<UserMenu, Integer> {
 
     public void deleteByUserUserIDAndFoodFoodID(int userID, int foodID);
 
+    public void deleteAllByUserUserID(int userID);
+
 }
