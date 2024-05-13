@@ -27,7 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @Tag(name = "Dietary Preference", description = "Dietary preference management APIs")
+<<<<<<< Updated upstream
 @CrossOrigin(origins = "http://localhost:8080")
+=======
+@CrossOrigin(origins = "*", maxAge = 3600)
+>>>>>>> Stashed changes
 @RestController
 @RequestMapping("/api/test/user/menu")
 public class DietaryPreferenceController {

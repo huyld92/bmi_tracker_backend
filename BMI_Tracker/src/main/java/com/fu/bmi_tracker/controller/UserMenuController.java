@@ -38,7 +38,11 @@ import com.fu.bmi_tracker.services.UserService;
  * @author Duc Huy
  */
 @Tag(name = "UserMenu", description = "UserMenu management APIs")
+<<<<<<< Updated upstream
 @CrossOrigin(origins = "http://localhost:8080")
+=======
+@CrossOrigin(origins = "*", maxAge = 3600)
+>>>>>>> Stashed changes
 @RestController
 @RequestMapping("/api/test/user/menu")
 public class UserMenuController {

@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,13 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
+<<<<<<< Updated upstream
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Trasaction", description = "Trasaction management APIs")
 @CrossOrigin(origins = "http://localhost:8080")
+=======
+@Tag(name = "Trasaction", description = "Trasaction management APIs")
+@CrossOrigin(origins = "*", maxAge = 3600)
+>>>>>>> Stashed changes
 @RestController
 @RequestMapping("/api/test/transaction")
 public class TransactionController {

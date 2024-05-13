@@ -28,7 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Tag", description = "Tag management APIs")
+<<<<<<< Updated upstream
 @CrossOrigin(origins = "http://localhost:8080")
+=======
+@CrossOrigin(origins = "*", maxAge = 3600)
+>>>>>>> Stashed changes
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
