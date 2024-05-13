@@ -50,6 +50,7 @@ public class DietaryPreferenceController {
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllDietaryPreference() {
+         
 
         Iterable<DietaryPreference> dietaryPreferences = service.findAll();
 

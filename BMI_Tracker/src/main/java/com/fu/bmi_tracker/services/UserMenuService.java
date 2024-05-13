@@ -17,6 +17,8 @@ public interface UserMenuService extends GeneralService<UserMenu> {
 
     public List<UserMenu> findAllByUserID(Integer userID);
 
-    public void deleteByUserUserIdAndFoodFoodID(int userID, int foodID);
+    public void deleteByUserUserIDAndFoodFoodID(int userID, int foodID);
+    
+    public void deleteAllByUserUserID(int userID);
 
 }

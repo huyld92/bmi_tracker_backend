@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,13 +47,13 @@ public class UserBodyMass {
     private double bmi;
 
     @Column(name = "DateInput")
-    private Instant dateInput;
+    private LocalDateTime dateInput;
 
     @ManyToOne
     @JoinColumn(name = "UserID")
     private User user;
 
-    public UserBodyMass(int height, int weight, int age, double bmi, Instant dateInput, User user) {
+    public UserBodyMass(int height, int weight, int age, double bmi, LocalDateTime dateInput, User user) {
         this.height = height;
         this.weight = weight;
         this.age = age;

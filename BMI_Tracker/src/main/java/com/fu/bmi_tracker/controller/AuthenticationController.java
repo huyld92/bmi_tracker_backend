@@ -19,10 +19,15 @@ import com.fu.bmi_tracker.security.jwt.JwtUtils;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.model.entities.RefreshToken;
+import com.fu.bmi_tracker.model.entities.User;
+import com.fu.bmi_tracker.model.entities.UserBodyMass;
 import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
+import com.fu.bmi_tracker.payload.response.LoginForUserResponse;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.RefreshTokenService;
+import com.fu.bmi_tracker.services.UserBodyMassService;
+import com.fu.bmi_tracker.services.UserService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
@@ -82,13 +87,19 @@ public class AuthenticationController {
     @Autowired
     RefreshTokenService refreshTokenService;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserBodyMassService userBodyMassService;
+
     @Operation(
             summary = "login by phone number and password",
             description = "Authenticate accounts by phone number and password. Returned will be account information and will not include a password",
             tags = {"Authentication"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "400", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "401", content = {
@@ -127,6 +138,63 @@ public class AuthenticationController {
                 accountDetails.getEmail(),
                 role, refreshToken.getToken(), jwt
         ));
+    }
+
+    @Operation(
+            summary = "Login for user by phone number and password",
+            description = "Authenticate accounts by phone number and password. Returned will user information",
+            tags = {"Authentication"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = LoginForUserResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "400", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping("/loginUser")
+    public ResponseEntity<?> loginForUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                        loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // generate mã jwt 
+        String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
+
+        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
+
+        // Lấy danh sách quyền của người dùng
+        Set<String> authorities = accountDetails.getAuthorities().stream()
+                .map(Object::toString)
+                .collect(Collectors.toSet());
+        List<String> stringList = new ArrayList(authorities);
+
+        // Lấy quyền đầu tiên và gán nó cho biến role
+        String role = stringList.get(0);
+
+        refreshTokenService.findByToken(role);
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
+
+        User user = userService.findByAccountID(accountDetails.getId()).get();
+
+        UserBodyMass bodyMass = userBodyMassService.findTopByOrderByDateInputDesc().get();
+
+        LoginForUserResponse forUserResponse = new LoginForUserResponse(
+                user.getUserID(), accountDetails.getEmail(), accountDetails.getFullName(),
+                accountDetails.getGender().toString(),
+                accountDetails.getPhoneNumber(), bodyMass.getHeight(), bodyMass.getWeight(),
+                bodyMass.getAge(), bodyMass.getBmi(),
+                user.getBmr(), user.getTdee(),
+                user.getActivityLevel().getActivityLevelName(),
+                refreshToken.getToken(),
+                jwt);
+        return ResponseEntity.ok(forUserResponse);
     }
 
     @Operation(
