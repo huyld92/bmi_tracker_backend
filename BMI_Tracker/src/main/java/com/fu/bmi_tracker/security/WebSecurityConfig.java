@@ -70,6 +70,7 @@ public class WebSecurityConfig {
                         -> auth.requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/refreshtoken").permitAll()
+                        .requestMatchers("/api/auth/vnpay-payment").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                         .anyRequest().authenticated()

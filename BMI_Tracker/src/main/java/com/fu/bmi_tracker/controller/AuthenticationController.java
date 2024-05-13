@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @Tag(name = "Authentication", description = "Authentication management APIs")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
