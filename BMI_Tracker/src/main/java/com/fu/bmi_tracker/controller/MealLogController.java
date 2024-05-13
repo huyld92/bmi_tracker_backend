@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @Tag(name = "MealLog", description = "Meal Log management APIs")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/meallog")
 public class MealLogController {
