@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.Order;
 import com.fu.bmi_tracker.model.entities.Transaction;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.TransactionService;
+import com.fu.bmi_tracker.services.UserService;
 import com.fu.bmi_tracker.services.VNPayService;
 import com.fu.bmi_tracker.util.DateTimeUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,11 +17,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  *
  * @author Duc Huy
- */
-@io.swagger.v3.oas.annotations.tags.Tag(name = "Trasaction", description = "Trasaction management APIs")
-@CrossOrigin(origins = "http://localhost:8080")
+@Tag(name = "Trasaction", description = "Trasaction management APIs")
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/test/transaction")
 public class TransactionController {
@@ -44,6 +46,9 @@ public class TransactionController {
 
     @Autowired
     VNPayService vNPayService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     DateTimeUtils dateTimeUtils;
@@ -62,7 +67,7 @@ public class TransactionController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/payment")
-//    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> makePayment(
             @RequestParam("amount") int toUpTotal,
             @RequestParam("orderInfo") String orderInfo,
@@ -76,7 +81,7 @@ public class TransactionController {
     }
 
     @GetMapping("/vnpay-payment")
-//    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> vnpayResult(HttpServletRequest request) {
         int paymentStatus = vNPayService.orderReturn(request);
 
@@ -89,6 +94,11 @@ public class TransactionController {
 //                account = ((CustomUserDetails) principle).getAccount();
 //            }
             int userID = 1;
+
+            Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
+
+            int userID = userService.findByAccountID(accountDetailsImpl.getId()).get().getUserID();
 
             Integer amount = Integer.valueOf(request.getParameter("vnp_Amount"));
 
@@ -104,8 +114,9 @@ public class TransactionController {
             Transaction transaction = new Transaction(bankCode, bankTranNo,
                     cardType, amount, orderInfo,
                     topUpDate, userID);
-//
+
 //            transactionService.save(transaction);
+
             return new ResponseEntity<>(transaction, HttpStatus.OK);
         }
         return new ResponseEntity<>("orderfail", HttpStatus.FAILED_DEPENDENCY);

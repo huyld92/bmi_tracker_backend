@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Activity Level", description = "Activity level management APIs")
-@CrossOrigin(origins = "http://localhost:8080")
+@Tag(name = "Activity Level", description = "Activity level management APIs") 
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/test/activity")
 public class ActivityLevelController {

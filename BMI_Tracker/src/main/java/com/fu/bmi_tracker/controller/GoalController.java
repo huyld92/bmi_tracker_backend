@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Goal", description = "Goal management APIs")
-@CrossOrigin(origins = "http://localhost:8080")
+@Tag(name = "Goal", description = "Goal management APIs") 
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/test/goals")
 public class GoalController {

@@ -56,7 +56,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @Tag(name = "Authentication", description = "Authentication management APIs")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
@@ -168,6 +168,7 @@ public class AuthenticationController {
         account.setIsVerified(true);
         
         //Save thông tin account xuống database
+
         accountRepository.save(account);
         
         //Create New User in firebase
