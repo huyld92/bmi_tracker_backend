@@ -4,13 +4,15 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.exceptions.TokenRefreshException;
+import com.fu.bmi_tracker.exceptions.TokenException;
 import com.fu.bmi_tracker.model.entities.RefreshToken;
 import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.repository.RefreshTokenRepository;
 import com.fu.bmi_tracker.services.RefreshTokenService;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setAccount(accountRepository.findById(userId).get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+        refreshToken.setExpiryDate(LocalDateTime.now().plusSeconds(refreshTokenDurationMs/1000));
         refreshToken.setToken(UUID.randomUUID().toString());
 
         refreshToken = repository.save(refreshToken);
@@ -58,9 +60,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+        if (token.getExpiryDate().compareTo(LocalDateTime.now()) < 0) {
             repository.delete(token);
-            throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please make a new signin request");
+            throw new TokenException(token.getToken(), "Refresh token was expired. Please make a new signin request");
         }
 
         return token;
@@ -75,6 +77,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public Optional<RefreshToken> findByToken(String token) {
         return repository.findByToken(token);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllExpiredSince(Instant now) {
+        repository.deleteByExpiryDateLessThan(now);
     }
 
 }

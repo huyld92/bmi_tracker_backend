@@ -34,24 +34,6 @@ public class AccountController {
     @Autowired
     RefreshTokenService refreshTokenService;
 
-    @Operation(
-            summary = "Log out",
-            description = "Log out of the system",
-            tags = {"Authentication"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "404", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "401", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Integer accountID = accountDetails.getId();
-        refreshTokenService.deleteByAccountID(accountID);
-        return ResponseEntity.ok(new MessageResponse("Log out successful!"));
-    }
+
 
 }

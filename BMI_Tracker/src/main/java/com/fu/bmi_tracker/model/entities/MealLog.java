@@ -16,7 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.sql.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,7 +44,7 @@ public class MealLog {
     private int calories;
 
     @Column(name = "DateOfMeal")
-    private Date dateOfMeal;
+    private LocalDate dateOfMeal;
 
     @Column(name = "MealType")
     @Enumerated(EnumType.STRING)
@@ -57,8 +57,8 @@ public class MealLog {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "CustomerID")
-    private Customer customer;
+    @JoinColumn(name = "UserID")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "FoodID", nullable = true)
@@ -67,7 +67,5 @@ public class MealLog {
     public MealLog(CreateMealLogRequest createMealLogRequest) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    
-    
+
 }

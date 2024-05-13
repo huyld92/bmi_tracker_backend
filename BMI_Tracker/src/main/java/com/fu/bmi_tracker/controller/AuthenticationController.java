@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.exceptions.TokenRefreshException;
+import com.fu.bmi_tracker.exceptions.TokenException;
 import com.fu.bmi_tracker.payload.request.LoginRequest;
 import com.fu.bmi_tracker.payload.request.RegisterRequest;
 import com.fu.bmi_tracker.payload.response.LoginResponse;
@@ -17,10 +17,16 @@ import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.repository.RoleRepository;
 import com.fu.bmi_tracker.security.jwt.JwtUtils;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.model.entities.RefreshToken;
 import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
+import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.RefreshTokenService;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,6 +62,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     @Autowired
+    private EmailService emailService;
+    
+    @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
@@ -69,7 +78,7 @@ public class AuthenticationController {
 
     @Autowired
     JwtUtils jwtUtils;
-    
+
     @Autowired
     RefreshTokenService refreshTokenService;
 
@@ -80,9 +89,11 @@ public class AuthenticationController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "404", content = {
+        @ApiResponse(responseCode = "400", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
@@ -107,6 +118,8 @@ public class AuthenticationController {
 
         // Lấy quyền đầu tiên và gán nó cho biến role
         String role = stringList.get(0);
+
+        refreshTokenService.findByToken(role);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
         return ResponseEntity.ok(new LoginResponse(
@@ -118,7 +131,7 @@ public class AuthenticationController {
 
     @Operation(
             summary = "Register",
-            description = "Register account with default role customer",
+            description = "Register account with default role user",
             tags = {"Authentication"})
     @ApiResponses({
         @ApiResponse(responseCode = "200"),
@@ -142,7 +155,7 @@ public class AuthenticationController {
                     .body(new MessageResponse("Error: Phone number is already taken!"));
         }
 
-        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_CUSTOMER);
+        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_USER);
 //                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         // Create new user's account
@@ -151,9 +164,33 @@ public class AuthenticationController {
                 encoder.encode(registerRequest.getPassword()),
                 EGender.Other, registerRequest.getBirthday(),
                 true, accountRole);
-
+        // xóa khi verfied email có
+        account.setIsVerified(true);
+        
+        //Save thông tin account xuống database
         accountRepository.save(account);
-
+        
+        //Create New User in firebase
+        try {
+            CreateRequest createRequest = new CreateRequest();
+            createRequest.setEmail(registerRequest.getEmail());
+            createRequest.setEmailVerified(false); 
+            createRequest.setPassword(registerRequest.getPassword());
+            
+            //Creating new user
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
+            
+            //Generate Veritification Link
+            String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
+            
+            //Send mail with vertificaiton link
+            EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
+            emailService.sendSimpleMail(details);
+        }
+        catch (Exception e) {
+            System.out.println("Error with firebase account creation");
+        }
+        
         return ResponseEntity.ok(new MessageResponse("Account registered successfully!"));
     }
 
@@ -181,9 +218,28 @@ public class AuthenticationController {
                     String token = jwtUtils.generateJwtToken(account.getEmail());
                     return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
                 })
-                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                .orElseThrow(() -> new TokenException(requestRefreshToken,
                 "Refresh token is not in database!"));
     }
 
+    @Operation(
+            summary = "Log out",
+            description = "Log out of the system",
+            tags = {"Authentication"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        Integer accountID = accountDetails.getId();
+        refreshTokenService.deleteByAccountID(accountID);
+        return ResponseEntity.ok(new MessageResponse("Log out successful!"));
+    }
 }

@@ -14,12 +14,14 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Integer>{
+public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Optional<Account> findByEmail(String email);
+
+    Optional<Account> findByEmailAndIsActiveTrue(String email);
 
     public boolean existsByEmail(String email);
 
     public boolean existsByPhoneNumber(String phoneNumber);
-    
+
 }
