@@ -26,11 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @Tag(name = "Account", description = "Account management APIs")
-<<<<<<< Updated upstream
-@CrossOrigin(origins = "http://localhost:8080")
-=======
 @CrossOrigin(origins = "*", maxAge = 3600)
->>>>>>> Stashed changes
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {

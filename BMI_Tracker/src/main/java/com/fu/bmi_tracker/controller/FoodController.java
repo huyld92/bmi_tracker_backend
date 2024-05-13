@@ -43,12 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Food", description = "Food management APIs")
-<<<<<<< Updated upstream
-@CrossOrigin(origins = "http://localhost:8080")
-=======
-@CrossOrigin(origins = "*", maxAge = 3600)
->>>>>>> Stashed changes
+@Tag(name = "Food", description = "Food management APIs") 
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/test/foods")
 public class FoodController {
