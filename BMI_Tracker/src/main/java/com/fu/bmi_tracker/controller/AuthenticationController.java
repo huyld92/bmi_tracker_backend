@@ -17,10 +17,16 @@ import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.repository.RoleRepository;
 import com.fu.bmi_tracker.security.jwt.JwtUtils;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.model.entities.RefreshToken;
 import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
+import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.RefreshTokenService;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,6 +61,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
+    @Autowired
+    private EmailService emailService;
+    
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -157,9 +166,32 @@ public class AuthenticationController {
                 true, accountRole);
         // xóa khi verfied email có
         account.setIsVerified(true);
+        
+        //Save thông tin account xuống database
 
         accountRepository.save(account);
-
+        
+        //Create New User in firebase
+        try {
+            CreateRequest createRequest = new CreateRequest();
+            createRequest.setEmail(registerRequest.getEmail());
+            createRequest.setEmailVerified(false); 
+            createRequest.setPassword(registerRequest.getPassword());
+            
+            //Creating new user
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
+            
+            //Generate Veritification Link
+            String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
+            
+            //Send mail with vertificaiton link
+            EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
+            emailService.sendSimpleMail(details);
+        }
+        catch (Exception e) {
+            System.out.println("Error with firebase account creation");
+        }
+        
         return ResponseEntity.ok(new MessageResponse("Account registered successfully!"));
     }
 

@@ -92,5 +92,4 @@ public class EmailServiceImpl implements EmailService {
             return "Error while sending mail!!!: " ;
         }
     }
-
 }

@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  *
  * @author Duc Huy
- */ 
 @Tag(name = "Trasaction", description = "Trasaction management APIs")
 @CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
@@ -87,6 +86,14 @@ public class TransactionController {
         int paymentStatus = vNPayService.orderReturn(request);
 
         if (paymentStatus == 1) {
+            System.out.println("URI: " + request.getQueryString());
+
+//            Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
+//            if (!"anonymousUser".equals(principle.toString())) {
+//                account = ((CustomUserDetails) principle).getAccount();
+//            }
+            int userID = 1;
 
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
@@ -107,8 +114,9 @@ public class TransactionController {
             Transaction transaction = new Transaction(bankCode, bankTranNo,
                     cardType, amount, orderInfo,
                     topUpDate, userID);
-//
-            transactionService.save(transaction);
+
+//            transactionService.save(transaction);
+
             return new ResponseEntity<>(transaction, HttpStatus.OK);
         }
         return new ResponseEntity<>("orderfail", HttpStatus.FAILED_DEPENDENCY);

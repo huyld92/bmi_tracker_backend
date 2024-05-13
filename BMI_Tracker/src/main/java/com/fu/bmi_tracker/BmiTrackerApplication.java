@@ -9,7 +9,7 @@ public class BmiTrackerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BmiTrackerApplication.class, args);
-	}
+        }
 //    @Bean
 //    public CommonsMultipartResolver multipartResolver() {
 //        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
