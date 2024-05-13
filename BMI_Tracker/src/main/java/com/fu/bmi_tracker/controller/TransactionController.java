@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  *
  * @author Duc Huy
- */
-@io.swagger.v3.oas.annotations.tags.Tag(name = "Trasaction", description = "Trasaction management APIs")
-@CrossOrigin(maxAge = 3600)
+@Tag(name = "Trasaction", description = "Trasaction management APIs")
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/test/transaction")
 public class TransactionController {
@@ -86,6 +86,14 @@ public class TransactionController {
         int paymentStatus = vNPayService.orderReturn(request);
 
         if (paymentStatus == 1) {
+            System.out.println("URI: " + request.getQueryString());
+
+//            Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
+//            if (!"anonymousUser".equals(principle.toString())) {
+//                account = ((CustomUserDetails) principle).getAccount();
+//            }
+            int userID = 1;
 
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
@@ -106,8 +114,9 @@ public class TransactionController {
             Transaction transaction = new Transaction(bankCode, bankTranNo,
                     cardType, amount, orderInfo,
                     topUpDate, userID);
-//
-            transactionService.save(transaction);
+
+//            transactionService.save(transaction);
+
             return new ResponseEntity<>(transaction, HttpStatus.OK);
         }
         return new ResponseEntity<>("orderfail", HttpStatus.FAILED_DEPENDENCY);

@@ -43,8 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Food", description = "Food management APIs")
-@CrossOrigin(maxAge = 3600)
+@Tag(name = "Food", description = "Food management APIs") 
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/test/foods")
 public class FoodController {

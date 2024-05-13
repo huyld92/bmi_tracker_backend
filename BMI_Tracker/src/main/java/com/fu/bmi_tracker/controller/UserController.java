@@ -41,7 +41,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author Duc Huy
  */
 @Tag(name = "User", description = "User management APIs")
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(origins = "*",maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
 public class UserController {

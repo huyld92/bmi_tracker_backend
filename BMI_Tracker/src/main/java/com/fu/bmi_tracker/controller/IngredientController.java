@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Ingredient", description = "Ingredient management APIs")
-@CrossOrigin(maxAge = 3600)
+@Tag(name = "Ingredient", description = "Ingredient management APIs") 
+@CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
 @RequestMapping("/api/test/ingredients")
 public class IngredientController {
