@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,19 +33,19 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Ingredient", description = "Ingredient management APIs") 
-@CrossOrigin(origins = "*", maxAge = 3600) 
+@Tag(name = "Ingredient", description = "Ingredient management APIs")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/test/ingredients")
+@RequestMapping("/api/ingredients")
 public class IngredientController {
 
     @Autowired
     IngredientService service;
 
     @Operation(
-            summary = "Create new ingredient with form",
+            summary = "Create new ingredient with form (Admin)",
             description = "Create new ingredient with form: include MultiplePath for ingredient photo",
-            tags = {"Ingredient"})
+            tags = {"ADMIN"})
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -53,9 +54,10 @@ public class IngredientController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewIngredient(@RequestBody CreateIngredientRequest createIngredientRequest) {
         Ingredient ingredient = new Ingredient(createIngredientRequest);
- 
+
         Ingredient ingredientSave = service.save(ingredient);
 
         if (ingredientSave == null) {
@@ -66,7 +68,7 @@ public class IngredientController {
         return new ResponseEntity<>(ingredientSave, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Retrieve all Ingredients", tags = {"Ingredient"})
+    @Operation(summary = "Retrieve all Ingredients", tags = {"ADMIN", "TRAINER"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -75,6 +77,7 @@ public class IngredientController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
     public ResponseEntity<?> getAllIngredients() {
 
         Iterable ingredients = service.findAll();
@@ -109,7 +112,7 @@ public class IngredientController {
         }
     }
 
-    @Operation(summary = "Update a Ingredient by Id", tags = {"Ingredient"})
+    @Operation(summary = "Update a Ingredient by Id (ADMIN)", tags = {"ADMIN"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -118,6 +121,7 @@ public class IngredientController {
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())})})
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateIngredient(@RequestBody Ingredient ingredientRequest) {
         Optional<Ingredient> ingredient = service.findById(ingredientRequest.getIngredientID());
 
@@ -129,13 +133,14 @@ public class IngredientController {
         }
     }
 
-    @Operation(summary = "Delete a Ingredient by Id", tags = {"Ingredient"})
+    @Operation(summary = "Delete a Ingredient by Id", tags = {"ADMIN"})
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteIngredient(@PathVariable("id") int id) {
         Optional<Ingredient> ingredient = service.findById(id);
 
