@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Goal", description = "Goal management APIs") 
-@CrossOrigin(origins = "*", maxAge = 3600) 
+@Tag(name = "Goal", description = "Goal management APIs")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/test/goals")
+@RequestMapping("/api/goals")
 public class GoalController {
 
     @Autowired
@@ -60,7 +61,7 @@ public class GoalController {
         return new ResponseEntity<>(goalResponse, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Retrieve all Goals", tags = {"Goal"})
+    @Operation(summary = "Retrieve all Goals (USER)", tags = {"USER"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Goal.class), mediaType = "application/json")}),
@@ -69,6 +70,7 @@ public class GoalController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAllGoals() {
 
         Iterable goals = service.findAll();

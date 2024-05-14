@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Dietary Preference", description = "Dietary preference management APIs")
 @CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
-@RequestMapping("/api/test/user/menu")
+@RequestMapping("/api/dietaryPreference")
 public class DietaryPreferenceController {
 
     @Autowired

@@ -35,8 +35,13 @@ public class FoodServiceImpl implements FoodService {
     }
     
     @Override
-    public List<Food> findByFoodIDIn(List<Integer> foodIds) {
+    public Iterable<Food> findByFoodIDIn(List<Integer> foodIds) {
         return repository.findByFoodIDIn(foodIds);
+    }
+
+    @Override
+    public Iterable<Food> findByTrainerID(Integer trainerID) {
+        return repository.findByTrainerTrainerID(trainerID);
     }
     
 }

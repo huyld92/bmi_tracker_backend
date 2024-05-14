@@ -68,7 +68,7 @@ public class AuthenticationController {
 
     @Autowired
     private EmailService emailService;
-    
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -210,7 +210,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) {
 
         if (accountRepository.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
@@ -234,32 +234,30 @@ public class AuthenticationController {
                 true, accountRole);
         // xóa khi verfied email có
         account.setIsVerified(true);
-        
-        //Save thông tin account xuống database
 
+        //Save thông tin account xuống database
         accountRepository.save(account);
-        
+
         //Create New User in firebase
         try {
             CreateRequest createRequest = new CreateRequest();
             createRequest.setEmail(registerRequest.getEmail());
-            createRequest.setEmailVerified(false); 
+            createRequest.setEmailVerified(false);
             createRequest.setPassword(registerRequest.getPassword());
-            
+
             //Creating new user
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
-            
+
             //Generate Veritification Link
             String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
-            
+
             //Send mail with vertificaiton link
             EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
             emailService.sendSimpleMail(details);
-        }
-        catch (Exception e) {
+        } catch (FirebaseAuthException e) {
             System.out.println("Error with firebase account creation");
         }
-        
+
         return ResponseEntity.ok(new MessageResponse("Account registered successfully!"));
     }
 
@@ -310,5 +308,10 @@ public class AuthenticationController {
         Integer accountID = accountDetails.getId();
         refreshTokenService.deleteByAccountID(accountID);
         return ResponseEntity.ok(new MessageResponse("Log out successful!"));
+    }
+
+    @PostMapping("/verifyAccount")
+    public void verifyAccount() {
+
     }
 }
