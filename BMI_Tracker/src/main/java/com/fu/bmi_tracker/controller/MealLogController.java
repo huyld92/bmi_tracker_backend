@@ -175,4 +175,6 @@ public class MealLogController {
 
         return new ResponseEntity<>(totalCalories, HttpStatus.OK);
     }
+    
+    
 }

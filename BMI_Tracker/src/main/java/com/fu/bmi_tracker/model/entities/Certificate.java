@@ -4,6 +4,8 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.payload.request.CreateCertificateRequest;
+import com.fu.bmi_tracker.payload.request.UpdateCertificateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,10 +37,26 @@ public class Certificate {
     @Column(name = "CertificateName")
     private String certificateName;
 
+    @Column(name = "CertificateLink")
+    private String certificateLink;
+
     @Column(name = "Status")
     private String status;
 
     @ManyToOne
     @JoinColumn(name = "TrainerID")
     private Trainer trainer;
+
+    public Certificate(CreateCertificateRequest certificateRequest) {
+        this.certificateName = certificateRequest.getCertificateName();
+        this.certificateLink = certificateRequest.getCertificateLink();
+        this.status = "Not verified";
+        this.trainer = new Trainer(certificateRequest.getTrainerID());
+
+    }
+
+    public void updateCertificate(UpdateCertificateRequest certificateRequest) {
+        this.certificateName = certificateRequest.getCertificateName();
+        this.certificateLink = certificateRequest.getCertificateLink();
+    }
 }
