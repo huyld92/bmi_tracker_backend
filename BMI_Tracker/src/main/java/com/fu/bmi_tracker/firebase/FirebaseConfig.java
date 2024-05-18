@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 import java.io.InputStream;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  *
@@ -19,17 +20,14 @@ import java.io.InputStream;
 @Configuration
 public class FirebaseConfig {
     
-    private final String FIREBASE_KEY_FILE = "test-ultilites-firebase-adminsdk-5p57u-901551d732.json";
+    @Value("${firebase.keyFile}")
+    private String firebaseKeyFile;
     
     @Bean
     public FirebaseApp initializeFirebaseApp() throws IOException {
-        /*
-        System.out.println("--------------------");
-        System.out.println(getClass().getClassLoader().getResource(FIREBASE_KEY_FILE).getPath());
-        System.out.println("--------------------");
-        */
+        
         InputStream serviceAccount
-                = getClass().getClassLoader().getResourceAsStream(FIREBASE_KEY_FILE);
+                = getClass().getClassLoader().getResourceAsStream(firebaseKeyFile);
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))

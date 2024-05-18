@@ -18,18 +18,19 @@ import com.fu.bmi_tracker.repository.RoleRepository;
 import com.fu.bmi_tracker.security.jwt.JwtUtils;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.EmailDetails;
+import com.fu.bmi_tracker.model.entities.EmailVerificationCode;
 import com.fu.bmi_tracker.model.entities.RefreshToken;
 import com.fu.bmi_tracker.model.entities.User;
 import com.fu.bmi_tracker.model.entities.UserBodyMass;
 import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
 import com.fu.bmi_tracker.payload.response.LoginForUserResponse;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
+import com.fu.bmi_tracker.repository.EmailVerificationCodeRepository;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.RefreshTokenService;
 import com.fu.bmi_tracker.services.UserBodyMassService;
 import com.fu.bmi_tracker.services.UserService;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,6 +70,9 @@ public class AuthenticationController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private EmailVerificationCodeRepository emailVerificationRepository;
+    
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -231,13 +235,11 @@ public class AuthenticationController {
                 registerRequest.getEmail(), registerRequest.getPhoneNumber(),
                 encoder.encode(registerRequest.getPassword()),
                 EGender.Other, registerRequest.getBirthday(),
-                true, accountRole);
-        // xóa khi verfied email có
-        account.setIsVerified(true);
+                true, accountRole); 
 
         //Save thông tin account xuống database
         accountRepository.save(account);
-
+      
         //Create New User in firebase
         try {
             CreateRequest createRequest = new CreateRequest();
@@ -250,10 +252,17 @@ public class AuthenticationController {
 
             //Generate Veritification Link
             String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
-
+            
+            EmailVerificationCode verificationCode = new EmailVerificationCode(link, registerRequest.getEmail());
+          
+            System.out.println(link);
+          
+            emailVerificationRepository.save(verificationCode);
+            
             //Send mail with vertificaiton link
             EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
             emailService.sendSimpleMail(details);
+            
         } catch (FirebaseAuthException e) {
             System.out.println("Error with firebase account creation");
         }

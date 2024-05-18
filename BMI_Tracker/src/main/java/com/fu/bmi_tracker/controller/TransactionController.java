@@ -35,7 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  *
  * @author Duc Huy
- **/
+ * 
+ * */
 
 @Tag(name = "Trasaction", description = "Trasaction management APIs")
 @CrossOrigin(origins = "*", maxAge = 3600) 
@@ -99,7 +100,7 @@ public class TransactionController {
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
 
-            int userID = userService.findByAccountID(accountDetailsImpl.getId()).get().getUserID();
+            userID = userService.findByAccountID(accountDetailsImpl.getId()).get().getUserID();
 
             Integer amount = Integer.valueOf(request.getParameter("vnp_Amount"));
 
