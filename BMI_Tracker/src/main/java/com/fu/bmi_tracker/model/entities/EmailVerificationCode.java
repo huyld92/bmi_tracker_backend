@@ -32,18 +32,18 @@ import java.util.Map;
 @NoArgsConstructor
 @Table(name = "[EmailVerificationCode]")
 public class EmailVerificationCode {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CodeID")
     private Integer codeID;
-    
+
     @Column(name = "VerificationCode")
     private String verificationCode;
-    
+
     @Column(name = "Email")
     private String email;
-    
+
     @Column(name = "CreationTime")
     private LocalDateTime creationTime;
 
@@ -51,27 +51,27 @@ public class EmailVerificationCode {
         this.verificationCode = convertVerificationLink(verificationCode);
         this.email = email;
         this.creationTime = LocalDateTime.now();
-    }  
-    
-    private String convertVerificationLink(String verficationLink) throws MalformedURLException, Exception {
+    }
+
+    private String convertVerificationLink(String verficationLink) throws Exception {
         URL url = new URL(verficationLink);
         String query = url.getQuery();
-            Map<String, String> queryParams = splitQuery(query);
+        Map<String, String> queryParams = splitQuery(query);
 
-            if (queryParams.containsKey("oobCode")) {
-                String oobCode = queryParams.get("oobCode");
-                System.out.println("This is Verification Link: -------------------------------------");
-                System.out.println(verficationLink);
-                
-                System.out.println("This is obbcode: -------------------------------------");
-                System.out.println(oobCode);
-                System.out.println(" -------------------------------------");
-                return oobCode;
-            } else {
-                return null;
-            }
+        if (queryParams.containsKey("oobCode")) {
+            String oobCode = queryParams.get("oobCode");
+            System.out.println("This is Verification Link: -------------------------------------");
+            System.out.println(verficationLink);
+
+            System.out.println("This is obbcode: -------------------------------------");
+            System.out.println(oobCode);
+            System.out.println(" -------------------------------------");
+            return oobCode;
+        } else {
+            return null;
+        }
     }
-    
+
     private static Map<String, String> splitQuery(String query) throws Exception {
         Map<String, String> queryPairs = new HashMap<>();
         String[] pairs = query.split("&");

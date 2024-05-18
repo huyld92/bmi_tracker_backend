@@ -100,7 +100,7 @@ public class TransactionController {
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
 
-            userID = userService.findByAccountID(accountDetailsImpl.getId()).get().getUserID();
+            Integer userID = userService.findByAccountID(accountDetailsImpl.getId()).get().getUserID();
 
             Integer amount = Integer.valueOf(request.getParameter("vnp_Amount"));
 

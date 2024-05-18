@@ -31,6 +31,7 @@ import com.fu.bmi_tracker.services.RefreshTokenService;
 import com.fu.bmi_tracker.services.UserBodyMassService;
 import com.fu.bmi_tracker.services.UserService;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +73,7 @@ public class AuthenticationController {
 
     @Autowired
     private EmailVerificationCodeRepository emailVerificationRepository;
-    
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -214,7 +215,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/register")
-    public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) throws Exception {
 
         if (accountRepository.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
@@ -235,11 +236,11 @@ public class AuthenticationController {
                 registerRequest.getEmail(), registerRequest.getPhoneNumber(),
                 encoder.encode(registerRequest.getPassword()),
                 EGender.Other, registerRequest.getBirthday(),
-                true, accountRole); 
+                true, accountRole);
 
         //Save thông tin account xuống database
         accountRepository.save(account);
-      
+
         //Create New User in firebase
         try {
             CreateRequest createRequest = new CreateRequest();
@@ -252,17 +253,17 @@ public class AuthenticationController {
 
             //Generate Veritification Link
             String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
-            
+
             EmailVerificationCode verificationCode = new EmailVerificationCode(link, registerRequest.getEmail());
-          
+
             System.out.println(link);
-          
+
             emailVerificationRepository.save(verificationCode);
-            
+
             //Send mail with vertificaiton link
             EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
             emailService.sendSimpleMail(details);
-            
+
         } catch (FirebaseAuthException e) {
             System.out.println("Error with firebase account creation");
         }
