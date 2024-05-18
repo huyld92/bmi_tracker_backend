@@ -45,5 +45,8 @@ public class Trainer {
         this.weight = weight;
     }
 
+    Trainer(int trainerID) {
+        this.trainerID = trainerID;
+    }
 
 }

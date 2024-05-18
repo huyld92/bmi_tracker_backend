@@ -153,8 +153,7 @@ public class FoodController {
 
     @Operation(
             summary = "Retrieve a Food by Id",
-            description = "Get a Food object by specifying its id. The response is Food object",
-            tags = {"ADMin", "TRAINER", "USER"})
+            description = "Get a Food object by specifying its id. The response is Food object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),

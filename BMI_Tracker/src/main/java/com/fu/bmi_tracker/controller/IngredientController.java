@@ -6,7 +6,6 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.payload.request.CreateIngredientRequest;
-import com.fu.bmi_tracker.services.FileStorageService;
 import com.fu.bmi_tracker.services.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
