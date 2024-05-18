@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface FoodService extends GeneralService<Food> {
 
-    public List<Food> findByFoodIDIn(List<Integer> foodIDs);
+    public Iterable<Food> findByFoodIDIn(List<Integer> foodIDs);
+    
+    public Iterable<Food> findByTrainerID(Integer trainerID);
 
 }

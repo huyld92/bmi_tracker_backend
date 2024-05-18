@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FoodRepository extends JpaRepository<Food, Integer> {
 
-    List<Food> findByFoodIDIn(List<Integer> foodIds);
+    Iterable<Food> findByFoodIDIn(List<Integer> foodIds);
+
+    public Iterable<Food> findByTrainerTrainerID(Integer trainerID);
 
 }

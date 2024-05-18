@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  * 
  * */
+
 @Tag(name = "Trasaction", description = "Trasaction management APIs")
 @CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
@@ -95,7 +96,6 @@ public class TransactionController {
 //            if (!"anonymousUser".equals(principle.toString())) {
 //                account = ((CustomUserDetails) principle).getAccount();
 //            }
-            int userID = 1;
 
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;

@@ -32,15 +32,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.UserMenuService;
 import com.fu.bmi_tracker.services.UserService;
+import java.util.stream.StreamSupport;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
  * @author Duc Huy
  */
-@Tag(name = "UserMenu", description = "UserMenu management APIs") 
-@CrossOrigin(origins = "*", maxAge = 3600) 
+@Tag(name = "UserMenu", description = "UserMenu management APIs")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/test/user/menu")
+@RequestMapping("/api/user/menu")
 public class UserMenuController {
 
     @Autowired
@@ -55,7 +57,7 @@ public class UserMenuController {
     @Operation(
             summary = "Create new user menu with form",
             description = "Create new user menu with form",
-            tags = {"UserMenu"})
+            tags = {"TRAINER"})
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = UserMenu.class), mediaType = "application/json")}),
@@ -64,10 +66,13 @@ public class UserMenuController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
+    @PreAuthorize("hasRole('TRAINER')")
     public ResponseEntity<?> createNewUserMenu(@RequestBody CreateUserMenuRequest createUserMenuRequest) {
         //Get list food by food id list
-        List<Food> foods = foodService.findByFoodIDIn(createUserMenuRequest.getFoodIDs());
-        if (foods.size() < createUserMenuRequest.getFoodIDs().size()) {
+        Iterable<Food> foods = foodService.findByFoodIDIn(createUserMenuRequest.getFoodIDs());
+        long size = StreamSupport.stream(foods.spliterator(), false).count();
+        System.out.println(size);
+        if (size < createUserMenuRequest.getFoodIDs().size()) {
             return new ResponseEntity<>("Not found food id!", HttpStatus.NOT_FOUND);
         }
 
@@ -123,9 +128,20 @@ public class UserMenuController {
             @Content(schema = @Schema())})})
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteFoodMenu(@RequestParam int userID, @RequestParam int foodID) {
-        service.deleteByUserUserIdAndFoodFoodID(userID, foodID);
+        service.deleteByUserUserIDAndFoodFoodID(userID, foodID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
+    @Operation(summary = "Delete a menu of user by list food Id", tags = {"UserMenu"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<?> deleteAllFoodMenu(@RequestParam int userID) {
+        service.deleteAllByUserUserID(userID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
-import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Activity Level", description = "Activity level management APIs") 
 @CrossOrigin(origins = "*", maxAge = 3600) 
 @RestController
-@RequestMapping("/api/test/activity")
+@RequestMapping("/api/activitylevel")
 public class ActivityLevelController {
 
     @Autowired

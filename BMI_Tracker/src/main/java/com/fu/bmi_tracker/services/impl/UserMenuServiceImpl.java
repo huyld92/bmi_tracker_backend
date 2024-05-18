@@ -46,8 +46,13 @@ public class UserMenuServiceImpl implements UserMenuService {
 
     @Override
     @Transactional
-    public void deleteByUserUserIdAndFoodFoodID(int userID, int foodID) {
+    public void deleteByUserUserIDAndFoodFoodID(int userID, int foodID) {
         repository.deleteByUserUserIDAndFoodFoodID(userID, foodID);
+    }
+
+    @Override
+    public void deleteAllByUserUserID(int userID) {
+        repository.deleteAllByUserUserID(userID);
     }
 
 }

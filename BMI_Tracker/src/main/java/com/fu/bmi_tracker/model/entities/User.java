@@ -14,7 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -60,17 +60,18 @@ public class User {
 
     @Column(name = "LastUpdatedTime")
     @Temporal(TemporalType.TIMESTAMP)
-    private Instant lastUpdatedTime;
- 
+    private LocalDateTime lastUpdatedTime;
+
     @Column(name = "DietaryPreferenceID")
     private int dietaryPreferenceID;
 
-    @Column(name = "ActivityLevelID")
-    private int activityLevelID;
+    @ManyToOne()
+    @JoinColumn(name = "ActivityLevelID")
+    private ActivityLevel activityLevel;
 
     public User(int accountID, int goalID, int targetWeight, double tdee, double bmr,
-            int defaultCalories, boolean isPrivate, Instant lastUpdatedTime,
-            int dietaryPreferenceID, int activityLevelID) {
+            int defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
+            int dietaryPreferenceID, ActivityLevel activityLevel) {
         this.accountID = accountID;
         this.goalID = goalID;
         this.targetWeight = targetWeight;
@@ -78,9 +79,9 @@ public class User {
         this.bmr = bmr;
         this.defaultCalories = defaultCalories;
         this.isPrivate = false;
-        this.lastUpdatedTime = Instant.now();
+        this.lastUpdatedTime = lastUpdatedTime;
         this.dietaryPreferenceID = dietaryPreferenceID;
-        this.activityLevelID = activityLevelID;
+        this.activityLevel = activityLevel;
     }
 
     public User(int userID) {
