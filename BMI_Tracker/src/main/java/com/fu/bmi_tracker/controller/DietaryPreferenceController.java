@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.model.entities.UserMenu;
 import com.fu.bmi_tracker.model.entities.DietaryPreference;
 import com.fu.bmi_tracker.services.DietaryPreferenceService;
 import io.swagger.v3.oas.annotations.Operation;

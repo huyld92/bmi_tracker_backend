@@ -10,6 +10,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -174,4 +175,16 @@ public class ControllerExceptionHandler {
                 ex.getMessage(),
                 request.getDescription(false));
     }
+
+    @ExceptionHandler(MailException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ResponseEntity<?> handleMailException(MailException ex) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                new Date(),
+                "Error while Sending Mail: " + ex.getMessage(),
+                ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(message);
+    }
+
 }

@@ -4,37 +4,39 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.UserBodyMass;
-import com.fu.bmi_tracker.repository.UserBodyMassRepository;
-import com.fu.bmi_tracker.services.UserBodyMassService;
+import com.fu.bmi_tracker.model.entities.Account;
+import com.fu.bmi_tracker.payload.response.AccountResponse;
+import com.fu.bmi_tracker.repository.AccountRepository;
+import com.fu.bmi_tracker.services.AccountService;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserBodyMassServiceImpl implements UserBodyMassService {
+public class AccountServiceImpl implements AccountService {
 
     @Autowired
-    UserBodyMassRepository repository;
+    AccountRepository repository;
 
     @Override
-    public Iterable<UserBodyMass> findAll() {
+    public Iterable<Account> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<UserBodyMass> findById(Integer id) {
+    public Optional<Account> findById(Integer id) {
         return repository.findById(id);
     }
 
     @Override
-    public UserBodyMass save(UserBodyMass t) {
+    public Account save(Account t) {
         return repository.save(t);
     }
 
     @Override
-    public Optional<UserBodyMass> findTopByOrderByDateInputDesc() {
-        return repository.findTopByOrderByDateInputDesc();
+    public List<AccountResponse> findAllAccountResponse() {
+        return repository.findAllAccountResponse();
     }
 
 }

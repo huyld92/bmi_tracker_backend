@@ -140,15 +140,13 @@ public class FoodController {
     @GetMapping("/getAll")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllFoods() {
-
-        Iterable foods = service.findAll();
+        Iterable<Food> foods = service.findAll();
 
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         return new ResponseEntity<>(foods, HttpStatus.OK);
-
     }
 
     @Operation(
@@ -222,7 +220,7 @@ public class FoodController {
     @GetMapping("/getAllByTrainerID/")
     public ResponseEntity<?> getAllFoodsOfTrainer(@RequestParam int trainerID) {
 
-        Iterable foods = service.findByTrainerID(trainerID);
+        Iterable<Food> foods = service.findByTrainerID(trainerID);
 
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

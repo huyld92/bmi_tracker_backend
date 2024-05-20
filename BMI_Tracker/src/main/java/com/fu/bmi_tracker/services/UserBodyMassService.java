@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.UserBodyMass;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**

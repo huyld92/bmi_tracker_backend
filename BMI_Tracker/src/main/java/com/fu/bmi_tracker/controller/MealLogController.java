@@ -80,7 +80,7 @@ public class MealLogController {
         User user = userService.findByAccountID(principal.getId()).get();
 
         // Get Meal log with date
-        Iterable mealLogs = mealLogService.findAllByDateOfMealAndUser_UserID(dateOfMeal, user.getUserID());
+        Iterable<MealLog> mealLogs = mealLogService.findAllByDateOfMealAndUser_UserID(dateOfMeal, user.getUserID());
 
         // check meal empty
         if (!mealLogs.iterator().hasNext()) {

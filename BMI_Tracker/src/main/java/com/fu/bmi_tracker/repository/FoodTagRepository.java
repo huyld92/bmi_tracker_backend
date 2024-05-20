@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface FoodTagRepository extends JpaRepository<FoodTag, Integer>{
+public interface FoodTagRepository extends JpaRepository<FoodTag, FoodTag>{
     
 }

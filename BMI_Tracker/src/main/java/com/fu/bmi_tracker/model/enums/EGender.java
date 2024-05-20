@@ -10,6 +10,5 @@ package com.fu.bmi_tracker.model.enums;
  */
 public enum EGender {
     Female,
-    Male,
-    Other
+    Male 
 }

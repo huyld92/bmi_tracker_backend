@@ -4,19 +4,16 @@
  */
 package com.fu.bmi_tracker.services;
 
-import java.util.Optional;
+import com.fu.bmi_tracker.model.entities.Account;
+import com.fu.bmi_tracker.payload.response.AccountResponse;
+import java.util.List;
 
 /**
  *
  * @author Duc Huy
- * @param <T>
  */
-public interface GeneralService<T> {
+public interface AccountService extends GeneralService<Account> {
 
-    Iterable<T> findAll();
+    public List<AccountResponse> findAllAccountResponse();
 
-    Optional<T> findById(Integer id);
-
-    T save(T t);
-    
 }

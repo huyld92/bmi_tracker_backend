@@ -5,7 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
-import com.fu.bmi_tracker.model.entities.Order;
+// The import com.fu.bmi_tracker.model.entities.Order is never used
 import com.fu.bmi_tracker.model.entities.Transaction;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.TransactionService;

@@ -5,7 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.RefreshToken;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -22,5 +22,5 @@ public interface RefreshTokenService extends GeneralService<RefreshToken> {
 
     public void deleteByAccountID(Integer accountID);
 
-    public void deleteAllExpiredSince(Instant now);
+    public void deleteAllExpiredSince(LocalDateTime now);
 }

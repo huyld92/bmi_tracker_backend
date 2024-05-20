@@ -27,11 +27,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class VNPayConfig {
 
-    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "/api/test/transaction/vnpay-payment";
-    public static String vnp_TmnCode = "NWFXT3CJ";
-    public static String vnp_HashSecret = "21PDTLXMYCR64N04TX40PVV9HN5KUK65";
-    public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+    public final static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public final static String vnp_Returnurl = "/api/transaction/vnpay-payment";
+    public final static String vnp_TmnCode = "NWFXT3CJ";
+    public final static String vnp_HashSecret = "21PDTLXMYCR64N04TX40PVV9HN5KUK65";
+    public final static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         String digest;
@@ -62,15 +62,15 @@ public class VNPayConfig {
         return digest;
     }
 
-    //Util for VNPAY
-    public static String hashAllFields(Map fields) {
-        List fieldNames = new ArrayList(fields.keySet());
+    // Util for VNPAY
+    public static String hashAllFields(Map<String, String> fields) {
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
         StringBuilder sb = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
+        Iterator<String> itr = fieldNames.iterator();
         while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) fields.get(fieldName);
+            String fieldName = itr.next();
+            String fieldValue = fields.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 sb.append(fieldName);
                 sb.append("=");

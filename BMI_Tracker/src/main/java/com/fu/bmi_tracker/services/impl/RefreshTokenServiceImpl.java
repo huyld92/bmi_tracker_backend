@@ -10,9 +10,7 @@ import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.repository.RefreshTokenRepository;
 import com.fu.bmi_tracker.services.RefreshTokenService;
 import jakarta.transaction.Transactional;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setAccount(accountRepository.findById(userId).get());
-        refreshToken.setExpiryDate(LocalDateTime.now().plusSeconds(refreshTokenDurationMs/1000));
+        refreshToken.setExpiryDate(LocalDateTime.now().plusSeconds(refreshTokenDurationMs / 1000));
         refreshToken.setToken(UUID.randomUUID().toString());
 
         refreshToken = repository.save(refreshToken);
@@ -81,7 +79,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     @Transactional
-    public void deleteAllExpiredSince(Instant now) {
+    public void deleteAllExpiredSince(LocalDateTime now) {
         repository.deleteByExpiryDateLessThan(now);
     }
 

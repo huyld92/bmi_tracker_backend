@@ -6,7 +6,8 @@ package com.fu.bmi_tracker.task;
 
 import com.fu.bmi_tracker.services.RefreshTokenService;
 import jakarta.transaction.Transactional;
-import java.time.Instant;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,6 @@ public class TokensPurgeTask {
     @Scheduled(cron = "${purge.cron.expression}")
     public void purgeExpired() {
 
-        tokenService.deleteAllExpiredSince(Instant.now());
+        tokenService.deleteAllExpiredSince(LocalDateTime.now());
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface UserMenuRepository extends JpaRepository<UserMenu, Integer> {
+public interface UserMenuRepository extends JpaRepository<UserMenu, UserMenu> {
 
     public List<UserMenu> findAllByUserUserID(Integer userID);
 
