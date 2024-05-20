@@ -4,17 +4,13 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  *
  * @author Duc Huy
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public final class EmailDetails {
     // Class data members
 
@@ -29,6 +25,12 @@ public final class EmailDetails {
         this.msgBody = VerificationEmailBodyTemplateGenerator(verificationLink, fullName);
     }
 
+    public EmailDetails(String recipient, String subject, String password, String fullName) {
+        this.recipient = recipient;
+        this.subject = subject;
+        this.msgBody = sendNewPasswordTemplateGenerator(recipient, password, fullName);
+    }
+
     public String VerificationEmailBodyTemplateGenerator(String verificationLink, String fullname) {
         return "Hello " + fullname + ","
                 + "\n\n" + "Follow this link to verify your email address."
@@ -36,5 +38,16 @@ public final class EmailDetails {
                 + "\n\n" + "If you didn’t ask to verify this address, you can ignore this email."
                 + "\n\n" + "Thanks,"
                 + "\n\n" + "BMI Team";
+    }
+
+    public String sendNewPasswordTemplateGenerator(String email, String password, String fullname) {
+        return "Dear " + fullname + ","
+                + "\n\n" + "An account has been created for you. Here are your login details:\n"
+                + "Username: " + email + "\n"
+                + "Password: " + password + "\n\n"
+                + "For security reasons, please change your password after your first login.\n\n"
+                + "Best Regards,\n\n"
+                + "BMI Team";
+
     }
 }

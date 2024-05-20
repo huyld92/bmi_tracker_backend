@@ -25,7 +25,8 @@ public class FoodTagServiceImpl implements FoodTagService {
 
     @Override
     public Optional<FoodTag> findById(Integer id) {
-        return repository.findById(id);
+        // return repository.findById(id);
+        return null;
     }
 
     @Override

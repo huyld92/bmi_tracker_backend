@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.repository.MealLogRepository;

@@ -11,10 +11,11 @@ import com.fu.bmi_tracker.model.entities.EmailDetails;
  * @author Duc Huy
  */
 public interface EmailService {
-      // Method
+    // Method
     // To send a simple email
+
     String sendSimpleMail(EmailDetails details);
- 
+
     // Method
     // To send an email with attachment
     String sendMailWithAttachment(EmailDetails details);

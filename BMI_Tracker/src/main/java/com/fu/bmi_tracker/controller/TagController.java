@@ -73,7 +73,7 @@ public class TagController {
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllTags() {
 
-        Iterable tags = service.findAll();
+        Iterable<Tag> tags = service.findAll();
 
         if (!tags.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

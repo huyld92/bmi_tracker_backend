@@ -79,7 +79,7 @@ public class IngredientController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
     public ResponseEntity<?> getAllIngredients() {
 
-        Iterable ingredients = service.findAll();
+        Iterable<Ingredient> ingredients = service.findAll();
 
         if (!ingredients.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

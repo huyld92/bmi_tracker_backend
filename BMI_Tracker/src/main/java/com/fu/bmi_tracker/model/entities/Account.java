@@ -4,7 +4,11 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.model.enums.EAccountStatus;
 import com.fu.bmi_tracker.model.enums.EGender;
+import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
+import com.fu.bmi_tracker.payload.request.UpdateAccountRequest;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -66,11 +70,16 @@ public class Account {
     @Column(name = "CreationDate")
     private LocalDate creationDate;
 
+    @Column(name = "Status")
+    @Enumerated(EnumType.STRING)
+    private EAccountStatus Status;
+
     @ManyToOne
     @JoinColumn(name = "RoleID")
     private Role role;
 
-    public Account(String fullName, String email, String phoneNumber, String password, EGender gender, LocalDate birthday, Boolean isActive, Role role) {
+    public Account(String fullName, String email, String phoneNumber, String password, EGender gender,
+            LocalDate birthday, Boolean isActive, Role role) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -81,6 +90,32 @@ public class Account {
         this.creationDate = LocalDate.now();
         this.isVerified = false;
         this.role = role;
+    }
+
+    public Account(CreateAccountRequest createAccountRequest) {
+        this.fullName = createAccountRequest.getFullName();
+        this.email = createAccountRequest.getEmail();
+        this.phoneNumber = createAccountRequest.getPhoneNumber();
+        this.gender = createAccountRequest.getGender();
+        this.birthday = createAccountRequest.getBirthday();
+        this.isActive = true;
+        this.creationDate = LocalDate.now();
+        this.isVerified = false;
+    }
+
+    public void updateAccount(UpdateAccountRequest accountRequest) {
+        if (accountRequest.getFullName() != null) {
+            this.fullName = accountRequest.getFullName();
+        }
+        if (accountRequest.getPhoneNumber() != null) {
+            this.phoneNumber = accountRequest.getPhoneNumber();
+        }
+        if (accountRequest.getGender() != null) {
+            this.gender = accountRequest.getGender();
+        }
+        if (accountRequest.getBirthday() != null) {
+            this.birthday = accountRequest.getBirthday();
+        }
     }
 
 }

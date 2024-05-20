@@ -26,7 +26,8 @@ public class UserMenuServiceImpl implements UserMenuService {
 
     @Override
     public Optional<UserMenu> findById(Integer id) {
-        return repository.findById(id);
+        // return repository.findById(id);
+        return null;
     }
 
     @Override

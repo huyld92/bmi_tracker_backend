@@ -11,7 +11,6 @@ import com.fu.bmi_tracker.payload.response.LoginResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Role;
-import com.fu.bmi_tracker.model.enums.EGender;
 import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.repository.RoleRepository;
@@ -66,252 +65,243 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
-    @Autowired
-    private EmailService emailService;
+        @Autowired
+        private EmailService emailService;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+        @Autowired
+        AuthenticationManager authenticationManager;
 
-    @Autowired
-    AccountRepository accountRepository;
+        @Autowired
+        AccountRepository accountRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
+        @Autowired
+        RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+        @Autowired
+        PasswordEncoder encoder;
 
-    @Autowired
-    JwtUtils jwtUtils;
+        @Autowired
+        JwtUtils jwtUtils;
 
-    @Autowired
-    RefreshTokenService refreshTokenService;
+        @Autowired
+        RefreshTokenService refreshTokenService;
 
-    @Autowired
-    UserService userService;
+        @Autowired
+        UserService userService;
 
-    @Autowired
-    UserBodyMassService userBodyMassService;
+        @Autowired
+        UserBodyMassService userBodyMassService;
 
-    @Operation(
-            summary = "login by phone number and password",
-            description = "Authenticate accounts by phone number and password. Returned will be account information and will not include a password",
-            tags = {"Authentication"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "400", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "401", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        @Operation(summary = "login by phone number and password", description = "Authenticate accounts by phone number and password. Returned will be account information and will not include a password", tags = {
+                        "Authentication" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", content = {
+                                        @Content(schema = @Schema(implementation = LoginResponse.class), mediaType = "application/json") }),
+                        @ApiResponse(responseCode = "400", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "401", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "403", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "500", content = {
+                                        @Content(schema = @Schema()) }) })
+        @PostMapping("/login")
+        public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
-                        loginRequest.getPassword()));
+                Authentication authentication = authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                                                loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // generate mã jwt 
-        String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                // generate mã jwt
+                String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
 
-        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
+                CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
 
-        // Lấy danh sách quyền của người dùng
-        Set<String> authorities = accountDetails.getAuthorities().stream()
-                .map(Object::toString)
-                .collect(Collectors.toSet());
-        List<String> stringList = new ArrayList(authorities);
+                // Lấy danh sách quyền của người dùng
+                Set<String> authorities = accountDetails.getAuthorities().stream()
+                                .map(Object::toString)
+                                .collect(Collectors.toSet());
+                List<String> stringList = new ArrayList<>(authorities);
 
-        // Lấy quyền đầu tiên và gán nó cho biến role
-        String role = stringList.get(0);
+                // Lấy quyền đầu tiên và gán nó cho biến role
+                String role = stringList.get(0);
 
-        refreshTokenService.findByToken(role);
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
+                refreshTokenService.findByToken(role);
+                RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
-        return ResponseEntity.ok(new LoginResponse(
-                accountDetails.getId(),
-                accountDetails.getEmail(),
-                role, refreshToken.getToken(), jwt
-        ));
-    }
-
-    @Operation(
-            summary = "Login for user by phone number and password",
-            description = "Authenticate accounts by phone number and password. Returned will user information",
-            tags = {"Authentication"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = LoginForUserResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "400", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "401", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping("/loginUser")
-    public ResponseEntity<?> loginForUser(@Valid @RequestBody LoginRequest loginRequest) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
-                        loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // generate mã jwt 
-        String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
-
-        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
-
-        // Lấy danh sách quyền của người dùng
-        Set<String> authorities = accountDetails.getAuthorities().stream()
-                .map(Object::toString)
-                .collect(Collectors.toSet());
-        List<String> stringList = new ArrayList(authorities);
-
-        // Lấy quyền đầu tiên và gán nó cho biến role
-        String role = stringList.get(0);
-
-        refreshTokenService.findByToken(role);
-
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
-
-        User user = userService.findByAccountID(accountDetails.getId()).get();
-
-        UserBodyMass bodyMass = userBodyMassService.findTopByOrderByDateInputDesc().get();
-
-        LoginForUserResponse forUserResponse = new LoginForUserResponse(
-                user.getUserID(), accountDetails.getEmail(), accountDetails.getFullName(),
-                accountDetails.getGender().toString(),
-                accountDetails.getPhoneNumber(), bodyMass.getHeight(), bodyMass.getWeight(),
-                bodyMass.getAge(), bodyMass.getBmi(),
-                user.getBmr(), user.getTdee(),
-                user.getActivityLevel().getActivityLevelName(),
-                refreshToken.getToken(),
-                jwt);
-        return ResponseEntity.ok(forUserResponse);
-    }
-
-    @Operation(
-            summary = "Register",
-            description = "Register account with default role user",
-            tags = {"Authentication"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "404", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "401", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping("/register")
-    public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) {
-
-        if (accountRepository.existsByEmail(registerRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-        if (accountRepository.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Phone number is already taken!"));
+                return ResponseEntity.ok(new LoginResponse(
+                                accountDetails.getId(),
+                                accountDetails.getEmail(),
+                                role, refreshToken.getToken(), jwt));
         }
 
-        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_USER);
-//                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        @Operation(summary = "Login for user by phone number and password", description = "Authenticate accounts by phone number and password. Returned will user information", tags = {
+                        "Authentication" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", content = {
+                                        @Content(schema = @Schema(implementation = LoginForUserResponse.class), mediaType = "application/json") }),
+                        @ApiResponse(responseCode = "400", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "401", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "403", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "500", content = {
+                                        @Content(schema = @Schema()) }) })
+        @PostMapping("/loginUser")
+        public ResponseEntity<?> loginForUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-        // Create new user's account
-        Account account = new Account(registerRequest.getFullName(),
-                registerRequest.getEmail(), registerRequest.getPhoneNumber(),
-                encoder.encode(registerRequest.getPassword()),
-                EGender.Other, registerRequest.getBirthday(),
-                true, accountRole);
-        // xóa khi verfied email có
-        account.setIsVerified(true);
+                Authentication authentication = authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                                                loginRequest.getPassword()));
 
-        //Save thông tin account xuống database
-        accountRepository.save(account);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                // generate mã jwt
+                String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
 
-        //Create New User in firebase
-        try {
-            CreateRequest createRequest = new CreateRequest();
-            createRequest.setEmail(registerRequest.getEmail());
-            createRequest.setEmailVerified(false);
-            createRequest.setPassword(registerRequest.getPassword());
+                CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
 
-            //Creating new user
-            UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
+                // Lấy danh sách quyền của người dùng
+                Set<String> authorities = accountDetails.getAuthorities().stream()
+                                .map(Object::toString)
+                                .collect(Collectors.toSet());
+                List<String> stringList = new ArrayList<>(authorities);
 
-            //Generate Veritification Link
-            String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
+                // Lấy quyền đầu tiên và gán nó cho biến role
+                String role = stringList.get(0);
 
-            //Send mail with vertificaiton link
-            EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
-            emailService.sendSimpleMail(details);
-        } catch (FirebaseAuthException e) {
-            System.out.println("Error with firebase account creation");
+                refreshTokenService.findByToken(role);
+
+                RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
+
+                User user = userService.findByAccountID(accountDetails.getId()).get();
+
+                UserBodyMass bodyMass = userBodyMassService.findTopByOrderByDateInputDesc().get();
+
+                LoginForUserResponse forUserResponse = new LoginForUserResponse(
+                                user.getUserID(), accountDetails.getEmail(), accountDetails.getFullName(),
+                                accountDetails.getGender().toString(),
+                                accountDetails.getPhoneNumber(), bodyMass.getHeight(), bodyMass.getWeight(),
+                                bodyMass.getAge(), bodyMass.getBmi(),
+                                user.getBmr(), user.getTdee(),
+                                user.getActivityLevel().getActivityLevelName(),
+                                refreshToken.getToken(),
+                                jwt);
+                return ResponseEntity.ok(forUserResponse);
         }
 
-        return ResponseEntity.ok(new MessageResponse("Account registered successfully!"));
-    }
+        @Operation(summary = "Register", description = "Register account with default role user", tags = {
+                        "Authentication" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200"),
+                        @ApiResponse(responseCode = "404", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "401", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "500", content = {
+                                        @Content(schema = @Schema()) }) })
+        @PostMapping("/register")
+        public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) {
 
-    @Operation(
-            summary = "Refresh token",
-            description = "Using refresh token to get new access token when expired",
-            tags = {"Authentication"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "404", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "401", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
-        String requestRefreshToken = tokenRefreshRequest.getRefreshToken();
+                if (accountRepository.existsByEmail(registerRequest.getEmail())) {
+                        return ResponseEntity
+                                        .badRequest()
+                                        .body(new MessageResponse("Error: Email is already in use!"));
+                }
+                if (accountRepository.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
+                        return ResponseEntity
+                                        .badRequest()
+                                        .body(new MessageResponse("Error: Phone number is already taken!"));
+                }
 
-        return refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(refreshToken -> refreshToken.getAccount())
-                .map(account -> {
-                    String token = jwtUtils.generateJwtToken(account.getEmail());
-                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-                })
-                .orElseThrow(() -> new TokenException(requestRefreshToken,
-                "Refresh token is not in database!"));
-    }
+                Role accountRole = roleRepository.findByRoleName(ERole.ROLE_USER);
+                // .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
-    @Operation(
-            summary = "Log out",
-            description = "Log out of the system",
-            tags = {"Authentication"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "404", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "401", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                // Create new user's account
+                Account account = new Account(registerRequest.getFullName(),
+                                registerRequest.getEmail(), registerRequest.getPhoneNumber(),
+                                encoder.encode(registerRequest.getPassword()),
+                                registerRequest.getGender(), registerRequest.getBirthday(),
+                                true, accountRole);
+                // xóa khi verfied email có
+                account.setIsVerified(true);
 
-        Integer accountID = accountDetails.getId();
-        refreshTokenService.deleteByAccountID(accountID);
-        return ResponseEntity.ok(new MessageResponse("Log out successful!"));
-    }
+                // Save thông tin account xuống database
+                accountRepository.save(account);
 
-    @PostMapping("/verifyAccount")
-    public void verifyAccount() {
+                // Create New User in firebase
+                try {
+                        CreateRequest createRequest = new CreateRequest();
+                        createRequest.setEmail(registerRequest.getEmail());
+                        createRequest.setEmailVerified(false);
+                        createRequest.setPassword(registerRequest.getPassword());
 
-    }
+                        // Creating new user
+                        UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
+
+                        // Generate Veritification Link
+                        String link = FirebaseAuth.getInstance()
+                                        .generateEmailVerificationLink(registerRequest.getEmail());
+
+                        // Send mail with vertificaiton link
+                        EmailDetails details = new EmailDetails(userRecord.getEmail(), link,
+                                        registerRequest.getFullName());
+                        emailService.sendSimpleMail(details);
+                } catch (FirebaseAuthException e) {
+                        System.out.println("Error with firebase account creation");
+                }
+
+                return ResponseEntity.ok(new MessageResponse("Account registered successfully!"));
+        }
+
+        @Operation(summary = "Refresh token", description = "Using refresh token to get new access token when expired", tags = {
+                        "Authentication" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", content = {
+                                        @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json") }),
+                        @ApiResponse(responseCode = "404", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "401", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "500", content = {
+                                        @Content(schema = @Schema()) }) })
+        @PostMapping("/refreshtoken")
+        public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
+                String requestRefreshToken = tokenRefreshRequest.getRefreshToken();
+
+                return refreshTokenService.findByToken(requestRefreshToken)
+                                .map(refreshTokenService::verifyExpiration)
+                                .map(refreshToken -> refreshToken.getAccount())
+                                .map(account -> {
+                                        String token = jwtUtils.generateJwtToken(account.getEmail());
+                                        return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                                })
+                                .orElseThrow(() -> new TokenException(requestRefreshToken,
+                                                "Refresh token is not in database!"));
+        }
+
+        @Operation(summary = "Log out", description = "Log out of the system", tags = { "Authentication" })
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200"),
+                        @ApiResponse(responseCode = "404", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "401", content = {
+                                        @Content(schema = @Schema()) }),
+                        @ApiResponse(responseCode = "500", content = {
+                                        @Content(schema = @Schema()) }) })
+        @PostMapping("/logout")
+        public ResponseEntity<?> logout() {
+                CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                                .getAuthentication().getPrincipal();
+
+                Integer accountID = accountDetails.getId();
+                refreshTokenService.deleteByAccountID(accountID);
+                return ResponseEntity.ok(new MessageResponse("Log out successful!"));
+        }
+
+        @PostMapping("/verifyAccount")
+        public void verifyAccount() {
+
+        } 
 }

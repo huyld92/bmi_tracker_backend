@@ -4,19 +4,15 @@
  */
 package com.fu.bmi_tracker.services;
 
-import java.util.Optional;
+import com.fu.bmi_tracker.model.entities.Role;
+import com.fu.bmi_tracker.model.enums.ERole;
 
 /**
  *
  * @author Duc Huy
- * @param <T>
  */
-public interface GeneralService<T> {
+public interface RoleService extends GeneralService<Role> {
 
-    Iterable<T> findAll();
+    public Role findByRoleName(ERole eRole);
 
-    Optional<T> findById(Integer id);
-
-    T save(T t);
-    
 }

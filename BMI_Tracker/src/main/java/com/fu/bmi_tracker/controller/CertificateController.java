@@ -55,7 +55,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
     public ResponseEntity<?> createNewCertificate(@Valid @RequestBody CreateCertificateRequest certificateRequest) {
         // Create new object
         Certificate certificate = new Certificate(certificateRequest);
@@ -84,7 +84,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PutMapping(value = "/update")
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
     public ResponseEntity<?> updateCertificate(@Valid @RequestBody UpdateCertificateRequest certificateRequest) {
         // Check exist certificate
         Optional<Certificate> certificate = service.findById(certificateRequest.getCertificateID());
@@ -119,7 +119,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PutMapping(value = "/updateStatus")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateStatusCertificate(@RequestParam Integer certificateID, @RequestParam String status) {
         // Check exist certificate
         Optional<Certificate> certificate = service.findById(certificateID);
@@ -151,10 +151,10 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAll")
-//    @PreAuthorize("hasRole('ADMIN') ")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> getAllCertificates() {
 
-        Iterable certificates = service.findAll();
+        Iterable<Certificate> certificates = service.findAll();
 
         if (!certificates.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -176,7 +176,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getByID")
-    //    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
+        @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
     public ResponseEntity<?> getCertificateById(@RequestParam("id") int id) {
         Optional<Certificate> certificate = service.findById(id);
 
@@ -199,10 +199,10 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByID")
-    //    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
+        @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
     public ResponseEntity<?> getAllCertificateByTrainerId(@RequestParam int trainerID) {
 
-        Iterable certificates = service.findAllByTrainerTrainerID(trainerID);
+        Iterable<Certificate> certificates = service.findAllByTrainerTrainerID(trainerID);
 
         if (!certificates.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -221,7 +221,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/delete")
-    //    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
+        @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
     public ResponseEntity<?> deleteCertificateById(@RequestParam int certificateID) {
         service.deleteById(certificateID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

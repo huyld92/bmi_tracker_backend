@@ -72,15 +72,11 @@ public class GoalController {
     @GetMapping("/getAll")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAllGoals() {
-
-        Iterable goals = service.findAll();
-
+        Iterable<Goal> goals = service.findAll();
         if (!goals.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity<>(goals, HttpStatus.OK);
-
     }
 
     @Operation(
