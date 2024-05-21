@@ -4,13 +4,17 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.Trainer;
+import com.fu.bmi_tracker.model.entities.Member;
+import java.util.Optional;
 
 /**
  *
  * @author Duc Huy
  */
-public interface TrainerService extends GeneralService<Trainer> {
+public interface MemberService extends GeneralService<Member> {
 
-    public Trainer findByAccountID(Integer accountID);
+    public boolean existsByAccountID(int accountID);
+
+    public Optional<Member> findByAccountID(int accountID);
+
 }

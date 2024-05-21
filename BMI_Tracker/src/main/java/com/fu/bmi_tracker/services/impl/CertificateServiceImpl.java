@@ -33,8 +33,8 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Iterable<Certificate> findAllByTrainerTrainerID(int trainerID) {
-        return repository.findAllByTrainerTrainerID(trainerID);
+    public Iterable<Certificate> findAllByAdvisorAdvisorID(int advisorID) {
+        return repository.findAllByAdvisorAdvisorID(advisorID);
     }
 
     @Override

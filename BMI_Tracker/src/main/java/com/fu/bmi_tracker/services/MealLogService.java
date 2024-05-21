@@ -16,8 +16,8 @@ public interface MealLogService extends GeneralService<MealLog> {
 
     public Iterable<MealLog> findAllByDateOfMeal(LocalDate dateOfMeal);
 
-    public Iterable<MealLog> findAllByDateOfMealAndUser_UserID(LocalDate dateOfMeal, int userID);
+    public Iterable<MealLog> findAllByDateOfMealAndMember_MemberID(LocalDate dateOfMeal, int memberID);
 
-    public Iterable<Integer> findFoodIDByDateOfMealAndUserIDAndMealType(LocalDate dateOfMeal, int userID, EMealType mealType);
+    public Iterable<Integer> findFoodIDByDateOfMealAndMemberIDAndMealType(LocalDate dateOfMeal, int memberID, EMealType mealType);
 
 }

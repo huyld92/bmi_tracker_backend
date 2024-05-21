@@ -36,8 +36,7 @@ public class ActivityLevelController {
 
     @Operation(
             summary = "Get all activity level",
-            description = "Only USER and Admin using",
-            tags = {"USER", "ADMIN"})
+            description = "Only MEMBER and Admin using")
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
@@ -47,7 +46,7 @@ public class ActivityLevelController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAll")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllActivityLevel() {
 
         Iterable<ActivityLevel> activityLevels = activityLevelService.findAll();

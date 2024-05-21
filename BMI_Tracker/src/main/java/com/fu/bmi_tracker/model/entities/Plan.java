@@ -22,31 +22,26 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Trainer")
-public class Trainer {
+@Table(name = "Plan")
+public class Plan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "TrainerID")
-    private int trainerID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PlanID")
+    private Integer planID;
 
-    @Column(name = "AccountID")
-    private int accountID;
+    @Column(name = "PlanName")
+    private String planName;
 
-    @Column(name = "Height")
-    private float height;
+    @Column(name = "Price")
+    private Float price;
 
-    @Column(name = "Weight")
-    private float weight;
+    @Column(name = "Description")
+    private String description;
 
-    public Trainer(int accountID, float height, float weight) {
-        this.accountID = accountID;
-        this.height = height;
-        this.weight = weight;
-    }
+    @Column(name = "PlanDuration")
+    private Integer planDuration;
 
-    Trainer(int trainerID) {
-        this.trainerID = trainerID;
-    }
-
+    @Column(name = "IsActive")
+    private boolean isActive;
 }

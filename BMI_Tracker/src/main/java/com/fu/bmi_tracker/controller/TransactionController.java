@@ -9,7 +9,6 @@ import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Transaction;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.TransactionService;
-import com.fu.bmi_tracker.services.UserService;
 import com.fu.bmi_tracker.services.VNPayService;
 import com.fu.bmi_tracker.util.DateTimeUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.fu.bmi_tracker.services.MemberService;
 
 /**
  *
@@ -51,7 +51,7 @@ public class TransactionController {
     VNPayService vNPayService;
 
     @Autowired
-    UserService userService;
+    MemberService memberService;
 
     @Autowired
     DateTimeUtils dateTimeUtils;
@@ -100,7 +100,7 @@ public class TransactionController {
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
 
-            Integer userID = userService.findByAccountID(accountDetailsImpl.getId()).get().getUserID();
+            Integer memberID = memberService.findByAccountID(accountDetailsImpl.getId()).get().getMemberID();
 
             Integer amount = Integer.valueOf(request.getParameter("vnp_Amount"));
 
@@ -115,7 +115,7 @@ public class TransactionController {
 
             Transaction transaction = new Transaction(bankCode, bankTranNo,
                     cardType, amount, orderInfo,
-                    topUpDate, userID);
+                    topUpDate, memberID);
 
 //            transactionService.save(transaction);
 

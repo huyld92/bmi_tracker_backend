@@ -25,13 +25,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "UserBodyMass")
-public class UserBodyMass {
+@Table(name = "MemberBodyMass")
+public class MemberBodyMass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserBodyMassID")
-    private int userBodyMassID;
+    @Column(name = "MemberBodyMassID")
+    private int memberBodyMassID;
 
     @Column(name = "Height")
     private int height;
@@ -49,16 +49,16 @@ public class UserBodyMass {
     private LocalDateTime dateInput;
 
     @ManyToOne
-    @JoinColumn(name = "UserID")
-    private User user;
+    @JoinColumn(name = "MemberID")
+    private Member member;
 
-    public UserBodyMass(int height, int weight, int age, double bmi, LocalDateTime dateInput, User user) {
+    public MemberBodyMass(int height, int weight, int age, double bmi, LocalDateTime dateInput, Member member) {
         this.height = height;
         this.weight = weight;
         this.age = age;
         this.bmi = bmi;
         this.dateInput = dateInput;
-        this.user = user;
+        this.member = member;
     }
 
 }

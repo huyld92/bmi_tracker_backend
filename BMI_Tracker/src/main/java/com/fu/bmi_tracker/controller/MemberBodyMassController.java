@@ -5,7 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.payload.response.MessageResponse;
-import com.fu.bmi_tracker.services.UserBodyMassService;
+import com.fu.bmi_tracker.services.MemberBodyMassService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,19 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "User Body Mass", description = "User body mass management APIs")
+@Tag(name = "Member Body Mass", description = "Member body mass management APIs")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/bodymass")
-public class UserBodyMassController {
+public class MemberBodyMassController {
 
     @Autowired
-    UserBodyMassService bodyMassService;
+    MemberBodyMassService bodyMassService;
 
     @Operation(
-            summary = "Create user body mass",
-            description = " ",
-            tags = {"USER"})
+            summary = "Create member body mass")
     @ApiResponses({
         @ApiResponse(responseCode = "200"),
         @ApiResponse(responseCode = "404", content = {
@@ -46,7 +44,7 @@ public class UserBodyMassController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/create")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewBodyMass() {
         // CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

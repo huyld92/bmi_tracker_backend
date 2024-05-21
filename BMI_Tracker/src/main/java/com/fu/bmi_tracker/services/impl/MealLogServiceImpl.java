@@ -40,13 +40,13 @@ public class MealLogServiceImpl implements MealLogService {
     }
 
     @Override
-    public Iterable<MealLog> findAllByDateOfMealAndUser_UserID(LocalDate dateOfMeal, int userID) {
-        return repository.findAllByDateOfMealAndUser_UserID(dateOfMeal, userID);
+    public Iterable<MealLog> findAllByDateOfMealAndMember_MemberID(LocalDate dateOfMeal, int memberID) {
+        return repository.findAllByDateOfMealAndMember_MemberID(dateOfMeal, memberID);
     }
 
     @Override
-    public Iterable<Integer> findFoodIDByDateOfMealAndUserIDAndMealType(LocalDate dateOfMeal, int userID, EMealType mealType) {
-        return repository.findFoodIDByDateOfMealAndUser_UserIDAndMealType(dateOfMeal, userID, mealType);
+    public Iterable<Integer> findFoodIDByDateOfMealAndMemberIDAndMealType(LocalDate dateOfMeal, int memberID, EMealType mealType) {
+        return repository.findFoodIDByDateOfMealAndMember_MemberIDAndMealType(dateOfMeal, memberID, mealType);
     }
 
 }

@@ -67,7 +67,7 @@ public class IngredientController {
         return new ResponseEntity<>(ingredientSave, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Retrieve all Ingredients", tags = {"ADMIN", "TRAINER"})
+    @Operation(summary = "Retrieve all Ingredients")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -76,7 +76,7 @@ public class IngredientController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAll")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TRAINER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> getAllIngredients() {
 
         Iterable<Ingredient> ingredients = service.findAll();
@@ -91,8 +91,7 @@ public class IngredientController {
 
     @Operation(
             summary = "Retrieve a Ingredient by Id",
-            description = "Get a Ingredient object by specifying its id. The response is Ingredient object",
-            tags = {"Ingredient"})
+            description = "Get a Ingredient object by specifying its id. The response is Ingredient object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -111,7 +110,7 @@ public class IngredientController {
         }
     }
 
-    @Operation(summary = "Update a Ingredient by Id (ADMIN)", tags = {"ADMIN"})
+    @Operation(summary = "Update a Ingredient by Id (ADMIN)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -132,7 +131,7 @@ public class IngredientController {
         }
     }
 
-    @Operation(summary = "Delete a Ingredient by Id", tags = {"ADMIN"})
+    @Operation(summary = "Delete a Ingredient by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),

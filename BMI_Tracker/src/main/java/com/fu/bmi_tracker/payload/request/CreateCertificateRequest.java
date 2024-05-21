@@ -27,11 +27,11 @@ public class CreateCertificateRequest {
 
     @NotBlank
     @Size(max = 100)
-    @Schema(name = "certificateLink", example = "trainer1.jpg")
+    @Schema(name = "certificateLink", example = "certificatePhoto.jpg")
     private String certificateLink;
 
     @NotBlank
     @Size(max = 100)
-    @Schema(name = "trainerID", example = "1")
-    private int trainerID;
+    @Schema(name = "advisorID", example = "1")
+    private int advisorID;
 }

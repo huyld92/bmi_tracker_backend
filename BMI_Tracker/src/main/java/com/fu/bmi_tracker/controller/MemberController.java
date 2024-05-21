@@ -6,14 +6,14 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
-import com.fu.bmi_tracker.model.entities.User;
-import com.fu.bmi_tracker.model.entities.UserBodyMass;
-import com.fu.bmi_tracker.payload.request.CreateUserRequest;
-import com.fu.bmi_tracker.payload.response.CreateUserResponse;
+import com.fu.bmi_tracker.model.entities.Member;
+import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
+import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MealLogService;
-import com.fu.bmi_tracker.services.UserBodyMassService;
+import com.fu.bmi_tracker.services.MemberBodyMassService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,30 +29,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.fu.bmi_tracker.services.UserService;
 import com.fu.bmi_tracker.util.BMIUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.fu.bmi_tracker.services.MemberService;
 
 /**
  *
  * @author Duc Huy
  */
-@Tag(name = "User", description = "User management APIs")
+@Tag(name = "Member", description = "Member management APIs")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/user")
-public class UserController {
+@RequestMapping("/api/member")
+public class MemberController {
 
     @Autowired
-    UserService userService;
+    MemberService memberService;
 
     @Autowired
     MealLogService mealLogService;
 
     @Autowired
-    UserBodyMassService userBodyMassService;
+    MemberBodyMassService memberBodyMassService;
 
     @Autowired
     ActivityLevelService activityLevelService;
@@ -75,7 +75,7 @@ public class UserController {
     // @PostMapping(value = "/createNew")
     // public ResponseEntity<?> createNewMealLog(@Valid @RequestBody
     // CreateMealLogRequest createMealLogRequest) {
-    // // Kiểm tra user ID
+    // // Kiểm tra member ID
     // // kiểm tra foodID
     // // Tạo mới MealLog
     // // Trả về kết quả
@@ -88,7 +88,7 @@ public class UserController {
     //
     // @Operation(
     // summary = "Get Meal Log",
-    // description = "Retrieve all meal log of user from userID")
+    // description = "Retrieve all meal log of member from memberID")
     // @ApiResponses({
     // @ApiResponse(responseCode = "201", content = {
     // @Content(schema = @Schema(implementation = MealLog.class), mediaType =
@@ -97,83 +97,83 @@ public class UserController {
     // @Content(schema = @Schema())}),
     // @ApiResponse(responseCode = "500", content = {
     // @Content(schema = @Schema())})})
-    // @GetMapping(value = "/getMealLog/{userID}")
-    // public ResponseEntity<?> getMealLogByUserID(@PathVariable("userID") Integer
-    // userID) {
-    // // Tìm meal log bởi user id => sử dụng userID hay userID
+    // @GetMapping(value = "/getMealLog/{memberID}")
+    // public ResponseEntity<?> getMealLogByMemberID(@PathVariable("memberID") Integer
+    // memberID) {
+    // // Tìm meal log bởi member id => sử dụng memberID hay memberID
     // List<MealLog> mealLogs;
     // return new ResponseEntity<>("", HttpStatus.CREATED);
     // }
     //
-    @Operation(summary = "Create new user information", description = "Activity Level"
+    @Operation(summary = "Create new member information", description = "Activity Level"
             + " Little to no exercise:1.2"
             + " Light exercise :1.375 "
             + "Moderate exercise:1.55 Hard exercise:1725"
             + "Very hard exercise:1.9")
     @ApiResponses({
             @ApiResponse(responseCode = "201", content = {
-                    @Content(schema = @Schema(implementation = CreateUserResponse.class), mediaType = "application/json") }),
+                    @Content(schema = @Schema(implementation = CreateMemberResponse.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "403", content = {
                     @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = {
                     @Content(schema = @Schema()) }) })
     @PostMapping(value = "/createNew")
-    public ResponseEntity<?> createNewUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<?> createNewMember(@Valid @RequestBody CreateMemberRequest createMemberRequest) {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
         // Kiểm tra Account ID
-        if (userService.existsByAccountID(principal.getId())) {
+        if (memberService.existsByAccountID(principal.getId())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: User already exists!"));
+                    .body(new MessageResponse("Error: Member already exists!"));
         }
         // tính BMI
-        double bmi = bMIUtils.calculateBMI(createUserRequest.getWeight(), createUserRequest.getHeight());
+        double bmi = bMIUtils.calculateBMI(createMemberRequest.getWeight(), createMemberRequest.getHeight());
 
         // tính BMR
         int age = LocalDate.now().getYear() - principal.getBirthday().getYear();
-        double bmr = bMIUtils.calculateBMR(createUserRequest.getWeight(),
-                createUserRequest.getHeight(), age, principal.getGender());
+        double bmr = bMIUtils.calculateBMR(createMemberRequest.getWeight(),
+                createMemberRequest.getHeight(), age, principal.getGender());
 
         // tính tdee
         // find activity level
-        ActivityLevel activityLevel = activityLevelService.findById(createUserRequest.getActivityLevelID()).get();
+        ActivityLevel activityLevel = activityLevelService.findById(createMemberRequest.getActivityLevelID()).get();
         double tdee = bMIUtils.calculateTDEE(bmr, activityLevel.getActivityLevel());
 
         // calculateDefault default Calories
-        int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createUserRequest.getTargetWeight());
+        int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createMemberRequest.getTargetWeight());
 
         LocalDateTime now = LocalDateTime.now();
-        // Save user
-        User user = new User(principal.getId(), createUserRequest.getGoalID(),
-                createUserRequest.getTargetWeight(),
+        // Save member
+        Member member = new Member(principal.getId(), 
+                createMemberRequest.getTargetWeight(),
                 tdee,
                 bmr,
                 defaultCalories,
                 false,
                 now,
-                createUserRequest.getDietaryPreferenceID(),
-                new ActivityLevel(createUserRequest.getActivityLevelID()));
+                createMemberRequest.getDietaryPreferenceID(),
+                new ActivityLevel(createMemberRequest.getActivityLevelID()));
 
-        User userSaved = userService.save(user);
+        Member memberSaved = memberService.save(member);
 
-        // Save user body mass
-        UserBodyMass bodyMass = new UserBodyMass(createUserRequest.getHeight(),
-                createUserRequest.getWeight(),
+        // Save member body mass
+        MemberBodyMass bodyMass = new MemberBodyMass(createMemberRequest.getHeight(),
+                createMemberRequest.getWeight(),
                 age, bmi,
-                now, userSaved);
+                now, memberSaved);
 
-        userBodyMassService.save(bodyMass);
+        memberBodyMassService.save(bodyMass);
 
         // Generate suggestion menu
-        CreateUserResponse createUserResponse = new CreateUserResponse(
+        CreateMemberResponse createMemberResponse = new CreateMemberResponse(
                 principal.getId(),
                 defaultCalories,
-                createUserRequest.getHeight(),
-                createUserRequest.getWeight(), bmi);
+                createMemberRequest.getHeight(),
+                createMemberRequest.getWeight(), bmi);
 
-        return new ResponseEntity<>(createUserResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
 
     }
 }

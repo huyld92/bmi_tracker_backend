@@ -49,17 +49,17 @@ public class Transaction {
     @Column(name = "PayDate", nullable = false)
     private LocalDateTime payDate;
 
-    @Column(name = "UserID", nullable = false)
-    private int userID;
+    @Column(name = "MemberID", nullable = false)
+    private int memberID;
 
-    public Transaction(String bankCode, String bankTranNo, String cardType, int amount, String orderInfo, LocalDateTime payDate, int userID) {
+    public Transaction(String bankCode, String bankTranNo, String cardType, int amount, String orderInfo, LocalDateTime payDate, int memberID) {
         this.bankCode = bankCode;
         this.bankTranNo = bankTranNo;
         this.cardType = cardType;
         this.amount = amount;
         this.orderInfo = orderInfo;
         this.payDate = payDate;
-        this.userID = userID;
+        this.memberID = memberID;
     }
 
 }

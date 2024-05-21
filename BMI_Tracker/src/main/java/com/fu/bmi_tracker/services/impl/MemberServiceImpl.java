@@ -4,36 +4,41 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.Trainer;
-import com.fu.bmi_tracker.repository.TrainerRepository;
-import com.fu.bmi_tracker.services.TrainerService;
+import com.fu.bmi_tracker.model.entities.Member;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fu.bmi_tracker.repository.MemberRepository;
+import com.fu.bmi_tracker.services.MemberService;
 
 @Service
-public class TrainerServiceImpl implements TrainerService {
+public class MemberServiceImpl implements MemberService {
 
     @Autowired
-    TrainerRepository repository;
+    MemberRepository repository;
 
     @Override
-    public Iterable<Trainer> findAll() {
+    public Iterable<Member> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<Trainer> findById(Integer id) {
+    public Optional<Member> findById(Integer id) {
         return repository.findById(id);
     }
 
     @Override
-    public Trainer save(Trainer t) {
+    public Member save(Member t) {
         return repository.save(t);
     }
 
     @Override
-    public Trainer findByAccountID(Integer accountID) {
+    public boolean existsByAccountID(int accountID) {
+        return repository.existsByAccountID(accountID);
+    }
+
+    @Override
+    public Optional<Member> findByAccountID(int accountID) {
         return repository.findByAccountID(accountID);
     }
 

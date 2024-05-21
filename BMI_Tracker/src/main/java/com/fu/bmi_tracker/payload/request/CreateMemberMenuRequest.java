@@ -4,6 +4,9 @@
  */
 package com.fu.bmi_tracker.payload.request;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,9 +18,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeRequest {
+public class CreateMemberMenuRequest {
 
-    private Integer ingredientID;
-    
-    private Integer quantity;
+    @NotNull(message = "memberID cannot be null")
+    private Integer memberID;
+
+    @NotEmpty(message = "foodIDs cannot be empty")
+    private List<Integer> foodIDs;
 }

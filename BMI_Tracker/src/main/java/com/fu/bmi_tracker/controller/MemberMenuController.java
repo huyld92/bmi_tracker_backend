@@ -4,10 +4,10 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.model.entities.User;
-import com.fu.bmi_tracker.model.entities.UserMenu;
+import com.fu.bmi_tracker.model.entities.Member;
+import com.fu.bmi_tracker.model.entities.MemberMenu;
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.payload.request.CreateUserMenuRequest;
+import com.fu.bmi_tracker.payload.request.CreateMemberMenuRequest;
 import com.fu.bmi_tracker.services.FoodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,117 +30,117 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.fu.bmi_tracker.services.UserMenuService;
-import com.fu.bmi_tracker.services.UserService;
+import com.fu.bmi_tracker.services.MemberMenuService;
 import java.util.stream.StreamSupport;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.fu.bmi_tracker.services.MemberService;
 
 /**
  *
  * @author Duc Huy
  */
-@Tag(name = "UserMenu", description = "UserMenu management APIs")
+@Tag(name = "MemberMenu", description = "MemberMenu management APIs")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/user/menu")
-public class UserMenuController {
+@RequestMapping("/api/member/menu")
+public class MemberMenuController {
 
     @Autowired
-    UserMenuService service;
+    MemberMenuService service;
 
     @Autowired
     FoodService foodService;
 
     @Autowired
-    UserService userService;
+    MemberService memberService;
 
     @Operation(
-            summary = "Create new user menu with form",
-            description = "Create new user menu with form",
+            summary = "Create new member menu with form",
+            description = "Create new member menu with form",
             tags = {"TRAINER"})
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = UserMenu.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MemberMenu.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('TRAINER')")
-    public ResponseEntity<?> createNewUserMenu(@RequestBody CreateUserMenuRequest createUserMenuRequest) {
+    public ResponseEntity<?> createNewMemberMenu(@RequestBody CreateMemberMenuRequest createMemberMenuRequest) {
         //Get list food by food id list
-        Iterable<Food> foods = foodService.findByFoodIDIn(createUserMenuRequest.getFoodIDs());
+        Iterable<Food> foods = foodService.findByFoodIDIn(createMemberMenuRequest.getFoodIDs());
         long size = StreamSupport.stream(foods.spliterator(), false).count();
         System.out.println(size);
-        if (size < createUserMenuRequest.getFoodIDs().size()) {
+        if (size < createMemberMenuRequest.getFoodIDs().size()) {
             return new ResponseEntity<>("Not found food id!", HttpStatus.NOT_FOUND);
         }
 
-        // Get user by user id
-        Optional<User> user = userService.findById(createUserMenuRequest.getUserID());
-        if (!user.isPresent()) {
-            return new ResponseEntity<>("Cannot find user menu with user id{" + createUserMenuRequest.getUserID() + "}", HttpStatus.NOT_FOUND
+        // Get member by member id
+        Optional<Member> member = memberService.findById(createMemberMenuRequest.getMemberID());
+        if (!member.isPresent()) {
+            return new ResponseEntity<>("Cannot find member menu with member id{" + createMemberMenuRequest.getMemberID() + "}", HttpStatus.NOT_FOUND
             );
         }
-        //Create new list user menu to store
-        List<UserMenu> userMenus = new ArrayList<>();
+        //Create new list member menu to store
+        List<MemberMenu> memberMenus = new ArrayList<>();
 
-        // add food to list user menu
+        // add food to list member menu
         foods.forEach(food -> {
-            userMenus.add(new UserMenu(user.get(), food));
+            memberMenus.add(new MemberMenu(member.get(), food));
         });
 
-        // List user menu response
-        List<UserMenu> userMenusResponse = service.saveAll(userMenus);
+        // List member menu response
+        List<MemberMenu> memberMenusResponse = service.saveAll(memberMenus);
 
-        return new ResponseEntity<>(userMenusResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(memberMenusResponse, HttpStatus.CREATED);
     }
 
     @Operation(
-            summary = "Get menu of user",
-            description = "Give user id to retrieve list menu",
-            tags = {"UserMenu"})
+            summary = "Get menu of member",
+            description = "Give member id to retrieve list menu",
+            tags = {"MemberMenu"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Menus retrieved successfully",
                 content = {
-                    @Content(schema = @Schema(implementation = UserMenu.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = MemberMenu.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/get/{userID}")
-    public ResponseEntity<?> getAllMenuByUserID(@PathVariable("userID") Integer userID) {
-        // Logic to retrieve menus for the given user ID
-        List<UserMenu> userMenus = service.findAllByUserID(userID);
+    @GetMapping(value = "/get/{memberID}")
+    public ResponseEntity<?> getAllMenuByMemberID(@PathVariable("memberID") Integer memberID) {
+        // Logic to retrieve menus for the given member ID
+        List<MemberMenu> memberMenus = service.findAllByMemberID(memberID);
 
-        if (userMenus.isEmpty()) {
-            return new ResponseEntity<>("Cannot find user menu with user id{" + userID + "}", HttpStatus.NOT_FOUND);
+        if (memberMenus.isEmpty()) {
+            return new ResponseEntity<>("Cannot find member menu with member id{" + memberID + "}", HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(userMenus, HttpStatus.OK);
+        return new ResponseEntity<>(memberMenus, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete a menu of user by list food Id", tags = {"UserMenu"})
+    @Operation(summary = "Delete a menu of member by list food Id", tags = {"MemberMenu"})
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteFoodMenu(@RequestParam int userID, @RequestParam int foodID) {
-        service.deleteByUserUserIDAndFoodFoodID(userID, foodID);
+    public ResponseEntity<?> deleteFoodMenu(@RequestParam int memberID, @RequestParam int foodID) {
+        service.deleteByMemberMemberIDAndFoodFoodID(memberID, foodID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Delete a menu of user by list food Id", tags = {"UserMenu"})
+    @Operation(summary = "Delete a menu of member by list food Id", tags = {"MemberMenu"})
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deleteAll")
-    public ResponseEntity<?> deleteAllFoodMenu(@RequestParam int userID) {
-        service.deleteAllByUserUserID(userID);
+    public ResponseEntity<?> deleteAllFoodMenu(@RequestParam int memberID) {
+        service.deleteAllByMemberMemberID(memberID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

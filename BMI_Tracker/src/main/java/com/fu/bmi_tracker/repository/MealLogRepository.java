@@ -20,9 +20,9 @@ public interface MealLogRepository extends JpaRepository<MealLog, Integer> {
 
     public Iterable<MealLog> findAllByDateOfMeal(LocalDate dateOfMeal);
 
-    public Iterable<MealLog> findAllByDateOfMealAndUser_UserID(LocalDate dateOfMeal, int userID);
+    public Iterable<MealLog> findAllByDateOfMealAndMember_MemberID(LocalDate dateOfMeal, int memberID);
 
-    @Query("SELECT m.food.foodID FROM MealLog m WHERE m.dateOfMeal = :dateOfMeal AND m.user.userID = :userID AND m.mealType = :mealType")
-    public Iterable<Integer> findFoodIDByDateOfMealAndUser_UserIDAndMealType(LocalDate dateOfMeal, int userID, EMealType mealType);
+    @Query("SELECT m.food.foodID FROM MealLog m WHERE m.dateOfMeal = :dateOfMeal AND m.member.memberID = :memberID AND m.mealType = :mealType")
+    public Iterable<Integer> findFoodIDByDateOfMealAndMember_MemberIDAndMealType(LocalDate dateOfMeal, int memberID, EMealType mealType);
 
 }

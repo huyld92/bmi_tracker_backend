@@ -55,10 +55,10 @@ public class Food {
     private Boolean isActive;
 
     @ManyToOne
-    @JoinColumn(name = "TrainerID")
-    private Trainer trainer;
+    @JoinColumn(name = "AdvisorID")
+    private Advisor advisor;
 
-    public Food(String foodName, int foodCalories, String description, String foodPhoto, String foodVideo, int foodTimeProcess, Boolean isActive, Trainer trainer) {
+    public Food(String foodName, int foodCalories, String description, String foodPhoto, String foodVideo, int foodTimeProcess, Boolean isActive, Advisor advisor) {
         this.foodName = foodName;
         this.foodCalories = foodCalories;
         this.description = description;
@@ -66,7 +66,7 @@ public class Food {
         this.foodVideo = foodVideo;
         this.foodTimeProcess = foodTimeProcess;
         this.isActive = isActive;
-        this.trainer = trainer;
+        this.advisor = advisor;
     }
 
     public Food(int foodID) {

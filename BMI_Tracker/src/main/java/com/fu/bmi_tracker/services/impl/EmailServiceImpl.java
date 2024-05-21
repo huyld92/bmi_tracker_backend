@@ -55,7 +55,6 @@ public class EmailServiceImpl implements EmailService {
         MimeMessageHelper mimeMessageHelper;
 
         try {
-
             // Setting multipart as true for attachments to
             // be send
             mimeMessageHelper

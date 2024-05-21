@@ -57,8 +57,8 @@ public class MealLog {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "UserID")
-    private User user;
+    @JoinColumn(name = "MemberID")
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "FoodID", nullable = true)

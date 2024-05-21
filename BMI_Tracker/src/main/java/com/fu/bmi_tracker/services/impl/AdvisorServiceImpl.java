@@ -4,32 +4,37 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.Goal;
-import com.fu.bmi_tracker.repository.GoalRepository;
-import com.fu.bmi_tracker.services.GoalService;
+import com.fu.bmi_tracker.model.entities.Advisor;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fu.bmi_tracker.repository.AdvisorRepository;
+import com.fu.bmi_tracker.services.AdvisorService;
 
 @Service
-public class GoalServiceImpl implements GoalService {
+public class AdvisorServiceImpl implements AdvisorService {
 
     @Autowired
-    GoalRepository repository;
+    AdvisorRepository repository;
 
     @Override
-    public Iterable<Goal> findAll() {
+    public Iterable<Advisor> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<Goal> findById(Integer id) {
+    public Optional<Advisor> findById(Integer id) {
         return repository.findById(id);
     }
 
     @Override
-    public Goal save(Goal t) {
+    public Advisor save(Advisor t) {
         return repository.save(t);
+    }
+
+    @Override
+    public Advisor findByAccountID(Integer accountID) {
+        return repository.findByAccountID(accountID);
     }
 
 }

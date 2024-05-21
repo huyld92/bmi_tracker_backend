@@ -8,11 +8,10 @@ import com.fu.bmi_tracker.exceptions.ErrorMessage;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.MealLog;
-import com.fu.bmi_tracker.model.entities.User;
+import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.MealLogService;
-import com.fu.bmi_tracker.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,13 +32,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.fu.bmi_tracker.services.MemberService;
 
 /**
  *
  * @author Duc Huy
  */
-@Tag(name = "MealLog", description = "Meal Log management APIs") 
-@CrossOrigin(origins = "*", maxAge = 3600) 
+@Tag(name = "MealLog", description = "Meal Log management APIs")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/meallog")
 public class MealLogController {
@@ -48,12 +48,12 @@ public class MealLogController {
     MealLogService mealLogService;
 
     @Autowired
-    UserService userService;
+    MemberService memberService;
 
     @Autowired
     FoodService foodService;
 
-    @Operation(summary = "Retrieve meal list (User)", tags = {"User"}, description = "Get list meal of date from account id")
+    @Operation(summary = "Retrieve meal list (Member)", description = "Get list meal of date from account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
@@ -62,7 +62,7 @@ public class MealLogController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByDate")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAllMealByDate(
             @RequestParam(required = true) String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -75,12 +75,12 @@ public class MealLogController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        // Get User id from acccount id context
+        // Get Member id from acccount id context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userService.findByAccountID(principal.getId()).get();
+        Member member = memberService.findByAccountID(principal.getId()).get();
 
         // Get Meal log with date
-        Iterable<MealLog> mealLogs = mealLogService.findAllByDateOfMealAndUser_UserID(dateOfMeal, user.getUserID());
+        Iterable<MealLog> mealLogs = mealLogService.findAllByDateOfMealAndMember_MemberID(dateOfMeal, member.getMemberID());
 
         // check meal empty
         if (!mealLogs.iterator().hasNext()) {
@@ -90,7 +90,7 @@ public class MealLogController {
         return new ResponseEntity<>(mealLogs, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retrieve food list (USER)", description = "User retrieve food list of meal by mealtype and date")
+    @Operation(summary = "Retrieve food list (MEMBER)", description = "Member retrieve food list of meal by mealtype and date")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
@@ -99,7 +99,7 @@ public class MealLogController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getFoodOfMeal")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getFoodListByMealType(
             @RequestParam String date,
             @RequestParam EMealType mealType
@@ -117,11 +117,11 @@ public class MealLogController {
 
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User user = userService.findByAccountID(principal.getId()).get();
+        Member member = memberService.findByAccountID(principal.getId()).get();
 
         // Get list food id 
-        Iterable<Integer> foodIDs = mealLogService.findFoodIDByDateOfMealAndUserIDAndMealType(dateOfMeal,
-                user.getUserID(), mealType);
+        Iterable<Integer> foodIDs = mealLogService.findFoodIDByDateOfMealAndMemberIDAndMealType(dateOfMeal,
+                member.getMemberID(), mealType);
 
         if (!foodIDs.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -133,7 +133,7 @@ public class MealLogController {
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retrieve total calories meal of date", tags = {"User"}, description = "Get total calories meal of date from account id")
+    @Operation(summary = "Retrieve total calories meal of date", description = "Get total calories meal of date from account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
@@ -142,7 +142,7 @@ public class MealLogController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getTotalCaloriesOfDay")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getTotalCaloriesOfDay(
             @RequestParam(required = true) String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -155,12 +155,12 @@ public class MealLogController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        // Get User id from acccount id context
+        // Get Member id from acccount id context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userService.findByAccountID(principal.getId()).get();
+        Member member = memberService.findByAccountID(principal.getId()).get();
 
         // Get Meal log with date
-        Iterable<MealLog> mealLogs = mealLogService.findAllByDateOfMealAndUser_UserID(dateOfMeal, user.getUserID());
+        Iterable<MealLog> mealLogs = mealLogService.findAllByDateOfMealAndMember_MemberID(dateOfMeal, member.getMemberID());
 
         // check meal empty
         if (!mealLogs.iterator().hasNext()) {
@@ -175,6 +175,5 @@ public class MealLogController {
 
         return new ResponseEntity<>(totalCalories, HttpStatus.OK);
     }
-    
-    
+
 }

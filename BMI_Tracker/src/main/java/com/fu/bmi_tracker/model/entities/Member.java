@@ -29,19 +29,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "[User]")
-public class User {
+@Table(name = "[Member]")
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserID")
-    private int userID;
+    @Column(name = "MemberID")
+    private int memberID;
 
     @Column(name = "AccountID")
-    private int accountID;
-
-    @Column(name = "GoalID")
-    private int goalID;
+    private int accountID; 
 
     @Column(name = "TargetWeight")
     private int targetWeight;
@@ -69,11 +66,10 @@ public class User {
     @JoinColumn(name = "ActivityLevelID")
     private ActivityLevel activityLevel;
 
-    public User(int accountID, int goalID, int targetWeight, double tdee, double bmr,
+    public Member(int accountID, int targetWeight, double tdee, double bmr,
             int defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
             int dietaryPreferenceID, ActivityLevel activityLevel) {
         this.accountID = accountID;
-        this.goalID = goalID;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
         this.bmr = bmr;
@@ -84,8 +80,8 @@ public class User {
         this.activityLevel = activityLevel;
     }
 
-    public User(int userID) {
-        this.userID = userID;
+    public Member(int memberID) {
+        this.memberID = memberID;
     }
 
 }
