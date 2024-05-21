@@ -36,8 +36,7 @@ public class DietaryPreferenceController {
 
     @Operation(
             summary = "Get all dietary preference",
-            description = "Get list dietary preference",
-            tags = {"USER", "ADMIN"})
+            description = "Get list dietary preference")
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
@@ -47,7 +46,7 @@ public class DietaryPreferenceController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAll")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllDietaryPreference() {
          
 

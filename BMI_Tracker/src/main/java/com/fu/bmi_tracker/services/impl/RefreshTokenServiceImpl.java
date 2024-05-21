@@ -45,10 +45,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken createRefreshToken(Integer userId) {
+    public RefreshToken createRefreshToken(Integer memberId) {
         RefreshToken refreshToken = new RefreshToken();
 
-        refreshToken.setAccount(accountRepository.findById(userId).get());
+        refreshToken.setAccount(accountRepository.findById(memberId).get());
         refreshToken.setExpiryDate(LocalDateTime.now().plusSeconds(refreshTokenDurationMs / 1000));
         refreshToken.setToken(UUID.randomUUID().toString());
 

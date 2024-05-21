@@ -53,8 +53,8 @@ public class CreateMealLogRequest {
 
     @NotNull
     @Positive
-    @Schema(name = "customerID", example = "1")
-    private Integer customerID;
+    @Schema(name = "memberID", example = "1")
+    private Integer memberID;
 
     @Positive
     @Schema(name = "foodID", example = "1")

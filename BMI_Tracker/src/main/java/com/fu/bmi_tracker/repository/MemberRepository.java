@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.UserBodyMass;
+import com.fu.bmi_tracker.model.entities.Member;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,8 +14,9 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface UserBodyMassRepository extends JpaRepository<UserBodyMass, Integer> {
+public interface MemberRepository extends JpaRepository<Member, Integer> {
 
-    public Optional<UserBodyMass> findTopByOrderByDateInputDesc();
+    public boolean existsByAccountID(int accountID);
 
+    public Optional<Member> findByAccountID(int accountID);
 }

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Integer> {
 
-    public Iterable<Certificate> findAllByTrainerTrainerID(int trainerID);
+    public Iterable<Certificate> findAllByAdvisorAdvisorID(int advisorID);
 
     public boolean existsById(int certidicateID);
 

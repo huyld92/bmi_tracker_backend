@@ -12,7 +12,7 @@ import com.fu.bmi_tracker.model.entities.Certificate;
  */
 public interface CertificateService extends GeneralService<Certificate> {
 
-    public Iterable<Certificate> findAllByTrainerTrainerID(int trainerID);
+    public Iterable<Certificate> findAllByAdvisorAdvisorID(int advisorID);
 
     public boolean existsById(int certificateID);
 

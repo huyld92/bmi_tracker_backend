@@ -1,7 +1,6 @@
 package com.fu.bmi_tracker.payload.request;
 
 import com.fu.bmi_tracker.model.enums.EGender;
-import com.fu.bmi_tracker.model.enums.ERole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -42,5 +41,5 @@ public class UpdateAccountRequest {
     @Past
     @Schema(name = "birthday", example = "1990-01-01")
     private LocalDate birthday;
-
+ 
 }

@@ -4,13 +4,13 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.UserBodyMass;
+import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import java.util.Optional;
 
 /**
  *
  * @author Duc Huy
  */
-public interface UserBodyMassService extends GeneralService<UserBodyMass>{
-    public Optional<UserBodyMass> findTopByOrderByDateInputDesc();
+public interface MemberBodyMassService extends GeneralService<MemberBodyMass>{
+    public Optional<MemberBodyMass> findTopByOrderByDateInputDesc();
 }

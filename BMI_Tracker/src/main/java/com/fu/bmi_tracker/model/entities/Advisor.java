@@ -22,20 +22,31 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Service")
-public class Service {
+@Table(name = "Advisor")
+public class Advisor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ServiceID")
-    private int serviceID;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "AdvisorID")
+    private int advisorID;
 
-    @Column(name = "ServiceName")
-    private String serviceName;
+    @Column(name = "AccountID")
+    private int accountID;
 
-    @Column(name = "Price")
-    private float price;
+    @Column(name = "Height")
+    private float height;
 
-    @Column(name = "IsActive")
-    private Boolean isActive;
+    @Column(name = "Weight")
+    private float weight;
+
+    public Advisor(int accountID, float height, float weight) {
+        this.accountID = accountID;
+        this.height = height;
+        this.weight = weight;
+    }
+
+    Advisor(int advisorID) {
+        this.advisorID = advisorID;
+    }
+
 }

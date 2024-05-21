@@ -64,8 +64,7 @@ public class AccountController {
 
     @Operation(
             summary = "Create new account (ADMIN)",
-            description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_TRAINER)",
-            tags = {"ADMIN"})
+            description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_TRAINER)")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
@@ -107,8 +106,7 @@ public class AccountController {
 
     @Operation(
             summary = "Get all account (ADMIN)",
-            description = "Get all account",
-            tags = {"ADMIN"})
+            description = "Get all account")
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
@@ -131,8 +129,7 @@ public class AccountController {
 
     @Operation(
             summary = "Get account by account id (ADMIN)",
-            description = "Get account by account id",
-            tags = {"ADMIN"})
+            description = "Get account by account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
@@ -157,8 +154,7 @@ public class AccountController {
 
     @Operation(
             summary = "Update account by account id",
-            description = "Update account ",
-            tags = {"ADMIN"})
+            description = "Update account ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),

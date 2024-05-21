@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.model.enums.EAccountStatus;
 import com.fu.bmi_tracker.model.enums.EGender;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 import com.fu.bmi_tracker.payload.request.UpdateAccountRequest;
@@ -70,10 +69,6 @@ public class Account {
     @Column(name = "CreationDate")
     private LocalDate creationDate;
 
-    @Column(name = "Status")
-    @Enumerated(EnumType.STRING)
-    private EAccountStatus Status;
-
     @ManyToOne
     @JoinColumn(name = "RoleID")
     private Role role;
@@ -116,6 +111,7 @@ public class Account {
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }
+        // thiếu update status
     }
 
 }

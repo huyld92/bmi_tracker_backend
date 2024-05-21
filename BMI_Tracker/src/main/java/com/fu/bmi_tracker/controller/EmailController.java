@@ -9,7 +9,6 @@ import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.EmailVerificationCodeService;
-import com.fu.bmi_tracker.services.UserService;
 import java.util.Optional;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,10 +62,10 @@ public class EmailController {
         String verificationEmail = verificationService.checkVerificationCode(oobCode);
         if (verificationEmail != null) {
             
-            Optional<Account> user = accountRepository.findByEmail(verificationEmail);
-            if (!user.isEmpty()) {
-                user.get().setIsVerified(Boolean.TRUE);
-                accountRepository.save(user.get());
+            Optional<Account> member = accountRepository.findByEmail(verificationEmail);
+            if (!member.isEmpty()) {
+                member.get().setIsVerified(Boolean.TRUE);
+                accountRepository.save(member.get());
             }
             return new RedirectView("/success");  // redirect to page afte verification success.
         }

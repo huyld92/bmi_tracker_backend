@@ -7,7 +7,7 @@ package com.fu.bmi_tracker.payload.response;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.entities.Tag;
-import com.fu.bmi_tracker.model.entities.Trainer;
+import com.fu.bmi_tracker.model.entities.Advisor;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,9 +36,7 @@ public class FoodResponse {
 
     private int foodTimeProcess;
 
-    private String status;
-
-    private Trainer trainer;
+    private Advisor advisor;
 
     private List<Tag> foodTags;
 
@@ -52,8 +50,7 @@ public class FoodResponse {
         this.foodPhoto = foodSave.getFoodPhoto();
         this.foodVideo = foodSave.getFoodVideo();
         this.foodTimeProcess = foodSave.getFoodTimeProcess();
-        this.status = foodSave.getIsActive() ? "Active" : "Inative";
-        this.trainer = foodSave.getTrainer();
+        this.advisor = foodSave.getAdvisor();
         this.foodTags = foodTags;
         this.recipes = recipes;
     }

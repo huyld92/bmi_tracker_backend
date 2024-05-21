@@ -4,7 +4,8 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.Goal;
+import com.fu.bmi_tracker.model.entities.MemberMenu;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,12 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface GoalRepository extends JpaRepository<Goal, Integer> {
+public interface MemberMenuRepository extends JpaRepository<MemberMenu, MemberMenu> {
+
+    public List<MemberMenu> findAllByMemberMemberID(Integer memberID);
+
+    public void deleteByMemberMemberIDAndFoodFoodID(int memberID, int foodID);
+
+    public void deleteAllByMemberMemberID(int memberID);
 
 }

@@ -4,36 +4,36 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.UserBodyMass;
-import com.fu.bmi_tracker.repository.UserBodyMassRepository;
-import com.fu.bmi_tracker.services.UserBodyMassService;
+import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
+import com.fu.bmi_tracker.services.MemberBodyMassService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserBodyMassServiceImpl implements UserBodyMassService {
+public class MemberBodyMassServiceImpl implements MemberBodyMassService {
 
     @Autowired
-    UserBodyMassRepository repository;
+    MemberBodyMassRepository repository;
 
     @Override
-    public Iterable<UserBodyMass> findAll() {
+    public Iterable<MemberBodyMass> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<UserBodyMass> findById(Integer id) {
+    public Optional<MemberBodyMass> findById(Integer id) {
         return repository.findById(id);
     }
 
     @Override
-    public UserBodyMass save(UserBodyMass t) {
+    public MemberBodyMass save(MemberBodyMass t) {
         return repository.save(t);
     }
 
     @Override
-    public Optional<UserBodyMass> findTopByOrderByDateInputDesc() {
+    public Optional<MemberBodyMass> findTopByOrderByDateInputDesc() {
         return repository.findTopByOrderByDateInputDesc();
     }
 

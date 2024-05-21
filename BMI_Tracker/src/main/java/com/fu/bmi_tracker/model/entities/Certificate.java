@@ -44,14 +44,14 @@ public class Certificate {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "TrainerID")
-    private Trainer trainer;
+    @JoinColumn(name = "AdvisorID")
+    private Advisor advisor;
 
     public Certificate(CreateCertificateRequest certificateRequest) {
         this.certificateName = certificateRequest.getCertificateName();
         this.certificateLink = certificateRequest.getCertificateLink();
         this.status = "Not verified";
-        this.trainer = new Trainer(certificateRequest.getTrainerID());
+        this.advisor = new Advisor(certificateRequest.getAdvisorID());
 
     }
 

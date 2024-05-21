@@ -8,7 +8,7 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.FoodTag;
 import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.Recipe;
-import com.fu.bmi_tracker.model.entities.Trainer;
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.services.FoodService;
@@ -16,7 +16,6 @@ import com.fu.bmi_tracker.services.FoodTagService;
 import com.fu.bmi_tracker.services.IngredientService;
 import com.fu.bmi_tracker.services.RecipeService;
 import com.fu.bmi_tracker.services.TagService;
-import com.fu.bmi_tracker.services.TrainerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.fu.bmi_tracker.services.AdvisorService;
 
 /**
  *
@@ -55,7 +55,7 @@ public class FoodController {
     FoodService service;
 
     @Autowired
-    TrainerService trainerService;
+    AdvisorService advisorService;
 
     @Autowired
     TagService tagService;
@@ -71,8 +71,7 @@ public class FoodController {
 
     @Operation(
             summary = "Create new food with form",
-            description = "Create new food with form",
-            tags = {"TRAINER"})
+            description = "Create new food with form" )
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
@@ -81,13 +80,13 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-    @PreAuthorize("hasRole('TRAINER')")
+    @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> createNewFood(@RequestBody CreateFoodRequest createFoodRequest) {
         // create food from request
         Food food = new Food(createFoodRequest);
-        //Check trainer
-        Trainer trainer = trainerService.findByAccountID(createFoodRequest.getAccountID());
-        food.setTrainer(trainer);
+        //Check advisor
+        Advisor advisor = advisorService.findByAccountID(createFoodRequest.getAccountID());
+        food.setAdvisor(advisor);
 
         // Store food
         Food foodSave = service.save(food);
@@ -115,7 +114,7 @@ public class FoodController {
 
         // Create reccipes
         createFoodRequest.getRecipeRequests().forEach(recipeRequest -> {
-            Ingredient ingredient = ingredientService.findById(recipeRequest.getIngredientIDs()).get();
+            Ingredient ingredient = ingredientService.findById(recipeRequest.getIngredientID()).get();
             recipes.add(new Recipe(food, ingredient, recipeRequest.getQuantity()));
         });
 
@@ -170,7 +169,7 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Update a Food by Id", tags = {"TRAINER"})
+    @Operation(summary = "Update a Food by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
@@ -179,7 +178,7 @@ public class FoodController {
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())})})
     @PutMapping("/update")
-    @PreAuthorize("hasRole('TRAINER')")
+    @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> updateFood(@RequestBody Food foodRequest) {
         Optional<Food> food = service.findById(foodRequest.getFoodID());
 
@@ -191,7 +190,7 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Deactive a Food by Id", tags = {"ADMIN", "TRAINER"})
+    @Operation(summary = "Deactive a Food by Id", tags = {"ADMIN", "ADVISOR"})
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
@@ -209,7 +208,7 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Retrieve all Foods by trainer id")
+    @Operation(summary = "Retrieve all Foods by advisor id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
@@ -217,10 +216,10 @@ public class FoodController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping("/getAllByTrainerID/")
-    public ResponseEntity<?> getAllFoodsOfTrainer(@RequestParam int trainerID) {
+    @GetMapping("/getAllByAdvisorID/")
+    public ResponseEntity<?> getAllFoodsOfAdvisor(@RequestParam int advisorID) {
 
-        Iterable<Food> foods = service.findByTrainerID(trainerID);
+        Iterable<Food> foods = service.findByAdvisorID(advisorID);
 
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

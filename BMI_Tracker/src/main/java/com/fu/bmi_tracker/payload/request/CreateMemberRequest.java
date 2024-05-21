@@ -18,11 +18,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserRequest {
-
-    @NotNull
-    private Integer goalID;
-
+public class CreateMemberRequest { 
+    
     @NotNull
     private Integer dietaryPreferenceID;
 
@@ -39,9 +36,8 @@ public class CreateUserRequest {
     @NotNull
     @Positive
     @Schema(name = "targetWeight", example = "70")
-    private Integer targetWeight;
-
-
+    private Integer targetWeight; 
+    
     @NotNull
     @Positive
     @Schema(name = "activityLevelID", example = "1")

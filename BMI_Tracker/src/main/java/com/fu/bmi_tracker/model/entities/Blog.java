@@ -9,8 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,19 +22,29 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "TrainerService")
-public class TrainerService {
+@Table(name = "Blog")
+public class Blog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TrainerServiceID")
-    private int trainerServiceID;
+    @Column(name = "BlogID")
+    private Integer blogID;
 
-    @ManyToOne
-    @JoinColumn(name = "TrainerID")
-    private Trainer trainer;
+    @Column(name = "BlogName")
+    private String blogName;
 
-    @ManyToOne
-    @JoinColumn(name = "ServiceID")
-    private Service service;
+    @Column(name = "BlogContent")
+    private String blogContent;
+
+    @Column(name = "BlogPhoto")
+    private String blogPhoto;
+
+    @Column(name = "Link")
+    private String link;
+
+    @Column(name = "IsActive")
+    private boolean isActive;
+
+    @Column(name = "AdvisorID")
+    private Integer advisorID;
 }

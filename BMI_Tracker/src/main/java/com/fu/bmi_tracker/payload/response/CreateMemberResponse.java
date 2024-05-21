@@ -2,11 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.fu.bmi_tracker.payload.request;
+package com.fu.bmi_tracker.payload.response;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +15,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserMenuRequest {
+public class CreateMemberResponse {
 
-    @NotNull(message = "userID cannot be null")
-    private Integer userID;
+    private int accountID;
+    private int defaultCalories;
+    private int height;
+    private int weight;
+    private double bmi;
 
-    @NotEmpty(message = "foodIDs cannot be empty")
-    private List<Integer> foodIDs;
 }

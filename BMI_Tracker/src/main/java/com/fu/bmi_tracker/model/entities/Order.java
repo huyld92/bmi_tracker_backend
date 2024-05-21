@@ -43,8 +43,8 @@ public class Order {
     @Column(name = "DateOrder")
     private LocalDateTime dateOrder;
 
-    @Column(name = "UserID", nullable = false)
-    private int userID;
+    @Column(name = "memberID", nullable = false)
+    private int memberID;
 
     @Column(name = "TrainerServiceID", nullable = false)
     private int trainerServiceID;

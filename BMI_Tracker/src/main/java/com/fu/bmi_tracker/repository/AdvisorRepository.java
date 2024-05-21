@@ -4,8 +4,7 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.User;
-import java.util.Optional;
+import com.fu.bmi_tracker.model.entities.Advisor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,9 +13,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface AdvisorRepository extends JpaRepository<Advisor, Integer> {
 
-    public boolean existsByAccountID(int accountID);
+    public Advisor findByAccountID(Integer accountID);
 
-    public Optional<User> findByAccountID(int accountID);
 }
