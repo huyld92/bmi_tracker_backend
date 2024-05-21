@@ -9,7 +9,6 @@ import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.EmailVerificationCodeService;
-import com.fu.bmi_tracker.services.UserService;
 import java.util.Optional;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;

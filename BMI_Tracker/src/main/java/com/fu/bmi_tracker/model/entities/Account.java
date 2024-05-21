@@ -72,7 +72,7 @@ public class Account {
 
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)
-    private EAccountStatus Status;
+    private EAccountStatus status;
 
     @ManyToOne
     @JoinColumn(name = "RoleID")
@@ -88,6 +88,7 @@ public class Account {
         this.birthday = birthday;
         this.isActive = isActive;
         this.creationDate = LocalDate.now();
+        this.status = EAccountStatus.available;
         this.isVerified = false;
         this.role = role;
     }
@@ -100,6 +101,7 @@ public class Account {
         this.birthday = createAccountRequest.getBirthday();
         this.isActive = true;
         this.creationDate = LocalDate.now();
+        this.status = EAccountStatus.available;
         this.isVerified = false;
     }
 
@@ -116,6 +118,7 @@ public class Account {
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }
+        // thiếu update status
     }
 
 }
