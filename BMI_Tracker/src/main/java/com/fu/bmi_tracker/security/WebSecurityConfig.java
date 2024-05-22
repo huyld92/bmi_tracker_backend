@@ -21,6 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  *
@@ -60,22 +63,42 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedOriginPattern("*"); // Allows any origin
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("GET");
+        configuration.addAllowedMethod("POST");
+        configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("DELETE");
+        configuration.addAllowedMethod("OPTIONS");
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint((AuthenticationEntryPoint) unauthorizedHandler))
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(
+                        exception -> exception.authenticationEntryPoint((AuthenticationEntryPoint) unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth
-                        -> auth.requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/loginUser").permitAll()
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers("/api/auth/refreshtoken").permitAll()
-                        .requestMatchers("/api/auth/vnpay-payment").permitAll()
-                        .requestMatchers("/verificationEmail").permitAll()
-                        .requestMatchers("/api/test/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                        .anyRequest().authenticated()
-                );
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/loginMember").permitAll()
+                .requestMatchers("/api/auth/register").permitAll()
+                .requestMatchers("/api/auth/refreshtoken").permitAll()
+                .requestMatchers("/api/auth/vnpay-payment").permitAll()
+                .requestMatchers("/verificationEmail").permitAll()
+                .requestMatchers("/api/test/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
+                .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
 

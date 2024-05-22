@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +39,6 @@ import com.fu.bmi_tracker.services.MemberService;
  * @author Duc Huy
  */
 @Tag(name = "Member", description = "Member management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
@@ -111,12 +109,12 @@ public class MemberController {
             + "Moderate exercise:1.55 Hard exercise:1725"
             + "Very hard exercise:1.9")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", content = {
-                    @Content(schema = @Schema(implementation = CreateMemberResponse.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "403", content = {
-                    @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = {
-                    @Content(schema = @Schema()) }) })
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = CreateMemberResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
     public ResponseEntity<?> createNewMember(@Valid @RequestBody CreateMemberRequest createMemberRequest) {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
@@ -146,7 +144,7 @@ public class MemberController {
 
         LocalDateTime now = LocalDateTime.now();
         // Save member
-        Member member = new Member(principal.getId(), 
+        Member member = new Member(principal.getId(),
                 createMemberRequest.getTargetWeight(),
                 tdee,
                 bmr,

@@ -24,22 +24,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
+import io.swagger.v3.oas.annotations.Hidden;
 
 /**
  *
  * @author Duc Huy
- * 
- * */
-
+ *
+ *
+ */
 @Tag(name = "Trasaction", description = "Trasaction management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600) 
+@Hidden
 @RestController
 @RequestMapping("/api/test/transaction")
 public class TransactionController {
@@ -58,7 +58,6 @@ public class TransactionController {
 
     @Operation(
             summary = "Top Up Balance",
-            tags = {"Order"},
             description = "Customer only can use")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -96,7 +95,6 @@ public class TransactionController {
 //            if (!"anonymousUser".equals(principle.toString())) {
 //                account = ((CustomUserDetails) principle).getAccount();
 //            }
-
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
 
@@ -118,7 +116,6 @@ public class TransactionController {
                     topUpDate, memberID);
 
 //            transactionService.save(transaction);
-
             return new ResponseEntity<>(transaction, HttpStatus.OK);
         }
         return new ResponseEntity<>("orderfail", HttpStatus.FAILED_DEPENDENCY);

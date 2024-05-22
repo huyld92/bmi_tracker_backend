@@ -15,7 +15,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@io.swagger.v3.oas.annotations.tags.Tag(name = "Tag", description = "Tag management APIs") 
-@CrossOrigin(origins = "*", maxAge = 3600)  
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Tag", description = "Tag management APIs")
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {

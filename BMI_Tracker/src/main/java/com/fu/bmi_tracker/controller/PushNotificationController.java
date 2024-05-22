@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.firebase.FCMService;
 import com.fu.bmi_tracker.payload.request.PnsRequest;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @RestController
+@Hidden
 public class PushNotificationController {
 
     @Autowired

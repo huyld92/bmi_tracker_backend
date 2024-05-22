@@ -28,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,9 +41,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @Tag(name = "Account", description = "Account management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/accounts")
 public class AccountController {
 
     @Autowired
@@ -62,16 +60,14 @@ public class AccountController {
     @Autowired
     PasswordEncoder encoder;
 
-    @Operation(
-            summary = "Create new account (ADMIN)",
-            description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_TRAINER)")
+    @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_TRAINER)")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "201", content = {
+                    @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "403", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody CreateAccountRequest createAccountRequest) {
@@ -82,7 +78,7 @@ public class AccountController {
         Role accountRole = roleService.findByRoleName(createAccountRequest.getRole());
         account.setRole(accountRole);
 
-        //Generate default password and endcode to save
+        // Generate default password and endcode to save
         String defaultPassword = passwordUtils.generateRandomPassword(10);
 
         account.setPassword(encoder.encode(defaultPassword));
@@ -104,17 +100,14 @@ public class AccountController {
         return new ResponseEntity<>(accountSave, HttpStatus.CREATED);
     }
 
-    @Operation(
-            summary = "Get all account (ADMIN)",
-            description = "Get all account")
+    @Operation(summary = "Get all account (ADMIN)", description = "Get all account")
     @ApiResponses({
-        @ApiResponse(responseCode = "200",
-                content = {
-                    @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "403", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllAccount() {
@@ -127,17 +120,14 @@ public class AccountController {
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Get account by account id (ADMIN)",
-            description = "Get account by account id")
+    @Operation(summary = "Get account by account id (ADMIN)", description = "Get account by account id")
     @ApiResponses({
-        @ApiResponse(responseCode = "200",
-                content = {
-                    @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "403", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @GetMapping(value = "/getByID")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAccountByID(@RequestParam Integer accountID) {
@@ -152,16 +142,14 @@ public class AccountController {
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Update account by account id",
-            description = "Update account ")
+    @Operation(summary = "Update account by account id", description = "Update account ")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "403", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @PutMapping(value = "/update")
     @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> updateAccount(@Valid @RequestBody UpdateAccountRequest accountRequest) {
@@ -169,7 +157,8 @@ public class AccountController {
         Optional<Account> account = accountService.findById(accountRequest.getAccountID());
 
         if (!account.isPresent()) {
-            return new ResponseEntity<>("Cannot find account with id{" + accountRequest.getAccountID() + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Cannot find account with id{" + accountRequest.getAccountID() + "}",
+                    HttpStatus.NOT_FOUND);
         }
         // update account attribute
         account.get().updateAccount(accountRequest);

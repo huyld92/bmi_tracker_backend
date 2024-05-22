@@ -21,7 +21,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +39,6 @@ import com.fu.bmi_tracker.services.MemberService;
  * @author Duc Huy
  */
 @Tag(name = "MemberMenu", description = "MemberMenu management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/member/menu")
 public class MemberMenuController {
@@ -56,8 +54,7 @@ public class MemberMenuController {
 
     @Operation(
             summary = "Create new member menu with form",
-            description = "Create new member menu with form",
-            tags = {"TRAINER"})
+            description = "Create new member menu with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = MemberMenu.class), mediaType = "application/json")}),

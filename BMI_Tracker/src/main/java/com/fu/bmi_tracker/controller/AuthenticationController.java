@@ -45,7 +45,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +59,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
  * @author Duc Huy
  */
 @Tag(name = "Authentication", description = "Authentication management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
@@ -183,7 +181,8 @@ public class AuthenticationController {
                 member.getMemberID(), accountDetails.getEmail(),
                 accountDetails.getFullName(),
                 accountDetails.getGender().toString(),
-                accountDetails.getPhoneNumber(), bodyMass.getHeight(), bodyMass.getWeight(),
+                accountDetails.getPhoneNumber(), 
+                bodyMass.getHeight(), bodyMass.getWeight(),
                 bodyMass.getAge(), bodyMass.getBmi(),
                 member.getBmr(), member.getTdee(),
                 member.getActivityLevel().getActivityLevelName(),
