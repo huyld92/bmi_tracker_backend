@@ -20,4 +20,6 @@ public interface MealLogService extends GeneralService<MealLog> {
 
     public Iterable<Integer> findFoodIDByDateOfMealAndMemberIDAndMealType(LocalDate dateOfMeal, int memberID, EMealType mealType);
 
+    public void deleteById(int mealLogID);
+
 }
