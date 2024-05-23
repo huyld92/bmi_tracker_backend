@@ -49,4 +49,9 @@ public class MealLogServiceImpl implements MealLogService {
         return repository.findFoodIDByDateOfMealAndMember_MemberIDAndMealType(dateOfMeal, memberID, mealType);
     }
 
+    @Override
+    public void deleteById(int mealLogID) {
+        repository.deleteById(mealLogID);
+    }
+
 }

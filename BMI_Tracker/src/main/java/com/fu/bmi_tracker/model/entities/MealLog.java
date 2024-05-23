@@ -65,7 +65,14 @@ public class MealLog {
     private Food food;
 
     public MealLog(CreateMealLogRequest createMealLogRequest) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.foodName = createMealLogRequest.getFoodName();
+        this.calories = createMealLogRequest.getCalories();
+        this.dateOfMeal = createMealLogRequest.getDateOfMeal();
+        this.mealType = createMealLogRequest.getMealType();
+        this.quantity = createMealLogRequest.getQuantity();
+        this.member = new Member(createMealLogRequest.getMemberID());
+        this.food = new Food(createMealLogRequest.getFoodID());
+        this.status = "New";
     }
 
 }

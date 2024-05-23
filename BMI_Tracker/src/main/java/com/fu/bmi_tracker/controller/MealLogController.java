@@ -5,11 +5,13 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.exceptions.ErrorMessage;
+import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.enums.EMealType;
+import com.fu.bmi_tracker.payload.request.CreateMealLogRequest;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.MealLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +34,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -174,4 +180,46 @@ public class MealLogController {
         return new ResponseEntity<>(totalCalories, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Create new mealL log (MEMBER)",
+            description = "Create new meal log")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/createNew")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> createNewMealLog(@Valid @RequestBody CreateMealLogRequest mealLogRequest) {
+        // Create new object
+        MealLog mealLog = new MealLog(mealLogRequest);
+
+        // Store to database
+        MealLog mealLogSave = mealLogService.save(mealLog);
+
+        // check result
+        if (mealLogSave == null) {
+            return new ResponseEntity<>("Failed to create new mealLog", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+        return new ResponseEntity<>(mealLogSave, HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "Delete meal log (MEMBER)",
+            description = "Delete mealLog by Id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> deleteMealLogById(@RequestParam int mealLogID) {
+        mealLogService.deleteById(mealLogID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
