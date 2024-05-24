@@ -10,10 +10,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,11 +35,6 @@ public class CreateMealLogRequest {
     private Integer calories;
 
     @NotNull
-    @PastOrPresent
-    @Schema(name = "dateOfMeal", example = "2024-04-17")
-    private LocalDate dateOfMeal;
-
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Schema(name = "mealType", example = "Breakfast")
     private EMealType mealType;
@@ -51,13 +44,6 @@ public class CreateMealLogRequest {
     @Schema(name = "quantity", example = "1 slice")
     private String quantity;
 
-    @NotNull
-    @Positive
-    @Schema(name = "memberID", example = "1")
-    private Integer memberID;
-
-    @Positive
-    @Schema(name = "foodID", example = "1")
-    private Integer foodID;
-
+    @Schema(name = "dateOfMeal", example = "2024-05-01")
+    private String dateOfMeal;
 }

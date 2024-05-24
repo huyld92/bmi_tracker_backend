@@ -4,7 +4,12 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fu.bmi_tracker.model.enums.EMealType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -22,18 +27,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(MemberMenu.class)
-@Table(name = "MemberMenu")
-public class MemberMenu {
+@IdClass(MenuFood.class)
+@Table(name = "MenuFood")
+public class MenuFood {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "MemberID")
-    private Member member;
+    @JoinColumn(name = "MenuID")
+    private Menu Menu;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "FoodID")
+    @JsonIgnore
     private Food food;
-    
+
+    @Column(name = "MealType")
+    @Enumerated(EnumType.STRING)
+    private EMealType mealType;
 }

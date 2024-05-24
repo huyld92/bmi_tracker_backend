@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -82,7 +83,7 @@ public class Account {
         this.gender = gender;
         this.birthday = birthday;
         this.isActive = isActive;
-        this.creationDate = LocalDate.now();
+        this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isVerified = false;
         this.role = role;
     }
@@ -94,7 +95,7 @@ public class Account {
         this.gender = createAccountRequest.getGender();
         this.birthday = createAccountRequest.getBirthday();
         this.isActive = true;
-        this.creationDate = LocalDate.now();
+        this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isVerified = false;
     }
 
@@ -111,7 +112,7 @@ public class Account {
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }
-        // thiếu update status
+
     }
 
 }

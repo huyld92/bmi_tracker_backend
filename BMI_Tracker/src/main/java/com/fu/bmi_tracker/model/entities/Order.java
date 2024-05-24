@@ -29,26 +29,30 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OrderID")
-    private int orderID;
+    private Integer orderID;
 
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "Status")
-    private String status;
-
     @Column(name = "Amount")
-    private float amount;
+    private Float amount;
 
     @Column(name = "DateOrder")
     private LocalDateTime dateOrder;
 
     @Column(name = "memberID", nullable = false)
-    private int memberID;
+    private Integer memberID;
 
-    @Column(name = "TrainerServiceID", nullable = false)
-    private int trainerServiceID;
+    @Column(name = "AdvisorID", nullable = false)
+    private Integer advisorID;
+
+    @Column(name = "Status")
+    private String status;
 
     @Column(name = "TransactionID", nullable = false)
-    private int transactionID;
+    private Integer transactionID;
+
+    @Column(name = "PlanID", nullable = false)
+    private Integer planID;
+
 }

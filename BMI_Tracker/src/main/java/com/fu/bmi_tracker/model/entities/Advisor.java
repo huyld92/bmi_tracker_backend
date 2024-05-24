@@ -28,24 +28,24 @@ public class Advisor {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AdvisorID")
-    private int advisorID;
+    private Integer advisorID;
 
     @Column(name = "AccountID")
-    private int accountID;
+    private Integer accountID;
 
     @Column(name = "Height")
-    private float height;
+    private Float height;
 
     @Column(name = "Weight")
-    private float weight;
+    private Float weight;
 
-    public Advisor(int accountID, float height, float weight) {
+    public Advisor(Integer accountID, float height, float weight) {
         this.accountID = accountID;
         this.height = height;
         this.weight = weight;
     }
 
-    Advisor(int advisorID) {
+    Advisor(Integer advisorID) {
         this.advisorID = advisorID;
     }
 

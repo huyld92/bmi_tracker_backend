@@ -31,19 +31,19 @@ public class MemberBodyMass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MemberBodyMassID")
-    private int memberBodyMassID;
+    private Integer memberBodyMassID;
 
     @Column(name = "Height")
-    private int height;
+    private Integer height;
 
     @Column(name = "Weight")
-    private int weight;
+    private Integer weight;
 
     @Column(name = "Age")
-    private int age;
+    private Integer age;
 
     @Column(name = "BMI")
-    private double bmi;
+    private Double bmi;
 
     @Column(name = "DateInput")
     private LocalDateTime dateInput;
@@ -52,7 +52,7 @@ public class MemberBodyMass {
     @JoinColumn(name = "MemberID")
     private Member member;
 
-    public MemberBodyMass(int height, int weight, int age, double bmi, LocalDateTime dateInput, Member member) {
+    public MemberBodyMass(Integer height, Integer weight, Integer age, double bmi, LocalDateTime dateInput, Member member) {
         this.height = height;
         this.weight = weight;
         this.age = age;

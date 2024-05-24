@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
- 
+
 /**
  *
  * @author Duc Huy
@@ -33,14 +33,19 @@ public class CreateIngredientRequest {
     private String unitOfMeasurement;
 
     @NotNull
+    @Positive(message = "Quantity with default value")
+    @Schema(name = "quantity", minContains = 0, example = "0")
+    private Integer quantity;
+
+    @NotNull
     @Positive(message = "Ingredient calories must be positive")
     @Schema(name = "ingredientCalories", minContains = 0, example = "0")
-    private int ingredientCalories;
+    private Integer ingredientCalories;
 
-    @NotBlank(message = "Ingredient type is required")
-    @Size(max = 100, message = "Ingreadient type must not exceed 100 characters")
-    @Schema(name = "ingredientType", example = "Spices and Herbs")
-    private String ingredientType;
+    @NotNull
+    @Positive(message = "TagID must be positive")
+    @Schema(name = "tagID", example = "17")
+    private Integer tagID;
 
     @NotBlank(message = "Ingredient photo url is required")
     @Size(max = 100, message = "Ingreadient photo url must not exceed 100 characters")

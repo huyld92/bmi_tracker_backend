@@ -29,7 +29,7 @@ public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IngredientID")
-    private int ingredientID;
+    private Integer ingredientID;
 
     @Column(name = "IngredientName")
     private String ingredientName;
@@ -37,24 +37,28 @@ public class Ingredient {
     @Column(name = "IngredientPhoto")
     private String ingredientPhoto;
 
+    @Column(name = "Quantity")
+    private Integer quantity;
+
     @Column(name = "UnitOfMeasurement")
     private String unitOfMeasurement;
 
     @Column(name = "IngredientCalories")
-    private int ingredientCalories;
+    private Integer ingredientCalories;
 
-    @Column(name = "IngredientType")
-    private String ingredientType;
+    @Column(name = "TagID")
+    private Integer tagID;
 
     @Column(name = "IsActive")
     private Boolean isActive;
 
-    public Ingredient(String ingredientName, String ingredientPhoto, String unitOfMeasurement, int ingredientCalories, String ingredientType, Boolean isActive) {
-        this.ingredientName = ingredientName.trim();
-        this.ingredientPhoto = ingredientPhoto.trim();
-        this.unitOfMeasurement = unitOfMeasurement.trim();
+    public Ingredient(String ingredientName, String ingredientPhoto, Integer quantity, String unitOfMeasurement, Integer ingredientCalories, Integer tagID, Boolean isActive) {
+        this.ingredientName = ingredientName;
+        this.ingredientPhoto = ingredientPhoto;
+        this.quantity = quantity;
+        this.unitOfMeasurement = unitOfMeasurement;
         this.ingredientCalories = ingredientCalories;
-        this.ingredientType = ingredientType.trim();
+        this.tagID = tagID;
         this.isActive = isActive;
     }
 
@@ -63,7 +67,7 @@ public class Ingredient {
         this.ingredientPhoto = ingredientRequest.getIngredientPhotoUrl().trim();
         this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement().trim();
         this.ingredientCalories = ingredientRequest.getIngredientCalories();
-        this.ingredientType = ingredientRequest.getIngredientType().trim();
+        this.tagID = ingredientRequest.getTagID();
         this.isActive = true;
     }
 
@@ -80,8 +84,8 @@ public class Ingredient {
             this.ingredientCalories = ingredientRequest.getIngredientCalories();
         }
 
-        if (!ingredientRequest.getIngredientType().isEmpty()) {
-            this.ingredientType = ingredientRequest.getIngredientType();
+        if (ingredientRequest.getTagID() <= 0) {
+            this.tagID = ingredientRequest.getTagID();
         }
 
     }

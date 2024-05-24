@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,23 +53,15 @@ public class Food {
     @Column(name = "FoodTimeProcess")
     private int foodTimeProcess;
 
+    @Column(name = "CreationDate")
+    private LocalDate creationDate;
+
     @Column(name = "IsActive")
     private Boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "AdvisorID")
     private Advisor advisor;
-
-    public Food(String foodName, int foodCalories, String description, String foodPhoto, String foodVideo, int foodTimeProcess, Boolean isActive, Advisor advisor) {
-        this.foodName = foodName;
-        this.foodCalories = foodCalories;
-        this.description = description;
-        this.foodPhoto = foodPhoto;
-        this.foodVideo = foodVideo;
-        this.foodTimeProcess = foodTimeProcess;
-        this.isActive = isActive;
-        this.advisor = advisor;
-    }
 
     public Food(int foodID) {
         this.foodID = foodID;
@@ -80,6 +74,7 @@ public class Food {
         this.foodPhoto = createFoodRequest.getFoodPhoto();
         this.foodVideo = createFoodRequest.getFoodVideo();
         this.foodTimeProcess = createFoodRequest.getFoodTimeProcess();
+        this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isActive = true;
     }
 

@@ -4,42 +4,38 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.MealLog;
-import com.fu.bmi_tracker.repository.MealLogRepository;
-import com.fu.bmi_tracker.services.MealLogService;
+import com.fu.bmi_tracker.model.entities.DailyRecord;
+import com.fu.bmi_tracker.repository.DailyRecordRepository;
+import com.fu.bmi_tracker.services.DailyRecordService;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MealLogServiceImpl implements MealLogService {
+public class DailyRecordServiceImpl implements DailyRecordService {
 
     @Autowired
-    MealLogRepository repository;
+    DailyRecordRepository repository;
 
     @Override
-    public Iterable<MealLog> findAll() {
+    public Iterable<DailyRecord> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<MealLog> findById(Integer id) {
+    public Optional<DailyRecord> findById(Integer id) {
         return repository.findById(id);
     }
 
     @Override
-    public MealLog save(MealLog t) {
+    public DailyRecord save(DailyRecord t) {
         return repository.save(t);
-    }
-    
-    @Override
-    public void deleteById(int mealLogID) {
-        repository.deleteById(mealLogID);
     }
 
     @Override
-    public Iterable<MealLog> findByRecordID(Integer recordID) {
-        return repository.findByRecordID(recordID);
+    public Optional<DailyRecord> findByMemberIDAndDate(Integer memberID, LocalDate date) {
+        return repository.findByMemberIDAndDate(memberID, date);
     }
+
 }

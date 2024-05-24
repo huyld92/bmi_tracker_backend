@@ -4,13 +4,13 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.payload.request.CreateTagRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,31 +23,31 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Tag")
-public class Tag {
+@Table(name = "DailyRecord")
+public class DailyRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TagID")
-    private Integer tagID;
+    @Column(name = "RecordID")
+    private Integer recordID;
 
-    @Column(name = "TagName")
-    private String tagName;
+    @Column(name = "totalCaloriesIn")
+    private Integer totalCaloriesIn;
 
-    @Column(name = "TagDescription")
-    private String tagDescription;
+    @Column(name = "TotalCaloriesOut")
+    private Integer totalCaloriesOut;
 
-    @Column(name = "TagTypeID")
-    private Integer tagTypeID;
+    @Column(name = "Date")
+    private LocalDate date;
 
-    @Column(name = "IsActive")
-    private Boolean isActive;
+    @Column(name = "MemberID")
+    private Integer memberID;
 
-    public Tag(CreateTagRequest createTagRequest) {
-        this.tagName = createTagRequest.getTagName();
-        this.tagDescription = createTagRequest.getTagDescription();
-        this.tagTypeID = createTagRequest.getTagTypeID();
-        this.isActive = true;
+    public DailyRecord(LocalDate date, Integer memberID) {
+        totalCaloriesIn = 0;
+        totalCaloriesOut = 0;
+        this.date = date;
+        this.memberID = memberID;
     }
 
 }

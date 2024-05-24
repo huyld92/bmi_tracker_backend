@@ -13,10 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,16 +32,13 @@ public class MealLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MealLogID")
-    private int mealLogID;
+    private Integer mealLogID;
 
     @Column(name = "FoodName")
     private String foodName;
 
     @Column(name = "Calories")
-    private int calories;
-
-    @Column(name = "DateOfMeal")
-    private LocalDate dateOfMeal;
+    private Integer calories;
 
     @Column(name = "MealType")
     @Enumerated(EnumType.STRING)
@@ -53,26 +47,14 @@ public class MealLog {
     @Column(name = "Quantity")
     private String quantity;
 
-    @Column(name = "Status")
-    private String status;
-
-    @ManyToOne
-    @JoinColumn(name = "MemberID")
-    private Member member;
-
-    @ManyToOne
-    @JoinColumn(name = "FoodID", nullable = true)
-    private Food food;
+    @Column(name = "RecordID")
+    private Integer recordID;
 
     public MealLog(CreateMealLogRequest createMealLogRequest) {
         this.foodName = createMealLogRequest.getFoodName();
         this.calories = createMealLogRequest.getCalories();
-        this.dateOfMeal = createMealLogRequest.getDateOfMeal();
         this.mealType = createMealLogRequest.getMealType();
         this.quantity = createMealLogRequest.getQuantity();
-        this.member = new Member(createMealLogRequest.getMemberID());
-        this.food = new Food(createMealLogRequest.getFoodID());
-        this.status = "New";
     }
 
 }

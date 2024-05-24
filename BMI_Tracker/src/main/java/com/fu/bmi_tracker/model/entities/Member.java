@@ -35,22 +35,22 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MemberID")
-    private int memberID;
+    private Integer memberID;
 
     @Column(name = "AccountID")
-    private int accountID; 
+    private Integer accountID;
 
     @Column(name = "TargetWeight")
-    private int targetWeight;
+    private Integer targetWeight;
 
     @Column(name = "TDEE")
-    private double tdee;
+    private Double tdee;
 
     @Column(name = "BMR")
-    private double bmr;
+    private Double bmr;
 
     @Column(name = "DefaultCalories")
-    private int defaultCalories;
+    private Integer defaultCalories;
 
     @Column(name = "IsPrivate")
     private boolean isPrivate;
@@ -60,27 +60,62 @@ public class Member {
     private LocalDateTime lastUpdatedTime;
 
     @Column(name = "DietaryPreferenceID")
-    private int dietaryPreferenceID;
+    private Integer dietaryPreferenceID;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "ActivityLevelID")
     private ActivityLevel activityLevel;
 
-    public Member(int accountID, int targetWeight, double tdee, double bmr,
-            int defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
-            int dietaryPreferenceID, ActivityLevel activityLevel) {
+    @Column(name = "MenuID")
+    private Integer menuID;
+
+    @Column(name = "WorkoutID")
+    private Integer workoutID;
+
+//    public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
+//            Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
+//            Integer dietaryPreferenceID, ActivityLevel activityLevel) {
+//        this.accountID = accountID;
+//        this.targetWeight = targetWeight;
+//        this.tdee = tdee;
+//        this.bmr = bmr;
+//        this.defaultCalories = defaultCalories;
+//        this.isPrivate = false;
+//        this.lastUpdatedTime = lastUpdatedTime;
+//        this.dietaryPreferenceID = dietaryPreferenceID;
+//        this.activityLevel = activityLevel;
+//    }
+    public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
+            Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
+            Integer dietaryPreferenceID, ActivityLevel activityLevel) {
         this.accountID = accountID;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
         this.bmr = bmr;
         this.defaultCalories = defaultCalories;
-        this.isPrivate = false;
+        this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
         this.dietaryPreferenceID = dietaryPreferenceID;
         this.activityLevel = activityLevel;
     }
 
-    public Member(int memberID) {
+    public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
+            Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
+            Integer dietaryPreferenceID, ActivityLevel activityLevel, Integer menuID, Integer workoutID) {
+        this.accountID = accountID;
+        this.targetWeight = targetWeight;
+        this.tdee = tdee;
+        this.bmr = bmr;
+        this.defaultCalories = defaultCalories;
+        this.isPrivate = isPrivate;
+        this.lastUpdatedTime = lastUpdatedTime;
+        this.dietaryPreferenceID = dietaryPreferenceID;
+        this.activityLevel = activityLevel;
+        this.menuID = menuID;
+        this.workoutID = workoutID;
+    }
+
+    public Member(Integer memberID) {
         this.memberID = memberID;
     }
 
