@@ -28,18 +28,18 @@ public class ActivityLevel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ActivityLevelID")
-    private int activityLevelID;
+    private Integer activityLevelID;
 
     @Column(name = "ActivityLevelName")
     private String activityLevelName;
 
     @Column(name = "ActivityLevel")
-    private double ActivityLevel;
+    private Double ActivityLevel;
 
     @Column(name = "IsActive")
     private boolean isActive;
 
-    public ActivityLevel(int activityLevelID) {
+    public ActivityLevel(Integer activityLevelID) {
         this.activityLevelID = activityLevelID;
     }
     

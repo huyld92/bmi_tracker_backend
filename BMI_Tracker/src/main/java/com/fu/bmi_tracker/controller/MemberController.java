@@ -34,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.fu.bmi_tracker.services.MemberService;
+import java.time.ZoneId;
 
 /**
  *
@@ -44,79 +45,34 @@ import com.fu.bmi_tracker.services.MemberService;
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
-
+    
     @Autowired
     MemberService memberService;
-
+    
     @Autowired
     MealLogService mealLogService;
-
+    
     @Autowired
     MemberBodyMassService memberBodyMassService;
-
+    
     @Autowired
     ActivityLevelService activityLevelService;
-
+    
     @Autowired
     BMIUtils bMIUtils;
 
-    //
-    // @Operation(
-    // summary = "Create new meal log with form",
-    // description = "Create new meal log")
-    // @ApiResponses({
-    // @ApiResponse(responseCode = "201", content = {
-    // @Content(schema = @Schema(implementation = MealLog.class), mediaType =
-    // "application/json")}),
-    // @ApiResponse(responseCode = "403", content = {
-    // @Content(schema = @Schema())}),
-    // @ApiResponse(responseCode = "500", content = {
-    // @Content(schema = @Schema())})})
-    // @PostMapping(value = "/createNew")
-    // public ResponseEntity<?> createNewMealLog(@Valid @RequestBody
-    // CreateMealLogRequest createMealLogRequest) {
-    // // Kiểm tra member ID
-    // // kiểm tra foodID
-    // // Tạo mới MealLog
-    // // Trả về kết quả
-    // MealLog mealLog = new MealLog(createMealLogRequest);
-    //
-    // MealLog mealLogSaved = mealLogService.save(mealLog);
-    //
-    // return new ResponseEntity<>(mealLogSaved, HttpStatus.CREATED);
-    // }
-    //
-    // @Operation(
-    // summary = "Get Meal Log",
-    // description = "Retrieve all meal log of member from memberID")
-    // @ApiResponses({
-    // @ApiResponse(responseCode = "201", content = {
-    // @Content(schema = @Schema(implementation = MealLog.class), mediaType =
-    // "application/json")}),
-    // @ApiResponse(responseCode = "403", content = {
-    // @Content(schema = @Schema())}),
-    // @ApiResponse(responseCode = "500", content = {
-    // @Content(schema = @Schema())})})
-    // @GetMapping(value = "/getMealLog/{memberID}")
-    // public ResponseEntity<?> getMealLogByMemberID(@PathVariable("memberID") Integer
-    // memberID) {
-    // // Tìm meal log bởi member id => sử dụng memberID hay memberID
-    // List<MealLog> mealLogs;
-    // return new ResponseEntity<>("", HttpStatus.CREATED);
-    // }
-    //
     @Operation(summary = "Create new member information", description = "Activity Level"
             + " Little to no exercise:1.2"
             + " Light exercise :1.375 "
             + "Moderate exercise:1.55 Hard exercise:1725"
             + "Very hard exercise:1.9")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", content = {
-                    @Content(schema = @Schema(implementation = CreateMemberResponse.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "403", content = {
-                    @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = {
-                    @Content(schema = @Schema()) }) })
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = CreateMemberResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
     public ResponseEntity<?> createNewMember(@Valid @RequestBody CreateMemberRequest createMemberRequest) {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
@@ -143,10 +99,10 @@ public class MemberController {
 
         // calculateDefault default Calories
         int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createMemberRequest.getTargetWeight());
-
-        LocalDateTime now = LocalDateTime.now();
-        // Save member
-        Member member = new Member(principal.getId(), 
+        
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
+        // Save member  BBổ sung menuID
+        Member member = new Member(principal.getId(),
                 createMemberRequest.getTargetWeight(),
                 tdee,
                 bmr,
@@ -155,7 +111,7 @@ public class MemberController {
                 now,
                 createMemberRequest.getDietaryPreferenceID(),
                 new ActivityLevel(createMemberRequest.getActivityLevelID()));
-
+        
         Member memberSaved = memberService.save(member);
 
         // Save member body mass
@@ -163,7 +119,7 @@ public class MemberController {
                 createMemberRequest.getWeight(),
                 age, bmi,
                 now, memberSaved);
-
+        
         memberBodyMassService.save(bodyMass);
 
         // Generate suggestion menu
@@ -172,8 +128,8 @@ public class MemberController {
                 defaultCalories,
                 createMemberRequest.getHeight(),
                 createMemberRequest.getWeight(), bmi);
-
+        
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
-
+        
     }
 }

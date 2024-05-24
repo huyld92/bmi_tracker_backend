@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.payload.request.CreateTagRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,31 +22,26 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Tag")
-public class Tag {
+@Table(name = "Menu")
+public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TagID")
-    private Integer tagID;
+    @Column(name = "MenuID")
+    private Integer menuID;
 
-    @Column(name = "TagName")
-    private String tagName;
+    @Column(name = "MenuName")
+    private String menuName;
 
-    @Column(name = "TagDescription")
-    private String tagDescription;
+    @Column(name = "MenuDescription")
+    private String menuDescription;
 
-    @Column(name = "TagTypeID")
-    private Integer tagTypeID;
+    @Column(name = "TotalCalories")
+    private Integer totalCalories;
 
     @Column(name = "IsActive")
-    private Boolean isActive;
+    private Integer isActive;
 
-    public Tag(CreateTagRequest createTagRequest) {
-        this.tagName = createTagRequest.getTagName();
-        this.tagDescription = createTagRequest.getTagDescription();
-        this.tagTypeID = createTagRequest.getTagTypeID();
-        this.isActive = true;
-    }
-
+    @Column(name = "AdvisorID")
+    private Integer advisorID;
 }

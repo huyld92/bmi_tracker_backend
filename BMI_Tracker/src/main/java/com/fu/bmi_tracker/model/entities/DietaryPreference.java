@@ -28,7 +28,7 @@ public class DietaryPreference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DietaryPreferenceID")
-    private int dietaryPreferenceID;
+    private Integer dietaryPreferenceID;
 
     @Column(name = "DietaryPreferenceName")
     private String dietaryPreferenceName;

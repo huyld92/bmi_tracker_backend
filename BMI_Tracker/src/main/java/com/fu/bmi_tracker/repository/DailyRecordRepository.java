@@ -4,8 +4,9 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.MemberMenu;
-import java.util.List;
+import com.fu.bmi_tracker.model.entities.DailyRecord;
+import java.time.LocalDate;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,12 +15,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface MemberMenuRepository extends JpaRepository<MemberMenu, MemberMenu> {
+public interface DailyRecordRepository extends JpaRepository<DailyRecord, Integer> {
 
-    public List<MemberMenu> findAllByMemberMemberID(Integer memberID);
-
-    public void deleteByMemberMemberIDAndFoodFoodID(int memberID, int foodID);
-
-    public void deleteAllByMemberMemberID(int memberID);
+    public Optional<DailyRecord> findByMemberIDAndDate(Integer memberID, LocalDate date);
 
 }

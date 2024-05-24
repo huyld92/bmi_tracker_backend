@@ -4,17 +4,16 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.MealLog;
+import com.fu.bmi_tracker.model.entities.DailyRecord;
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  *
  * @author Duc Huy
  */
-public interface MealLogService extends GeneralService<MealLog> {
+public interface DailyRecordService extends GeneralService<DailyRecord> {
 
-    public Iterable<MealLog> findByRecordID(Integer recordID);
-
-    public void deleteById(int mealLogID);
-
+    Optional<DailyRecord> findByMemberIDAndDate(Integer memberID, LocalDate date);
+    
 }

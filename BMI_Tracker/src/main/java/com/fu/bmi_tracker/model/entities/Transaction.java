@@ -29,7 +29,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TransactionID")
-    private int transactionID;
+    private Integer transactionID;
 
     @Column(name = "BankCode", nullable = false)
     private String bankCode;
@@ -41,7 +41,7 @@ public class Transaction {
     private String cardType;
 
     @Column(name = "Amount", nullable = false)
-    private int amount;
+    private Integer amount;
 
     @Column(name = "OrderInfo", nullable = false)
     private String orderInfo;
@@ -50,9 +50,9 @@ public class Transaction {
     private LocalDateTime payDate;
 
     @Column(name = "MemberID", nullable = false)
-    private int memberID;
+    private Integer memberID;
 
-    public Transaction(String bankCode, String bankTranNo, String cardType, int amount, String orderInfo, LocalDateTime payDate, int memberID) {
+    public Transaction(String bankCode, String bankTranNo, String cardType, Integer amount, String orderInfo, LocalDateTime payDate, Integer memberID) {
         this.bankCode = bankCode;
         this.bankTranNo = bankTranNo;
         this.cardType = cardType;

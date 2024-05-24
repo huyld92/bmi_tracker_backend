@@ -29,7 +29,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "NotificationID")
-    private int notificationID;
+    private Integer notificationID;
 
     @Column(name = "Content")
     private String content;
