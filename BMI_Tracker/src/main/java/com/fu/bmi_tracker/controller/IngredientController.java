@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Duc Huy
  */
 @Tag(name = "Ingredient", description = "Ingredient management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/ingredients")
 public class IngredientController {
@@ -43,8 +41,8 @@ public class IngredientController {
 
     @Operation(
             summary = "Create new ingredient with form (Admin)",
-            description = "Create new ingredient with form: include MultiplePath for ingredient photo",
-            tags = {"ADMIN"})
+            description = "Create new ingredient with form: include MultiplePath for ingredient photo"
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -89,9 +87,7 @@ public class IngredientController {
 
     }
 
-    @Operation(
-            summary = "Retrieve a Ingredient by Id",
-            description = "Get a Ingredient object by specifying its id. The response is Ingredient object")
+    @Operation(summary = "Retrieve a Ingredient by Id", description = "Get a Ingredient object by specifying its id. The response is Ingredient object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Ingredient.class), mediaType = "application/json")}),
@@ -127,7 +123,8 @@ public class IngredientController {
             ingredient.get().update(ingredientRequest);
             return new ResponseEntity<>(service.save(ingredient.get()), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Cannot find ingredient with id{" + ingredientRequest.getIngredientID() + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Cannot find ingredient with id{" + ingredientRequest.getIngredientID() + "}",
+                    HttpStatus.NOT_FOUND);
         }
     }
 

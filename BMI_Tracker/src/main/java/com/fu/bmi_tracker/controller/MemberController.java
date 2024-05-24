@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +40,6 @@ import java.time.ZoneId;
  * @author Duc Huy
  */
 @Tag(name = "Member", description = "Member management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
@@ -101,7 +99,7 @@ public class MemberController {
         int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createMemberRequest.getTargetWeight());
         
         LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
-        // Save member  BBổ sung menuID
+        // Save member  Bổ sung menuID
         Member member = new Member(principal.getId(),
                 createMemberRequest.getTargetWeight(),
                 tdee,

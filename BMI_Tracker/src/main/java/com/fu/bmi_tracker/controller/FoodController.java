@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +45,6 @@ import com.fu.bmi_tracker.services.AdvisorService;
  * @author Duc Huy
  */
 @Tag(name = "Food", description = "Food management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/foods")
 public class FoodController {
@@ -71,7 +69,7 @@ public class FoodController {
 
     @Operation(
             summary = "Create new food with form",
-            description = "Create new food with form" )
+            description = "Create new food with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
@@ -128,7 +126,7 @@ public class FoodController {
         return new ResponseEntity<>(foodResponse, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Retrieve all Foods (ADMIN)", tags = {"ADMIN"})
+    @Operation(summary = "Retrieve all Foods (ADMIN)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
@@ -190,7 +188,7 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Deactive a Food by Id", tags = {"ADMIN", "ADVISOR"})
+    @Operation(summary = "Deactive a Food by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),

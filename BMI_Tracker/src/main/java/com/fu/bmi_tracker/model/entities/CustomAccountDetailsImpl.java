@@ -62,7 +62,7 @@ public class CustomAccountDetailsImpl implements UserDetails {
                 account.getEmail(),
                 account.getPassword(),
                 account.getGender(),
-                account.getPhoneNumber(),
+                account.getFullName(),
                 account.getPhoneNumber(),
                 account.getBirthday(),
                 authorities);
