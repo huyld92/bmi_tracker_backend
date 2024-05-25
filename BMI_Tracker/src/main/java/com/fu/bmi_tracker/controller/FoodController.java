@@ -82,9 +82,6 @@ public class FoodController {
     public ResponseEntity<?> createNewFood(@RequestBody CreateFoodRequest createFoodRequest) {
         // create food from request
         Food food = new Food(createFoodRequest);
-        //Check advisor
-        Advisor advisor = advisorService.findByAccountID(createFoodRequest.getAccountID());
-        food.setAdvisor(advisor);
 
         // Store food
         Food foodSave = service.save(food);
@@ -204,26 +201,5 @@ public class FoodController {
         } else {
             return new ResponseEntity<>("Cannot find food with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
-    }
-
-    @Operation(summary = "Retrieve all Foods by advisor id")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/getAllByAdvisorID/")
-    public ResponseEntity<?> getAllFoodsOfAdvisor(@RequestParam int advisorID) {
-
-        Iterable<Food> foods = service.findByAdvisorID(advisorID);
-
-        if (!foods.iterator().hasNext()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(foods, HttpStatus.OK);
-
-    }
+    } 
 }

@@ -18,6 +18,4 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
 
     Iterable<Food> findByFoodIDIn(List<Integer> foodIds);
 
-    public Iterable<Food> findByAdvisorAdvisorID(Integer advisorID);
-
 }
