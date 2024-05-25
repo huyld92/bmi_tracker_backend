@@ -6,8 +6,11 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.DietaryPreference;
+import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
@@ -33,7 +36,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.fu.bmi_tracker.services.MemberService;
+import com.fu.bmi_tracker.services.MenuFoodService;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -43,19 +52,22 @@ import java.time.ZoneId;
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
-    
+
     @Autowired
     MemberService memberService;
-    
+
     @Autowired
     MealLogService mealLogService;
-    
+
     @Autowired
     MemberBodyMassService memberBodyMassService;
-    
+
     @Autowired
     ActivityLevelService activityLevelService;
-    
+
+    @Autowired
+    MenuFoodService menuFoodService;
+
     @Autowired
     BMIUtils bMIUtils;
 
@@ -76,7 +88,7 @@ public class MemberController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        // Kiểm tra Account ID
+        // Kiểm tra Account ID nếu tồn tại Member retunr badRequest
         if (memberService.existsByAccountID(principal.getId())) {
             return ResponseEntity
                     .badRequest()
@@ -97,7 +109,7 @@ public class MemberController {
 
         // calculateDefault default Calories
         int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createMemberRequest.getTargetWeight());
-        
+
         LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
         // Save member  Bổ sung menuID
         Member member = new Member(principal.getId(),
@@ -109,7 +121,7 @@ public class MemberController {
                 now,
                 createMemberRequest.getDietaryPreferenceID(),
                 new ActivityLevel(createMemberRequest.getActivityLevelID()));
-        
+
         Member memberSaved = memberService.save(member);
 
         // Save member body mass
@@ -117,7 +129,7 @@ public class MemberController {
                 createMemberRequest.getWeight(),
                 age, bmi,
                 now, memberSaved);
-        
+
         memberBodyMassService.save(bodyMass);
 
         // Generate suggestion menu
@@ -126,8 +138,45 @@ public class MemberController {
                 defaultCalories,
                 createMemberRequest.getHeight(),
                 createMemberRequest.getWeight(), bmi);
-        
+
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
-        
+    }
+
+    @Operation(
+            summary = "Retrieve All Food in menu by meal type (MEMBER)",
+            description = "Member send meal type to get food list")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = DietaryPreference.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getByMealType")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getMemberMenuByMealType(@RequestParam EMealType mealType) {
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // Find member by accountID
+        Optional<Member> member = memberService.findByAccountID(principal.getId());
+        System.out.println("AccoutnID: " + principal.getId());
+        System.out.println("member: " + memberService.existsByAccountID(principal.getId()));
+        if (!member.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Member already exists!"));
+        }
+
+        // call service find food
+        List<Food> foods = menuFoodService.findFoodByMenu_MenuIDAndMealType(member.get().getMenuID(), mealType);
+
+        //check food list 
+        if (foods.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 }
