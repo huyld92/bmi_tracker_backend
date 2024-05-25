@@ -24,6 +24,7 @@ public class AccountResponse {
     private String fullName;
     private String phoneNumber;
     private ERole roleName;
+    private Boolean isActive;
     // private String status;
 
     public AccountResponse(Account account) {
@@ -32,6 +33,7 @@ public class AccountResponse {
         this.fullName = account.getFullName();
         this.phoneNumber = account.getPhoneNumber();
         this.roleName = account.getRole().getRoleName();
+        this.isActive = account.getIsActive();
     }
 
 }

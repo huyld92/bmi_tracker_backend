@@ -10,8 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -59,10 +57,6 @@ public class Food {
     @Column(name = "IsActive")
     private Boolean isActive;
 
-    @ManyToOne
-    @JoinColumn(name = "AdvisorID")
-    private Advisor advisor;
-
     public Food(int foodID) {
         this.foodID = foodID;
     }
@@ -79,7 +73,8 @@ public class Food {
     }
 
     public void update(Food foodRequest) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

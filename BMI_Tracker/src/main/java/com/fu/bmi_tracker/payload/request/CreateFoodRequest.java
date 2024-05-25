@@ -54,11 +54,6 @@ public class CreateFoodRequest {
     @Schema(name = "foodTimeProcess", example = "30")
     private Integer foodTimeProcess;
 
-    @NotNull
-    @Positive
-    @Schema(name = "accountID", example = "1")
-    private Integer accountID;
-
     @NotEmpty
     @Schema(name = "tagIDs", example = "[1, 2, 3]")
     private List<Integer> tagIDs;

@@ -36,8 +36,6 @@ public class FoodResponse {
 
     private int foodTimeProcess;
 
-    private Advisor advisor;
-
     private List<Tag> foodTags;
 
     private List<Recipe> recipes;
@@ -50,7 +48,6 @@ public class FoodResponse {
         this.foodPhoto = foodSave.getFoodPhoto();
         this.foodVideo = foodSave.getFoodVideo();
         this.foodTimeProcess = foodSave.getFoodTimeProcess();
-        this.advisor = foodSave.getAdvisor();
         this.foodTags = foodTags;
         this.recipes = recipes;
     }

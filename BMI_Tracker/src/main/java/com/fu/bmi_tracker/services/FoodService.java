@@ -15,6 +15,4 @@ public interface FoodService extends GeneralService<Food> {
 
     public Iterable<Food> findByFoodIDIn(List<Integer> foodIDs);
     
-    public Iterable<Food> findByAdvisorID(Integer advisorID);
-
 }
