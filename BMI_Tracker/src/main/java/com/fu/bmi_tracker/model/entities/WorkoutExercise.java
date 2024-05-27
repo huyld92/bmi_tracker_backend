@@ -22,9 +22,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(WorkoutExcercise.class)
-@Table(name = "WorkoutExcercise")
-public class WorkoutExcercise {
+@IdClass(WorkoutExercise.class)
+@Table(name = "WorkoutExercise")
+public class WorkoutExercise {
 
     @Id
     @ManyToOne

@@ -44,4 +44,14 @@ public class Workout {
 
     @Column(name = "AdvisorID")
     private Integer advisorID;
+
+    //Create new workout
+    public Workout(String workoutName, String workoutDescription, Integer totalCloriesBurned, Integer advisorID) {
+        this.workoutName = workoutName;
+        this.workoutDescription = workoutDescription;
+        this.totalCloriesBurned = totalCloriesBurned; 
+        this.advisorID = advisorID;
+        this.isActive = true;
+    }
+
 }

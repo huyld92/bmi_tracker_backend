@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.model.entities.DietaryPreference;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -178,5 +180,32 @@ public class MemberController {
         }
 
         return new ResponseEntity<>(foods, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Assign menu for member (ADVISOR)",
+            description = "Create new menu with form")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/assignMenu")
+    @PreAuthorize("hasRole('AVISOR')")
+    public ResponseEntity<?> assignMenu(@Valid @RequestParam Integer menuID, Integer memberID) {
+        // find member by member id
+        Optional<Member> member = memberService.findById(memberID);
+        // check existed
+        if (!member.isPresent()) {
+            return new ResponseEntity<>(new MessageResponse("Cannot find member with id {" + memberID + "}"), HttpStatus.BAD_REQUEST);
+        }
+        // set menuID
+        member.get().setMenuID(menuID);
+        //Update member
+        memberService.save(member.get());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
