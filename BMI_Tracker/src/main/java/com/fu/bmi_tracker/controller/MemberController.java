@@ -59,9 +59,6 @@ public class MemberController {
     MemberService memberService;
 
     @Autowired
-    MealLogService mealLogService;
-
-    @Autowired
     MemberBodyMassService memberBodyMassService;
 
     @Autowired
@@ -122,7 +119,11 @@ public class MemberController {
                 false,
                 now,
                 createMemberRequest.getDietaryPreferenceID(),
-                new ActivityLevel(createMemberRequest.getActivityLevelID()));
+                new ActivityLevel(createMemberRequest.getActivityLevelID()),
+                //Thay đổi menuDI and WorkoutID
+                1,
+                1
+        );
 
         Member memberSaved = memberService.save(member);
 

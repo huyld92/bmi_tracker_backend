@@ -37,4 +37,9 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
         return repository.findTopByOrderByDateInputDesc();
     }
 
+    @Override
+    public Iterable<MemberBodyMass> findAllByAccountID(Integer accountID) {
+        return repository.findAllByAccountID(accountID);
+    }
+
 }

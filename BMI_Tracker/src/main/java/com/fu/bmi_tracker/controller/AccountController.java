@@ -60,7 +60,7 @@ public class AccountController {
     @Autowired
     PasswordEncoder encoder;
 
-    @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_TRAINER)")
+    @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
     @ApiResponses({
             @ApiResponse(responseCode = "201", content = {
                     @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json") }),

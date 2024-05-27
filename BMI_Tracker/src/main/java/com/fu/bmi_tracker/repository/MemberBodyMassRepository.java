@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,4 +20,6 @@ public interface MemberBodyMassRepository extends JpaRepository<MemberBodyMass, 
 
     public Optional<MemberBodyMass> findTopByOrderByDateInputDesc();
 
+    @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.accountID = :accountID")
+    public List<MemberBodyMass> findAllByAccountID(Integer accountID);
 }
