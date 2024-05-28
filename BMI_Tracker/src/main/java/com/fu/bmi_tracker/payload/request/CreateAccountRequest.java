@@ -37,7 +37,7 @@ public class CreateAccountRequest {
     private String phoneNumber;
 
     @NotBlank(message = "Gender is required")
-    @Schema(name = "gender", examples = { "Male", "Female"})
+    @Schema(name = "gender", examples = {"Male", "Female"})
     private EGender gender;
 
     @NotNull
@@ -46,6 +46,6 @@ public class CreateAccountRequest {
     private LocalDate birthday;
 
     @NotNull(message = "Role is required")
-    @Schema(name = "role", example = "ROLE_TRAINER")
+    @Schema(name = "role", example = "ROLE_ADVISOR")
     private ERole role;
 }

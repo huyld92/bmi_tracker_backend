@@ -34,7 +34,7 @@ public class MenuFood {
     @Id
     @ManyToOne
     @JoinColumn(name = "MenuID")
-    private Menu Menu;
+    private Menu menu;
 
     @Id
     @ManyToOne

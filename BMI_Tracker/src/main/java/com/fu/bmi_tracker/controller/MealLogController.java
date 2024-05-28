@@ -222,4 +222,5 @@ public class MealLogController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }

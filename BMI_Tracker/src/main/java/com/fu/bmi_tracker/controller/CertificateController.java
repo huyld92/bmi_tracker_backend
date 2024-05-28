@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Duc Huy
  */
-@Tag(name = "Certificate", description = "Certificate level management APIs")
+@Tag(name = "Certificate", description = "Certificate management APIs")
 @RestController
 @RequestMapping("/api/certificates")
 public class CertificateController {

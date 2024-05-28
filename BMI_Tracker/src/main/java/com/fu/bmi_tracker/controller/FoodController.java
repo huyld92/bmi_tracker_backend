@@ -8,7 +8,6 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.FoodTag;
 import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.Recipe;
-import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.services.FoodService;
@@ -36,9 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.fu.bmi_tracker.services.AdvisorService;
 
 /**
  *
@@ -51,9 +48,6 @@ public class FoodController {
 
     @Autowired
     FoodService service;
-
-    @Autowired
-    AdvisorService advisorService;
 
     @Autowired
     TagService tagService;
@@ -78,7 +72,7 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-    @PreAuthorize("hasRole('ADVISOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewFood(@RequestBody CreateFoodRequest createFoodRequest) {
         // create food from request
         Food food = new Food(createFoodRequest);
@@ -123,7 +117,7 @@ public class FoodController {
         return new ResponseEntity<>(foodResponse, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Retrieve all Foods (ADMIN)")
+    @Operation(summary = "Retrieve all Foods ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
@@ -132,7 +126,6 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAll")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllFoods() {
         Iterable<Food> foods = service.findAll();
 
@@ -173,7 +166,7 @@ public class FoodController {
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())})})
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADVISOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateFood(@RequestBody Food foodRequest) {
         Optional<Food> food = service.findById(foodRequest.getFoodID());
 
@@ -192,6 +185,7 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deactive/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deactiveFood(@PathVariable("id") int id) {
         Optional<Food> food = service.findById(id);
 
@@ -201,5 +195,5 @@ public class FoodController {
         } else {
             return new ResponseEntity<>("Cannot find food with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
-    } 
+    }
 }

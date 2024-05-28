@@ -11,6 +11,9 @@ import java.util.Optional;
  *
  * @author Duc Huy
  */
-public interface MemberBodyMassService extends GeneralService<MemberBodyMass>{
+public interface MemberBodyMassService extends GeneralService<MemberBodyMass> {
+
     public Optional<MemberBodyMass> findTopByOrderByDateInputDesc();
+
+    public Iterable<MemberBodyMass> findAllByAccountID(Integer accountID);
 }

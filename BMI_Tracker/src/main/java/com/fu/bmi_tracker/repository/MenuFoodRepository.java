@@ -4,9 +4,10 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import com.fu.bmi_tracker.model.entities.Food;
+import com.fu.bmi_tracker.model.entities.MenuFood;
+import com.fu.bmi_tracker.model.enums.EMealType;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,10 +17,9 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface MemberBodyMassRepository extends JpaRepository<MemberBodyMass, Integer> {
+public interface MenuFoodRepository extends JpaRepository<MenuFood, Integer> {
 
-    public Optional<MemberBodyMass> findTopByOrderByDateInputDesc();
+    @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.mealType = :mealType")
+    public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType);
 
-    @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.accountID = :accountID")
-    public List<MemberBodyMass> findAllByAccountID(Integer accountID);
 }

@@ -73,8 +73,30 @@ public class Food {
     }
 
     public void update(Food foodRequest) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (foodRequest.getFoodName() != null) {
+            this.foodName = foodRequest.getFoodName();
+        }
+        if (foodRequest.getFoodCalories() != 0) {
+            this.foodCalories = foodRequest.getFoodCalories();
+        }
+        if (foodRequest.getDescription() != null) {
+            this.description = foodRequest.getDescription();
+        }
+        if (foodRequest.getFoodPhoto() != null) {
+            this.foodPhoto = foodRequest.getFoodPhoto();
+        }
+        if (foodRequest.getFoodVideo() != null) {
+            this.foodVideo = foodRequest.getFoodVideo();
+        }
+        if (foodRequest.getFoodTimeProcess() != 0) {
+            this.foodTimeProcess = foodRequest.getFoodTimeProcess();
+        }
+        if (foodRequest.getCreationDate() != null) {
+            this.creationDate = foodRequest.getCreationDate();
+        }
+        if (foodRequest.getIsActive() != null) {
+            this.isActive = foodRequest.getIsActive();
+        }                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

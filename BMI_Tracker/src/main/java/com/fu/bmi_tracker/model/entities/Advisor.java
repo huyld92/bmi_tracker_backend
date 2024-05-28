@@ -34,12 +34,12 @@ public class Advisor {
     private Integer accountID;
 
     @Column(name = "Height")
-    private Float height;
+    private Integer height;
 
     @Column(name = "Weight")
-    private Float weight;
+    private Integer weight;
 
-    public Advisor(Integer accountID, float height, float weight) {
+    public Advisor(Integer accountID, Integer height, Integer weight) {
         this.accountID = accountID;
         this.height = height;
         this.weight = weight;
