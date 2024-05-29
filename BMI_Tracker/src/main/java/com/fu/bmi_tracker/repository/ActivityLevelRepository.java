@@ -5,7 +5,10 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
+import com.fu.bmi_tracker.payload.response.ActivityLevelResponse;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +17,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ActivityLevelRepository extends JpaRepository<ActivityLevel, Object> {
-    
+
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.ActivityLevelResponse(a.activityLevelID, a.activityLevelName) "
+            + "FROM ActivityLevel a")
+    public List<ActivityLevelResponse> findAllActivityLevelsWithDetails();
+
 }
