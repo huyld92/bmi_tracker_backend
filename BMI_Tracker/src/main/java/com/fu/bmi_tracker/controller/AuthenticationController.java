@@ -215,7 +215,7 @@ public class AuthenticationController {
                     .body(new MessageResponse("Error: Phone number is already taken!"));
         }
 
-        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_ADVISOR);
+        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_MEMBER);
         // .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 
         // Create new member's account
@@ -224,6 +224,7 @@ public class AuthenticationController {
                 encoder.encode(registerRequest.getPassword()),
                 registerRequest.getGender(), registerRequest.getBirthday(),
                 true, accountRole);
+        
         // xóa khi verfied email có
         account.setIsVerified(true);
 
