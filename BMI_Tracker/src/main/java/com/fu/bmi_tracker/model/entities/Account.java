@@ -112,6 +112,7 @@ public class Account {
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }
+        this.isActive = accountRequest.getIsActive();
 
     }
 
