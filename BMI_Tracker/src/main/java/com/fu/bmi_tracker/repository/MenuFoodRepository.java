@@ -17,9 +17,12 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface MenuFoodRepository extends JpaRepository<MenuFood, Integer> {
+public interface MenuFoodRepository extends JpaRepository<MenuFood, MenuFood> {
 
     @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.mealType = :mealType")
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType);
+
+    @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID")
+    public List<Food> findFoodByMenu_MenuID(Integer menuID);
 
 }

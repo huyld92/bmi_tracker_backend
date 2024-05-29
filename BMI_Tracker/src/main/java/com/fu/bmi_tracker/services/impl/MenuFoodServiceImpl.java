@@ -32,12 +32,18 @@ public class MenuFoodServiceImpl implements MenuFoodService {
 
     @Override
     public Optional<MenuFood> findById(Integer id) {
-        return repository.findById(id);
+        // return repository.findById(id);
+        return null;
     }
 
     @Override
     public MenuFood save(MenuFood t) {
         return repository.save(t);
+    }
+
+    @Override
+    public List<Food> findFoodByMenu_MenuID(Integer menuID) {
+        return repository.findFoodByMenu_MenuID(menuID);
     }
 
 }

@@ -17,4 +17,6 @@ public interface MenuFoodService extends GeneralService<MenuFood> {
 
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType);
 
+    public List<Food> findFoodByMenu_MenuID(Integer menuID);
+
 }

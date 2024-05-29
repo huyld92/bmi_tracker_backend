@@ -7,7 +7,6 @@ package com.fu.bmi_tracker.payload.response;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.entities.Tag;
-import com.fu.bmi_tracker.model.entities.Advisor;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;

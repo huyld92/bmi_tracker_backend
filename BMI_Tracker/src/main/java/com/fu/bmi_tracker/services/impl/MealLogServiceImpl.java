@@ -7,7 +7,6 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.repository.MealLogRepository;
 import com.fu.bmi_tracker.services.MealLogService;
-import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -181,7 +181,7 @@ public class AuthenticationController {
                 member.getMemberID(), accountDetails.getEmail(),
                 accountDetails.getFullName(),
                 accountDetails.getGender().toString(),
-                accountDetails.getPhoneNumber(), 
+                accountDetails.getPhoneNumber(),
                 bodyMass.getHeight(), bodyMass.getWeight(),
                 bodyMass.getAge(), bodyMass.getBmi(),
                 member.getBmr(), member.getTdee(),
@@ -224,6 +224,8 @@ public class AuthenticationController {
                 encoder.encode(registerRequest.getPassword()),
                 registerRequest.getGender(), registerRequest.getBirthday(),
                 true, accountRole);
+        // xóa khi verfied email có
+        account.setIsVerified(true);
 
         // Save thông tin account xuống database
         accountRepository.save(account);
