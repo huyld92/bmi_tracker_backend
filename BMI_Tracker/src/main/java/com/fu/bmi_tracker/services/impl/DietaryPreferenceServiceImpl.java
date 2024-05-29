@@ -32,4 +32,9 @@ public class DietaryPreferenceServiceImpl implements DietaryPreferenceService {
         return repository.save(t);
     }
 
+    @Override
+    public Iterable<DietaryPreference> findAllDietaryPreferencesWithDetails() {
+        return repository.findAllDietaryPreferencesWithDetails();
+    }
+
 }

@@ -5,11 +5,15 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
+import com.fu.bmi_tracker.payload.response.ActivityLevelResponse;
+import java.util.List;
 
 /**
  *
  * @author Duc Huy
  */
 public interface ActivityLevelService extends GeneralService<ActivityLevel> {
-    
+
+    public List<ActivityLevelResponse> findAllActivityLevelsWithDetails();
+
 }

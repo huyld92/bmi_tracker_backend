@@ -54,6 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -131,7 +132,6 @@ public class AuthenticationController {
         // Lấy quyền đầu tiên và gán nó cho biến role
         String role = stringList.get(0);
 
-        refreshTokenService.findByToken(role);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
         return ResponseEntity.ok(new LoginResponse(
@@ -163,11 +163,8 @@ public class AuthenticationController {
                         loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        // generate mã jwt
-        String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
 
         CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
-
         // Lấy danh sách quyền của người dùng
         Set<String> authorities = accountDetails.getAuthorities().stream()
                 .map(Object::toString)
@@ -177,28 +174,32 @@ public class AuthenticationController {
         // Lấy quyền đầu tiên và gán nó cho biến role
         String role = stringList.get(0);
 
-        refreshTokenService.findByToken(role);
+        if (!role.equals(ERole.ROLE_MEMBER.toString())) {
+            return new ResponseEntity(new MessageResponse("Your role is not support!"), HttpStatus.UNAUTHORIZED);
+        }
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
+        Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
 
-        Member member = memberService.findByAccountID(accountDetails.getId()).get();
-
-        if (member == null) {
+        if (!member.isPresent()) {
             MessageResponse messageResponse = new MessageResponse("Member is not existed!");
             return new ResponseEntity<>(messageResponse, HttpStatus.NO_CONTENT);
 
         }
         MemberBodyMass bodyMass = memberBodyMassService.findTopByOrderByDateInputDesc().get();
 
+        // generate mã jwt
+        String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
+
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
-                member.getMemberID(), accountDetails.getEmail(),
+                member.get().getMemberID(), accountDetails.getEmail(),
                 accountDetails.getFullName(),
                 accountDetails.getGender().toString(),
                 accountDetails.getPhoneNumber(),
                 bodyMass.getHeight(), bodyMass.getWeight(),
                 bodyMass.getAge(), bodyMass.getBmi(),
-                member.getBmr(), member.getTdee(),
-                member.getActivityLevel().getActivityLevelName(),
+                member.get().getBmr(), member.get().getTdee(),
+                member.get().getActivityLevel().getActivityLevelName(),
                 refreshToken.getToken(),
                 jwt);
         return ResponseEntity.ok(forMemberResponse);

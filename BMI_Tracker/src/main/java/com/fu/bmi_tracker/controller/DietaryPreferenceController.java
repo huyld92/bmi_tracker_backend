@@ -46,9 +46,31 @@ public class DietaryPreferenceController {
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllDietaryPreference() {
-         
 
         Iterable<DietaryPreference> dietaryPreferences = service.findAll();
+
+        if (!dietaryPreferences.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(dietaryPreferences, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get all dietary preference with details",
+            description = "Get list dietary preference")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = DietaryPreference.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getAllWithDetails")
+    public ResponseEntity<?> getAllDietaryPreferenceWithDetails() {
+
+        Iterable<DietaryPreference> dietaryPreferences = service.findAllDietaryPreferencesWithDetails();
 
         if (!dietaryPreferences.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

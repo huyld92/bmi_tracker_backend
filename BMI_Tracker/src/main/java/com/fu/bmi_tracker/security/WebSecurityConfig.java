@@ -63,7 +63,6 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -92,6 +91,8 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/api/auth/loginMember").permitAll()
+                .requestMatchers("/api/activitylevel/getAllWithDetails").permitAll()
+                .requestMatchers("/api/dietaryPreference/getAllWithDetails").permitAll()
                 .requestMatchers("/api/auth/register").permitAll()
                 .requestMatchers("/api/auth/refreshtoken").permitAll()
                 .requestMatchers("/api/auth/vnpay-payment").permitAll()

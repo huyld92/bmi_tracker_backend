@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
+import com.fu.bmi_tracker.payload.response.ActivityLevelResponse;
 import com.fu.bmi_tracker.repository.ActivityLevelRepository;
 import com.fu.bmi_tracker.services.ActivityLevelService;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,11 @@ public class ActivityLevelServiceImpl implements ActivityLevelService {
     @Override
     public ActivityLevel save(ActivityLevel t) {
         return repository.save(t);
+    }
+
+    @Override
+    public List<ActivityLevelResponse> findAllActivityLevelsWithDetails() {
+        return repository.findAllActivityLevelsWithDetails();
     }
 
 }

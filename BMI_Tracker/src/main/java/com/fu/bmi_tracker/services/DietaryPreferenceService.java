@@ -10,6 +10,8 @@ import com.fu.bmi_tracker.model.entities.DietaryPreference;
  *
  * @author Duc Huy
  */
-public interface DietaryPreferenceService extends GeneralService<DietaryPreference>{
-    
+public interface DietaryPreferenceService extends GeneralService<DietaryPreference> {
+
+    public Iterable<DietaryPreference> findAllDietaryPreferencesWithDetails();
+
 }
