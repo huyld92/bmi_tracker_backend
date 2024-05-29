@@ -5,11 +5,13 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
+import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.services.AdvisorService;
+import java.util.List;
 
 @Service
 public class AdvisorServiceImpl implements AdvisorService {
@@ -35,6 +37,11 @@ public class AdvisorServiceImpl implements AdvisorService {
     @Override
     public Advisor findByAccountID(Integer accountID) {
         return repository.findByAccountID(accountID);
+    }
+
+    @Override
+    public List<AdvisorResponse> findAllAdvisorsWithDetails() {
+        return repository.findAllAdvisorsWithDetails();
     }
 
 }

@@ -54,6 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 /**
@@ -144,6 +145,8 @@ public class AuthenticationController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = LoginForMemberResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema(description = "Empty member information!"))}),
         @ApiResponse(responseCode = "400", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "401", content = {
@@ -180,6 +183,11 @@ public class AuthenticationController {
 
         Member member = memberService.findByAccountID(accountDetails.getId()).get();
 
+        if (member == null) {
+            MessageResponse messageResponse = new MessageResponse("Member is not existed!");
+            return new ResponseEntity<>(messageResponse, HttpStatus.NO_CONTENT);
+
+        }
         MemberBodyMass bodyMass = memberBodyMassService.findTopByOrderByDateInputDesc().get();
 
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
@@ -229,8 +237,6 @@ public class AuthenticationController {
                 encoder.encode(registerRequest.getPassword()),
                 registerRequest.getGender(), registerRequest.getBirthday(),
                 true, accountRole);
-        // xóa khi verfied email có
-        account.setIsVerified(true);
 
         // Save thông tin account xuống database
         accountRepository.save(account);

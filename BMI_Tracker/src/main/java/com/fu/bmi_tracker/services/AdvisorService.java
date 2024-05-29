@@ -5,6 +5,8 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
+import com.fu.bmi_tracker.payload.response.AdvisorResponse;
+import java.util.List;
 
 /**
  *
@@ -13,4 +15,7 @@ import com.fu.bmi_tracker.model.entities.Advisor;
 public interface AdvisorService extends GeneralService<Advisor> {
 
     public Advisor findByAccountID(Integer accountID);
+
+    public List<AdvisorResponse> findAllAdvisorsWithDetails();
+
 }

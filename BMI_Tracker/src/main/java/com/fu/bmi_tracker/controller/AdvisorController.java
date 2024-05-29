@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,27 @@ public class AdvisorController {
         Iterable<Advisor> advisors = advisorService.findAll();
 
         if (!advisors.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(advisors, HttpStatus.OK);
+
+    }
+    
+        @Operation(summary = "Retrieve all Advisors")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AdvisorResponse.class))}),
+        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getWithDetails")
+    public ResponseEntity<?> getAllAdvisorsWithDetails() {
+
+        List<AdvisorResponse> advisors = advisorService.findAllAdvisorsWithDetails();
+
+        if (advisors.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
