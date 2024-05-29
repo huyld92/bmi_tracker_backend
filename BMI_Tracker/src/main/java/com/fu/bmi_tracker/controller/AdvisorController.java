@@ -18,7 +18,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,12 +39,12 @@ public class AdvisorController {
 
     @Operation(summary = "Retrieve all Advisors (ADMIN)")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Advisor.class))}),
-        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Advisor.class)) }),
+            @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllAdvisors() {
 
@@ -61,15 +60,15 @@ public class AdvisorController {
 
     @Operation(summary = "Retrieve all Advisors (ADMIN)")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Advisor.class))}),
-        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Advisor.class)) }),
+            @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @GetMapping("/getByID")
     public ResponseEntity<?> getAdvisorByID(@RequestParam Integer advisorID) {
-        // 
+        //
         Optional<Advisor> advisors = advisorService.findById(advisorID);
 
         if (!advisors.isPresent()) {
@@ -82,18 +81,19 @@ public class AdvisorController {
 
     @Operation(summary = "Update Advisors information")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Advisor.class))}),
-        @ApiResponse(responseCode = "400", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Advisor.class)) }),
+            @ApiResponse(responseCode = "400", description = "There are no Advisors", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @PutMapping("/update")
     public ResponseEntity<?> updateAdvisor(@RequestParam Integer height, @RequestParam Integer weight) {
-        //get account from context
-        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // get account from context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
 
-        // find Advisor 
+        // find Advisor
         Advisor advisor = advisorService.findByAccountID(principal.getId());
 
         if (advisor == null) {

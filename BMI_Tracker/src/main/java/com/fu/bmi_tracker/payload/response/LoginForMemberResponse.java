@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginForMemberResponse {
 
-    private Integer memberDI;
+    private Integer memberID;
     private String email;
     private String fullname;
     private String gender;

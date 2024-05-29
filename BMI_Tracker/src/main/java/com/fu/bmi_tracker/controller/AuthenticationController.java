@@ -181,7 +181,7 @@ public class AuthenticationController {
                 member.getMemberID(), accountDetails.getEmail(),
                 accountDetails.getFullName(),
                 accountDetails.getGender().toString(),
-                accountDetails.getPhoneNumber(), 
+                accountDetails.getPhoneNumber(),
                 bodyMass.getHeight(), bodyMass.getWeight(),
                 bodyMass.getAge(), bodyMass.getBmi(),
                 member.getBmr(), member.getTdee(),

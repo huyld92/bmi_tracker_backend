@@ -16,7 +16,6 @@ import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.ActivityLevelService;
-import com.fu.bmi_tracker.services.MealLogService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -163,9 +162,8 @@ public class MemberController {
                 .getAuthentication().getPrincipal();
 
         // Find member by accountID
-        Optional<Member> member = memberService.findByAccountID(principal.getId());
-        System.out.println("AccoutnID: " + principal.getId());
-        System.out.println("member: " + memberService.existsByAccountID(principal.getId()));
+        Optional<Member> member = memberService.findByAccountID(principal.getId()); 
+        
         if (!member.isPresent()) {
             return ResponseEntity
                     .badRequest()
@@ -208,5 +206,42 @@ public class MemberController {
         memberService.save(member.get());
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Retrieve All Food in menu (MEMBER)",
+            description = "Member get food list")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = DietaryPreference.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getMenu")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getMenuOfMember() {
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // Find member by accountID
+        Optional<Member> member = memberService.findByAccountID(principal.getId());
+        
+        if (!member.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Member already exists!"));
+        }
+
+        // call service find food
+        List<Food> foods = menuFoodService.findFoodByMenu_MenuID(member.get().getMenuID());
+
+        //check food list 
+        if (foods.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 }
