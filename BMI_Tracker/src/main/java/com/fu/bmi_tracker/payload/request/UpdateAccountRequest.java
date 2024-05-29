@@ -41,8 +41,5 @@ public class UpdateAccountRequest {
     @Past
     @Schema(name = "birthday", example = "1990-01-01")
     private LocalDate birthday;
-    
-    @NotNull
-    private Boolean isActive;
-
+ 
 }
