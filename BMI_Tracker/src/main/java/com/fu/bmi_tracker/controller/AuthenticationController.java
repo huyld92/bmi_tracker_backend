@@ -17,6 +17,7 @@ import com.fu.bmi_tracker.repository.RoleRepository;
 import com.fu.bmi_tracker.security.jwt.JwtUtils;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.EmailDetails;
+import com.fu.bmi_tracker.model.entities.EmailVerificationCode;
 import com.fu.bmi_tracker.model.entities.RefreshToken;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
@@ -24,6 +25,7 @@ import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
 import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
 import com.fu.bmi_tracker.services.EmailService;
+import com.fu.bmi_tracker.services.EmailVerificationCodeService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import com.fu.bmi_tracker.services.RefreshTokenService;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +67,9 @@ public class AuthenticationController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private EmailVerificationCodeService verificationCodeService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -202,7 +207,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/register")
-    public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) throws Exception {
 
         if (accountRepository.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
@@ -238,16 +243,18 @@ public class AuthenticationController {
             createRequest.setEmailVerified(false);
             createRequest.setPassword(registerRequest.getPassword());
 
-            // Creating new member
-            UserRecord memberRecord = FirebaseAuth.getInstance().createUser(createRequest);
+            // Creating new user
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
 
-            // Generate Veritification Link
-            String link = FirebaseAuth.getInstance()
-                    .generateEmailVerificationLink(registerRequest.getEmail());
+            //Generate Veritification Link
+            String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
 
-            // Send mail with vertificaiton link
-            EmailDetails details = new EmailDetails(memberRecord.getEmail(), link,
-                    registerRequest.getFullName());
+            EmailVerificationCode verificationCode = new EmailVerificationCode(link, registerRequest.getEmail());
+
+            verificationCodeService.save(verificationCode);
+
+            //Send mail with vertificaiton link
+            EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
             emailService.sendSimpleMail(details);
         } catch (FirebaseAuthException e) {
             System.out.println("Error with firebase account creation");
@@ -302,8 +309,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(new MessageResponse("Log out successful!"));
     }
 
-    @PostMapping("/verifyAccount")
-    public void verifyAccount() {
-
-    }
 }
