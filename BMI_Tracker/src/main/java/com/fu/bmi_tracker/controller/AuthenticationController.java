@@ -145,7 +145,7 @@ public class AuthenticationController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = LoginForMemberResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", content = {
+        @ApiResponse(responseCode = "202", content = {
             @Content(schema = @Schema(description = "Empty member information!"))}),
         @ApiResponse(responseCode = "400", content = {
             @Content(schema = @Schema())}),
@@ -180,16 +180,24 @@ public class AuthenticationController {
 
         Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
 
-        if (!member.isPresent()) {
-            MessageResponse messageResponse = new MessageResponse("Member is not existed!");
-            return new ResponseEntity<>(messageResponse, HttpStatus.NO_CONTENT);
-
-        }
-        MemberBodyMass bodyMass = memberBodyMassService.findTopByOrderByDateInputDesc().get();
-
         // generate mã jwt
         String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
+
+        if (!member.isPresent()) {
+            LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
+                    -1, accountDetails.getEmail(),
+                    accountDetails.getFullName(),
+                    accountDetails.getGender().toString(),
+                    accountDetails.getPhoneNumber(),
+                    -1, -1, -1, -1, -1, -1,
+                    refreshToken.getToken(),
+                    jwt);
+
+            return new ResponseEntity<>(forMemberResponse, HttpStatus.ACCEPTED);
+
+        }
+        MemberBodyMass bodyMass = memberBodyMassService.findTopByOrderByDateInputDesc().get();
 
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
                 member.get().getMemberID(), accountDetails.getEmail(),
@@ -199,7 +207,6 @@ public class AuthenticationController {
                 bodyMass.getHeight(), bodyMass.getWeight(),
                 bodyMass.getAge(), bodyMass.getBmi(),
                 member.get().getBmr(), member.get().getTdee(),
-                member.get().getActivityLevel().getActivityLevelName(),
                 refreshToken.getToken(),
                 jwt);
         return ResponseEntity.ok(forMemberResponse);
