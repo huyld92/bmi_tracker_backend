@@ -39,7 +39,7 @@ public class AdvisorController {
     @Autowired
     AdvisorService advisorService;
 
-    @Operation(summary = "Retrieve all Advisors (ADMIN)")
+    @Operation(summary = "Retrieve all Advisors")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(schema = @Schema(implementation = Advisor.class)) }),
