@@ -17,10 +17,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateMemberResponse {
 
-    private int accountID;
+    private int memberID;
     private int defaultCalories;
     private int height;
     private int weight;
-    private double bmi;
+    private int age;
+    private double BMI;
+    private double BMR;
+    private double TDEE;
 
 }

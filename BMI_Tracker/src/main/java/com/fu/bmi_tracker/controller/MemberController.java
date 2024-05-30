@@ -13,6 +13,7 @@ import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
+import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
@@ -134,11 +135,8 @@ public class MemberController {
         memberBodyMassService.save(bodyMass);
 
         // Generate suggestion menu
-        CreateMemberResponse createMemberResponse = new CreateMemberResponse(
-                principal.getId(),
-                defaultCalories,
-                createMemberRequest.getHeight(),
-                createMemberRequest.getWeight(), bmi);
+        CreateMemberResponse createMemberResponse = new CreateMemberResponse(principal.getId(), defaultCalories,
+                createMemberRequest.getHeight(), createMemberRequest.getWeight(), age, bmi, bmr, tdee);
 
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
     }
@@ -160,8 +158,8 @@ public class MemberController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
         // Find member by accountID
-        Optional<Member> member = memberService.findByAccountID(principal.getId()); 
-        
+        Optional<Member> member = memberService.findByAccountID(principal.getId());
+
         if (!member.isPresent()) {
             return ResponseEntity
                     .badRequest()
@@ -225,7 +223,7 @@ public class MemberController {
 
         // Find member by accountID
         Optional<Member> member = memberService.findByAccountID(principal.getId());
-        
+
         if (!member.isPresent()) {
             return ResponseEntity
                     .badRequest()

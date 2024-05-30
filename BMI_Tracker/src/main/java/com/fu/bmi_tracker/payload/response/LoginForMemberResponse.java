@@ -28,7 +28,6 @@ public class LoginForMemberResponse {
     private double BMI;
     private double BMR;
     private double TDEE;
-    private String activityLevel;
     private String refreshToken;
     private String accessToken;
 
