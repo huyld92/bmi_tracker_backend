@@ -96,7 +96,7 @@ public class Account {
         this.birthday = createAccountRequest.getBirthday();
         this.isActive = true;
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
-        this.isVerified = false;
+        this.isVerified = true;
     }
 
     public void updateAccount(UpdateAccountRequest accountRequest) {
@@ -112,7 +112,9 @@ public class Account {
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }
-
+        if (accountRequest.getIsActive() != null) {
+            this.isActive = accountRequest.getIsActive();
+        }
     }
 
 }

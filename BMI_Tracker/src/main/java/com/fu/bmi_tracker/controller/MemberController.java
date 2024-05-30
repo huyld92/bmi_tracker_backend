@@ -6,7 +6,6 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
-import com.fu.bmi_tracker.model.entities.DietaryPreference;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
@@ -150,7 +149,7 @@ public class MemberController {
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
-                    @Content(schema = @Schema(implementation = DietaryPreference.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -160,7 +159,6 @@ public class MemberController {
     public ResponseEntity<?> getMemberMenuByMealType(@RequestParam EMealType mealType) {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-
         // Find member by accountID
         Optional<Member> member = memberService.findByAccountID(principal.getId()); 
         
@@ -214,7 +212,7 @@ public class MemberController {
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
-                    @Content(schema = @Schema(implementation = DietaryPreference.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {

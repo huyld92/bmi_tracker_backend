@@ -21,13 +21,15 @@ public class AdvisorResponse {
 
     private String linkPhoto = "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-black-default-avatar-image_2237212.jpg";
 
+    private Integer advisorID;
     private String email;
     private String fullName;
     private String phoneNumber;
     private EGender gender;
     private LocalDate birthday;
 
-    public AdvisorResponse(String email, String fullName, String phoneNumber, EGender gender, LocalDate birthday) {
+    public AdvisorResponse(Integer advisorID, String email, String fullName, String phoneNumber, EGender gender, LocalDate birthday) {
+        this.advisorID =advisorID;
         this.email = email;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
