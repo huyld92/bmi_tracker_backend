@@ -31,7 +31,7 @@ public class MealLogServiceImpl implements MealLogService {
     public MealLog save(MealLog t) {
         return repository.save(t);
     }
-    
+
     @Override
     public void deleteById(int mealLogID) {
         repository.deleteById(mealLogID);
@@ -41,4 +41,5 @@ public class MealLogServiceImpl implements MealLogService {
     public Iterable<MealLog> findByRecordID(Integer recordID) {
         return repository.findByRecordID(recordID);
     }
+
 }

@@ -35,7 +35,12 @@ public class DailyRecordServiceImpl implements DailyRecordService {
 
     @Override
     public Optional<DailyRecord> findByMemberIDAndDate(Integer memberID, LocalDate date) {
-        return repository.findByMemberIDAndDate(memberID, date);
+        return repository.findByMember_MemberIDAndDate(memberID, date);
+    }
+
+    @Override
+    public Optional<DailyRecord> findByAccountIDAndDate(Integer accountID, LocalDate date) {
+        return repository.findByAccountIDAndDate(accountID, date);
     }
 
 }

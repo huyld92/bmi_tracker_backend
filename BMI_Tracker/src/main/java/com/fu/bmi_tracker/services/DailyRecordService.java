@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.DailyRecord;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,5 +16,7 @@ import java.util.Optional;
 public interface DailyRecordService extends GeneralService<DailyRecord> {
 
     Optional<DailyRecord> findByMemberIDAndDate(Integer memberID, LocalDate date);
-    
+
+    Optional<DailyRecord> findByAccountIDAndDate(Integer accountID, LocalDate date);
+
 }
