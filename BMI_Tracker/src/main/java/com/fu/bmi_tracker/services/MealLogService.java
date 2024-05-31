@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.MealLog;
+import com.fu.bmi_tracker.model.entities.MealLog; 
 
 /**
  *

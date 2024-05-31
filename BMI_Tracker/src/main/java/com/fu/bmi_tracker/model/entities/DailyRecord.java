@@ -4,11 +4,14 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -37,17 +40,23 @@ public class DailyRecord {
     @Column(name = "TotalCaloriesOut")
     private Integer totalCaloriesOut;
 
+    @Column(name = "DefaultCalories")
+    private Integer defaultCalories;
+
     @Column(name = "Date")
     private LocalDate date;
 
-    @Column(name = "MemberID")
-    private Integer memberID;
+    @ManyToOne
+    @JoinColumn(name = "MemberID")
+    @JsonIgnore
+    private Member member;
 
-    public DailyRecord(LocalDate date, Integer memberID) {
-        totalCaloriesIn = 0;
-        totalCaloriesOut = 0;
+    public DailyRecord(LocalDate date, int defaultCalories, Member member) {
+        this.totalCaloriesIn = 0;
+        this.totalCaloriesOut = 0;
+        this.defaultCalories = defaultCalories;
         this.date = date;
-        this.memberID = memberID;
+        this.member = member;
     }
 
 }

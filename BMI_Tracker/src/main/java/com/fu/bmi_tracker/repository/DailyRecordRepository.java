@@ -8,6 +8,7 @@ import com.fu.bmi_tracker.model.entities.DailyRecord;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DailyRecordRepository extends JpaRepository<DailyRecord, Integer> {
 
-    public Optional<DailyRecord> findByMemberIDAndDate(Integer memberID, LocalDate date);
+    public Optional<DailyRecord> findByMember_MemberIDAndDate(Integer memberID, LocalDate date);
+
+    @Query("SELECT dr FROM DailyRecord dr WHERE dr.member.accountID = :accountID AND dr.date = :date")
+    Optional<DailyRecord> findByAccountIDAndDate(Integer accountID, LocalDate date);
 
 }

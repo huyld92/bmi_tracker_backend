@@ -9,7 +9,9 @@ import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.entities.Member;
+import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMealLogRequest;
+import com.fu.bmi_tracker.payload.response.MealWithCaloriesResponse;
 import com.fu.bmi_tracker.services.DailyRecordService;
 import com.fu.bmi_tracker.services.MealLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,17 +59,18 @@ public class MealLogController {
     @Autowired
     DailyRecordService dailyRecordService;
 
-    @Operation(summary = "Retrieve meal list (Member)", description = "Get list meal of date")
+    @Operation(summary = "Retrieve meal log list (Member)", description = "Get list meal log of date")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByDate")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getAllMealByDate(
+    @SuppressWarnings("UnusedAssignment")
+    public ResponseEntity<?> getAllMealLogByDate(
             @RequestParam(required = true) String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfMeal;
@@ -81,16 +86,16 @@ public class MealLogController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberService.findByAccountID(principal.getId()).get();
 
-        //Find record ID by memberID and Date
-        Optional<DailyRecord> record = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
 
-        // check record
-        if (!record.isPresent()) {
+        // new chưa tồn tại record thì create new
+        if (!dailyRecord.isPresent()) {
+            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        // Get Meal log with recordID
-        Iterable<MealLog> mealLogs = mealLogService.findByRecordID(record.get().getRecordID());
+        // Get all Meal log with accountid and date
+        Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.get().getRecordID());
 
         // check meal empty
         if (!mealLogs.iterator().hasNext()) {
@@ -104,7 +109,7 @@ public class MealLogController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
@@ -159,14 +164,15 @@ public class MealLogController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        // Get Member id from acccount id context
+        // Get Member from acccount id context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberService.findByAccountID(principal.getId()).get();
 
         DailyRecord dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal).get();
 
+        // new chưa tồn tại record thì create new
         if (dailyRecord == null) {
-            dailyRecord = dailyRecordService.save(new DailyRecord(dateOfMeal, member.getMemberID()));
+            dailyRecord = dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
 
         }
 
@@ -223,4 +229,93 @@ public class MealLogController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Operation(summary = "Get calories of meals by date (MEMBER)", description = "Retrieve calories of meals")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MealWithCaloriesResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getCaloriesOfMeal")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getCaloriesOfMeal(
+            @RequestParam(required = true) String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateOfMeal;
+        // Validation date 
+        try {
+            dateOfMeal = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+        // Get member from acccount id context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Member member = memberService.findByAccountID(principal.getId()).get();
+
+        // caculate calories of meal type
+        int defaultBreakfast = member.getDefaultCalories() * 30 / 100;
+        int defaultLunch = member.getDefaultCalories() * 40 / 100;
+        int defaultDinner = member.getDefaultCalories() * 20 / 100;
+        int defaultSnack = member.getDefaultCalories() * 10 / 100;
+ 
+        // create default MealWithCaloriesResponse
+        List<MealWithCaloriesResponse> caloriesResponses = new ArrayList<>();
+        caloriesResponses.add(new MealWithCaloriesResponse(
+                EMealType.Breakfast.toString(),
+                0,
+                defaultBreakfast));
+        caloriesResponses.add(new MealWithCaloriesResponse(
+                EMealType.Lunch.toString(),
+                0,
+                defaultLunch));
+        caloriesResponses.add(new MealWithCaloriesResponse(
+                EMealType.Dinner.toString(),
+                0,
+                defaultDinner));
+        caloriesResponses.add(new MealWithCaloriesResponse(
+                EMealType.Snack.toString(),
+                0,
+                defaultSnack));
+
+        //find dailyRecord
+        DailyRecord dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal).get();
+
+        // new chưa tồn tại record thì create new
+        if (dailyRecord == null) {
+            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+        } else {
+            // Nếu tồn tại recore check tiếp meal log
+            // Get all Meal log with accountid and date
+            Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.getRecordID());
+
+            // check meal empty
+            if (mealLogs.iterator().hasNext()) {
+                int breakFast = 0;
+                int lunch = 0;
+                int dinner = 0;
+                int snack = 0;
+                for (MealLog mealLog : mealLogs) {
+                    switch (mealLog.getMealType()) {
+                        case Breakfast ->
+                            breakFast += mealLog.getCalories();
+                        case Lunch ->
+                            lunch += mealLog.getCalories();
+                        case Dinner ->
+                            dinner += mealLog.getCalories();
+                        default ->
+                            snack += mealLog.getCalories();
+                    }
+                }
+                caloriesResponses.get(0).setCurrentCalories(breakFast);
+                caloriesResponses.get(1).setCurrentCalories(lunch);
+                caloriesResponses.get(2).setCurrentCalories(dinner);
+                caloriesResponses.get(3).setCurrentCalories(snack);
+            }
+        }
+        return new ResponseEntity<>(caloriesResponses, HttpStatus.OK);
+    }
 }

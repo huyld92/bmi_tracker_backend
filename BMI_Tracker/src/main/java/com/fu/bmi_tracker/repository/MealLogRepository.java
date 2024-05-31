@@ -16,4 +16,5 @@ import org.springframework.stereotype.Repository;
 public interface MealLogRepository extends JpaRepository<MealLog, Integer> {
 
     public Iterable<MealLog> findByRecordID(Integer recordID);
+
 }
