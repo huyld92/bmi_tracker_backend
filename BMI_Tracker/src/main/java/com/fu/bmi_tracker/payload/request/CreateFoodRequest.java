@@ -48,6 +48,11 @@ public class CreateFoodRequest {
     @Size(max = 255)
     @Schema(name = "foodVideo", example = "videourl.com/pizza.mp4")
     private String foodVideo;
+    
+    @NotBlank
+    @Size(max = 255)
+    @Schema(name = "foodNutrition", example = "100 Protein, 20 Carbs, 200 Fat")
+    private String foodNutrition;
 
     @NotNull
     @Positive

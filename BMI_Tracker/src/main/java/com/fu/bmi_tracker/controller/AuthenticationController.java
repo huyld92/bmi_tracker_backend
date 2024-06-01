@@ -13,7 +13,6 @@ import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.repository.AccountRepository;
-import com.fu.bmi_tracker.repository.RoleRepository;
 import com.fu.bmi_tracker.security.jwt.JwtUtils;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.EmailDetails;
@@ -52,8 +51,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
+import com.fu.bmi_tracker.services.RoleService;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
+import java.util.HashSet;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -80,7 +81,7 @@ public class AuthenticationController {
     AccountRepository accountRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    RoleService roleService;
 
     @Autowired
     PasswordEncoder encoder;
@@ -124,20 +125,15 @@ public class AuthenticationController {
         CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
 
         // Lấy danh sách quyền của người dùng
-        Set<String> authorities = accountDetails.getAuthorities().stream()
-                .map(Object::toString)
-                .collect(Collectors.toSet());
-        List<String> stringList = new ArrayList<>(authorities);
-
-        // Lấy quyền đầu tiên và gán nó cho biến role
-        String role = stringList.get(0);
+        List<String> roles = authentication.getAuthorities().stream().map(item -> item.getAuthority())
+                .collect(Collectors.toList());
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
         return ResponseEntity.ok(new LoginResponse(
                 accountDetails.getId(),
                 accountDetails.getEmail(),
-                role, refreshToken.getToken(), jwt));
+                roles, refreshToken.getToken(), jwt));
     }
 
     @Operation(summary = "Login for member by phone number and password", description = "Authenticate accounts by phone number and password. Returned will member information", tags = {
@@ -197,15 +193,19 @@ public class AuthenticationController {
             return new ResponseEntity<>(forMemberResponse, HttpStatus.ACCEPTED);
 
         }
-        MemberBodyMass bodyMass = memberBodyMassService.findTopByOrderByDateInputDesc().get();
+        MemberBodyMass bodyMass
+                = memberBodyMassService.findTopByMemberMemberIDOrderByDateInputDesc(
+                        member.get().getMemberID()).get();
 
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
                 member.get().getMemberID(), accountDetails.getEmail(),
                 accountDetails.getFullName(),
                 accountDetails.getGender().toString(),
                 accountDetails.getPhoneNumber(),
-                bodyMass.getHeight(), bodyMass.getWeight(),
-                bodyMass.getAge(), bodyMass.getBmi(),
+                bodyMass.getHeight(),
+                bodyMass.getWeight(),
+                bodyMass.getAge(),
+                bodyMass.getBmi(),
                 member.get().getBmr(), member.get().getTdee(),
                 refreshToken.getToken(),
                 jwt);
@@ -236,15 +236,16 @@ public class AuthenticationController {
                     .body(new MessageResponse("Error: Phone number is already taken!"));
         }
 
-        Role accountRole = roleRepository.findByRoleName(ERole.ROLE_MEMBER);
-        // .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        // set Role
+        Set<Role> accountRoles = new HashSet<>();
+        accountRoles.add(roleService.findByRoleName(ERole.ROLE_MEMBER));
 
         // Create new member's account
         Account account = new Account(registerRequest.getFullName(),
                 registerRequest.getEmail(), registerRequest.getPhoneNumber(),
                 encoder.encode(registerRequest.getPassword()),
                 registerRequest.getGender(), registerRequest.getBirthday(),
-                true, accountRole);
+                true, accountRoles);
 
         // Save thông tin account xuống database
         accountRepository.save(account);

@@ -19,11 +19,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateExerciseLogRequest {
+public class CreateActivityLogRequest {
 
     @Size(max = 100)
-    @Schema(name = "exerciseName", example = "Rope skipping")
-    private String exerciseName;
+    @Schema(name = "activityName", example = "Rope skipping")
+    private String activityName;
+    
+    @Size(max = 100)
+    @Schema(name = "emoji", example = "📝")
+    private String emoji;
 
     @Positive
     @Schema(name = "caloriesBurned", example = "500", nullable = true)
@@ -31,8 +35,8 @@ public class CreateExerciseLogRequest {
 
     @NotNull
     @Positive
-    @Schema(name = "duaration", example = "1")
-    private Integer duaration;
+    @Schema(name = "duration", example = "1")
+    private Integer duration;
 
     @NotNull
     @Positive

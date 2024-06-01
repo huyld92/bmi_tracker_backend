@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fu.bmi_tracker.model.enums.EGender;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,9 +54,11 @@ public class CustomAccountDetailsImpl implements UserDetails {
     }
 
     public static CustomAccountDetailsImpl build(Account account) {
-        Collection<? extends GrantedAuthority> authorities
-                = Collections.singleton(new SimpleGrantedAuthority(account.getRole().getRoleName().toString()));
 
+        List<GrantedAuthority> authorities = account.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
+                .collect(Collectors.toList());
+        
         return new CustomAccountDetailsImpl(
                 account.getAccountID(),
                 account.getEmail(),

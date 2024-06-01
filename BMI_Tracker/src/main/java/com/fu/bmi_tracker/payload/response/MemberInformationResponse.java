@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,19 +15,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class MemberInformationResponse {
 
-    private Integer accountID;
+    private Integer memberID;
     private String email;
-    private List<String> role;
-    private String refreshToken;
-    private String accessToken;
-
-    public LoginResponse(String accessToken, Integer accountID, String email, List<String> role) {
-        this.accessToken = accessToken;
-        this.accountID = accountID;
-        this.email = email;
-        this.role = role;
-    }
-
+    private String fullName;
+    private String gender;
+    private String phoneNumber;
+    private int height;
+    private int weight;
+    private int age;
+    private double BMI;
+    private double BMR;
+    private double TDEE;
 }

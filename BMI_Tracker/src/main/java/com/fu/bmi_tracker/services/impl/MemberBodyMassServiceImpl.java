@@ -33,8 +33,8 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
     }
 
     @Override
-    public Optional<MemberBodyMass> findTopByOrderByDateInputDesc() {
-        return repository.findTopByOrderByDateInputDesc();
+    public Optional<MemberBodyMass> findTopByMemberMemberIDOrderByDateInputDesc(Integer memberID) {
+        return repository.findTopByMemberMemberIDOrderByDateInputDesc(memberID);
     }
 
     @Override

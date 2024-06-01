@@ -48,6 +48,9 @@ public class Food {
     @Column(name = "FoodVideo")
     private String foodVideo;
 
+    @Column(name = "FoodNutrition")
+    private String foodNutrition;
+
     @Column(name = "FoodTimeProcess")
     private int foodTimeProcess;
 
@@ -67,6 +70,7 @@ public class Food {
         this.description = createFoodRequest.getDescription();
         this.foodPhoto = createFoodRequest.getFoodPhoto();
         this.foodVideo = createFoodRequest.getFoodVideo();
+        this.foodNutrition = createFoodRequest.getFoodNutrition();
         this.foodTimeProcess = createFoodRequest.getFoodTimeProcess();
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isActive = true;
@@ -91,12 +95,15 @@ public class Food {
         if (foodRequest.getFoodTimeProcess() != 0) {
             this.foodTimeProcess = foodRequest.getFoodTimeProcess();
         }
+        if (!foodRequest.getFoodNutrition().isEmpty()) {
+            this.foodNutrition = foodRequest.getFoodNutrition();
+        }
         if (foodRequest.getCreationDate() != null) {
             this.creationDate = foodRequest.getCreationDate();
         }
         if (foodRequest.getIsActive() != null) {
             this.isActive = foodRequest.getIsActive();
-        }                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
     }
 
 }

@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.payload.request.CreateExerciseLogRequest;
+import com.fu.bmi_tracker.payload.request.CreateActivityLogRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,31 +23,35 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ExerciseLog")
-public class ExerciseLog {
+@Table(name = "ActivityLog")
+public class ActivityLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ExerciseLogID")
-    private Integer exerciseLogID;
+    @Column(name = "ActivityLogID")
+    private Integer activityLogID;
 
-    @Column(name = "ExerciseName")
-    private String exerciseName;
+    @Column(name = "ActivityName")
+    private String activityName;
 
     @Column(name = "CaloriesBurned")
     private Integer caloriesBurned;
 
-    @Column(name = "Duaration")
-    private Integer duaration;
+    @Column(name = "Emoji")
+    private String emoji;
+
+    @Column(name = "Duration")
+    private Integer duration;
 
     @Column(name = "RecordID")
     private Integer recordID;
 
-    public ExerciseLog(CreateExerciseLogRequest exerciseLogRequest) {
-        this.exerciseName = exerciseLogRequest.getExerciseName();
-        this.caloriesBurned = exerciseLogRequest.getCaloriesBurned();
-        this.duaration = exerciseLogRequest.getDuaration();
-        this.recordID = exerciseLogRequest.getRecordID();
+    public ActivityLog(CreateActivityLogRequest activityLogRequest) {
+        this.activityName = activityLogRequest.getActivityName();
+        this.emoji = activityLogRequest.getEmoji();
+        this.caloriesBurned = activityLogRequest.getCaloriesBurned();
+        this.duration = activityLogRequest.getDuration();
+        this.recordID = activityLogRequest.getRecordID();
     }
 
 }

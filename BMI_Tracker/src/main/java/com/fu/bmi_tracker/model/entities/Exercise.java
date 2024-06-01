@@ -33,6 +33,9 @@ public class Exercise {
     @Column(name = "ExerciseName")
     private String exerciseName;
 
+    @Column(name = "Emoji")
+    private String emoji;
+    
     @Column(name = "Duration")
     private Integer duration;
 

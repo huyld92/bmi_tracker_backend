@@ -33,20 +33,23 @@ public class FoodResponse {
 
     private String foodVideo;
 
+    private String foodNutrition;
+
     private int foodTimeProcess;
 
     private List<Tag> foodTags;
 
     private List<Recipe> recipes;
 
-    public FoodResponse(Food foodSave, List<Tag> foodTags, List<Recipe> recipes) {
-        this.foodID = foodSave.getFoodID();
-        this.foodName = foodSave.getFoodName();
-        this.foodCalories = foodSave.getFoodCalories();
-        this.description = foodSave.getDescription();
-        this.foodPhoto = foodSave.getFoodPhoto();
-        this.foodVideo = foodSave.getFoodVideo();
-        this.foodTimeProcess = foodSave.getFoodTimeProcess();
+    public FoodResponse(Food foodSaved, List<Tag> foodTags, List<Recipe> recipes) {
+        this.foodID = foodSaved.getFoodID();
+        this.foodName = foodSaved.getFoodName();
+        this.foodCalories = foodSaved.getFoodCalories();
+        this.description = foodSaved.getDescription();
+        this.foodPhoto = foodSaved.getFoodPhoto();
+        this.foodVideo = foodSaved.getFoodVideo();
+        this.foodNutrition = foodSaved.getFoodNutrition();
+        this.foodTimeProcess = foodSaved.getFoodTimeProcess();
         this.foodTags = foodTags;
         this.recipes = recipes;
     }

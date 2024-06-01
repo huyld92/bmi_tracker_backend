@@ -41,6 +41,9 @@ public class Plan {
 
     @Column(name = "PlanDuration")
     private Integer planDuration;
+    
+    @Column(name = "AdvisorID")
+    private Integer advisorID;
 
     @Column(name = "IsActive")
     private boolean isActive;
