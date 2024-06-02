@@ -27,6 +27,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     public boolean existsByPhoneNumber(String phoneNumber);
 
-        @Query("SELECT new com.fu.bmi_tracker.payload.response.AccountResponse(a) FROM Account a")
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.AccountResponse(a) FROM Account a")
     public List<AccountResponse> findAllAccountResponse();
 }

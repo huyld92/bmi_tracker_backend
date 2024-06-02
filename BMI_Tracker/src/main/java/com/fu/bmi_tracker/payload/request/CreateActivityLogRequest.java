@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -24,7 +25,7 @@ public class CreateActivityLogRequest {
     @Size(max = 100)
     @Schema(name = "activityName", example = "Rope skipping")
     private String activityName;
-    
+
     @Size(max = 100)
     @Schema(name = "emoji", example = "📝")
     private String emoji;
@@ -38,8 +39,7 @@ public class CreateActivityLogRequest {
     @Schema(name = "duration", example = "1")
     private Integer duration;
 
-    @NotNull
-    @Positive
-    @Schema(name = "recordID", example = "1")
-    private Integer recordID;
+    @NotBlank
+    @Schema(name = "dateOfActivity", example = "2024-05-01")
+    private String dateOfActivity;
 }

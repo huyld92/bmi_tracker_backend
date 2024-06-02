@@ -16,6 +16,7 @@ import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
 import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
 import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -267,22 +268,39 @@ public class MemberController {
                     .badRequest()
                     .body(new MessageResponse("Error: Member already exists!"));
         }
-        MemberBodyMass bodyMass
-                = memberBodyMassService.findTopByMemberMemberIDOrderByDateInputDesc(
-                        member.get().getMenuID()).get();
 
-        MemberInformationResponse memberInformationResponse = new MemberInformationResponse(
-                member.get().getMemberID(),
-                principal.getEmail(),
-                principal.getFullName(),
-                principal.getGender().toString(),
-                principal.getPhoneNumber(),
-                bodyMass.getHeight(),
-                bodyMass.getWeight(),
-                bodyMass.getAge(),
-                bodyMass.getBmi(),
-                member.get().getBmr(),
-                member.get().getTdee());
+        MemberBodyMass bodyMass
+                = memberBodyMassService.getLatestBodyMass(
+                        member.get().getMemberID());
+
+        MemberInformationResponse memberInformationResponse;
+        if (bodyMass != null) {
+            memberInformationResponse = new MemberInformationResponse(
+                    member.get().getMemberID(),
+                    principal.getEmail(),
+                    principal.getFullName(),
+                    principal.getGender().toString(),
+                    principal.getPhoneNumber(),
+                    bodyMass.getHeight(),
+                    bodyMass.getWeight(),
+                    bodyMass.getAge(),
+                    bodyMass.getBmi(),
+                    member.get().getBmr(),
+                    member.get().getTdee());
+        } else {
+            memberInformationResponse = new MemberInformationResponse(
+                    member.get().getMemberID(),
+                    principal.getEmail(),
+                    principal.getFullName(),
+                    principal.getGender().toString(),
+                    principal.getPhoneNumber(),
+                    0,
+                    0,
+                    0,
+                    0,
+                    member.get().getBmr(),
+                    member.get().getTdee());
+        }
 
         return new ResponseEntity<>(memberInformationResponse, HttpStatus.OK);
     }

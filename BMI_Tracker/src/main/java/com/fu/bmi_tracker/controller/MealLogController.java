@@ -69,7 +69,6 @@ public class MealLogController {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByDate")
     @PreAuthorize("hasRole('MEMBER')")
-    @SuppressWarnings("UnusedAssignment")
     public ResponseEntity<?> getAllMealLogByDate(
             @RequestParam(required = true) String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -103,38 +102,6 @@ public class MealLogController {
         }
 
         return new ResponseEntity<>(mealLogs, HttpStatus.OK);
-    }
-
-    @Operation(summary = "Retrieve total calories meal of date", description = "Get total calories meal of date from account id")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/getTotalCaloriesOfDay")
-    @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getTotalCaloriesOfDay(
-            @RequestParam(required = true) String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dateOfMeal;
-        // Validation date 
-        try {
-            dateOfMeal = LocalDate.parse(date, formatter);
-        } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-        }
-
-        // Get Member id from acccount id context
-        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Member member = memberService.findByAccountID(principal.getId()).get();
-
-        //Find record ID by memberID and Date
-        Optional<DailyRecord> record = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
-
-        return new ResponseEntity<>(record.get().getTotalCaloriesIn(), HttpStatus.OK);
     }
 
     @Operation(
@@ -229,7 +196,7 @@ public class MealLogController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Get calories of meals by date (MEMBER)", description = "Retrieve calories of meals")
+    @Operation(summary = "Get calories of meals by date (MEMBER)", description = "Retrieve calories of meals type (breakfast,lunch, dinner,snack)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealWithCaloriesResponse.class), mediaType = "application/json")}),
@@ -241,6 +208,7 @@ public class MealLogController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getCaloriesOfMeal(
             @RequestParam(required = true) String date) {
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfMeal;
         // Validation date 
@@ -261,7 +229,7 @@ public class MealLogController {
         int defaultLunch = member.getDefaultCalories() * 40 / 100;
         int defaultDinner = member.getDefaultCalories() * 20 / 100;
         int defaultSnack = member.getDefaultCalories() * 10 / 100;
- 
+
         // create default MealWithCaloriesResponse
         List<MealWithCaloriesResponse> caloriesResponses = new ArrayList<>();
         caloriesResponses.add(new MealWithCaloriesResponse(

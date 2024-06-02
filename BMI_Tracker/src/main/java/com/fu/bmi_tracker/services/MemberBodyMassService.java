@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public interface MemberBodyMassService extends GeneralService<MemberBodyMass> {
 
-    public Optional<MemberBodyMass> findTopByMemberMemberIDOrderByDateInputDesc(Integer memberID);
+    public MemberBodyMass getLatestBodyMass(Integer memberID);
 
     public Iterable<MemberBodyMass> findAllByAccountID(Integer accountID);
 }

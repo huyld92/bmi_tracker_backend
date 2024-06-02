@@ -51,7 +51,6 @@ public class ActivityLog {
         this.emoji = activityLogRequest.getEmoji();
         this.caloriesBurned = activityLogRequest.getCaloriesBurned();
         this.duration = activityLogRequest.getDuration();
-        this.recordID = activityLogRequest.getRecordID();
     }
 
 }

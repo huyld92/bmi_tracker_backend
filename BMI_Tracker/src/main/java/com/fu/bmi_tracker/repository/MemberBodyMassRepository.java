@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberBodyMassRepository extends JpaRepository<MemberBodyMass, Integer> {
 
-    public Optional<MemberBodyMass> findTopByMemberMemberIDOrderByDateInputDesc(Integer memberID);
+    Optional<MemberBodyMass> findFirstByMemberMemberIDOrderByDateInputDesc(Integer memberId);
 
     @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.accountID = :accountID")
     public List<MemberBodyMass> findAllByAccountID(Integer accountID);

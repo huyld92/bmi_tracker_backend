@@ -194,8 +194,8 @@ public class AuthenticationController {
 
         }
         MemberBodyMass bodyMass
-                = memberBodyMassService.findTopByMemberMemberIDOrderByDateInputDesc(
-                        member.get().getMemberID()).get();
+                = memberBodyMassService.getLatestBodyMass(
+                        member.get().getMemberID());
 
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
                 member.get().getMemberID(), accountDetails.getEmail(),
