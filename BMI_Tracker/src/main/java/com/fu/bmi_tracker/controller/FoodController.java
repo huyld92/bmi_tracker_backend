@@ -120,7 +120,7 @@ public class FoodController {
     @Operation(summary = "Retrieve all Foods ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -132,6 +132,9 @@ public class FoodController {
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        List<FoodResponse> foodsResponse = new ArrayList<>();
+
+//        foodsResponse.add(new FoodResponse(foodSaved, foodTags, recipes));
 
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }

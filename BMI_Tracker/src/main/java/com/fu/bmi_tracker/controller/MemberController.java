@@ -154,7 +154,7 @@ public class MemberController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/getByMealType")
+    @GetMapping(value = "/getMenuByMealType")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getMemberMenuByMealType(@RequestParam EMealType mealType) {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()

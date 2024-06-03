@@ -104,6 +104,53 @@ public class MealLogController {
         return new ResponseEntity<>(mealLogs, HttpStatus.OK);
     }
 
+    @Operation(summary = "Retrieve meal log list (Member)", description = "Get list meal log of date")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getAllMelLogOfDateByMealType")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getAllMelLogOfDateByMealType(
+            @RequestParam(required = true) String date,
+            @RequestParam(required = true) EMealType mealType) {
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateOfMeal;
+        // Validation date 
+        try {
+            dateOfMeal = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+        // Get Member id from acccount id context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberService.findByAccountID(principal.getId()).get();
+
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
+
+        // new chưa tồn tại record thì create new
+        if (!dailyRecord.isPresent()) {
+            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // Tìm tất cả meal log cùng Date của ReordID và meal type
+        Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.get().getRecordID());
+
+        // check meal empty
+        if (!mealLogs.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(mealLogs, HttpStatus.OK);
+    }
+
     @Operation(
             summary = "Create new mealL log (MEMBER)",
             description = "Create new meal log")

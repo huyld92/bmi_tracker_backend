@@ -40,8 +40,8 @@ public class Certificate {
     @Column(name = "CertificateLink")
     private String certificateLink;
 
-    @Column(name = "Status")
-    private String status;
+    @Column(name = "IsActive")
+    private Boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "AdvisorID")
@@ -50,13 +50,13 @@ public class Certificate {
     public Certificate(CreateCertificateRequest certificateRequest) {
         this.certificateName = certificateRequest.getCertificateName();
         this.certificateLink = certificateRequest.getCertificateLink();
-        this.status = "Not verified";
+        this.isActive = true;
         this.advisor = new Advisor(certificateRequest.getAdvisorID());
-
     }
 
     public void updateCertificate(UpdateCertificateRequest certificateRequest) {
         this.certificateName = certificateRequest.getCertificateName();
         this.certificateLink = certificateRequest.getCertificateLink();
+        this.isActive = certificateRequest.getIsActive();
     }
 }

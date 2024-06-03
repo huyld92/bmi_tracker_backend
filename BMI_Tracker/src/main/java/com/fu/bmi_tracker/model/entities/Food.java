@@ -10,9 +10,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -59,6 +64,17 @@ public class Food {
 
     @Column(name = "IsActive")
     private Boolean isActive;
+
+    @OneToMany(mappedBy = "food")
+    private List<Recipe> recipes;
+
+    @ManyToMany
+    @JoinTable(
+            name = "FoodTag",
+            joinColumns = @JoinColumn(name = "FoodID"),
+            inverseJoinColumns = @JoinColumn(name = "TagID")
+    )
+    private List<Tag> foodTags;
 
     public Food(int foodID) {
         this.foodID = foodID;
