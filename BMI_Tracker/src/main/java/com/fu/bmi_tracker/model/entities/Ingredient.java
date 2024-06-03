@@ -79,6 +79,9 @@ public class Ingredient {
         if (!ingredientRequest.getUnitOfMeasurement().isEmpty()) {
             this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement();
         }
+        this.ingredientPhoto = ingredientRequest.getIngredientPhoto();
+        this.quantity = ingredientRequest.getQuantity();
+        this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement();
 
         if (ingredientRequest.getIngredientCalories() > -1) {
             this.ingredientCalories = ingredientRequest.getIngredientCalories();
@@ -87,6 +90,7 @@ public class Ingredient {
         if (ingredientRequest.getTagID() <= 0) {
             this.tagID = ingredientRequest.getTagID();
         }
+        this.isActive = ingredientRequest.isActive;
 
     }
 }

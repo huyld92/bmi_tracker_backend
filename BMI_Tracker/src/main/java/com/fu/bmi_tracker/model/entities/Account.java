@@ -12,14 +12,18 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -70,12 +74,16 @@ public class Account {
     @Column(name = "CreationDate")
     private LocalDate creationDate;
 
-    @ManyToOne
-    @JoinColumn(name = "RoleID")
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "RoleAccount",
+            joinColumns = @JoinColumn(name = "AccountID"),
+            inverseJoinColumns = @JoinColumn(name = "RoleID"))
+    private Set<Role> roles;
 
     public Account(String fullName, String email, String phoneNumber, String password, EGender gender,
-            LocalDate birthday, Boolean isActive, Role role) {
+            LocalDate birthday, Boolean isActive, Set<Role> roles
+    ) {
+        this.roles = roles;
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -85,10 +93,10 @@ public class Account {
         this.isActive = isActive;
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isVerified = false;
-        this.role = role;
     }
 
     public Account(CreateAccountRequest createAccountRequest) {
+        this.roles = new HashSet<>();
         this.fullName = createAccountRequest.getFullName();
         this.email = createAccountRequest.getEmail();
         this.phoneNumber = createAccountRequest.getPhoneNumber();
@@ -112,9 +120,13 @@ public class Account {
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }
+        if (accountRequest.getRoles() != null) {
+            this.roles = accountRequest.getRoles();
+        }
         if (accountRequest.getIsActive() != null) {
             this.isActive = accountRequest.getIsActive();
         }
+
     }
 
 }

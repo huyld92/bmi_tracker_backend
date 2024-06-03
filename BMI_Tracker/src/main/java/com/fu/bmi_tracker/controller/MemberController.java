@@ -14,7 +14,9 @@ import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
 import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
+import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -152,7 +154,7 @@ public class MemberController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/getByMealType")
+    @GetMapping(value = "/getMenuByMealType")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getMemberMenuByMealType(@RequestParam EMealType mealType) {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
@@ -240,4 +242,67 @@ public class MemberController {
 
         return new ResponseEntity<>(foods, HttpStatus.OK);
     }
+
+    @Operation(
+            summary = "Retrieve member information (MEMBER)",
+            description = "Member get personal information")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = MemberInformationResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getMemberInformation")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getMemberInformation() {
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // Find member by accountID
+        Optional<Member> member = memberService.findByAccountID(principal.getId());
+
+        if (!member.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Member already exists!"));
+        }
+
+        MemberBodyMass bodyMass
+                = memberBodyMassService.getLatestBodyMass(
+                        member.get().getMemberID());
+
+        MemberInformationResponse memberInformationResponse;
+        if (bodyMass != null) {
+            memberInformationResponse = new MemberInformationResponse(
+                    member.get().getMemberID(),
+                    principal.getEmail(),
+                    principal.getFullName(),
+                    principal.getGender().toString(),
+                    principal.getPhoneNumber(),
+                    bodyMass.getHeight(),
+                    bodyMass.getWeight(),
+                    bodyMass.getAge(),
+                    bodyMass.getBmi(),
+                    member.get().getBmr(),
+                    member.get().getTdee());
+        } else {
+            memberInformationResponse = new MemberInformationResponse(
+                    member.get().getMemberID(),
+                    principal.getEmail(),
+                    principal.getFullName(),
+                    principal.getGender().toString(),
+                    principal.getPhoneNumber(),
+                    0,
+                    0,
+                    0,
+                    0,
+                    member.get().getBmr(),
+                    member.get().getTdee());
+        }
+
+        return new ResponseEntity<>(memberInformationResponse, HttpStatus.OK);
+    }
+
 }

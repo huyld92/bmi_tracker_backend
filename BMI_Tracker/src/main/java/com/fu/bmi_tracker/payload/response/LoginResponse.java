@@ -4,7 +4,8 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
- import lombok.AllArgsConstructor;
+import com.fu.bmi_tracker.model.enums.ERole;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,11 +20,11 @@ public class LoginResponse {
 
     private Integer accountID;
     private String email;
-    private String role;
+    private ERole role;
     private String refreshToken;
     private String accessToken;
 
-    public LoginResponse(String accessToken, Integer accountID, String email, String role) {
+    public LoginResponse(String accessToken, Integer accountID, String email, ERole role) {
         this.accessToken = accessToken;
         this.accountID = accountID;
         this.email = email;

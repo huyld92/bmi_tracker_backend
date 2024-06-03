@@ -10,9 +10,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,6 +53,9 @@ public class Food {
     @Column(name = "FoodVideo")
     private String foodVideo;
 
+    @Column(name = "FoodNutrition")
+    private String foodNutrition;
+
     @Column(name = "FoodTimeProcess")
     private int foodTimeProcess;
 
@@ -56,6 +64,17 @@ public class Food {
 
     @Column(name = "IsActive")
     private Boolean isActive;
+
+    @OneToMany(mappedBy = "food")
+    private List<Recipe> recipes;
+
+    @ManyToMany
+    @JoinTable(
+            name = "FoodTag",
+            joinColumns = @JoinColumn(name = "FoodID"),
+            inverseJoinColumns = @JoinColumn(name = "TagID")
+    )
+    private List<Tag> foodTags;
 
     public Food(int foodID) {
         this.foodID = foodID;
@@ -67,6 +86,7 @@ public class Food {
         this.description = createFoodRequest.getDescription();
         this.foodPhoto = createFoodRequest.getFoodPhoto();
         this.foodVideo = createFoodRequest.getFoodVideo();
+        this.foodNutrition = createFoodRequest.getFoodNutrition();
         this.foodTimeProcess = createFoodRequest.getFoodTimeProcess();
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isActive = true;
@@ -91,12 +111,15 @@ public class Food {
         if (foodRequest.getFoodTimeProcess() != 0) {
             this.foodTimeProcess = foodRequest.getFoodTimeProcess();
         }
+        if (!foodRequest.getFoodNutrition().isEmpty()) {
+            this.foodNutrition = foodRequest.getFoodNutrition();
+        }
         if (foodRequest.getCreationDate() != null) {
             this.creationDate = foodRequest.getCreationDate();
         }
         if (foodRequest.getIsActive() != null) {
             this.isActive = foodRequest.getIsActive();
-        }                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
     }
 
 }

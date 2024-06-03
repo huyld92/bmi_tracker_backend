@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.payload.request.CreateMenuRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,8 +41,17 @@ public class Menu {
     private Integer totalCalories;
 
     @Column(name = "IsActive")
-    private Integer isActive;
+    private Boolean isActive;
 
     @Column(name = "AdvisorID")
     private Integer advisorID;
+
+    public Menu(CreateMenuRequest menuRequest, Integer advisorID) {
+        this.menuName = menuRequest.getMenuName();
+        this.menuDescription = menuRequest.getMenuDescription();
+        this.totalCalories = menuRequest.getTotalCalories();
+        this.isActive = true;
+        this.advisorID = advisorID;
+
+    }
 }

@@ -69,7 +69,6 @@ public class MealLogController {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByDate")
     @PreAuthorize("hasRole('MEMBER')")
-    @SuppressWarnings("UnusedAssignment")
     public ResponseEntity<?> getAllMealLogByDate(
             @RequestParam(required = true) String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -105,7 +104,7 @@ public class MealLogController {
         return new ResponseEntity<>(mealLogs, HttpStatus.OK);
     }
 
-    @Operation(summary = "Retrieve total calories meal of date", description = "Get total calories meal of date from account id")
+    @Operation(summary = "Retrieve meal log list (Member)", description = "Get list meal log of date")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
@@ -113,10 +112,12 @@ public class MealLogController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping("/getTotalCaloriesOfDay")
+    @GetMapping("/getAllMelLogOfDateByMealType")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getTotalCaloriesOfDay(
-            @RequestParam(required = true) String date) {
+    public ResponseEntity<?> getAllMelLogOfDateByMealType(
+            @RequestParam(required = true) String date,
+            @RequestParam(required = true) EMealType mealType) {
+        
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfMeal;
         // Validation date 
@@ -131,10 +132,23 @@ public class MealLogController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberService.findByAccountID(principal.getId()).get();
 
-        //Find record ID by memberID and Date
-        Optional<DailyRecord> record = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
 
-        return new ResponseEntity<>(record.get().getTotalCaloriesIn(), HttpStatus.OK);
+        // new chưa tồn tại record thì create new
+        if (!dailyRecord.isPresent()) {
+            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // Tìm tất cả meal log cùng Date của ReordID và meal type
+        Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.get().getRecordID());
+
+        // check meal empty
+        if (!mealLogs.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(mealLogs, HttpStatus.OK);
     }
 
     @Operation(
@@ -229,7 +243,7 @@ public class MealLogController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Get calories of meals by date (MEMBER)", description = "Retrieve calories of meals")
+    @Operation(summary = "Get calories of meals by date (MEMBER)", description = "Retrieve calories of meals type (breakfast,lunch, dinner,snack)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealWithCaloriesResponse.class), mediaType = "application/json")}),
@@ -241,6 +255,7 @@ public class MealLogController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getCaloriesOfMeal(
             @RequestParam(required = true) String date) {
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfMeal;
         // Validation date 
@@ -261,7 +276,7 @@ public class MealLogController {
         int defaultLunch = member.getDefaultCalories() * 40 / 100;
         int defaultDinner = member.getDefaultCalories() * 20 / 100;
         int defaultSnack = member.getDefaultCalories() * 10 / 100;
- 
+
         // create default MealWithCaloriesResponse
         List<MealWithCaloriesResponse> caloriesResponses = new ArrayList<>();
         caloriesResponses.add(new MealWithCaloriesResponse(

@@ -52,7 +52,7 @@ public class Order {
     @Column(name = "TransactionID", nullable = false)
     private Integer transactionID;
 
-    @Column(name = "PlanID", nullable = false)
-    private Integer planID;
+    @Column(name = "PlanDuration", nullable = false)
+    private Integer planDuration;
 
 }

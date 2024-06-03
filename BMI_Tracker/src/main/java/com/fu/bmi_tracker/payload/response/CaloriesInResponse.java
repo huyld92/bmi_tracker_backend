@@ -15,20 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginForMemberResponse {
+public class CaloriesInResponse {
 
-    private Integer memberID;
-    private String email;
-    private String fullName;
-    private String gender;
-    private String phoneNumber;
-    private int height;
-    private int weight;
-    private int age;
-    private double BMI;
-    private double BMR;
-    private double TDEE;
-    private String refreshToken;
-    private String accessToken;
+    private Integer caloriesIn;
 
 }

@@ -39,10 +39,14 @@ public class Advisor {
     @Column(name = "Weight")
     private Integer weight;
 
-    public Advisor(Integer accountID, Integer height, Integer weight) {
+    @Column(name = "IsActive")
+    private Boolean isActive;
+
+    public Advisor(Integer accountID, Integer height, Integer weight, boolean isActive) {
         this.accountID = accountID;
         this.height = height;
         this.weight = weight;
+        this.isActive = isActive;
     }
 
     Advisor(Integer advisorID) {

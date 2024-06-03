@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginForMemberResponse {
+public class MemberInformationResponse {
 
     private Integer memberID;
     private String email;
@@ -28,7 +28,4 @@ public class LoginForMemberResponse {
     private double BMI;
     private double BMR;
     private double TDEE;
-    private String refreshToken;
-    private String accessToken;
-
 }

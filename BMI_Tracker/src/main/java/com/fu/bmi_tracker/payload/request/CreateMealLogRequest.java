@@ -44,6 +44,7 @@ public class CreateMealLogRequest {
     @Schema(name = "quantity", example = "1 slice")
     private String quantity;
 
+    @NotBlank
     @Schema(name = "dateOfMeal", example = "2024-05-01")
     private String dateOfMeal;
 }
