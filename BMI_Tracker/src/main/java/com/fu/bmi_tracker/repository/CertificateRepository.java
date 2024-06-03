@@ -24,9 +24,4 @@ public interface CertificateRepository extends JpaRepository<Certificate, Intege
 
     public void deleteById(int certificateID);
 
-    @Modifying
-    @Transactional
-    @Query("update Certificate c set c.status = ?2 where c.certificateID = ?1")
-    public int updateStatusById(Integer certificateID, String status);
-
 }

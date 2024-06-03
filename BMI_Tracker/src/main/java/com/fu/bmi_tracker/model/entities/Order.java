@@ -40,6 +40,12 @@ public class Order {
     @Column(name = "DateOrder")
     private LocalDateTime dateOrder;
 
+    @Column(name = "StartDate")
+    private LocalDateTime startDate;
+
+    @Column(name = "EndDate")
+    private LocalDateTime endDate;
+
     @Column(name = "memberID", nullable = false)
     private Integer memberID;
 
@@ -55,4 +61,6 @@ public class Order {
     @Column(name = "PlanDuration", nullable = false)
     private Integer planDuration;
 
+    @Column(name = "IsPaid", nullable = false)
+    private Boolean isPaid;
 }
