@@ -18,6 +18,4 @@ public interface CertificateService extends GeneralService<Certificate> {
 
     public void deleteById(int certificateID);
 
-    public int updateStatusById(Integer certificateID, String status);
-
 }

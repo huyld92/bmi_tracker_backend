@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -130,4 +131,42 @@ public class DailyRecordController {
 
         return new ResponseEntity<>(new CaloriesInResponse(caloriesIn), HttpStatus.OK);
     }
+
+    // Lấy danh sách daily record trong một tuần từ một ngày bất kỳ trong tuần đó 
+    @Operation(summary = "Retrieve daily record of week", description = "Get daily record for a week by providing the value of a day of the week to get")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = DailyRecord.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getAllDailyRecordOfWeekByDate")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getAllDailyRecordOfWeekByDate(@RequestParam String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate;
+        // Validation date 
+        try {
+            localDate = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // Get Member id from acccount id context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberService.findByAccountID(principal.getId()).get();
+
+        // Tìm danh sách daily record từ member ID và date trong vòng một tuần
+        List<DailyRecord> dailyRecords = dailyRecordService.getDailyRecordsForWeek(member.getMemberID(), localDate);
+
+        if (dailyRecords.isEmpty()) {
+            // 204 không có 
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        }
+        return new ResponseEntity<>(dailyRecords, HttpStatus.OK);
+
+    }
+
 }

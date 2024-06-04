@@ -19,4 +19,6 @@ public interface DailyRecordService extends GeneralService<DailyRecord> {
 
     Optional<DailyRecord> findByAccountIDAndDate(Integer accountID, LocalDate date);
 
+    public List<DailyRecord> getDailyRecordsForWeek(Integer memberID, LocalDate date);
+
 }
