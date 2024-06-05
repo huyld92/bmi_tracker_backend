@@ -20,4 +20,5 @@ public interface CertificateRepository extends JpaRepository<Certificate, Intege
     public boolean existsById(int certidicateID);
 
     public void deleteById(int certificateID); 
+
 }
