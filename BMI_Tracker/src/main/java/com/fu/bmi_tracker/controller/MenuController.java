@@ -51,7 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Menu", description = "Menu management APIs")
 @RestController
-@RequestMapping("/api/test/menus")
+@RequestMapping("/api/menus")
 public class MenuController {
 
     @Autowired
