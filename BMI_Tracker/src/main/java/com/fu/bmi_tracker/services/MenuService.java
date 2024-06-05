@@ -10,6 +10,8 @@ import com.fu.bmi_tracker.model.entities.Menu;
  *
  * @author Duc Huy
  */
-public interface MenuService extends GeneralService<Menu>{
-    
+public interface MenuService extends GeneralService<Menu> {
+
+    public Iterable<Menu> getAllByAdvisorID(Integer advisorID);
+
 }

@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.fu.bmi_tracker.payload.response;
+package com.fu.bmi_tracker.payload.request;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,22 +16,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodResponse {
+public class UpdateMenuRequest {
 
-    private Integer foodID;
+    private Integer menuID;
+    
+    private String menuName;
 
-    private String foodName;
+    private String menuDescription;
 
-    private Integer foodCalories;
+    private Integer totalCalories;
 
-    private String description;
-
-    private String foodPhoto;
-
-    private String foodVideo;
-
-    private String foodNutrition;
-
-    private Integer foodTimeProcess;
+    private List<MenuFoodRequest> menuFoods;
 
 }

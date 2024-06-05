@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.payload.request.CreateMenuRequest;
+import com.fu.bmi_tracker.payload.request.UpdateMenuRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -52,6 +53,11 @@ public class Menu {
         this.totalCalories = menuRequest.getTotalCalories();
         this.isActive = true;
         this.advisorID = advisorID;
+    }
 
+    public void update(UpdateMenuRequest menuRequest) {
+        this.menuName = menuRequest.getMenuName();
+        this.menuDescription = menuRequest.getMenuDescription();
+        this.totalCalories = menuRequest.getTotalCalories();
     }
 }

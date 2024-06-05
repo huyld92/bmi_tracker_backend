@@ -52,6 +52,10 @@ public class Ingredient {
     @Column(name = "IsActive")
     private Boolean isActive;
 
+    public Ingredient(Integer ingredientID) {
+        this.ingredientID = ingredientID;
+    }
+
     public Ingredient(String ingredientName, String ingredientPhoto, Integer quantity, String unitOfMeasurement, Integer ingredientCalories, Integer tagID, Boolean isActive) {
         this.ingredientName = ingredientName;
         this.ingredientPhoto = ingredientPhoto;
