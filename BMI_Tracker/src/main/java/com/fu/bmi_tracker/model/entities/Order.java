@@ -4,13 +4,22 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.model.enums.EOrderStatus;
+import com.fu.bmi_tracker.payload.request.CreateOderRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,21 +50,24 @@ public class Order {
     private LocalDateTime dateOrder;
 
     @Column(name = "StartDate")
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
     @Column(name = "EndDate")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
-    @Column(name = "memberID", nullable = false)
-    private Integer memberID;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "MemberID")
+    private Member member;
 
-    @Column(name = "AdvisorID", nullable = false)
-    private Integer advisorID;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "AdvisorID")
+    private Advisor advisor;
 
     @Column(name = "Status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private EOrderStatus status;
 
-    @Column(name = "TransactionID", nullable = false)
+    @Column(name = "TransactionID", nullable = true)
     private Integer transactionID;
 
     @Column(name = "PlanDuration", nullable = false)
@@ -63,4 +75,21 @@ public class Order {
 
     @Column(name = "IsPaid", nullable = false)
     private Boolean isPaid;
+
+    public Order(CreateOderRequest createOderRequest, Integer memberID) {
+        this.description = createOderRequest.getDescription();
+        this.amount = createOderRequest.getAmount();
+        this.dateOrder = LocalDateTime.now(ZoneId.of("GMT+7"));
+//        this.dateOrder = createOderRequest.getDateOrder();
+        this.startDate = LocalDate.now(ZoneId.of("GMT+7"));
+        this.endDate = startDate.plusDays(createOderRequest.getPlanDuration());
+        this.planDuration = createOderRequest.getPlanDuration();
+        this.member = new Member();
+        member.setMemberID(memberID);
+        this.advisor = new Advisor();
+        advisor.setAdvisorID(createOderRequest.getAdvisorID());
+        this.status = EOrderStatus.PENDING;
+        this.isPaid = false;
+    }
+
 }

@@ -26,7 +26,7 @@ public class LoginRequest {
     @NotBlank
     private String password;
     
-    @NotBlank
-    @Schema(name = "role", example = "ROLE_ADMIN")
-    private ERole role;
+//    @NotBlank
+//    @Schema(name = "role", example = "ROLE_ADMIN")
+//    private ERole role;
 }

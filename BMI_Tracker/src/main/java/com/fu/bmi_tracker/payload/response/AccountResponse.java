@@ -26,20 +26,32 @@ public class AccountResponse {
     private String email;
     private String fullName;
     private String phoneNumber;
-    private List<ERole> roleNames;
+//    private List<ERole> roleNames;
+    private ERole roleName;
+
     private Boolean isActive;
     // private String status;
 
+//    public AccountResponse(Account account) {
+//        this.accountID = account.getAccountID();
+//        this.email = account.getEmail();
+//        this.fullName = account.getFullName();
+//        this.phoneNumber = account.getPhoneNumber();
+//        this.roleNames = new ArrayList<>();
+//        for (Role role : account.getRoles()) {
+//            // Add the role name to the roleNames Set
+//            roleNames.add(role.getRoleName());
+//        }
+//        account.getRoles();
+//        this.isActive = account.getIsActive();
+//    }
     public AccountResponse(Account account) {
         this.accountID = account.getAccountID();
         this.email = account.getEmail();
         this.fullName = account.getFullName();
         this.phoneNumber = account.getPhoneNumber();
-        this.roleNames = new ArrayList<>();
-        for (Role role : account.getRoles()) {
-            // Add the role name to the roleNames Set
-            roleNames.add(role.getRoleName());
-        }
+        this.roleName = account.getRoles().iterator().next().getRoleName();
+
         account.getRoles();
         this.isActive = account.getIsActive();
     }
