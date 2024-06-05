@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.model.enums.EMealType;
+import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
 import com.fu.bmi_tracker.repository.MenuFoodRepository;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import java.util.List;
@@ -44,6 +45,31 @@ public class MenuFoodServiceImpl implements MenuFoodService {
     @Override
     public List<Food> findFoodByMenu_MenuID(Integer menuID) {
         return repository.findFoodByMenu_MenuID(menuID);
+    }
+
+    @Override
+    public void saveAll(List<MenuFood> menuFoods) {
+        repository.saveAll(menuFoods);
+    }
+
+    @Override
+    public List<MenuFoodResponse> getMenuFoodResponse(Integer menuID) {
+        return repository.findAllFoodAndMealTypeByMenuId(menuID);
+    }
+
+    @Override
+    public List<Integer> getAllFoodIDsByMenuID(Integer menuID) {
+        return repository.findAllFoodIDsByMenuID(menuID);
+    }
+
+    @Override
+    public void updateMealTypeByMenuIdAndFoodId(EMealType mealType, Integer foodID, Integer menuID) {
+        repository.updateMealTypeByMenuIdAndFoodId(mealType, menuID, foodID);
+    }
+
+    @Override
+    public void deleteByMenuIdAndFoodId(Integer menuId, Integer foodId) {
+        repository.deleteByMenuIdAndFoodId(menuId, foodId);
     }
 
 }

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface MenuRepostory extends JpaRepository<Menu, Integer> {
+public interface MenuRepository extends JpaRepository<Menu, Integer> {
+
+    public Iterable<Menu> findByAdvisorID(Integer advisorID);
 
 }

@@ -50,4 +50,8 @@ public class Tag {
         this.isActive = true;
     }
 
+    public Tag(Integer tagID) {
+        this.tagID = tagID;
+    }
+
 }

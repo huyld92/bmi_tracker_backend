@@ -5,16 +5,15 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.FoodTag;
 import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
-import com.fu.bmi_tracker.payload.response.FoodResponse;
+import com.fu.bmi_tracker.payload.request.RecipeRequest;
+import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
+import com.fu.bmi_tracker.payload.response.RecipeResponse;
 import com.fu.bmi_tracker.services.FoodService;
-import com.fu.bmi_tracker.services.FoodTagService;
 import com.fu.bmi_tracker.services.IngredientService;
 import com.fu.bmi_tracker.services.RecipeService;
-import com.fu.bmi_tracker.services.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,16 +46,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class FoodController {
 
     @Autowired
-    FoodService service;
-
-    @Autowired
-    TagService tagService;
-
+    FoodService service; 
+    
     @Autowired
     IngredientService ingredientService;
-
-    @Autowired
-    FoodTagService foodTagService;
 
     @Autowired
     RecipeService recipeService;
@@ -66,44 +59,39 @@ public class FoodController {
             description = "Create new food with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewFood(@RequestBody CreateFoodRequest createFoodRequest) {
         // create food from request
         Food food = new Food(createFoodRequest);
+        // Create list tag from createFoodRequest
+        List<com.fu.bmi_tracker.model.entities.Tag> tags = new ArrayList<>();
+        // Add tagID to Tag
+        createFoodRequest.getTagIDs().forEach((Integer tagID) -> {
+            tags.add(new com.fu.bmi_tracker.model.entities.Tag(tagID));
+        });
+        // set tags to food
+        food.setFoodTags(tags);
 
         // Store food
         Food foodSave = service.save(food);
 
         if (foodSave == null) {
             return new ResponseEntity<>("Failed to create new food", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
 
-        // Find list tag
-        List<com.fu.bmi_tracker.model.entities.Tag> tags = tagService.findByTagIDIn(createFoodRequest.getTagIDs());
-        List<FoodTag> foodTags = new ArrayList<>();
-
-        // Create food tag from list tag
-        tags.forEach(tag -> {
-            foodTags.add(new FoodTag(tag, foodSave));
-        });
-
-        // store food tag
-        if (foodTagService.saveAll(foodTags).isEmpty()) {
-            return new ResponseEntity<>("Failed to create new food tag", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        // create recipes
         List<Recipe> recipes = new ArrayList<>();
 
-        // Create reccipes
-        createFoodRequest.getRecipeRequests().forEach(recipeRequest -> {
+        // add reccipes value
+        createFoodRequest.getRecipeRequests().forEach((RecipeRequest recipeRequest) -> {
             Ingredient ingredient = ingredientService.findById(recipeRequest.getIngredientID()).get();
+
             recipes.add(new Recipe(food, ingredient, recipeRequest.getQuantity()));
         });
 
@@ -111,8 +99,15 @@ public class FoodController {
         if (recipeService.saveAll(recipes).isEmpty()) {
             return new ResponseEntity<>("Failed to create new recipes", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        // Create food reponse
-        FoodResponse foodResponse = new FoodResponse(foodSave, tags, recipes);
+        // Create recipe reponse
+        List<RecipeResponse> recipeResponses = new ArrayList<>();
+
+        recipes.forEach((Recipe recipe) -> {
+            recipeResponses.add(new RecipeResponse(recipe.getIngredient(), recipe.getQuantity()));
+        });
+
+        // create food response
+        FoodEntityResponse foodResponse = new FoodEntityResponse(foodSave, foodSave.getFoodTags(), recipeResponses);
 
         return new ResponseEntity<>(foodResponse, HttpStatus.CREATED);
     }
@@ -120,7 +115,7 @@ public class FoodController {
     @Operation(summary = "Retrieve all Foods ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -132,11 +127,32 @@ public class FoodController {
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        List<FoodResponse> foodsResponse = new ArrayList<>();
+        List<FoodEntityResponse> foodsResponse = new ArrayList<>();
+        for (Food food : foods) {
+            FoodEntityResponse foodResponse = new FoodEntityResponse();
+            foodResponse.setFoodID(food.getFoodID());
+            foodResponse.setFoodName(food.getFoodName());
+            foodResponse.setFoodCalories(food.getFoodCalories());
+            foodResponse.setDescription(food.getDescription());
+            foodResponse.setFoodPhoto(food.getFoodPhoto());
+            foodResponse.setFoodVideo(food.getFoodVideo());
+            foodResponse.setFoodNutrition(food.getFoodNutrition());
+            foodResponse.setFoodTimeProcess(food.getFoodTimeProcess());
+            foodResponse.setFoodTags(food.getFoodTags());
 
+            List<RecipeResponse> recipeResponses = new ArrayList<>();
+            for (Recipe recipe : food.getRecipes()) {
+                RecipeResponse recipeResponse = new RecipeResponse();
+                recipeResponse.setIngredient(recipe.getIngredient());
+                recipeResponse.setQuantity(recipe.getQuantity());
+                recipeResponses.add(recipeResponse);
+            }
+            foodResponse.setRecipes(recipeResponses);
+
+            foodsResponse.add(foodResponse);
+        }
 //        foodsResponse.add(new FoodResponse(foodSaved, foodTags, recipes));
-
-        return new ResponseEntity<>(foods, HttpStatus.OK);
+        return new ResponseEntity<>(foodsResponse, HttpStatus.OK);
     }
 
     @Operation(
@@ -144,17 +160,39 @@ public class FoodController {
             description = "Get a Food object by specifying its id. The response is Food object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getByID/{id}")
     public ResponseEntity<?> getFoodById(@PathVariable("id") int id) {
+        // tìm food bằng food id
         Optional<Food> food = service.findById(id);
-
+        // kiểm tra tồn tại
         if (food.isPresent()) {
-            return new ResponseEntity<>(food, HttpStatus.OK);
+            // chuyển đổi thành food response
+            FoodEntityResponse foodResponse = new FoodEntityResponse();
+            foodResponse.setFoodID(food.get().getFoodID());
+            foodResponse.setFoodName(food.get().getFoodName());
+            foodResponse.setFoodCalories(food.get().getFoodCalories());
+            foodResponse.setDescription(food.get().getDescription());
+            foodResponse.setFoodPhoto(food.get().getFoodPhoto());
+            foodResponse.setFoodVideo(food.get().getFoodVideo());
+            foodResponse.setFoodNutrition(food.get().getFoodNutrition());
+            foodResponse.setFoodTimeProcess(food.get().getFoodTimeProcess());
+            foodResponse.setFoodTags(food.get().getFoodTags());
+
+            List<RecipeResponse> recipeResponses = new ArrayList<>();
+            for (Recipe recipe : food.get().getRecipes()) {
+                RecipeResponse recipeResponse = new RecipeResponse();
+                recipeResponse.setIngredient(recipe.getIngredient());
+                recipeResponse.setQuantity(recipe.getQuantity());
+                recipeResponses.add(recipeResponse);
+            }
+            foodResponse.setRecipes(recipeResponses);
+
+            return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find food with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
@@ -171,11 +209,35 @@ public class FoodController {
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateFood(@RequestBody Food foodRequest) {
+        // Tìm food 
         Optional<Food> food = service.findById(foodRequest.getFoodID());
-
+        // kiểm tra food tồn tại
         if (food.isPresent()) {
             food.get().update(foodRequest);
-            return new ResponseEntity<>(service.save(food.get()), HttpStatus.OK);
+            // lưu trữ cập nhật xuống databse
+            service.save(food.get());
+
+            // tạo food reponse 
+            FoodEntityResponse foodResponse = new FoodEntityResponse();
+            foodResponse.setFoodID(food.get().getFoodID());
+            foodResponse.setFoodName(food.get().getFoodName());
+            foodResponse.setFoodCalories(food.get().getFoodCalories());
+            foodResponse.setDescription(food.get().getDescription());
+            foodResponse.setFoodPhoto(food.get().getFoodPhoto());
+            foodResponse.setFoodVideo(food.get().getFoodVideo());
+            foodResponse.setFoodNutrition(food.get().getFoodNutrition());
+            foodResponse.setFoodTimeProcess(food.get().getFoodTimeProcess());
+            foodResponse.setFoodTags(food.get().getFoodTags());
+
+            List<RecipeResponse> recipeResponses = new ArrayList<>();
+            for (Recipe recipe : food.get().getRecipes()) {
+                RecipeResponse recipeResponse = new RecipeResponse();
+                recipeResponse.setIngredient(recipe.getIngredient());
+                recipeResponse.setQuantity(recipe.getQuantity());
+                recipeResponses.add(recipeResponse);
+            }
+            foodResponse.setRecipes(recipeResponses);
+            return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find food with id{" + foodRequest.getFoodID() + "}", HttpStatus.NOT_FOUND);
         }

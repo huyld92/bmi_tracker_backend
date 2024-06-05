@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
+import com.fu.bmi_tracker.model.entities.Ingredient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,22 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodResponse {
+public class RecipeResponse {
 
-    private Integer foodID;
-
-    private String foodName;
-
-    private Integer foodCalories;
-
-    private String description;
-
-    private String foodPhoto;
-
-    private String foodVideo;
-
-    private String foodNutrition;
-
-    private Integer foodTimeProcess;
-
+    private Ingredient ingredient;
+    private Integer quantity;
 }

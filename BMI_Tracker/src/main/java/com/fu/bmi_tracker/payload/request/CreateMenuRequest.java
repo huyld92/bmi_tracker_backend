@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.request;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,7 @@ public class CreateMenuRequest {
     private String menuDescription;
 
     private Integer totalCalories;
+
+    private List<MenuFoodRequest> menuFoods;
 
 }
