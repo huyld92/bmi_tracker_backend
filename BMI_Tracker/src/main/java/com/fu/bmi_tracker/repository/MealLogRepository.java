@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.MealLog;
-import com.fu.bmi_tracker.model.enums.EMealType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

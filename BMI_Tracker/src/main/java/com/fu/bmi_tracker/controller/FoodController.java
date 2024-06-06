@@ -6,16 +6,11 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Ingredient;
-import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
-import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponseAll;
-import com.fu.bmi_tracker.payload.response.RecipeResponse;
 import com.fu.bmi_tracker.services.FoodService;
-import com.fu.bmi_tracker.services.IngredientService;
-import com.fu.bmi_tracker.services.RecipeService;
 import com.fu.bmi_tracker.util.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +24,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,7 +70,7 @@ public class FoodController {
         food.setFoodTags(tags);
 
         // Add ingredientID to Ingredient
-        List<Ingredient> ingredients = new ArrayList();
+        List<Ingredient> ingredients = new ArrayList<>();
         createFoodRequest.getIngredientIDs().forEach((Integer ingredientID) -> {
             ingredients.add(new Ingredient(ingredientID));
         });
