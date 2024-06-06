@@ -41,9 +41,9 @@ public class FoodResponseAll {
 
     private boolean isActive;
 
-    private List<Tag> foodTags;
+    private List<TagResponse> foodTags;
 
-    public FoodResponseAll(Food foodSaved, List<Tag> foodTags) {
+    public FoodResponseAll(Food foodSaved, List<TagResponse> foodTags) {
         this.foodID = foodSaved.getFoodID();
         this.foodName = foodSaved.getFoodName();
         this.foodCalories = foodSaved.getFoodCalories();
@@ -52,6 +52,8 @@ public class FoodResponseAll {
         this.foodVideo = foodSaved.getFoodVideo();
         this.foodNutrition = foodSaved.getFoodNutrition();
         this.foodTimeProcess = foodSaved.getFoodTimeProcess();
+        this.creationDate = foodSaved.getCreationDate();
+        this.isActive = foodSaved.getIsActive();
         this.foodTags = foodTags;
     }
 }

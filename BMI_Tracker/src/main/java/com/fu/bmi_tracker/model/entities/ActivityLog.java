@@ -28,22 +28,22 @@ public class ActivityLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ActivityLogID")
+    @Column(name = "ActivityLogID", nullable = false)
     private Integer activityLogID;
 
-    @Column(name = "ActivityName")
+    @Column(name = "ActivityName", nullable = false)
     private String activityName;
 
-    @Column(name = "CaloriesBurned")
+    @Column(name = "CaloriesBurned", nullable = true)
     private Integer caloriesBurned;
 
-    @Column(name = "Emoji")
+    @Column(name = "Emoji", nullable = true)
     private String emoji;
 
-    @Column(name = "Duration")
+    @Column(name = "Duration", nullable = false)
     private Integer duration;
 
-    @Column(name = "RecordID")
+    @Column(name = "RecordID", nullable = false)
     private Integer recordID;
 
     public ActivityLog(CreateActivityLogRequest activityLogRequest) {

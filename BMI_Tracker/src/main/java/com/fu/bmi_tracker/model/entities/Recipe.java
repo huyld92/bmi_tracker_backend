@@ -38,7 +38,7 @@ public class Recipe {
     @JoinColumn(name = "IngredientID")
     private Ingredient ingredient;
 
-    @Column(name = "quantity")
-    private Integer quantity;
+//    @Column(name = "quantity", nullable = false)
+//    private Integer quantity;
 
 }

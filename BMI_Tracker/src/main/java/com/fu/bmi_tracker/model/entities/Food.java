@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
+import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,12 +22,14 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,38 +38,43 @@ public class Food {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "FoodID")
+    @Column(name = "FoodID", nullable = false)
     private int foodID;
 
-    @Column(name = "FoodName")
+    @Column(name = "FoodName", nullable = false)
     private String foodName;
 
-    @Column(name = "FoodCalories")
+    @Column(name = "FoodCalories", nullable = false)
     private int foodCalories;
 
-    @Column(name = "Description")
+    @Column(name = "Description", nullable = true)
     private String description;
 
-    @Column(name = "FoodPhoto")
+    @Column(name = "FoodPhoto", nullable = true)
     private String foodPhoto;
 
-    @Column(name = "FoodVideo")
+    @Column(name = "FoodVideo", nullable = true)
     private String foodVideo;
 
-    @Column(name = "FoodNutrition")
+    @Column(name = "FoodNutrition", nullable = false)
     private String foodNutrition;
 
-    @Column(name = "FoodTimeProcess")
+    @Column(name = "FoodTimeProcess", nullable = false)
     private int foodTimeProcess;
 
-    @Column(name = "CreationDate")
+    @Column(name = "CreationDate", nullable = false)
     private LocalDate creationDate;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "food")
-    private List<Recipe> recipes;
+    @ManyToMany
+    @JoinTable(
+            name = "Recipe",
+            joinColumns = @JoinColumn(name = "FoodID"),
+            inverseJoinColumns = @JoinColumn(name = "IngredientID")
+    )
+    private List<Ingredient> ingredients;
 
     @ManyToMany
     @JoinTable(
@@ -92,23 +100,17 @@ public class Food {
         this.isActive = true;
     }
 
-    public void update(Food foodRequest) {
+    public void update(UpdateFoodRequest foodRequest) {
         if (foodRequest.getFoodName() != null) {
             this.foodName = foodRequest.getFoodName();
         }
         if (foodRequest.getFoodCalories() != 0) {
             this.foodCalories = foodRequest.getFoodCalories();
         }
-        if (foodRequest.getDescription() != null) {
-            this.description = foodRequest.getDescription();
-        }
-        if (foodRequest.getFoodPhoto() != null) {
-            this.foodPhoto = foodRequest.getFoodPhoto();
-        }
-        if (foodRequest.getFoodVideo() != null) {
-            this.foodVideo = foodRequest.getFoodVideo();
-        }
-        if (foodRequest.getFoodTimeProcess() != 0) {
+        this.description = foodRequest.getDescription();
+        this.foodPhoto = foodRequest.getFoodPhoto();
+        this.foodVideo = foodRequest.getFoodVideo();
+        if (foodRequest.getFoodTimeProcess() >= 0) {
             this.foodTimeProcess = foodRequest.getFoodTimeProcess();
         }
         if (!foodRequest.getFoodNutrition().isEmpty()) {

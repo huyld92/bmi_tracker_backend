@@ -31,19 +31,19 @@ public class DailyRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RecordID")
+    @Column(name = "RecordID", nullable = false)
     private Integer recordID;
 
-    @Column(name = "totalCaloriesIn")
+    @Column(name = "TotalCaloriesIn", nullable = false)
     private Integer totalCaloriesIn;
 
-    @Column(name = "TotalCaloriesOut")
+    @Column(name = "TotalCaloriesOut", nullable = false)
     private Integer totalCaloriesOut;
 
-    @Column(name = "DefaultCalories")
+    @Column(name = "DefaultCalories", nullable = false)
     private Integer defaultCalories;
 
-    @Column(name = "Date")
+    @Column(name = "Date", nullable = false)
     private LocalDate date;
 
     @ManyToOne

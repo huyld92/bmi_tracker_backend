@@ -15,12 +15,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,22 +31,22 @@ public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MenuID")
+    @Column(name = "MenuID", nullable = false)
     private Integer menuID;
 
-    @Column(name = "MenuName")
+    @Column(name = "MenuName", nullable = false)
     private String menuName;
 
-    @Column(name = "MenuDescription")
+    @Column(name = "MenuDescription", nullable = true)
     private String menuDescription;
 
-    @Column(name = "TotalCalories")
+    @Column(name = "TotalCalories", nullable = false)
     private Integer totalCalories;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @Column(name = "AdvisorID")
+    @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
 
     public Menu(CreateMenuRequest menuRequest, Integer advisorID) {

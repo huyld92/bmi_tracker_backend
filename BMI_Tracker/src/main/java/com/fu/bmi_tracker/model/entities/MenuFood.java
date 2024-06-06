@@ -43,7 +43,7 @@ public class MenuFood {
     @JoinColumn(name = "FoodID")
     private Food food;
 
-    @Column(name = "MealType")
+    @Column(name = "MealType", nullable = false)
     @Enumerated(EnumType.STRING)
     private EMealType mealType;
 

@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.payload.response;
 
 import com.fu.bmi_tracker.model.entities.Food;
+import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.entities.Tag;
 import java.time.LocalDate;
@@ -42,20 +43,22 @@ public class FoodEntityResponse {
 
     private boolean isActive;
 
-    private List<Tag> foodTags;
+    private List<TagResponse> foodTags;
 
-    private List<RecipeResponse> recipes;
+    private List<Ingredient> ingredients;
 
-    public FoodEntityResponse(Food foodSaved, List<Tag> foodTags, List<RecipeResponse> recipes) {
-        this.foodID = foodSaved.getFoodID();
-        this.foodName = foodSaved.getFoodName();
-        this.foodCalories = foodSaved.getFoodCalories();
-        this.description = foodSaved.getDescription();
-        this.foodPhoto = foodSaved.getFoodPhoto();
-        this.foodVideo = foodSaved.getFoodVideo();
-        this.foodNutrition = foodSaved.getFoodNutrition();
-        this.foodTimeProcess = foodSaved.getFoodTimeProcess();
+    public FoodEntityResponse(Food food, List<TagResponse> foodTags, List<Ingredient> ingredients) {
+        this.foodID = food.getFoodID();
+        this.foodName = food.getFoodName();
+        this.foodCalories = food.getFoodCalories();
+        this.description = food.getDescription();
+        this.foodPhoto = food.getFoodPhoto();
+        this.foodVideo = food.getFoodVideo();
+        this.foodNutrition = food.getFoodNutrition();
+        this.foodTimeProcess = food.getFoodTimeProcess();
+        this.creationDate = food.getCreationDate();
+        this.isActive = food.getIsActive();
         this.foodTags = foodTags;
-        this.recipes = recipes;
-    }
+        this.ingredients = ingredients;
+    } 
 }

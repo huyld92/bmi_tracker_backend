@@ -13,12 +13,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,19 +29,19 @@ public class Advisor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "AdvisorID")
+    @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
 
-    @Column(name = "AccountID")
+    @Column(name = "AccountID", nullable = false, unique = true)
     private Integer accountID;
 
-    @Column(name = "Height")
+    @Column(name = "Height", nullable = false)
     private Integer height;
 
-    @Column(name = "Weight")
+    @Column(name = "Weight", nullable = false)
     private Integer weight;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
     public Advisor(Integer accountID, Integer height, Integer weight, boolean isActive) {

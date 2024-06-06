@@ -19,12 +19,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @Builder
 @AllArgsConstructor
@@ -34,42 +36,42 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MemberID")
+    @Column(name = "MemberID", nullable = false)
     private Integer memberID;
 
-    @Column(name = "AccountID")
+    @Column(name = "AccountID", nullable = false, unique = true)
     private Integer accountID;
 
-    @Column(name = "TargetWeight")
+    @Column(name = "TargetWeight", nullable = false)
     private Integer targetWeight;
 
-    @Column(name = "TDEE")
+    @Column(name = "TDEE", nullable = false)
     private Double tdee;
 
-    @Column(name = "BMR")
+    @Column(name = "BMR", nullable = false)
     private Double bmr;
 
-    @Column(name = "DefaultCalories")
+    @Column(name = "DefaultCalories", nullable = false)
     private Integer defaultCalories;
 
-    @Column(name = "IsPrivate")
+    @Column(name = "IsPrivate", nullable = false)
     private boolean isPrivate;
 
-    @Column(name = "LastUpdatedTime")
+    @Column(name = "LastUpdatedTime", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime lastUpdatedTime;
 
-    @Column(name = "DietaryPreferenceID")
+    @Column(name = "DietaryPreferenceID", nullable = false)
     private Integer dietaryPreferenceID;
 
     @ManyToOne
-    @JoinColumn(name = "ActivityLevelID")
+    @JoinColumn(name = "ActivityLevelID", nullable = false)
     private ActivityLevel activityLevel;
 
-    @Column(name = "MenuID")
+    @Column(name = "MenuID", nullable = true)
     private Integer menuID;
 
-    @Column(name = "WorkoutID")
+    @Column(name = "WorkoutID", nullable = true)
     private Integer workoutID;
 
 //    public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
