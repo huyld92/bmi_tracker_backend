@@ -14,12 +14,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,28 +30,28 @@ public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IngredientID")
+    @Column(name = "IngredientID", nullable = false)
     private Integer ingredientID;
 
-    @Column(name = "IngredientName")
+    @Column(name = "IngredientName", nullable = false)
     private String ingredientName;
 
-    @Column(name = "IngredientPhoto")
+    @Column(name = "IngredientPhoto", nullable = true)
     private String ingredientPhoto;
 
-    @Column(name = "Quantity")
+    @Column(name = "Quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "UnitOfMeasurement")
+    @Column(name = "UnitOfMeasurement", nullable = false)
     private String unitOfMeasurement;
 
-    @Column(name = "IngredientCalories")
+    @Column(name = "IngredientCalories", nullable = false)
     private Integer ingredientCalories;
 
-    @Column(name = "TagID")
+    @Column(name = "TagID", nullable = false)
     private Integer tagID;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
     public Ingredient(Integer ingredientID) {

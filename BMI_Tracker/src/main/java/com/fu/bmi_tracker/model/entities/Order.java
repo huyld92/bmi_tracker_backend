@@ -37,37 +37,37 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "OrderID")
+    @Column(name = "OrderID", nullable = false)
     private Integer orderID;
 
-    @Column(name = "Description")
+    @Column(name = "Description", nullable = false)
     private String description;
 
-    @Column(name = "Amount")
+    @Column(name = "Amount", nullable = false)
     private Float amount;
 
-    @Column(name = "DateOrder")
+    @Column(name = "DateOrder", nullable = false)
     private LocalDateTime dateOrder;
 
-    @Column(name = "StartDate")
+    @Column(name = "StartDate", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "EndDate")
+    @Column(name = "EndDate", nullable = false)
     private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "MemberID")
+    @JoinColumn(name = "MemberID", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "AdvisorID")
+    @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
-    @Column(name = "Status")
+    @Column(name = "Status", nullable = false)
     @Enumerated(EnumType.STRING)
     private EOrderStatus status;
 
-    @Column(name = "TransactionID", nullable = true)
+    @Column(name = "TransactionID", nullable = false, unique = true)
     private Integer transactionID;
 
     @Column(name = "PlanDuration", nullable = false)

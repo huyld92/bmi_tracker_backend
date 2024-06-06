@@ -32,10 +32,10 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RoleID")
+    @Column(name = "RoleID", nullable = false)
     private int roleId;
 
-    @Column(name = "RoleName")
+    @Column(name = "RoleName", nullable = false)
     @Enumerated(EnumType.STRING)
     private ERole roleName;
 }

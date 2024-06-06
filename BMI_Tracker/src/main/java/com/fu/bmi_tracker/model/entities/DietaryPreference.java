@@ -13,12 +13,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,16 +29,16 @@ public class DietaryPreference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DietaryPreferenceID")
+    @Column(name = "DietaryPreferenceID", nullable = false)
     private Integer dietaryPreferenceID;
 
-    @Column(name = "DietaryPreferenceName")
+    @Column(name = "DietaryPreferenceName", nullable = false)
     private String dietaryPreferenceName;
 
-    @Column(name = "Description")
+    @Column(name = "Description", nullable = true)
     private String description;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
     public DietaryPreference(Integer dietaryPreferenceID) {

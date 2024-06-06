@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,7 +104,7 @@ public class ActivityLogController {
 
     @Operation(
             summary = "Create new activity log (MEMBER)",
-            description = "Create new meal log")
+            description = "Create new activivty log")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = ActivityLog.class), mediaType = "application/json")}),
@@ -164,7 +165,7 @@ public class ActivityLogController {
 
         @Operation(
             summary = "Update activity log (MEMBER)",
-            description = "Create new meal log")
+            description = "Create new activivty log")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = ActivityLog.class), mediaType = "application/json")}),
@@ -221,5 +222,36 @@ public class ActivityLogController {
         dailyRecordService.save(dailyRecord);
 
         return new ResponseEntity<>(activityLogSave, HttpStatus.CREATED);
+    }
+    
+        @Operation(
+            summary = "Delete activity log (MEMBER)",
+            description = "Delete activity Log by Id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> deleteActivityLogById(@RequestParam int activityLogID) {
+        // Find activivty log by activivty logid
+        Optional<ActivityLog> actityLog = activityLogService.findById(activityLogID);
+        // check existed
+        if (actityLog.isPresent()) {
+            //find Daily record
+            Optional<DailyRecord> dailyRecord = dailyRecordService.findById(actityLog.get().getRecordID());
+            //Update coloriesIn
+            int coloriesOut = dailyRecord.get().getTotalCaloriesOut()- actityLog.get().getCaloriesBurned();
+            dailyRecord.get().setTotalCaloriesOut(coloriesOut);
+
+            // delete activivty log
+            activityLogService.deleteById(activityLogID);
+
+            //update dailyrecord
+            dailyRecordService.save(dailyRecord.get());
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

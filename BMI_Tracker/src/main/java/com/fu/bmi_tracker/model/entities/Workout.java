@@ -13,12 +13,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,29 +29,29 @@ public class Workout {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "WorkoutID")
+    @Column(name = "WorkoutID", nullable = false)
     private Integer workoutID;
 
-    @Column(name = "WorkoutName")
+    @Column(name = "WorkoutName", nullable = false)
     private String workoutName;
 
-    @Column(name = "WorkoutDescription")
+    @Column(name = "WorkoutDescription", nullable = false)
     private String workoutDescription;
 
-    @Column(name = "TotalCloriesBurned")
+    @Column(name = "TotalCloriesBurned", nullable = false)
     private Integer totalCloriesBurned;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @Column(name = "AdvisorID")
+    @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
 
     //Create new workout
     public Workout(String workoutName, String workoutDescription, Integer totalCloriesBurned, Integer advisorID) {
         this.workoutName = workoutName;
         this.workoutDescription = workoutDescription;
-        this.totalCloriesBurned = totalCloriesBurned; 
+        this.totalCloriesBurned = totalCloriesBurned;
         this.advisorID = advisorID;
         this.isActive = true;
     }

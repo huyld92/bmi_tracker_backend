@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +40,8 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
         return repository.saveAll(workoutExercises);
     }
 
+    @Override
+    public List<Exercise> getAllExerciseByWorkoutID(Integer workoutID) {
+        return repository.findExerciseByWorkout_WorkoutID(workoutID);
+    }
 }

@@ -32,5 +32,4 @@ public class WorkoutServiceImpl implements WorkoutService {
         return repository.save(t);
     }
 
-    
 }

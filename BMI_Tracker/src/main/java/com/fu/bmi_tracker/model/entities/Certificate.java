@@ -17,12 +17,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,20 +33,20 @@ public class Certificate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CertificateID")
+    @Column(name = "CertificateID", nullable = false)
     private Integer certificateID;
 
-    @Column(name = "CertificateName")
+    @Column(name = "CertificateName", nullable = false)
     private String certificateName;
 
-    @Column(name = "CertificateLink")
+    @Column(name = "CertificateLink", nullable = false)
     private String certificateLink;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
     @ManyToOne
-    @JoinColumn(name = "AdvisorID")
+    @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
     public Certificate(CreateCertificateRequest certificateRequest) {

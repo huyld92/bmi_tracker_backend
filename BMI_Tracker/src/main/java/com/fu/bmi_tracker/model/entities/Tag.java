@@ -14,12 +14,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,19 +30,19 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TagID")
+    @Column(name = "TagID", nullable = false)
     private Integer tagID;
 
-    @Column(name = "TagName")
+    @Column(name = "TagName", nullable = false)
     private String tagName;
 
-    @Column(name = "TagDescription")
+    @Column(name = "TagDescription", nullable = false)
     private String tagDescription;
 
-    @Column(name = "TagTypeID")
+    @Column(name = "TagTypeID", nullable = false)
     private Integer tagTypeID;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
     public Tag(CreateTagRequest createTagRequest) {
