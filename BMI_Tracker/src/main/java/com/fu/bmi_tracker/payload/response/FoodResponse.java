@@ -33,4 +33,6 @@ public class FoodResponse {
 
     private Integer foodTimeProcess;
 
+    private boolean isActive;
+
 }

@@ -113,7 +113,7 @@ public class MenuController {
             FoodResponse foodResponse = new FoodResponse(
                     food.getFoodID(), food.getFoodName(),
                     food.getFoodCalories(), food.getDescription(), food.getFoodPhoto(),
-                    food.getFoodVideo(), food.getFoodNutrition(), food.getFoodTimeProcess());
+                    food.getFoodVideo(), food.getFoodNutrition(), food.getFoodTimeProcess(), food.getIsActive());
             // add menu food response
             menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType()));
             // add menu food
