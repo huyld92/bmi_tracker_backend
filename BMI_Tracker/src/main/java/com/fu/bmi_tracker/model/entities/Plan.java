@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Plan")
+@Table(name = "[Plan]")
 public class Plan {
 
     @Id
@@ -42,6 +42,18 @@ public class Plan {
     @Column(name = "PlanDuration")
     private Integer planDuration;
 
+    @Column(name = "AdvisorID")
+    private Integer advisorID;
+    
     @Column(name = "IsActive")
     private boolean isActive;
+
+    public Plan(String planName, Float price, String description, Integer planDuration, Integer advisorID, boolean isActive) {
+        this.planName = planName;
+        this.price = price;
+        this.description = description;
+        this.planDuration = planDuration;
+        this.advisorID = advisorID;
+        this.isActive = isActive;
+    }
 }
