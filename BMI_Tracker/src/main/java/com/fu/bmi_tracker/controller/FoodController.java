@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
+import com.fu.bmi_tracker.payload.response.FoodResponseAll;
 import com.fu.bmi_tracker.payload.response.RecipeResponse;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.IngredientService;
@@ -115,7 +116,7 @@ public class FoodController {
     @Operation(summary = "Retrieve all Foods ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodResponseAll.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -127,9 +128,9 @@ public class FoodController {
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        List<FoodEntityResponse> foodsResponse = new ArrayList<>();
+        List<FoodResponseAll> foodsResponse = new ArrayList<>();
         for (Food food : foods) {
-            FoodEntityResponse foodResponse = new FoodEntityResponse();
+            FoodResponseAll foodResponse = new FoodResponseAll();
             foodResponse.setFoodID(food.getFoodID());
             foodResponse.setFoodName(food.getFoodName());
             foodResponse.setFoodCalories(food.getFoodCalories());
@@ -138,16 +139,7 @@ public class FoodController {
             foodResponse.setFoodVideo(food.getFoodVideo());
             foodResponse.setFoodNutrition(food.getFoodNutrition());
             foodResponse.setFoodTimeProcess(food.getFoodTimeProcess());
-            foodResponse.setFoodTags(food.getFoodTags());
-
-            List<RecipeResponse> recipeResponses = new ArrayList<>();
-            for (Recipe recipe : food.getRecipes()) {
-                RecipeResponse recipeResponse = new RecipeResponse();
-                recipeResponse.setIngredient(recipe.getIngredient());
-                recipeResponse.setQuantity(recipe.getQuantity());
-                recipeResponses.add(recipeResponse);
-            }
-            foodResponse.setRecipes(recipeResponses);
+            foodResponse.setFoodTags(food.getFoodTags()); 
 
             foodsResponse.add(foodResponse);
         }

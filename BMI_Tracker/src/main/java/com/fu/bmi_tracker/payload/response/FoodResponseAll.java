@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.payload.response;
 
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.entities.Tag;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodEntityResponse {
+public class FoodResponseAll {
 
     private int foodID;
 
@@ -44,9 +43,7 @@ public class FoodEntityResponse {
 
     private List<Tag> foodTags;
 
-    private List<RecipeResponse> recipes;
-
-    public FoodEntityResponse(Food foodSaved, List<Tag> foodTags, List<RecipeResponse> recipes) {
+    public FoodResponseAll(Food foodSaved, List<Tag> foodTags) {
         this.foodID = foodSaved.getFoodID();
         this.foodName = foodSaved.getFoodName();
         this.foodCalories = foodSaved.getFoodCalories();
@@ -56,6 +53,5 @@ public class FoodEntityResponse {
         this.foodNutrition = foodSaved.getFoodNutrition();
         this.foodTimeProcess = foodSaved.getFoodTimeProcess();
         this.foodTags = foodTags;
-        this.recipes = recipes;
     }
 }

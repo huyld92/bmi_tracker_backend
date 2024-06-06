@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,8 @@ public class FoodResponse {
     private String foodNutrition;
 
     private Integer foodTimeProcess;
+    
+    private LocalDate creationDate;
 
     private boolean isActive;
 
