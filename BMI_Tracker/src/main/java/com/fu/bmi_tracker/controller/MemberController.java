@@ -13,10 +13,9 @@ import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
-import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
+import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
-import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +39,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -149,7 +149,7 @@ public class MemberController {
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
-                    @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -175,8 +175,23 @@ public class MemberController {
         if (foods.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
-        return new ResponseEntity<>(foods, HttpStatus.OK);
+        if (foods.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<FoodResponse> foodResponses = new ArrayList<>();
+        foods.forEach(food -> {
+            FoodResponse foodResponse = new FoodResponse(
+                    food.getFoodID(), food.getFoodName(),
+                    food.getFoodCalories(),
+                    food.getDescription(),
+                    food.getFoodPhoto(),
+                    food.getFoodVideo(),
+                    food.getFoodNutrition(),
+                    food.getFoodTimeProcess(),
+                     food.getIsActive());
+            foodResponses.add(foodResponse);
+        });
+        return new ResponseEntity<>(foodResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -239,8 +254,16 @@ public class MemberController {
         if (foods.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        List<FoodResponse> foodResponses = new ArrayList<>();
+        foods.forEach(food -> {
+            FoodResponse foodResponse = new FoodResponse(
+                    food.getFoodID(), food.getFoodName(),
+                    food.getFoodCalories(), food.getDescription(), food.getFoodPhoto(),
+                    food.getFoodVideo(), food.getFoodNutrition(), food.getFoodTimeProcess(), food.getIsActive());
+            foodResponses.add(foodResponse);
+        });
 
-        return new ResponseEntity<>(foods, HttpStatus.OK);
+        return new ResponseEntity<>(foodResponses, HttpStatus.OK);
     }
 
     @Operation(
