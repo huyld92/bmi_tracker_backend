@@ -36,7 +36,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.WorkoutExerciseService;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -69,7 +72,7 @@ public class WorkoutController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @PutMapping(value = "/createNew")
+    @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> createNewWorkout(@Valid @RequestBody CreateWorkoutRequest createWorkoutRequest) {
         //get account from context
@@ -132,4 +135,55 @@ public class WorkoutController {
             return new ResponseEntity<>("Cannot find food with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(
+            summary = "Get all workout",
+            description = "Get all workout")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Workout.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getAll")
+    public ResponseEntity<?> getAllWorkout() {
+        // Lấy danh sách menu
+        Iterable<Workout> workouts = workoutService.findAll();
+
+        // kiểm tra menu trống
+        if (!workouts.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(workouts, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get workout by id",
+            description = "Get workout by id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = WorkoutResonse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getByID")
+    public ResponseEntity<?> getWorkoutByID(@RequestParam Integer workoutID) {
+        Optional<Workout> workout = workoutService.findById(workoutID);
+        if (!workout.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<Exercise> exercises = workoutExerciseService.getAllExerciseByWorkoutID(workoutID);
+
+        WorkoutResonse resonse = new WorkoutResonse(workout.get(), exercises);
+
+        return new ResponseEntity<>(resonse, HttpStatus.OK);
+
+    }
+    
+    
+    
+    //update workout
 }

@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.services;
 
+import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import java.util.List;
 
@@ -14,5 +15,7 @@ import java.util.List;
 public interface WorkoutExerciseService extends GeneralService<WorkoutExercise> {
 
     public List<WorkoutExercise> saveAll(List<WorkoutExercise> workoutExercises);
+
+    public List<Exercise> getAllExerciseByWorkoutID(Integer workoutID);
 
 }

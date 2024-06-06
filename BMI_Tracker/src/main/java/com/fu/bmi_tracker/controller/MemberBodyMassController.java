@@ -98,7 +98,7 @@ public class MemberBodyMassController {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByID")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getAllBodyMassByID() {
+    public ResponseEntity<?> getAllBodyMassOfMember() {
         CustomAccountDetailsImpl princal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // find member 
         Optional<Member> member = memberService.findByAccountID(princal.getId());

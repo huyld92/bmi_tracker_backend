@@ -37,4 +37,9 @@ public class ActivityLogServiceImpl implements ActivityLogService {
         return repository.findByRecordID(recordID);
     }
 
+    @Override
+    public void deleteById(int activityLogID) {
+        repository.deleteById(activityLogID);
+    }
+
 }

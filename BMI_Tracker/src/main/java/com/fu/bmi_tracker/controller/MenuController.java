@@ -139,7 +139,7 @@ public class MenuController {
             description = "Get all menu include food")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -153,17 +153,9 @@ public class MenuController {
         // kiểm tra menu trống
         if (!menus.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        // tạo menu response
-        List<MenuResponse> menuResponses = new ArrayList<>();
-
-        for (Menu menu : menus) {
-            List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.getMenuID());
-            menuResponses.add(new MenuResponse(menu, menuFoodResponses));
-
-        }
-        return new ResponseEntity<>(menuResponses, HttpStatus.OK);
+        } 
+        
+        return new ResponseEntity<>(menus, HttpStatus.OK);
     }
 
     @Operation(
@@ -171,7 +163,7 @@ public class MenuController {
             description = "Get all menu include food of advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -198,13 +190,13 @@ public class MenuController {
         }
 
         // tạo menu response
-        List<MenuResponse> menuResponses = new ArrayList<>();
-        for (Menu menu : menus) {
-            List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.getMenuID());
-            menuResponses.add(new MenuResponse(menu, menuFoodResponses));
-
-        }
-        return new ResponseEntity<>(menuResponses, HttpStatus.OK);
+//        List<MenuResponse> menuResponses = new ArrayList<>();
+//        for (Menu menu : menus) {
+//            List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.getMenuID());
+//            menuResponses.add(new MenuResponse(menu, menuFoodResponses));
+//
+//        }
+        return new ResponseEntity<>(menus, HttpStatus.OK);
     }
 
     @Operation(

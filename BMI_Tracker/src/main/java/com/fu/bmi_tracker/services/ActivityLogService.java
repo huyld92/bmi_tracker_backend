@@ -13,5 +13,7 @@ import com.fu.bmi_tracker.model.entities.ActivityLog;
 public interface ActivityLogService extends GeneralService<ActivityLog> {
 
     public Iterable<ActivityLog> findByRecordID(Integer recordID);
+
+    public void deleteById(int activityLogID);
     
 }

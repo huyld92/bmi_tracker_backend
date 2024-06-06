@@ -201,6 +201,7 @@ public class FoodController {
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateFood(@RequestBody Food foodRequest) {
+        // create UpdatefoodReuqest
         // Tìm food 
         Optional<Food> food = service.findById(foodRequest.getFoodID());
         // kiểm tra food tồn tại
