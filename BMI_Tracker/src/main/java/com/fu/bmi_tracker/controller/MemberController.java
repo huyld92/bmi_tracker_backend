@@ -13,8 +13,6 @@ import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
-import com.fu.bmi_tracker.payload.response.FoodResponse;
-import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
