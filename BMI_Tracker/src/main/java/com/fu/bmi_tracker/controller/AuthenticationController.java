@@ -129,18 +129,18 @@ public class AuthenticationController {
         List<String> roles = authentication.getAuthorities().stream().map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        boolean isRole = roles.contains(loginRequest.getRole().toString());
+//        boolean isRole = roles.contains(loginRequest.getRole().toString());
 
-        if (!isRole) {
-            return new ResponseEntity<>(new MessageResponse("You do not have permission for this role."), HttpStatus.FORBIDDEN);
-        }
+//        if (!isRole) {
+//            return new ResponseEntity<>(new MessageResponse("You do not have permission for this role."), HttpStatus.FORBIDDEN);
+//        }
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
         return ResponseEntity.ok(new LoginResponse(
                 accountDetails.getId(),
                 accountDetails.getEmail(),
-                loginRequest.getRole(), refreshToken.getToken(), jwt));
+                roles.get(0), refreshToken.getToken(), jwt));
     }
 
     @Operation(summary = "Login for member by phone number and password", description = "Authenticate accounts by phone number and password. Returned will member information", tags = {

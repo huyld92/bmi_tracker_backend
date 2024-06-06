@@ -65,7 +65,7 @@ public class AccountController {
     @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -101,7 +101,9 @@ public class AccountController {
                 accountSave.getFullName());
         emailService.sendSimpleMail(details);
 
-        return new ResponseEntity<>(accountSave, HttpStatus.CREATED);
+        AccountResponse accountResponse = new AccountResponse(account);
+
+        return new ResponseEntity<>(accountResponse, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get all account (ADMIN)", description = "Get all account")
@@ -149,7 +151,7 @@ public class AccountController {
     @Operation(summary = "Update account by account id", description = "Update account ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -176,7 +178,10 @@ public class AccountController {
 
         }
 
-        return new ResponseEntity<>(accountSave, HttpStatus.OK);
+        // create account response
+        AccountResponse accountResponse = new AccountResponse(accountSave);
+
+        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
 }

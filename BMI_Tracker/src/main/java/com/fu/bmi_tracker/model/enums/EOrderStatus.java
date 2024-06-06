@@ -8,26 +8,27 @@ package com.fu.bmi_tracker.model.enums;
  *
  * @author Duc Huy
  */
-public enum EMealType {
-    Breakfast,
-    Lunch,
-    Dinner,
-    Snack;
+public enum EOrderStatus {
+    PENDING,
+    PAID, // Đơn hàng đã được thanh toán
+    CANCELLED, // Đơn hàng đã bị hủy
+    MEMBER_PAID; // khách hàng đã thanh toán
 
     @Override
+
     public String toString() {
         switch (this) {
-            case Breakfast -> {
-                return "Breakfast";
+            case PENDING -> {
+                return "Pending";
             }
-            case Lunch -> {
-                return "Lunch";
+            case PAID -> {
+                return "Paid";
             }
-            case Dinner -> {
-                return "Dinner";
+            case CANCELLED -> {
+                return "Cancelled";
             }
-            case Snack -> {
-                return "Snack";
+            case MEMBER_PAID -> {
+                return "Paid";
             }
             default ->
                 throw new IllegalArgumentException();
