@@ -12,5 +12,25 @@ public enum EMealType {
     Breakfast,
     Lunch,
     Dinner,
-    Snack
+    Snack;
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case Breakfast -> {
+                return "Breakfast";
+            }
+            case Lunch -> {
+                return "Lunch";
+            }
+            case Dinner -> {
+                return "Dinner";
+            }
+            case Snack -> {
+                return "Snack";
+            }
+            default ->
+                throw new IllegalArgumentException();
+        }
+    }
 }

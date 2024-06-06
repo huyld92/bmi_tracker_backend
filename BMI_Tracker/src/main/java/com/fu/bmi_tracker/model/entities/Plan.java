@@ -13,12 +13,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,26 +29,27 @@ public class Plan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PlanID")
+    @Column(name = "PlanID", nullable = false)
     private Integer planID;
 
-    @Column(name = "PlanName")
+    @Column(name = "PlanName", nullable = false)
     private String planName;
 
-    @Column(name = "Price")
+    @Column(name = "Price", nullable = false)
     private Float price;
 
-    @Column(name = "Description")
+    @Column(name = "Description", nullable = false)
     private String description;
 
-    @Column(name = "PlanDuration")
+    @Column(name = "PlanDuration", nullable = false)
     private Integer planDuration;
 
-    @Column(name = "AdvisorID")
+    @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
-    
-    @Column(name = "IsActive")
-    private boolean isActive;
+
+    @Column(name = "IsActive", nullable = false)
+
+  private boolean isActive;
 
     public Plan(String planName, Float price, String description, Integer planDuration, Integer advisorID, boolean isActive) {
         this.planName = planName;

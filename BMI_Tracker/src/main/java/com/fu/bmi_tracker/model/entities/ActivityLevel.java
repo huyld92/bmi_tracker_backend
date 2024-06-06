@@ -13,12 +13,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,22 +29,20 @@ public class ActivityLevel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ActivityLevelID")
+    @Column(name = "ActivityLevelID", nullable = false)
     private Integer activityLevelID;
 
-    @Column(name = "ActivityLevelName")
+    @Column(name = "ActivityLevelName", nullable = false)
     private String activityLevelName;
 
-    @Column(name = "ActivityLevel")
+    @Column(name = "ActivityLevel", nullable = false)
     private Double ActivityLevel;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private boolean isActive;
 
     public ActivityLevel(Integer activityLevelID) {
         this.activityLevelID = activityLevelID;
     }
-    
-    
 
 }

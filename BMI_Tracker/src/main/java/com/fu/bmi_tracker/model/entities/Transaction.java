@@ -28,7 +28,7 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TransactionID")
+    @Column(name = "TransactionID", nullable = false)
     private Integer transactionID;
 
     @Column(name = "BankCode", nullable = false)

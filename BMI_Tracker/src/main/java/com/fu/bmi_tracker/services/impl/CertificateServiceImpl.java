@@ -46,10 +46,6 @@ public class CertificateServiceImpl implements CertificateService {
     public void deleteById(int certificateID) {
         repository.deleteById(certificateID);
     }
-
-    @Override
-    public int updateStatusById(Integer certificateID, String status) {
-        return repository.updateStatusById(certificateID, status);
-    }
+ 
 
 }

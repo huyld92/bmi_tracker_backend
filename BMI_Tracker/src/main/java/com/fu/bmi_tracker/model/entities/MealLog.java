@@ -31,23 +31,23 @@ public class MealLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MealLogID")
+    @Column(name = "MealLogID", nullable = false)
     private Integer mealLogID;
 
-    @Column(name = "FoodName")
+    @Column(name = "FoodName", nullable = false)
     private String foodName;
 
-    @Column(name = "Calories")
+    @Column(name = "Calories", nullable = true)
     private Integer calories;
 
-    @Column(name = "MealType")
+    @Column(name = "MealType", nullable = false)
     @Enumerated(EnumType.STRING)
     private EMealType mealType;
 
-    @Column(name = "Quantity")
+    @Column(name = "Quantity", nullable = false)
     private String quantity;
 
-    @Column(name = "RecordID")
+    @Column(name = "RecordID", nullable = false)
     private Integer recordID;
 
     public MealLog(CreateMealLogRequest createMealLogRequest) {

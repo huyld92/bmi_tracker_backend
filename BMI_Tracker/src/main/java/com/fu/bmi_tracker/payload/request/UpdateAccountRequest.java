@@ -1,5 +1,6 @@
 package com.fu.bmi_tracker.payload.request;
 
+import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.model.enums.EGender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,7 +43,10 @@ public class UpdateAccountRequest {
     @Past
     @Schema(name = "birthday", example = "1990-01-01")
     private LocalDate birthday;
-    
+
+    @NotNull
+    private Set<Role> roles;
+
     @NotNull
     private Boolean isActive;
 }

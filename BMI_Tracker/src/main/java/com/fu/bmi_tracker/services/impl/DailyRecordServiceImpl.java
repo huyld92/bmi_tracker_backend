@@ -7,7 +7,9 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.repository.DailyRecordRepository;
 import com.fu.bmi_tracker.services.DailyRecordService;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,15 @@ public class DailyRecordServiceImpl implements DailyRecordService {
     @Override
     public Optional<DailyRecord> findByAccountIDAndDate(Integer accountID, LocalDate date) {
         return repository.findByAccountIDAndDate(accountID, date);
+    }
+
+    @Override
+    public List<DailyRecord> getDailyRecordsForWeek(Integer memberID, LocalDate date) {
+        // Lấy ngày bắt đầu tuần của date
+        LocalDate startDate = date.with(DayOfWeek.MONDAY);
+        // Lấy ngày kết thúc tuần của date
+        LocalDate endDate = date.with(DayOfWeek.SUNDAY);
+        return repository.findDailyRecordsForWeek(memberID, startDate, endDate);
     }
 
 }

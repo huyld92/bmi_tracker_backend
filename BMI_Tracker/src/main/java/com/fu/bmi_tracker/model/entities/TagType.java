@@ -27,10 +27,10 @@ public class TagType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TagTypeID")
+    @Column(name = "TagTypeID", nullable = false)
     private Integer tagTypeID;
 
-    @Column(name = "TagName")
+    @Column(name = "TagName", nullable = false)
     private Integer tagNameD;
 
 }

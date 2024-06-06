@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -32,17 +33,18 @@ import lombok.NoArgsConstructor;
 public class MenuFood {
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "MenuID")
     private Menu menu;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "FoodID")
-    @JsonIgnore
     private Food food;
 
-    @Column(name = "MealType")
+    @Column(name = "MealType", nullable = false)
     @Enumerated(EnumType.STRING)
     private EMealType mealType;
+
 }

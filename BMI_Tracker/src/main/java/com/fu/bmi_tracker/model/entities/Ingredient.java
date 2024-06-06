@@ -14,12 +14,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,29 +30,33 @@ public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IngredientID")
+    @Column(name = "IngredientID", nullable = false)
     private Integer ingredientID;
 
-    @Column(name = "IngredientName")
+    @Column(name = "IngredientName", nullable = false)
     private String ingredientName;
 
-    @Column(name = "IngredientPhoto")
+    @Column(name = "IngredientPhoto", nullable = true)
     private String ingredientPhoto;
 
-    @Column(name = "Quantity")
+    @Column(name = "Quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "UnitOfMeasurement")
+    @Column(name = "UnitOfMeasurement", nullable = false)
     private String unitOfMeasurement;
 
-    @Column(name = "IngredientCalories")
+    @Column(name = "IngredientCalories", nullable = false)
     private Integer ingredientCalories;
 
-    @Column(name = "TagID")
+    @Column(name = "TagID", nullable = false)
     private Integer tagID;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
+
+    public Ingredient(Integer ingredientID) {
+        this.ingredientID = ingredientID;
+    }
 
     public Ingredient(String ingredientName, String ingredientPhoto, Integer quantity, String unitOfMeasurement, Integer ingredientCalories, Integer tagID, Boolean isActive) {
         this.ingredientName = ingredientName;
@@ -79,6 +85,9 @@ public class Ingredient {
         if (!ingredientRequest.getUnitOfMeasurement().isEmpty()) {
             this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement();
         }
+        this.ingredientPhoto = ingredientRequest.getIngredientPhoto();
+        this.quantity = ingredientRequest.getQuantity();
+        this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement();
 
         if (ingredientRequest.getIngredientCalories() > -1) {
             this.ingredientCalories = ingredientRequest.getIngredientCalories();
@@ -87,6 +96,7 @@ public class Ingredient {
         if (ingredientRequest.getTagID() <= 0) {
             this.tagID = ingredientRequest.getTagID();
         }
+        this.isActive = ingredientRequest.isActive;
 
     }
 }

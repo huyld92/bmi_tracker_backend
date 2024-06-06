@@ -34,16 +34,16 @@ public class EmailVerificationCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CodeID")
+    @Column(name = "CodeID", nullable = false)
     private Integer codeID;
 
-    @Column(name = "VerificationCode")
+    @Column(name = "VerificationCode", nullable = false, unique = true)
     private String verificationCode;
 
-    @Column(name = "Email")
+    @Column(name = "Email", nullable = false)
     private String email;
 
-    @Column(name = "CreationTime")
+    @Column(name = "CreationTime", nullable = false)
     private LocalDateTime creationTime;
 
     public EmailVerificationCode(String verificationCode, String email) throws Exception {
