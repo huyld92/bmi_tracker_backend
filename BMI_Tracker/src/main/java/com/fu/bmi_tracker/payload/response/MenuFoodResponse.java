@@ -30,7 +30,10 @@ public class MenuFoodResponse {
                 food.getFoodPhoto(),
                 food.getFoodVideo(),
                 food.getFoodNutrition(),
-                food.getFoodTimeProcess(), food.getIsActive());
+                food.getFoodTimeProcess(),
+                food.getCreationDate(),
+                food.getIsActive()
+        );
         this.mealType = mealType;
     }
 

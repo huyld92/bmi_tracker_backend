@@ -188,6 +188,7 @@ public class MemberController {
                     food.getFoodVideo(),
                     food.getFoodNutrition(),
                     food.getFoodTimeProcess(),
+                    food.getCreationDate(),
                      food.getIsActive());
             foodResponses.add(foodResponse);
         });
@@ -227,7 +228,7 @@ public class MemberController {
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
-                    @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -259,7 +260,10 @@ public class MemberController {
             FoodResponse foodResponse = new FoodResponse(
                     food.getFoodID(), food.getFoodName(),
                     food.getFoodCalories(), food.getDescription(), food.getFoodPhoto(),
-                    food.getFoodVideo(), food.getFoodNutrition(), food.getFoodTimeProcess(), food.getIsActive());
+                    food.getFoodVideo(), food.getFoodNutrition(),
+                    food.getFoodTimeProcess(),
+                    food.getCreationDate(),
+                    food.getIsActive());
             foodResponses.add(foodResponse);
         });
 
