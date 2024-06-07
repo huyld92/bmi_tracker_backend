@@ -10,7 +10,9 @@ import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import com.fu.bmi_tracker.payload.request.CreateWorkoutRequest;
+import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.payload.response.WorkoutEntityResponse;
 import com.fu.bmi_tracker.payload.response.WorkoutResonse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.ExerciseService;
@@ -80,7 +82,7 @@ public class WorkoutController {
         // find Advisor 
         Advisor advisor = advisorService.findByAccountID(principal.getId());
         if (advisor == null) {
-            return new ResponseEntity<>(new MessageResponse("Cannot find trainer!"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MessageResponse("Cannot find advisor!"), HttpStatus.BAD_REQUEST);
         }
 
         // Store workout
@@ -120,8 +122,7 @@ public class WorkoutController {
 
     @Operation(summary = "Deactive a Workout by Id")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "204", description = "Delete success!"),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deactive/{id}")
@@ -171,10 +172,12 @@ public class WorkoutController {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getByID")
     public ResponseEntity<?> getWorkoutByID(@RequestParam Integer workoutID) {
+        // Gọi service tim bằng workoutID
         Optional<Workout> workout = workoutService.findById(workoutID);
         if (!workout.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        // Tìm danh sách exercise
         List<Exercise> exercises = workoutExerciseService.getAllExerciseByWorkoutID(workoutID);
 
         WorkoutResonse resonse = new WorkoutResonse(workout.get(), exercises);
@@ -182,8 +185,115 @@ public class WorkoutController {
         return new ResponseEntity<>(resonse, HttpStatus.OK);
 
     }
-    
-    
-    
-    //update workout
+
+    @Operation(
+            summary = "Get workout by advisor id",
+            description = "Get workout by advisor id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Workout.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getByAdvisorID")
+    public ResponseEntity<?> getWorkoutByAdvisorID() {
+        //get account from context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Tìm Advisor 
+        Advisor advisor = advisorService.findByAccountID(principal.getId());
+        if (advisor == null) {
+            return new ResponseEntity<>(new MessageResponse("Cannot find advisor!"), HttpStatus.BAD_REQUEST);
+        }
+        // lấy danh sách workouts
+        Iterable<Workout> workouts = workoutService.getWorkoutByAdvisorID(advisor.getAdvisorID());
+
+        if (!workouts.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(workouts, HttpStatus.OK);
+
+    }
+
+    @Operation(
+            summary = "Update workout",
+            description = "Update workout information not include WorkoutExercise")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = WorkoutEntityResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/update")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> updateWorkoutInformation(@Valid @RequestBody UpdateWorkoutRequest updateWorkoutRequest) {
+        // gọi workout service để cập nhật workout information
+        Workout workout = workoutService.updateWorkoutInformation(updateWorkoutRequest);
+        // tạo Workout entity response
+        WorkoutEntityResponse entityResponse = new WorkoutEntityResponse(workout);
+        return new ResponseEntity<>(entityResponse, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Delete workout exercise",
+            description = "Delete workout exercises by exercise ID and workoutID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Delete success!"),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping(value = "/deleteExersice")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> deleteWorkoutExersice(@RequestParam Integer workoutID, @RequestParam Integer exerciseID) {
+        // gọi service để delete workout exercise
+        workoutExerciseService.deleteWorkoutExercise(workoutID, exerciseID);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(
+            summary = "Create workout exercise",
+            description = "Create workout exercises by exercise ID and workoutID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Delete success!"),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/createWorkoutExercise")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> createWorkoutExercise(@RequestParam Integer workoutID, @RequestParam Integer exerciseID) {
+        WorkoutExercise workoutExercise = workoutExerciseService.createWorkoutExercise(workoutID, exerciseID);
+
+        return new ResponseEntity<>(workoutExercise, HttpStatus.OK);
+
+    }
+
+    @Operation(
+            summary = "Create workout exercise",
+            description = "Delete workout exercises by list exerciseID and workoutID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Delete success!"),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/createWorkoutExercises")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> createWorkoutExercises(@RequestParam Integer workoutID, @RequestParam List<Integer> exerciseIDs) {
+        // gọi service tạo workout exercise
+        List<WorkoutExercise> workoutExercise = workoutExerciseService.createWorkoutExercises(workoutID, exerciseIDs);
+
+        // kiểm tra danh sách rỗng
+        if (workoutExercise.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        }
+        return new ResponseEntity<>(workoutExercise, HttpStatus.OK);
+
+    }
 }

@@ -8,6 +8,6 @@ package com.fu.bmi_tracker.model.enums;
  *
  * @author Duc Huy
  */
-public enum TagType {
+public enum ETagType {
 
 }

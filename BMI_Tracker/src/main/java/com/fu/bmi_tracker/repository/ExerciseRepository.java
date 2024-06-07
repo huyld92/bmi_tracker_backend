@@ -5,8 +5,11 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Exercise;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,8 +17,13 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface ExerciseRepository extends JpaRepository<Exercise, Object> {
+public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
 
     List<Exercise> findByExerciseIDIn(List<Integer> exerciseIds);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Exercise e SET e.isActive = false WHERE e.exerciseID = :exerciseID")
+    public void deactivateById(Integer exerciseID);
+    
 }
