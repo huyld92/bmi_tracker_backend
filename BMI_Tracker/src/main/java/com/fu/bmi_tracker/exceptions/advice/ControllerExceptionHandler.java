@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.exceptions.advice;
 
 import com.fu.bmi_tracker.exceptions.ErrorMessage;
 import com.fu.bmi_tracker.exceptions.TokenException;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import org.springframework.http.HttpStatus;
@@ -186,5 +187,16 @@ public class ControllerExceptionHandler {
                 ex.getMessage());
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(message);
     }
-    
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                "Error find entity");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    }
+
 }
