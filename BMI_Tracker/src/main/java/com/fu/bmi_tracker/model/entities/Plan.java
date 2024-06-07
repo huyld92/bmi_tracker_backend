@@ -48,5 +48,15 @@ public class Plan {
     private Integer advisorID;
 
     @Column(name = "IsActive", nullable = false)
-    private boolean isActive;
+
+  private boolean isActive;
+
+    public Plan(String planName, Float price, String description, Integer planDuration, Integer advisorID, boolean isActive) {
+        this.planName = planName;
+        this.price = price;
+        this.description = description;
+        this.planDuration = planDuration;
+        this.advisorID = advisorID;
+        this.isActive = isActive;
+    }
 }
