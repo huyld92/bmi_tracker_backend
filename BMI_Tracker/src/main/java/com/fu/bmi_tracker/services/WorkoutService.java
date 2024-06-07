@@ -4,14 +4,18 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Workout;
-import java.util.List;
+import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
+import java.util.Optional;
 
 /**
  *
  * @author Duc Huy
  */
 public interface WorkoutService extends GeneralService<Workout> {
+
+    public Workout updateWorkoutInformation(UpdateWorkoutRequest updateWorkoutRequest);
+
+    public Iterable<Workout> getWorkoutByAdvisorID(Integer advisorID);
 
 }
