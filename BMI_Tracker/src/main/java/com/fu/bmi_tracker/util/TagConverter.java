@@ -8,7 +8,6 @@ import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.payload.response.TagResponse;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
 
 /**
  *

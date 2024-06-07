@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import com.fu.bmi_tracker.model.enums.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

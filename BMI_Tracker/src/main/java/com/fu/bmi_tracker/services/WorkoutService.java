@@ -6,7 +6,6 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
-import java.util.Optional;
 
 /**
  *
