@@ -176,9 +176,8 @@ public class AuthenticationController {
         String role = stringList.get(0);
 
         if (!role.equals(ERole.ROLE_MEMBER.toString())) {
-            return new ResponseEntity
-            (new MessageResponse("Your role is not support!"), 
-            HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(new MessageResponse("Your role is not support!"),
+                    HttpStatus.UNAUTHORIZED);
         }
 
         Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
