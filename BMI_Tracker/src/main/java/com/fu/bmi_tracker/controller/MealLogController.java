@@ -141,7 +141,7 @@ public class MealLogController {
         }
 
         // Tìm tất cả meal log cùng Date của ReordID và meal type
-        Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.get().getRecordID());
+        Iterable<MealLog> mealLogs = mealLogService.findByRecordIDAndByMealType(dailyRecord.get().getRecordID(), mealType);
 
         // check meal empty
         if (!mealLogs.iterator().hasNext()) {

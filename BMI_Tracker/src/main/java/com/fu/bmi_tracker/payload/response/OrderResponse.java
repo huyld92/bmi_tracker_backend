@@ -36,7 +36,7 @@ public class OrderResponse {
     public OrderResponse(Order order) {
         this.orderID = order.getOrderID();
         this.description = order.getDescription();
-        this.amount = order.getAmount();
+        this.amount = order.getOrderAmount();
         this.dateOrder = order.getDateOrder();
         this.startDate = order.getStartDate();
         this.endDate = order.getEndDate();
@@ -44,7 +44,6 @@ public class OrderResponse {
         this.advisorID = order.getAdvisor().getAdvisorID();
         this.status = order.getStatus().toString();
         this.transactionID = order.getTransactionID();
-        this.planDuration = order.getPlanDuration();
         this.isPaid = order.getIsPaid();
     }
 

@@ -26,7 +26,6 @@ import org.hibernate.annotations.SQLRestriction;
  * @author Duc Huy
  */
 @Entity
-@SQLRestriction(value = "IsActive = 1")
 @Data
 @Builder
 @AllArgsConstructor
