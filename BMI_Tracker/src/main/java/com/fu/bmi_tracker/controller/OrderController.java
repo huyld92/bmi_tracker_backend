@@ -73,6 +73,9 @@ public class OrderController {
 
         // khởi tạo order
         Order order = new Order(createOderRequest, member.get().getMemberID());
+        // set Commission rate
+
+        // tính CommissionAmount
         // Lưu trữ và kiểm tra kết quả
         if (orderService.save(order) == null) {
             return new ResponseEntity<>(new MessageResponse("Failled! Cannot create order"), HttpStatus.CREATED);

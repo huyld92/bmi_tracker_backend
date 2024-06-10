@@ -45,8 +45,7 @@ public class MealLogServiceImpl implements MealLogService {
 
     @Override
     public Iterable<MealLog> findByRecordIDAndByMealType(Integer recordID, EMealType mealType) {
-//        return repository.findByRecordIDAndByMealType(recordID, mealType);
-        return null;
-    }
+        return repository.findByRecordIDAndMealType(recordID, mealType);
+     }
 
 }

@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.MealLog;
+import com.fu.bmi_tracker.model.enums.EMealType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,6 @@ public interface MealLogRepository extends JpaRepository<MealLog, Integer> {
 
     public Iterable<MealLog> findByRecordID(Integer recordID);
 
-//    public Iterable<MealLog> findByRecordIDAndByMealType(Integer recordID, EMealType mealType);
+    public Iterable<MealLog> findByRecordIDAndMealType(Integer recordID, EMealType mealType);
 
 }
