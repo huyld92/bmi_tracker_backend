@@ -5,7 +5,11 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Blog;
+import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.payload.request.CreateBlogRequest;
+import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.BlogService;
+import com.fu.bmi_tracker.services.impl.UpdateBlogRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +20,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,30 +54,23 @@ public class BlogController {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
     //@PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> createNewBlog(@RequestBody Blog blogDetails) {
-        
-        //Convert createRequest to Plan before save
-        Blog newBlog = new Blog();
-        newBlog.setBlogName(blogDetails.getBlogName());
-        newBlog.setBlogContent(blogDetails.getBlogContent());
-        newBlog.setBlogPhoto(blogDetails.getBlogPhoto());
-        newBlog.setLink(blogDetails.getLink());
-        newBlog.setActive(Boolean.TRUE);
-        
-        Blog saveBlog = service.save(newBlog);
-        //Call service to save plan
-        
-        
-        //If fail to save new plan
+    public ResponseEntity<?> createNewBlog(@RequestBody CreateBlogRequest blogRequest) {
+        // tìm accountID từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //Gọi service để tạo mới blog
+        Blog saveBlog = service.createBlog(blogRequest, principal.getId());
+
+        //If fail to save new blog
         if (saveBlog == null) {
-            return new ResponseEntity<>("Failed to create new Blog", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse("Failed to create new Blog"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
+
         //If success to save new plan
-        return new ResponseEntity<>("Blog is successfully created", HttpStatus.CREATED);
+        return new ResponseEntity<>(new MessageResponse("Blog is successfully created!"), HttpStatus.CREATED);
     }
     
-     @Operation(
+    @Operation(
             summary = "Get All Blog",
             description = "Get All Blog")
     @ApiResponses({
@@ -91,7 +89,7 @@ public class BlogController {
         if (!blogList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-       
+        
         return new ResponseEntity<>(blogList, HttpStatus.OK);
     }
     
@@ -116,7 +114,7 @@ public class BlogController {
         }
         return new ResponseEntity<>(blogList, HttpStatus.OK);
     }
-   
+    
     @Operation(
             summary = "Get Blog details",
             description = "Get blog detials by its ID")
@@ -130,12 +128,14 @@ public class BlogController {
     @GetMapping(value = "/getByID/{id}")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getByID(@PathVariable("id") int id) {
-        
+        // GỌi service tìm blog by id 
         Optional<Blog> blog = service.findById(id);
-        
-        if (blog.isPresent()) {
+
+        // kiểm tra kết quả
+        if (!blog.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        
         return new ResponseEntity<>(blog, HttpStatus.OK);
     }
     
@@ -149,9 +149,10 @@ public class BlogController {
             @Content(schema = @Schema())})})
     @PutMapping("/update")
     //@PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> updateBlog(@RequestBody Blog blogDetails) {
+    public ResponseEntity<?> updateBlog(@RequestBody UpdateBlogRequest blogDetails) {
+        // Tìm blog bằng ID
         Optional<Blog> blog = service.findById(blogDetails.getBlogID());
-        
+        // kiểm tra kết quả
         if (blog.isPresent()) {
             blog.get().setBlogContent(blogDetails.getBlogContent());
             blog.get().setBlogName(blogDetails.getBlogName());
@@ -159,9 +160,8 @@ public class BlogController {
             blog.get().setLink(blogDetails.getLink());
             
             return new ResponseEntity<>(service.save(blog.get()), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>("Cannot find blog with id{" + blogDetails.getBlogID() + "}", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(new MessageResponse(("Cannot find blog with id{" + blogDetails.getBlogID() + "}")), HttpStatus.NOT_FOUND);
         }
     }
     
@@ -174,13 +174,16 @@ public class BlogController {
     @DeleteMapping("/delete/{id}")
     //@PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> deleteBlog(@PathVariable("id") int id) {
-        Optional<Blog> blog =  service.findById(id);
+        // tìm blog bằng ID
+        Optional<Blog> blog = service.findById(id);
 
+        // kiểm tra kết quả
         if (blog.isPresent()) {
+            // Delete blog
             service.deleteBlog(blog.get());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>("Cannot find plan with id{" + id + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);
         }
     }
 }

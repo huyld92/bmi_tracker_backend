@@ -4,9 +4,13 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Blog;
+import com.fu.bmi_tracker.payload.request.CreateBlogRequest;
+import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.BlogRepository;
 import com.fu.bmi_tracker.services.BlogService;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,44 +20,60 @@ import org.springframework.stereotype.Service;
  * @author BaoLG
  */
 @Service
-public class BlogServiceImpl implements BlogService{
-
+public class BlogServiceImpl implements BlogService {
+    
     @Autowired
-    BlogRepository repository;
+    BlogRepository blogRepository;
+    
+    @Autowired
+    AdvisorRepository advisorRepository;
     
     @Override
     public Blog findByBlogName(String blogName) {
-        return repository.findByBlogName(blogName);
+        return blogRepository.findByBlogName(blogName);
     }
-
+    
     @Override
     public Iterable<Blog> findByAdvisorID(int advisorID) {
-        return repository.findByAdvisorID(advisorID);
+        return blogRepository.findByAdvisorID(advisorID);
     }
-
-    @Override
-    public Iterable<Blog> findByIsActiveTrue() {
-        return repository.findByIsActiveTrue();
-    }
-
+    
     @Override
     public Iterable<Blog> findAll() {
-        return repository.findAll();
+        return blogRepository.findAll();
     }
-
+    
     @Override
     public Optional<Blog> findById(Integer id) {
-        return repository.findById(id);
+        return blogRepository.findById(id);
     }
-
+    
     @Override
     public Blog save(Blog t) {
-        return repository.save(t);
+        return blogRepository.save(t);
     }
-
+    
     @Override
     public void deleteBlog(Blog blog) {
-        repository.delete(blog);
+        blogRepository.delete(blog);
+    }
+    
+    @Override
+    public Blog createBlog(CreateBlogRequest newBlog, Integer accountID) {
+        // tìm Advisor 
+        Advisor advisor = advisorRepository.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Advisor not found"));
+        // tạo mới object blog để save
+        Blog blog = new Blog();
+        blog.setAdvisorID(advisor.getAdvisorID());
+        blog.setBlogContent(newBlog.getBlogContent());
+        blog.setBlogName(newBlog.getBlogName());
+        blog.setBlogPhoto(newBlog.getBlogPhoto());
+        blog.setLink(newBlog.getLink());
+        blog.setActive(true);
+
+        //gọi repository để save
+        return blogRepository.save(blog);
     }
     
 }

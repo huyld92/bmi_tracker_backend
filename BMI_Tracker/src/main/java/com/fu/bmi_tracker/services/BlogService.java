@@ -5,19 +5,20 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Blog;
+import com.fu.bmi_tracker.payload.request.CreateBlogRequest;
 
 /**
  *
  * @author BaoLG
  */
-public interface BlogService extends GeneralService<Blog>{
-    
+public interface BlogService extends GeneralService<Blog> {
+
     public Blog findByBlogName(String blogName);
-    
+
     public Iterable<Blog> findByAdvisorID(int advisorID);
-    
-    public Iterable<Blog> findByIsActiveTrue();
-    
+
     public void deleteBlog(Blog blog);
-    
+
+    public Blog createBlog(CreateBlogRequest newBlog, Integer accountID);
+
 }

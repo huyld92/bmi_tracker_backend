@@ -35,10 +35,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/api/feedbacks")
 public class FeedbackController {
-    
+
     @Autowired
     FeedbackService service;
-    
+
     @Operation(
             summary = "Create new Feedback with form",
             description = "Create new feedback with form")
@@ -52,7 +52,7 @@ public class FeedbackController {
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewFeedBack(@RequestBody CreateFeedbackRequest feedbackRequest) {
-        
+
         //Convert createRequest to Feedback before save
         Feedback newFeedBack = new Feedback();
         newFeedBack.setTitle(feedbackRequest.getTitle());
@@ -60,15 +60,15 @@ public class FeedbackController {
         newFeedBack.setStatus(Boolean.FALSE);
         newFeedBack.setType(feedbackRequest.getType());
         newFeedBack.setMemberID(feedbackRequest.getMemberID());
-        
+
         Feedback feedbackSave = service.save(newFeedBack);
-        
+
         if (feedbackSave == null) {
             return new ResponseEntity<>("Failed to create new feedback", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(feedbackSave, HttpStatus.CREATED);
     }
-    
+
     @Operation(
             summary = "Get All Feedback",
             description = "Get All Feedback")
@@ -82,16 +82,16 @@ public class FeedbackController {
     @GetMapping(value = "/getAll")
     //@PreAuthorize("hasRole('ADMIN')") //MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllFeedback() {
-        
+
         Iterable<Feedback> feedbackList = service.findAll();
-        
+
         if (!feedbackList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-       
+
         return new ResponseEntity<>(feedbackList, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Get All Member's Feedback",
             description = "Get feed back by MemberID")
@@ -105,16 +105,16 @@ public class FeedbackController {
     @GetMapping(value = "/getAllByMemberID/{id}")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllFeedbackByMemberID(@PathVariable("id") int id) {
-        
+
         Iterable<Feedback> feedbackList = service.findFeedbackByMemberID(id);
-        
+
         if (!feedbackList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-       
+
         return new ResponseEntity<>(feedbackList, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Get All Member's Feedback",
             description = "Get feed back by MemberID")
@@ -128,17 +128,16 @@ public class FeedbackController {
     @GetMapping(value = "/getByID/{id}")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getFeedbackByID(@PathVariable("id") int id) {
-        
+
         Optional<Feedback> feedback = service.findById(id);
-        
+
         if (feedback.isPresent()) {
             return new ResponseEntity<>(feedback, HttpStatus.OK);
-            
-        }  
+
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
-    
+
     //Do feedback need reject
     @Operation(summary = "Approve a feedback")
     @ApiResponses({

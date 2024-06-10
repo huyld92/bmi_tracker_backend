@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.repository;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AdvisorRepository extends JpaRepository<Advisor, Integer> {
 
-    public Advisor findByAccountID(Integer accountID);
+    public Optional<Advisor> findByAccountID(Integer accountID);
 
     @Query("SELECT new com.fu.bmi_tracker.payload.response.AdvisorResponse(adv.advisorID ,a.email, a.fullName, a.phoneNumber, a.gender, a.birthday) "
             + "FROM Account a JOIN Advisor adv ON a.accountID = adv.accountID")
