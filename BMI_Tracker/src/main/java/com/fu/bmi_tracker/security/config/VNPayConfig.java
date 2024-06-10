@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class VNPayConfig {
 
     public final static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public final static String vnp_Returnurl = "/api/transaction/vnpay-payment";
+    public final static String vnp_Returnurl = "/api/test/transaction/vnpay-payment";
     public final static String vnp_TmnCode = "NWFXT3CJ";
     public final static String vnp_HashSecret = "21PDTLXMYCR64N04TX40PVV9HN5KUK65";
     public final static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";

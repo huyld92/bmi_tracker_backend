@@ -4,10 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.Recipe;
-import com.fu.bmi_tracker.model.entities.Tag;
-import java.util.List;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,11 +18,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FoodResponse {
 
-    private int foodID;
+    private Integer foodID;
 
     private String foodName;
 
-    private int foodCalories;
+    private Integer foodCalories;
 
     private String description;
 
@@ -33,21 +30,12 @@ public class FoodResponse {
 
     private String foodVideo;
 
-    private int foodTimeProcess;
+    private String foodNutrition;
 
-    private List<Tag> foodTags;
+    private Integer foodTimeProcess;
+    
+    private LocalDate creationDate;
 
-    private List<Recipe> recipes;
+    private boolean isActive;
 
-    public FoodResponse(Food foodSave, List<Tag> foodTags, List<Recipe> recipes) {
-        this.foodID = foodSave.getFoodID();
-        this.foodName = foodSave.getFoodName();
-        this.foodCalories = foodSave.getFoodCalories();
-        this.description = foodSave.getDescription();
-        this.foodPhoto = foodSave.getFoodPhoto();
-        this.foodVideo = foodSave.getFoodVideo();
-        this.foodTimeProcess = foodSave.getFoodTimeProcess();
-        this.foodTags = foodTags;
-        this.recipes = recipes;
-    }
 }

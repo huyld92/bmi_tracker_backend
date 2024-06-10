@@ -19,9 +19,9 @@ public class LoginForMemberResponse {
 
     private Integer memberID;
     private String email;
-    private String fullname;
+    private String fullName;
     private String gender;
-    private String phonenumber;
+    private String phoneNumber;
     private int height;
     private int weight;
     private int age;

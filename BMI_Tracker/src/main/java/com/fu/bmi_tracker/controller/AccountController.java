@@ -21,8 +21,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,21 +64,23 @@ public class AccountController {
 
     @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", content = {
-                    @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "403", content = {
-                    @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = {
-                    @Content(schema = @Schema()) }) })
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody CreateAccountRequest createAccountRequest) {
         // Create new object
         Account account = new Account(createAccountRequest);
 
-        // set Role
-        Role accountRole = roleService.findByRoleName(createAccountRequest.getRole());
-        account.setRole(accountRole);
+        // set Roles
+        Set<Role> accountRoles = new HashSet<>();
+        accountRoles.add(roleService.findByRoleName(createAccountRequest.getRole()));
+
+        account.setRoles(new HashSet<>(accountRoles));
 
         // Generate default password and endcode to save
         String defaultPassword = passwordUtils.generateRandomPassword(10);
@@ -97,17 +101,19 @@ public class AccountController {
                 accountSave.getFullName());
         emailService.sendSimpleMail(details);
 
-        return new ResponseEntity<>(accountSave, HttpStatus.CREATED);
+        AccountResponse accountResponse = new AccountResponse(account);
+
+        return new ResponseEntity<>(accountResponse, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get all account (ADMIN)", description = "Get all account")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "403", content = {
-                    @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = {
-                    @Content(schema = @Schema()) }) })
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllAccount() {
@@ -122,12 +128,12 @@ public class AccountController {
 
     @Operation(summary = "Get account by account id (ADMIN)", description = "Get account by account id")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "403", content = {
-                    @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = {
-                    @Content(schema = @Schema()) }) })
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
     @GetMapping(value = "/getByID")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAccountByID(@RequestParam Integer accountID) {
@@ -144,12 +150,12 @@ public class AccountController {
 
     @Operation(summary = "Update account by account id", description = "Update account ")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "403", content = {
-                    @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "500", content = {
-                    @Content(schema = @Schema()) }) })
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
     @PutMapping(value = "/update")
     @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> updateAccount(@Valid @RequestBody UpdateAccountRequest accountRequest) {
@@ -172,7 +178,10 @@ public class AccountController {
 
         }
 
-        return new ResponseEntity<>(accountSave, HttpStatus.OK);
+        // create account response
+        AccountResponse accountResponse = new AccountResponse(accountSave);
+
+        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
 }

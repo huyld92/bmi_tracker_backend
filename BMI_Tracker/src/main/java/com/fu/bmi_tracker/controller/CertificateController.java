@@ -102,41 +102,7 @@ public class CertificateController {
 
         return new ResponseEntity<>(certificateSave, HttpStatus.OK);
     }
-
-    @Operation(
-            summary = "Update status certificate by certificate id",
-            description = "Update certificate status")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Certificate.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PutMapping(value = "/updateStatus")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateStatusCertificate(@RequestParam Integer certificateID, @RequestParam String status) {
-        // Check exist certificate
-        Optional<Certificate> certificate = service.findById(certificateID);
-
-        if (!certificate.isPresent()) {
-            return new ResponseEntity<>("Cannot find certificate with id{" + certificateID + "}", HttpStatus.NOT_FOUND);
-        }
-        // update status
-        certificate.get().setStatus(status);
-
-        // Store to database
-        Certificate certificateSave = service.save(certificate.get());
-
-        // check resutl
-        if (certificateSave == null) {
-            return new ResponseEntity<>("Failed to update certificate", HttpStatus.INTERNAL_SERVER_ERROR);
-
-        }
-
-        return new ResponseEntity<>(certificateSave, HttpStatus.OK);
-    }
-
+ 
     @Operation(summary = "Retrieve all Certificates (ADMIN)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {

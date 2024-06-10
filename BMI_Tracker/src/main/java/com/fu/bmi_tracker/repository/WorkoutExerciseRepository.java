@@ -4,8 +4,11 @@
  */
 package com.fu.bmi_tracker.repository;
 
+import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface WorkoutExerciseRepository extends JpaRepository<WorkoutExercise, WorkoutExercise>{
-    
+public interface WorkoutExerciseRepository extends JpaRepository<WorkoutExercise, WorkoutExercise> {
+
+    @Query("SELECT we.exercise FROM WorkoutExercise we WHERE we.workout.workoutID = :workoutID")
+    public List<Exercise> findExerciseByWorkout_WorkoutID(Integer workoutID);
 }

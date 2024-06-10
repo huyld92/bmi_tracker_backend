@@ -32,11 +32,11 @@ public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RefreshTokenID")
+    @Column(name = "RefreshTokenID", nullable = false)
     private Integer refreshTokenID;
 
     @OneToOne
-    @JoinColumn(name = "AccountID" )
+    @JoinColumn(name = "AccountID", nullable = false)
     private Account account;
 
     @Column(name = "Token", nullable = false, unique = true)

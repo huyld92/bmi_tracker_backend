@@ -29,13 +29,13 @@ public class NotificationAccount {
 
     @ManyToOne
     @Id
-    @JoinColumn(name = "NotificationID")
+    @JoinColumn(name = "NotificationID", nullable = false)
     private Notification notification;
 
     @ManyToOne
-    @JoinColumn(name = "AccountID")
+    @JoinColumn(name = "AccountID", nullable = false)
     private Account account;
 
-    @Column(name = "IsRead")
+    @Column(name = "IsRead", nullable = false)
     private boolean isRead;
 }

@@ -34,20 +34,22 @@ public class CreateFoodRequest {
     @Schema(name = "foodCalories", example = "500")
     private Integer foodCalories;
 
-    @NotBlank
     @Size(max = 255)
-    @Schema(name = "description", example = "Delicious pizza with cheese and toppings.")
+    @Schema(name = "description", example = "Delicious pizza with cheese and toppings. (Can blank)")
     private String description;
 
-    @NotBlank
     @Size(max = 255)
-    @Schema(name = "foodPhoto", example = "photourl.com/pizza.jpg")
+    @Schema(name = "foodPhoto", example = "photourl.com/pizza.jpg (Can blank)")
     private String foodPhoto;
+
+    @Size(max = 255)
+    @Schema(name = "foodVideo", example = "videourl.com/pizza.mp4 (Can blank)")
+    private String foodVideo;
 
     @NotBlank
     @Size(max = 255)
-    @Schema(name = "foodVideo", example = "videourl.com/pizza.mp4")
-    private String foodVideo;
+    @Schema(name = "foodNutrition", example = "100 Protein, 20 Carbs, 200 Fat")
+    private String foodNutrition;
 
     @NotNull
     @Positive
@@ -59,7 +61,7 @@ public class CreateFoodRequest {
     private List<Integer> tagIDs;
 
     @NotEmpty
-    @Schema(name = "recipeRequests")
-    private List<RecipeRequest> recipeRequests;
+    @Schema(name = "ingredientIDs", example = "[1, 2, 3]")
+    private List<Integer> ingredientIDs;
 
 }

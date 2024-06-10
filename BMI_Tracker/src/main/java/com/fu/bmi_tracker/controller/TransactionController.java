@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  *
@@ -39,7 +40,7 @@ import io.swagger.v3.oas.annotations.Hidden;
  *
  */
 @Tag(name = "Trasaction", description = "Trasaction management APIs")
-@Hidden
+//@Hiddens
 @RestController
 @RequestMapping("/api/test/transaction")
 public class TransactionController {
@@ -69,7 +70,7 @@ public class TransactionController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/payment")
-    @PreAuthorize("hasRole('CUSTOMER')")
+//    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> makePayment(
             @RequestParam("amount") int toUpTotal,
             @RequestParam("orderInfo") String orderInfo,
@@ -83,7 +84,7 @@ public class TransactionController {
     }
 
     @GetMapping("/vnpay-payment")
-    @PreAuthorize("hasRole('CUSTOMER')")
+//    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> vnpayResult(HttpServletRequest request) {
         int paymentStatus = vNPayService.orderReturn(request);
 
@@ -114,9 +115,25 @@ public class TransactionController {
             Transaction transaction = new Transaction(bankCode, bankTranNo,
                     cardType, amount, orderInfo,
                     topUpDate, memberID);
+            System.out.println("Payment resultt:" + transaction.toString());
 
+            // Construct the deep link URL
+            String deeplink = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .scheme("demozpdk")
+                    .host("app")
+                    .path("/payment-result")
+                    .queryParam("status", "success")
+                    .queryParam("amount", amount)
+                    .queryParam("memberID", memberID)
+                    .queryParam("topUpDate", topUpDate)
+                    .queryParam("bankCode", bankCode)
+                    .queryParam("bankTranNo", bankTranNo)
+                    .queryParam("cardType", cardType)
+                    .queryParam("orderInfo", orderInfo)
+                    .build()
+                    .toUriString();
 //            transactionService.save(transaction);
-            return new ResponseEntity<>(transaction, HttpStatus.OK);
+            return new ResponseEntity<>(deeplink, HttpStatus.OK);
         }
         return new ResponseEntity<>("orderfail", HttpStatus.FAILED_DEPENDENCY);
 

@@ -14,12 +14,14 @@ import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,18 +30,18 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "NotificationID")
+    @Column(name = "NotificationID", nullable = false)
     private Integer notificationID;
 
-    @Column(name = "Content")
+    @Column(name = "Content", nullable = false)
     private String content;
 
-    @Column(name = "Title")
+    @Column(name = "Title", nullable = false)
     private String title;
 
-    @Column(name = "CreatedTime")
+    @Column(name = "CreatedTime", nullable = false)
     private Instant createdTime;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 }

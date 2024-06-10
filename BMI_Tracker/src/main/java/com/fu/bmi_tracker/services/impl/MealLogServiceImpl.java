@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.MealLog;
+import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.repository.MealLogRepository;
 import com.fu.bmi_tracker.services.MealLogService;
 import java.util.Optional;
@@ -40,6 +41,12 @@ public class MealLogServiceImpl implements MealLogService {
     @Override
     public Iterable<MealLog> findByRecordID(Integer recordID) {
         return repository.findByRecordID(recordID);
+    }
+
+    @Override
+    public Iterable<MealLog> findByRecordIDAndByMealType(Integer recordID, EMealType mealType) {
+//        return repository.findByRecordIDAndByMealType(recordID, mealType);
+        return null;
     }
 
 }

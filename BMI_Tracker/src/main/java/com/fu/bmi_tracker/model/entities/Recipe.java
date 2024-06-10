@@ -4,9 +4,9 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -29,16 +29,16 @@ import lombok.NoArgsConstructor;
 public class Recipe {
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FoodID")
-    @JsonIgnore
     private Food food;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "IngredientID")
     private Ingredient ingredient;
 
-    @Column(name = "quantity")
-    private Integer quantity;
+//    @Column(name = "quantity", nullable = false)
+//    private Integer quantity;
+
 }

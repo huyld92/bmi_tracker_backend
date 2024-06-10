@@ -12,24 +12,30 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
+@SQLRestriction(value = "IsActive = 1")
 @Data
 @Builder
 @AllArgsConstructor
@@ -39,43 +45,47 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "AccountID")
+    @Column(name = "AccountID", nullable = false)
     private Integer accountID;
 
-    @Column(name = "FullName")
+    @Column(name = "FullName", nullable = false)
     private String fullName;
 
-    @Column(name = "Email")
+    @Column(name = "Email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "PhoneNumber")
+    @Column(name = "PhoneNumber", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(name = "Password")
+    @Column(name = "Password", nullable = false)
     private String password;
 
-    @Column(name = "Gender")
+    @Column(name = "Gender", nullable = false)
     @Enumerated(EnumType.STRING)
     private EGender gender;
 
-    @Column(name = "DateOfBirth")
+    @Column(name = "DateOfBirth", nullable = false)
     private LocalDate birthday;
 
-    @Column(name = "IsVerified")
+    @Column(name = "IsVerified", nullable = false)
     private Boolean isVerified;
 
-    @Column(name = "IsActive")
+    @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @Column(name = "CreationDate")
+    @Column(name = "CreationDate", nullable = false)
     private LocalDate creationDate;
 
-    @ManyToOne
-    @JoinColumn(name = "RoleID")
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "RoleAccount",
+            joinColumns = @JoinColumn(name = "AccountID"),
+            inverseJoinColumns = @JoinColumn(name = "RoleID"))
+    private Set<Role> roles;
 
     public Account(String fullName, String email, String phoneNumber, String password, EGender gender,
-            LocalDate birthday, Boolean isActive, Role role) {
+            LocalDate birthday, Boolean isActive, Set<Role> roles
+    ) {
+        this.roles = roles;
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -85,10 +95,10 @@ public class Account {
         this.isActive = isActive;
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isVerified = false;
-        this.role = role;
     }
 
     public Account(CreateAccountRequest createAccountRequest) {
+        this.roles = new HashSet<>();
         this.fullName = createAccountRequest.getFullName();
         this.email = createAccountRequest.getEmail();
         this.phoneNumber = createAccountRequest.getPhoneNumber();
@@ -112,9 +122,13 @@ public class Account {
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }
+        if (accountRequest.getRoles() != null) {
+            this.roles = accountRequest.getRoles();
+        }
         if (accountRequest.getIsActive() != null) {
             this.isActive = accountRequest.getIsActive();
         }
+
     }
 
 }
