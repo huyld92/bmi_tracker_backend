@@ -10,34 +10,40 @@ import com.fu.bmi_tracker.services.FoodService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FoodServiceImpl implements FoodService {
-    
+
     @Autowired
     FoodRepository repository;
-    
+
     @Override
-    
+
     public Iterable<Food> findAll() {
         return repository.findAll();
     }
-    
+
     @Override
     public Optional<Food> findById(Integer id) {
         return repository.findById(id);
     }
-    
+
     @Override
     public Food save(Food t) {
         return repository.save(t);
     }
-    
+
     @Override
     public Iterable<Food> findByFoodIDIn(List<Integer> foodIds) {
         return repository.findByFoodIDIn(foodIds);
     }
- 
-    
+
+    @Override
+    public Page<Food> getFoodsByTagName(String dietPreferenceName, Pageable pageable) {
+        return repository.findFoodsByTagName(dietPreferenceName, pageable);
+    }
+
 }

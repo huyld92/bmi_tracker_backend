@@ -121,7 +121,7 @@ public class MemberController {
                 defaultCalories,
                 false,
                 now,
-                createMemberRequest.getDietaryPreferenceID(),
+                createMemberRequest.getDietaryPreferenceName(),
                 new ActivityLevel(createMemberRequest.getActivityLevelID()),
                 //Thay đổi menuDI and WorkoutID
                 1,
@@ -350,15 +350,6 @@ public class MemberController {
     public ResponseEntity<?> getAllExerciseOfMemberByWorkoutID() {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-//
-//        // Find member by accountID
-//        Optional<Member> member = memberService.findByAccountID();
-//
-//        if (!member.isPresent()) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Member already exists!"));
-//        }
 
         // gọi service tìm exercises của workout
         List<Exercise> exercises = memberService.getllExerciseResponseInWorkout(principal.getId());

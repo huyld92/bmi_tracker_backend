@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,11 +23,12 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(FoodTag.class)
-@Table(name = "FoodTag")
-public class FoodTag {
+@IdClass(TagWorkout.class)
+@Table(name = "TagWorkout")
+public class TagWorkout {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,6 +38,6 @@ public class FoodTag {
     @Id
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FoodID")
-    private Food food;
+    @JoinColumn(name = "WorkouID")
+    private Workout workouID;
 }

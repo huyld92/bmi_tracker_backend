@@ -76,6 +76,9 @@ public class Account {
     @Column(name = "CreationDate", nullable = false)
     private LocalDate creationDate;
 
+    @Column(name = "DeviceToken", nullable = true)
+    private String deviceToken;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "RoleAccount",
             joinColumns = @JoinColumn(name = "AccountID"),

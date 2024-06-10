@@ -53,7 +53,7 @@ public class Exercise {
 
     @ManyToMany
     @JoinTable(
-            name = "ExerciseTag",
+            name = "TagExercise",
             joinColumns = @JoinColumn(name = "ExerciseID"),
             inverseJoinColumns = @JoinColumn(name = "TagID")
     )

@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class CreateMemberRequest { 
     
     @NotNull
-    private Integer dietaryPreferenceID;
+    private String dietaryPreferenceName;
 
     @NotNull
     @Positive
