@@ -25,22 +25,23 @@ import com.fu.bmi_tracker.services.FeedbackService;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  *
  * @author BaoLG
  */
-@Tag(name = "FeedBack", description = "FeedBack management APIs")
+@Tag(name = "Feedback", description = "Feedback management APIs")
 @RestController
 @RequestMapping("/api/feedbacks")
-public class FeedBackController {
+public class FeedbackController {
     
     @Autowired
     FeedbackService service;
     
     @Operation(
-            summary = "Create new Plan with form",
-            description = "Create new plan with form")
+            summary = "Create new Feedback with form",
+            description = "Create new feedback with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = Feedback.class), mediaType = "application/json")}),
@@ -52,7 +53,7 @@ public class FeedBackController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewFeedBack(@RequestBody CreateFeedbackRequest feedbackRequest) {
         
-        //Convert createRequest to Plan before save
+        //Convert createRequest to Feedback before save
         Feedback newFeedBack = new Feedback();
         newFeedBack.setTitle(feedbackRequest.getTitle());
         newFeedBack.setDescription(feedbackRequest.getDescription());
@@ -136,23 +137,25 @@ public class FeedBackController {
         }  
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    /*+
-    @Operation(summary = "Deactive a Plan by Id")
+    
+    
+    //Do feedback need reject
+    @Operation(summary = "Approve a feedback")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping("/deactive/{id}")
-    @PreAuthorize("hasRole('ADVISOR')")
+    @PutMapping("/approve/{id}")
+    //@PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> approveFeedback(@PathVariable("id") int id) {
-        Optional<Plan> plan =  planService.findById(id);
+        Optional<Feedback> feedback = service.findById(id);
 
-        if (plan.isPresent()) {
-            plan.get().setActive(Boolean.FALSE);
-            return new ResponseEntity<>(planService.save(plan.get()), HttpStatus.NO_CONTENT);
+        if (feedback.isPresent()) {
+            feedback.get().setStatus(Boolean.TRUE);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>("Cannot find plan with id{" + id + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Cannot find feedback with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
-    }*/
+    }
 }
