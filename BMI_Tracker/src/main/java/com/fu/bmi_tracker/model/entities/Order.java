@@ -43,8 +43,8 @@ public class Order {
     @Column(name = "Description", nullable = false)
     private String description;
 
-    @Column(name = "Amount", nullable = false)
-    private Float amount;
+    @Column(name = "OrderAmount", nullable = false)
+    private Float orderAmount;
 
     @Column(name = "DateOrder", nullable = false)
     private LocalDateTime dateOrder;
@@ -55,6 +55,19 @@ public class Order {
     @Column(name = "EndDate", nullable = false)
     private LocalDate endDate;
 
+    @Column(name = "Status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EOrderStatus status;
+
+    @Column(name = "CommissionRate", nullable = false)
+    private Float commissionRate;
+
+    @Column(name = "CommissionAmount", nullable = false)
+    private Float commissionAmount;
+
+    @Column(name = "IsPaid", nullable = false)
+    private Boolean isPaid;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MemberID", nullable = false)
     private Member member;
@@ -63,31 +76,19 @@ public class Order {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
-    @Column(name = "Status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EOrderStatus status;
-
     @Column(name = "TransactionID", nullable = false, unique = true)
     private Integer transactionID;
 
-    @Column(name = "PlanDuration", nullable = false)
-    private Integer planDuration;
-
-    @Column(name = "IsPaid", nullable = false)
-    private Boolean isPaid;
-
     public Order(CreateOderRequest createOderRequest, Integer memberID) {
         this.description = createOderRequest.getDescription();
-        this.amount = createOderRequest.getAmount();
+        this.orderAmount = createOderRequest.getAmount();
         this.dateOrder = LocalDateTime.now(ZoneId.of("GMT+7"));
-//        this.dateOrder = createOderRequest.getDateOrder();
         this.startDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.endDate = startDate.plusDays(createOderRequest.getPlanDuration());
-        this.planDuration = createOderRequest.getPlanDuration();
         this.member = new Member();
-        member.setMemberID(memberID);
+        this.member.setMemberID(memberID);
         this.advisor = new Advisor();
-        advisor.setAdvisorID(createOderRequest.getAdvisorID());
+        this.advisor.setAdvisorID(createOderRequest.getAdvisorID());
         this.status = EOrderStatus.PENDING;
         this.isPaid = false;
     }

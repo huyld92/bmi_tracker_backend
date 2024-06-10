@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +39,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  *
  */
 @Tag(name = "Trasaction", description = "Trasaction management APIs")
-//@Hiddens
+@Hidden
 @RestController
 @RequestMapping("/api/test/transaction")
 public class TransactionController {

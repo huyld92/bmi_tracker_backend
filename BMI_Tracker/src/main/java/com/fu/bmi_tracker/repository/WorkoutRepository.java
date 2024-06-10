@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface WorkoutRepository extends JpaRepository<Workout, Integer>{
-    
+public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
+
+    public Iterable<Workout> findByAdvisorID(Integer advisorID);
+
 }

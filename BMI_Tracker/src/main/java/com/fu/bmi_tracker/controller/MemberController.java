@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
@@ -13,6 +14,7 @@ import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
+import com.fu.bmi_tracker.payload.response.ExerciseResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
@@ -189,7 +191,7 @@ public class MemberController {
                     food.getFoodNutrition(),
                     food.getFoodTimeProcess(),
                     food.getCreationDate(),
-                     food.getIsActive());
+                    food.getIsActive());
             foodResponses.add(foodResponse);
         });
         return new ResponseEntity<>(foodResponses, HttpStatus.OK);
@@ -235,7 +237,7 @@ public class MemberController {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getMenu")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getMenuOfMember() {
+    public ResponseEntity<?> getAllFoodOfMemberByMenuID() {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
@@ -293,7 +295,7 @@ public class MemberController {
         if (!member.isPresent()) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Member already exists!"));
+                    .body(new MessageResponse("Error: Member not exists!"));
         }
 
         MemberBodyMass bodyMass
@@ -332,4 +334,48 @@ public class MemberController {
         return new ResponseEntity<>(memberInformationResponse, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Retrieve All exercise in workout (MEMBER)",
+            description = "Member get exercises list in workout")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = ExerciseResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/workout/getAllExercise")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getAllExerciseOfMemberByWorkoutID() {
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+//
+//        // Find member by accountID
+//        Optional<Member> member = memberService.findByAccountID();
+//
+//        if (!member.isPresent()) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Member already exists!"));
+//        }
+
+        // gọi service tìm exercises của workout
+        List<Exercise> exercises = memberService.getllExerciseResponseInWorkout(principal.getId());
+
+        // kiểm tra kết quả nếu empty trả về 204
+        if (exercises.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo exercises response
+        List<ExerciseResponse> exerciseResponses = new ArrayList();
+
+        // chuyển đổi từ list exercise thành list exercise response
+        exercises.forEach(exercise -> {
+            exerciseResponses.add(new ExerciseResponse(exercise));
+        });
+
+        return new ResponseEntity<>(exerciseResponses, HttpStatus.OK);
+    }
 }

@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.entities.ExerciseTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface RecipeRepository extends JpaRepository<Recipe, Recipe> {
+public interface ExerciseTagRepository extends JpaRepository<ExerciseTag, ExerciseTag> {
 
-    public void deleteByFood_FoodIDAndIngredient_IngredientID(Integer foodID, Integer ingredientID);
+    public void deleteByExercise_ExerciseIDAndTag_TagID(Integer exerciseID, Integer tagID);
 
 }

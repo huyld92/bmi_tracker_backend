@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.payload.response;
 
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.Tag;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;

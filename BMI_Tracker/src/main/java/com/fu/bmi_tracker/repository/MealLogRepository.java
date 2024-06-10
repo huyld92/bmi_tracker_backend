@@ -18,6 +18,6 @@ public interface MealLogRepository extends JpaRepository<MealLog, Integer> {
 
     public Iterable<MealLog> findByRecordID(Integer recordID);
 
-//    public Iterable<MealLog> findByRecordIDAndByMealType(Integer recordID, EMealType mealType);
+    public Iterable<MealLog> findByRecordIDAndMealType(Integer recordID, EMealType mealType);
 
 }
