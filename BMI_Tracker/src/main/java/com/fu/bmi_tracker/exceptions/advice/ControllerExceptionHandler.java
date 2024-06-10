@@ -94,32 +94,7 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
 
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
-    }
-//
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<?> notValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
-//
-//        List<String> errors = new ArrayList<>();
-//
-//        ex.getAllErrors().forEach(err -> errors.add(err.getDefaultMessage()));
-//
-//        Map<String, List<String>> result = new HashMap<>();
-//        result.put("errors", errors);
-//
-//        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @ExceptionHandler(HttpMessageNotReadableException.class)
-//    public ResponseEntity<?> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, WebRequest request) {
-//        ErrorMessage message = new ErrorMessage(
-//                HttpStatus.BAD_REQUEST.value(),
-//                new Date(),
-//                "Invalid request body format",
-//                request.getDescription(false));
-//
-//        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-//    }
-//
+    } 
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -143,20 +118,8 @@ public class ControllerExceptionHandler {
                 ex.getMessage());
 
         return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
-    }
-//
-//    @ExceptionHandler(DataIntegrityViolationException.class)
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ResponseEntity<ErrorMessage> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-//        ErrorMessage message = new ErrorMessage(
-//                HttpStatus.CONFLICT.value(),
-//                new Date(),
-//                "FOREIGN KEY constraint",
-//                ex.getMessage());
-//
-//        return new ResponseEntity<>(message, HttpStatus.CONFLICT);
-//    }
-
+    } 
+    
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorMessage> handleMaxSizeException(MaxUploadSizeExceededException ex) {
         ErrorMessage message = new ErrorMessage(

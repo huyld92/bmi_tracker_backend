@@ -42,4 +42,9 @@ public class CreateActivityLogRequest {
     @NotBlank
     @Schema(name = "dateOfActivity", example = "2024-05-01")
     private String dateOfActivity;
+
+    @NotNull
+    @Positive
+    @Schema(name = "exerciseID", example = "1")
+    private Integer exerciseID;
 }

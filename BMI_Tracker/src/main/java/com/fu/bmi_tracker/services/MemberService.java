@@ -4,7 +4,9 @@
  */
 package com.fu.bmi_tracker.services;
 
+import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Member;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,5 +18,7 @@ public interface MemberService extends GeneralService<Member> {
     public boolean existsByAccountID(int accountID);
 
     public Optional<Member> findByAccountID(int accountID);
+
+    public List<Exercise> getllExerciseResponseInWorkout(Integer accountID);
 
 }

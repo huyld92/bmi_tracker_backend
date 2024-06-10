@@ -46,11 +46,15 @@ public class ActivityLog {
     @Column(name = "RecordID", nullable = false)
     private Integer recordID;
 
+    @Column(name = "ExerciseID", nullable = true)
+    private Integer exerciseID;
+
     public ActivityLog(CreateActivityLogRequest activityLogRequest) {
         this.activityName = activityLogRequest.getActivityName();
         this.emoji = activityLogRequest.getEmoji();
         this.caloriesBurned = activityLogRequest.getCaloriesBurned();
         this.duration = activityLogRequest.getDuration();
+        this.exerciseID = activityLogRequest.getExerciseID();
     }
 
 }

@@ -256,4 +256,20 @@ public class FoodController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
+//    @Operation(
+//            summary = "Retrieve list food with dietPreferene",
+//            description = "Get a Food object by specifying its id. The response is Food object")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "404", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping("/getByID/{id}")
+//    public ResponseEntity<?> getFoodById(@PathVariable("id") int id){
+//        
+//    }
+
 }
