@@ -4,42 +4,59 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Member;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.MemberRepository;
+import com.fu.bmi_tracker.repository.WorkoutExerciseRepository;
 import com.fu.bmi_tracker.services.MemberService;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberService {
 
     @Autowired
-    MemberRepository repository;
-
+    MemberRepository memberRepository;
+    
+    @Autowired
+    WorkoutExerciseRepository workoutExerciseRepository;
+    
     @Override
     public Iterable<Member> findAll() {
-        return repository.findAll();
+        return memberRepository.findAll();
     }
 
     @Override
     public Optional<Member> findById(Integer id) {
-        return repository.findById(id);
+        return memberRepository.findById(id);
     }
 
     @Override
     public Member save(Member t) {
-        return repository.save(t);
+        return memberRepository.save(t);
     }
 
     @Override
     public boolean existsByAccountID(int accountID) {
-        return repository.existsByAccountID(accountID);
+        return memberRepository.existsByAccountID(accountID);
     }
 
     @Override
     public Optional<Member> findByAccountID(int accountID) {
-        return repository.findByAccountID(accountID);
+        return memberRepository.findByAccountID(accountID);
+    }
+
+    @Override
+    public List<Exercise> getllExerciseResponseInWorkout(Integer accountID) {
+        // Find member by accountID
+        Member member = this.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
+        
+        return workoutExerciseRepository.findExercisesByWorkoutID(member.getWorkoutID());
+
     }
 
 }

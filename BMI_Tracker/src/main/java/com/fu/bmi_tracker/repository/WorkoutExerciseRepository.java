@@ -22,4 +22,7 @@ public interface WorkoutExerciseRepository extends JpaRepository<WorkoutExercise
     public List<Exercise> findExerciseByWorkout_WorkoutID(Integer workoutID);
 
     public void deleteByWorkout_WorkoutIDAndExercise_ExerciseID(Integer workoutID, Integer exerciseID);
+
+    @Query("SELECT we.exercise FROM WorkoutExercise we WHERE we.workout.workoutID = :workoutID")
+    public List<Exercise> findExercisesByWorkoutID(Integer workoutID);
 }
