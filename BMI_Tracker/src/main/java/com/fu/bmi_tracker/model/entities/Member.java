@@ -62,8 +62,8 @@ public class Member {
 
 //    @Column(name = "DietaryPreferenceID", nullable = false)
 //    private Integer dietaryPreferenceID;
-    @Column(name = "DietaryPreferenceName", nullable = false)
-    private String dietaryPreferenceName;
+    @Column(name = "DietaryPreference", nullable = false)
+    private String dietaryPreference;
 
     @ManyToOne
     @JoinColumn(name = "ActivityLevelID", nullable = false)
@@ -98,7 +98,7 @@ public class Member {
         this.defaultCalories = defaultCalories;
         this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
-        this.dietaryPreferenceName = dietaryPreferenceName;
+        this.dietaryPreference = dietaryPreferenceName;
         this.activityLevel = activityLevel;
     }
 
@@ -112,7 +112,7 @@ public class Member {
         this.defaultCalories = defaultCalories;
         this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
-        this.dietaryPreferenceName = dietaryPreferenceName;
+        this.dietaryPreference = dietaryPreferenceName;
         this.activityLevel = activityLevel;
         this.menuID = menuID;
         this.workoutID = workoutID;

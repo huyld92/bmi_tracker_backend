@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class CreateMemberRequest { 
     
     @NotNull
-    private String dietaryPreferenceName;
+    private String dietaryPreference;
 
     @NotNull
     @Positive

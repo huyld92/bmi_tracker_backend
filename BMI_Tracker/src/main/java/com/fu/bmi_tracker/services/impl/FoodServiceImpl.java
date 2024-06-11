@@ -43,7 +43,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public Page<Food> getFoodsByTagName(String dietPreferenceName, Pageable pageable) {
-        return repository.findFoodsByTagName(dietPreferenceName, pageable);
+        return repository.findFoodWithTagName(dietPreferenceName, pageable);
     }
 
 }

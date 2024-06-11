@@ -38,6 +38,6 @@ public class TagWorkout {
     @Id
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "WorkouID")
-    private Workout workouID;
+    @JoinColumn(name = "WorkoutID")
+    private Workout workout;
 }

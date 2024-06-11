@@ -37,5 +37,5 @@ public class TagMenu {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MenuID")
-    private Menu menuID;
+    private Menu menu;
 }

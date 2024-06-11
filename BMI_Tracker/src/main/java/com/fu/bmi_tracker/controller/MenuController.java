@@ -15,6 +15,7 @@ import com.fu.bmi_tracker.payload.request.UpdateMenuRequest;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuResponse;
+import com.fu.bmi_tracker.payload.response.MenuResponseAll;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.FoodService;
@@ -139,7 +140,7 @@ public class MenuController {
             description = "Get all menu include food")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -153,9 +154,16 @@ public class MenuController {
         // kiểm tra menu trống
         if (!menus.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } 
-        
-        return new ResponseEntity<>(menus, HttpStatus.OK);
+        }
+
+        // tạo menu response
+        List<MenuResponseAll> menuResponses = new ArrayList<>();
+
+        menus.forEach(menu -> {
+            menuResponses.add(new MenuResponseAll(menu));
+        });
+
+        return new ResponseEntity<>(menuResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -305,6 +313,47 @@ public class MenuController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
+    }
+
+//    @Operation(
+//            summary = "Get menu by dietary preference",
+//            description = "Get menu from dietary preference with tag name")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping(value = "/suggestion/getMenu")
+//    public ResponseEntity<?> getMenuSuggestion(@RequestParam EDietPreference dietPreferenceName) {
+    @Operation(
+            summary = "Get menu by tag name",
+            description = "Get menu with tag name")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getMenuByTagName")
+    public ResponseEntity<?> getMenuSuggestion(@RequestParam String tagName) {
+        // gọi service lấy menu suggestion
+        List<Menu> menus = menuService.getMenuByTagName(tagName);
+
+        // kiểm tra kết quả
+        if (menus.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        // taoj menu response
+        List<MenuResponseAll> menuResponse = new ArrayList<>();
+
+        menus.forEach(menu -> {
+            menuResponse.add(new MenuResponseAll(menu));
+        });
+
+        return new ResponseEntity<>(menuResponse, HttpStatus.NO_CONTENT);
     }
 
 }
