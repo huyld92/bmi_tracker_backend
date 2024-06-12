@@ -157,7 +157,7 @@ public class MemberController {
 
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
     }
- 
+  
     @Operation(
             summary = "Retrieve All Food in menu by meal type (MEMBER)",
             description = "Member send meal type to get food list")

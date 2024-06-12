@@ -52,7 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Food", description = "Food management APIs")
 @RestController
-@RequestMapping("/api/foods")
+@RequestMapping("/api/test/foods")
 public class FoodController {
 
     @Autowired
