@@ -5,12 +5,11 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Exercise;
-import com.fu.bmi_tracker.model.entities.ExerciseTag;
+import com.fu.bmi_tracker.model.entities.TagExercise;
 import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.payload.request.CreateExerciseRequest;
 import com.fu.bmi_tracker.payload.request.UpdateExercerRequest;
 import com.fu.bmi_tracker.repository.ExerciseRepository;
-import com.fu.bmi_tracker.repository.ExerciseTagRepository;
 import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.services.ExerciseService;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fu.bmi_tracker.repository.TagExerciseRepository;
 
 /**
  *
@@ -34,7 +34,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     TagRepository tagRepository;
 
     @Autowired
-    ExerciseTagRepository exerciseTagRepository;
+    TagExerciseRepository exerciseTagRepository;
 
     @Override
     public Iterable<Exercise> findAll() {
@@ -97,7 +97,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public ExerciseTag addTag(Integer exerciseID, Integer tagID) {
+    public TagExercise addTag(Integer exerciseID, Integer tagID) {
         // Tìm exercise 
         Exercise exercise = repository.findById(exerciseID)
                 .orElseThrow(() -> new EntityNotFoundException("Exercise not found"));
@@ -106,7 +106,7 @@ public class ExerciseServiceImpl implements ExerciseService {
                 .orElseThrow(() -> new EntityNotFoundException("Tag not found"));
 
         // Tạo ExerciseTag
-        ExerciseTag exerciseTag = new ExerciseTag(tag, exercise);
+        TagExercise exerciseTag = new TagExercise(tag, exercise);
 
         //gọi repository để lưu 
         return exerciseTagRepository.save(exerciseTag);

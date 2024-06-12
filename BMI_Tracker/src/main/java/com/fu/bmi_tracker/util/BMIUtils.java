@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.util;
 
+import com.fu.bmi_tracker.model.enums.EBMI;
 import com.fu.bmi_tracker.model.enums.EGender;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +18,10 @@ public class BMIUtils {
     // Method to calculate BMI
     public double calculateBMI(int weight, int height) {
         // BMI formula: weight (kg) / (height (m) * height (m))
-        
+
         // convert height cm to m
         double heightInMeter = height / 100.0;
-        
+
         return (weight / (heightInMeter * heightInMeter));
     }
 
@@ -43,10 +44,27 @@ public class BMIUtils {
         return bMR * activityLevel;
     }
 
-    // Method to calculate default calorie intake
+    // Phương pháp tính lượng calo mặc định
     public int calculateDefaultCalories(double tdee, double targetWeight) {
         // Calculation based on TDEE and weight goal
         // Adjust this based on your specific requirements
         return (int) (tdee + targetWeight);
+    }
+
+    // Phương thức phân loại BMI
+    public String classifyBMI(double bmi) {
+        if (bmi < 18.5) {
+            return EBMI.LOW.toString();
+        } else if (bmi < 25) {
+            return EBMI.NORMAL.toString();
+        } else if (bmi < 30) {
+            return EBMI.OVERWEIGHT.toString();
+        } else if (bmi < 35) {
+            return EBMI.OBESE.toString();
+        } else if (bmi < 40) {
+            return EBMI.OBESE2.toString();
+        } else {
+            return "Morbidly Obese (Class 3)";
+        }
     }
 }

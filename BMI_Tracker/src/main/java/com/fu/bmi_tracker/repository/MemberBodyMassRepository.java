@@ -22,4 +22,10 @@ public interface MemberBodyMassRepository extends JpaRepository<MemberBodyMass, 
 
     @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.accountID = :accountID")
     public List<MemberBodyMass> findAllByAccountID(Integer accountID);
+
+    @Query("SELECT mbm FROM MemberBodyMass mbm "
+            + "JOIN mbm.member m "
+            + "WHERE m.accountID = :accountID "
+            + "ORDER BY mbm.dateInput DESC LIMIT 1")
+    public Optional<MemberBodyMass> findLatestByAccountID(Integer accountID);
 }

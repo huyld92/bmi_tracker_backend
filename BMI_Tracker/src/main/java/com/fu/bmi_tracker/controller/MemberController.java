@@ -11,10 +11,13 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.model.entities.Menu;
+import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
+import com.fu.bmi_tracker.payload.response.ExercisePageResponse;
 import com.fu.bmi_tracker.payload.response.ExerciseResponse;
+import com.fu.bmi_tracker.payload.response.FoodPageResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
@@ -44,6 +47,9 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -105,7 +111,7 @@ public class MemberController {
                 createMemberRequest.getHeight(), age, principal.getGender());
 
         // tính tdee
-        // find activity level
+        // tìm activity level
         ActivityLevel activityLevel = activityLevelService.findById(createMemberRequest.getActivityLevelID()).get();
         double tdee = bMIUtils.calculateTDEE(bmr, activityLevel.getActivityLevel());
 
@@ -113,6 +119,13 @@ public class MemberController {
         int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createMemberRequest.getTargetWeight());
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
+
+        // tìm menu suggestion theo dietatry preference và default calories
+        Menu menu = memberService.getMenuSuggestion(defaultCalories, createMemberRequest.getDietaryPreference());
+
+        // Tìm workout suggestion dựa trên BMI
+        Workout workout = memberService.getWorkoutSuggestion(bMIUtils.classifyBMI(bmi));
+
         // Save member  Bổ sung menuID
         Member member = new Member(principal.getId(),
                 createMemberRequest.getTargetWeight(),
@@ -121,11 +134,11 @@ public class MemberController {
                 defaultCalories,
                 false,
                 now,
-                createMemberRequest.getDietaryPreferenceID(),
+                createMemberRequest.getDietaryPreference(),
                 new ActivityLevel(createMemberRequest.getActivityLevelID()),
                 //Thay đổi menuDI and WorkoutID
-                1,
-                1
+                menu.getMenuID(),
+                workout.getWorkoutID()
         );
 
         Member memberSaved = memberService.save(member);
@@ -143,6 +156,11 @@ public class MemberController {
                 createMemberRequest.getHeight(), createMemberRequest.getWeight(), age, bmi, bmr, tdee);
 
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getMenuSuggestion")
+    public ResponseEntity<?> test(@RequestParam double bmi) {
+        return ResponseEntity.ok(memberService.getWorkoutSuggestion(bMIUtils.classifyBMI(bmi)));
     }
 
     @Operation(
@@ -350,15 +368,6 @@ public class MemberController {
     public ResponseEntity<?> getAllExerciseOfMemberByWorkoutID() {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-//
-//        // Find member by accountID
-//        Optional<Member> member = memberService.findByAccountID();
-//
-//        if (!member.isPresent()) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Member already exists!"));
-//        }
 
         // gọi service tìm exercises của workout
         List<Exercise> exercises = memberService.getllExerciseResponseInWorkout(principal.getId());
@@ -369,7 +378,7 @@ public class MemberController {
         }
 
         // tạo exercises response
-        List<ExerciseResponse> exerciseResponses = new ArrayList();
+        List<ExerciseResponse> exerciseResponses = new ArrayList<>();
 
         // chuyển đổi từ list exercise thành list exercise response
         exercises.forEach(exercise -> {
@@ -377,5 +386,92 @@ public class MemberController {
         });
 
         return new ResponseEntity<>(exerciseResponses, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Retrieve All foods with paging (MEMBER)",
+            description = "Get a list of foods with paging, prioritizing the dietary preferences of the member.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = FoodPageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/foods/getPriority")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getAllFoodWithpriorityTagName(Pageable pageable) {
+        // Lấy account ID từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi service tìm danh sách food và phân trang
+        Page<Food> page = memberService.getPaginatedFoodWithPriority(principal.getId(), pageable);
+
+        // chuyển dổi từ food sang food response
+        List<FoodResponse> foodResponses = page.get()
+                .map(food -> {
+                    return new FoodResponse(food);
+                })
+                .collect(Collectors.toList());
+
+        // tạo FoodPage Response
+        FoodPageResponse foodPageResponse = new FoodPageResponse(
+                foodResponses,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isFirst(),
+                page.isLast(),
+                page.getNumberOfElements()
+        );
+
+        return new ResponseEntity<>(foodPageResponse, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Retrieve all exercise with paging (MEMBER)",
+            description = "Get a list of exercises with paging, prioritizing the BMI status of the member.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = ExercisePageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/exercises/getPriority")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getAllExerciseWithpriorityTagName(Pageable pageable) {
+        // Lấy account ID từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi service tìm danh sách exercise đã phân trang
+        Page<Exercise> page = memberService.getPaginatedExerciseWithPriority(principal.getId(), pageable);
+
+        // chuyển dổi từ exercise sang exercise response
+        List<ExerciseResponse> exerciseResponses = page.get()
+                .map(exercise -> {
+                    return new ExerciseResponse(exercise);
+                })
+                .collect(Collectors.toList());
+
+        // tạo Exercise Page Response
+        ExercisePageResponse exercisePageResponse = new ExercisePageResponse(
+                exerciseResponses,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isFirst(),
+                page.isLast(),
+                page.getNumberOfElements()
+        );
+
+        return new ResponseEntity<>(exercisePageResponse, HttpStatus.OK);
+
     }
 }

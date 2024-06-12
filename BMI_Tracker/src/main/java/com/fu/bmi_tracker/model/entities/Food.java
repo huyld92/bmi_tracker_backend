@@ -77,7 +77,7 @@ public class Food {
 
     @ManyToMany
     @JoinTable(
-            name = "FoodTag",
+            name = "TagFood",
             joinColumns = @JoinColumn(name = "FoodID"),
             inverseJoinColumns = @JoinColumn(name = "TagID")
     )

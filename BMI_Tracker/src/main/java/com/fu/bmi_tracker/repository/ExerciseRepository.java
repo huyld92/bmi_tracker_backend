@@ -25,5 +25,15 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
     @Modifying
     @Query("UPDATE Exercise e SET e.isActive = false WHERE e.exerciseID = :exerciseID")
     public void deactivateById(Integer exerciseID);
-    
+
+    @Query("SELECT e FROM Exercise e WHERE e.exerciseID IN "
+            + "(SELECT te.exercise.exerciseID FROM TagExercise te JOIN Tag t ON te.tag.tagID = t.tagID "
+            + "WHERE t.tagName = :tagName)")
+    public List<Exercise> findExerciseWithTagName(String tagName);
+
+    @Query("SELECT e FROM Exercise e WHERE e.exerciseID NOT IN "
+            + "(SELECT te.exercise.exerciseID FROM TagExercise te JOIN Tag t ON te.tag.tagID = t.tagID "
+            + "WHERE t.tagName = :tagName)")
+    public List<Exercise> findExerciseWithoutTagName(String tagName);
+
 }

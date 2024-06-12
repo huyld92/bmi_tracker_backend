@@ -7,11 +7,14 @@ package com.fu.bmi_tracker.controller;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.enums.EDietPreference;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateRecipesRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponseAll;
+import com.fu.bmi_tracker.payload.response.FoodPageResponse;
+import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.RecipeService;
@@ -28,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -47,7 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Food", description = "Food management APIs")
 @RestController
-@RequestMapping("/api/foods")
+@RequestMapping("/api/test/foods")
 public class FoodController {
 
     @Autowired
@@ -165,7 +170,7 @@ public class FoodController {
     @Operation(summary = "Update a Food by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Food.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "404", content = {
@@ -257,19 +262,50 @@ public class FoodController {
 
     }
 
-//    @Operation(
-//            summary = "Retrieve list food with dietPreferene",
-//            description = "Get a Food object by specifying its id. The response is Food object")
-//    @ApiResponses({
-//        @ApiResponse(responseCode = "200", content = {
-//            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
-//        @ApiResponse(responseCode = "404", content = {
-//            @Content(schema = @Schema())}),
-//        @ApiResponse(responseCode = "500", content = {
-//            @Content(schema = @Schema())})})
-//    @GetMapping("/getByID/{id}")
-//    public ResponseEntity<?> getFoodById(@PathVariable("id") int id){
-//        
-//    }
+    @Operation(
+            summary = "Retrieve list food with dietPreferene",
+            description = "Get a Food list with")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = FoodPageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getByDietPreference")
+    public ResponseEntity<?> getFoodWithDietPreference(@RequestParam EDietPreference dietPreferenceName, Pageable pageable) {
+        Page<Food> foods = foodService.getFoodsByTagName(dietPreferenceName.toString(), pageable);
+        if (foods.isEmpty()) {
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        FoodPageResponse foodPageResponses = new FoodPageResponse();
+        List<FoodResponse> foodResponses = new ArrayList<>();
+        for (Food food : foods.getContent()) {
+            FoodResponse response = new FoodResponse();
+            response.setFoodID(food.getFoodID());
+            response.setFoodName(food.getFoodName());
+            response.setFoodCalories(food.getFoodCalories());
+            response.setDescription(food.getDescription());
+            response.setFoodPhoto(food.getFoodPhoto());
+            response.setFoodVideo(food.getFoodVideo());
+            response.setFoodNutrition(food.getFoodNutrition());
+            response.setFoodTimeProcess(food.getFoodTimeProcess());
+            response.setCreationDate(food.getCreationDate());
+            response.setActive(food.getIsActive());
+            foodResponses.add(response);
+        }
+        foodPageResponses.setFoods(foodResponses);
+        foodPageResponses.setPageNumber(foods.getNumber());
+        foodPageResponses.setPageSize(foods.getSize());
+        foodPageResponses.setTotalElements(foods.getTotalElements());
+        foodPageResponses.setTotalPages(foods.getTotalPages());
+        foodPageResponses.setLast(foods.isLast());
+        foodPageResponses.setFirst(foods.isFirst());
+        foodPageResponses.setNumberOfElements(foods.getNumberOfElements());
+
+        return new ResponseEntity<>(foodPageResponses, HttpStatus.OK);
+
+    }
 
 }

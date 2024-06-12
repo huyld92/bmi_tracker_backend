@@ -52,7 +52,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('AVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> createNewCertificate(@Valid @RequestBody CreateCertificateRequest certificateRequest) {
         // Create new object
         Certificate certificate = new Certificate(certificateRequest);
@@ -80,7 +80,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PutMapping(value = "/update")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('AVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> updateCertificate(@Valid @RequestBody UpdateCertificateRequest certificateRequest) {
         // Check exist certificate
         Optional<Certificate> certificate = service.findById(certificateRequest.getCertificateID());
@@ -136,7 +136,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getByID")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('AVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> getCertificateById(@RequestParam("id") int id) {
         Optional<Certificate> certificate = service.findById(id);
 
@@ -158,7 +158,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByID")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('AVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> getAllCertificateByTrainerId(@RequestParam int advisorID) {
 
         Iterable<Certificate> certificates = service.findAllByAdvisorAdvisorID(advisorID);
@@ -179,7 +179,7 @@ public class CertificateController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('AVISOR')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> deleteCertificateById(@RequestParam int certificateID) {
         service.deleteById(certificateID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

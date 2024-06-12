@@ -59,8 +59,10 @@ public class Member {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime lastUpdatedTime;
 
-    @Column(name = "DietaryPreferenceID", nullable = false)
-    private Integer dietaryPreferenceID;
+//    @Column(name = "DietaryPreferenceID", nullable = false)
+//    private Integer dietaryPreferenceID;
+    @Column(name = "DietaryPreference", nullable = false)
+    private String dietaryPreference;
 
     @ManyToOne
     @JoinColumn(name = "ActivityLevelID", nullable = false)
@@ -87,7 +89,7 @@ public class Member {
 //    }
     public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
             Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
-            Integer dietaryPreferenceID, ActivityLevel activityLevel) {
+            String dietaryPreferenceName, ActivityLevel activityLevel) {
         this.accountID = accountID;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
@@ -95,13 +97,13 @@ public class Member {
         this.defaultCalories = defaultCalories;
         this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
-        this.dietaryPreferenceID = dietaryPreferenceID;
+        this.dietaryPreference = dietaryPreferenceName;
         this.activityLevel = activityLevel;
     }
 
     public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
             Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
-            Integer dietaryPreferenceID, ActivityLevel activityLevel, Integer menuID, Integer workoutID) {
+            String dietaryPreferenceName, ActivityLevel activityLevel, Integer menuID, Integer workoutID) {
         this.accountID = accountID;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
@@ -109,7 +111,7 @@ public class Member {
         this.defaultCalories = defaultCalories;
         this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
-        this.dietaryPreferenceID = dietaryPreferenceID;
+        this.dietaryPreference = dietaryPreferenceName;
         this.activityLevel = activityLevel;
         this.menuID = menuID;
         this.workoutID = workoutID;
