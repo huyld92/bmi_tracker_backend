@@ -42,6 +42,17 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorMessage> usernameNotFoundExceptionHandler(UsernameNotFoundException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<ErrorMessage> resourceNotFoundException(DateTimeParseException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
@@ -74,17 +85,6 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ErrorMessage> usernameNotFoundExceptionHandler(UsernameNotFoundException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.BAD_REQUEST.value(),
-                new Date(),
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ErrorMessage> disabledExceptionHandler(DisabledException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
@@ -94,7 +94,7 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
 
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
-    } 
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -118,8 +118,8 @@ public class ControllerExceptionHandler {
                 ex.getMessage());
 
         return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
-    } 
-    
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorMessage> handleMaxSizeException(MaxUploadSizeExceededException ex) {
         ErrorMessage message = new ErrorMessage(
