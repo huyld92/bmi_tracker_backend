@@ -41,7 +41,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Tag(name = "Trasaction", description = "Trasaction management APIs")
 @Hidden
 @RestController
-@RequestMapping("/api/test/transaction")
+@RequestMapping("/api/transaction")
 public class TransactionController {
 
     @Autowired

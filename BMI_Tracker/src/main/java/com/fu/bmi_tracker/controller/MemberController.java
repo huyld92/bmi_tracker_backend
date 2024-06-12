@@ -157,12 +157,7 @@ public class MemberController {
 
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
     }
-
-    @GetMapping("/getMenuSuggestion")
-    public ResponseEntity<?> test(@RequestParam double bmi) {
-        return ResponseEntity.ok(memberService.getWorkoutSuggestion(bMIUtils.classifyBMI(bmi)));
-    }
-
+ 
     @Operation(
             summary = "Retrieve All Food in menu by meal type (MEMBER)",
             description = "Member send meal type to get food list")

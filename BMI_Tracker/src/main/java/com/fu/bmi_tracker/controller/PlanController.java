@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Plan", description = "Plan management APIs")
 @RestController
-@RequestMapping("/api/test/plans")
+@RequestMapping("/api/plans")
 public class PlanController {
     
     @Autowired

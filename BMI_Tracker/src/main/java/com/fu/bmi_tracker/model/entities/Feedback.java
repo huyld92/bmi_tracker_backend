@@ -20,31 +20,30 @@ import org.hibernate.annotations.SQLRestriction;
  * @author BaoLG
  */
 @Entity
-@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "FeedBack")
 public class Feedback {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FeedbackID")
     private int feedbackID;
-    
+
     @Column(name = "Title")
     private String title;
-    
+
     @Column(name = "Type")
     private String type;
-    
+
     @Column(name = "Description")
     private String description;
-    
+
     @Column(name = "Status")
     private boolean status;
-    
+
     @Column(name = "MemberID")
     private Integer memberID;
-  
+
 }
