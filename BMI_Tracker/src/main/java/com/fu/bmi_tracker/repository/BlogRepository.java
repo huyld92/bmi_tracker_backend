@@ -4,16 +4,20 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.Plan;
+import com.fu.bmi_tracker.model.entities.Blog;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author BaoLG
  */
-public interface PlanRepository extends JpaRepository<Plan, Integer>{
+@Repository
+public interface BlogRepository extends JpaRepository<Blog, Integer>{
     
-    public Iterable<Plan> findByAdvisorID(int advisorID);
+    public Blog findByBlogName(String blogName);
     
-    public Iterable<Plan> findByIsActiveTrue();
+    public Iterable<Blog> findByAdvisorID(int advisorID);
+    
+    public Iterable<Blog> findByIsActiveTrue();
 }
