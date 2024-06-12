@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.MenuRepository;
+import java.util.List;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -35,6 +36,11 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Iterable<Menu> getAllByAdvisorID(Integer advisorID) {
         return repostory.findByAdvisorID(advisorID);
+    }
+
+    @Override
+    public List<Menu> getMenuByTagName(String tagName) {
+        return repostory.findMenusByTagName(tagName);
     }
 
 }

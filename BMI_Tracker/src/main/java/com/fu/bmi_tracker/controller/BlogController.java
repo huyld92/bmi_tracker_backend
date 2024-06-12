@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Blog", description = "Blog management APIs")
 @RestController
-@RequestMapping("/api/test/blogs")
+@RequestMapping("/api/blogs")
 public class BlogController {
     
     @Autowired

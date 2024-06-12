@@ -5,7 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Exercise;
-import com.fu.bmi_tracker.model.entities.ExerciseTag;
+import com.fu.bmi_tracker.model.entities.TagExercise;
 import com.fu.bmi_tracker.payload.request.CreateExerciseRequest;
 import com.fu.bmi_tracker.payload.request.UpdateExercerRequest;
 import com.fu.bmi_tracker.payload.response.ExerciseEntityResponse;
@@ -169,7 +169,7 @@ public class ExercieController {
             description = "Add tag to excercise by tagID")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = ExerciseTag.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = TagExercise.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -178,7 +178,7 @@ public class ExercieController {
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addTag(@RequestParam Integer exerciseID, @RequestParam Integer tagID) {
         // gọi service để add tag vào exercise;
-        ExerciseTag exerciseTag = exerciseService.addTag(exerciseID, tagID);
+        TagExercise exerciseTag = exerciseService.addTag(exerciseID, tagID);
 
         return new ResponseEntity<>(exerciseTag, HttpStatus.CREATED);
     }

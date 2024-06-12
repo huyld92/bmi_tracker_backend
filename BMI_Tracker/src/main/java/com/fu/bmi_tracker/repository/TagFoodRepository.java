@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.FoodTag;
+import com.fu.bmi_tracker.model.entities.TagFood;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface FoodTagRepository extends JpaRepository<FoodTag, FoodTag>{
+public interface TagFoodRepository extends JpaRepository<TagFood, TagFood>{
     
 }
