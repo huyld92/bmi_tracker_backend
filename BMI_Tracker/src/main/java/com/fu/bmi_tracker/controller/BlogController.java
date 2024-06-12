@@ -74,7 +74,7 @@ public class BlogController {
             summary = "Get All Blog",
             description = "Get All Blog")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
+        @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
@@ -97,7 +97,7 @@ public class BlogController {
             summary = "Get All Advisor's Blog",
             description = "Get all Blog by AdvisorID")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
+        @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
@@ -119,7 +119,7 @@ public class BlogController {
             summary = "Get Blog details",
             description = "Get blog detials by its ID")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
+        @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),

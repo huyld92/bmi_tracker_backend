@@ -133,16 +133,16 @@ public class ActivityLogController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberService.findByAccountID(principal.getId()).get();
 
-        DailyRecord dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfActivity).get();
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfActivity);
 
         // new chưa tồn tại record thì create new
-        if (dailyRecord == null) {
-            dailyRecord = dailyRecordService.save(new DailyRecord(dateOfActivity, member.getDefaultCalories(), member));
+        if (!dailyRecord.isPresent()) {
+            dailyRecord = Optional.of(dailyRecordService.save(new DailyRecord(dateOfActivity, member.getDefaultCalories(), member)));
 
         }
 
         //set record ID
-        activityLog.setRecordID(dailyRecord.getRecordID());
+        activityLog.setRecordID(dailyRecord.get().getRecordID());
 
         // Store to database
         ActivityLog activityLogSave = activityLogService.save(activityLog);
@@ -154,16 +154,16 @@ public class ActivityLogController {
         }
 
         // update calories out of daily record
-        int caloriesOut = dailyRecord.getTotalCaloriesOut() + activityLogSave.getCaloriesBurned();
+        int caloriesOut = dailyRecord.get().getTotalCaloriesOut() + activityLogSave.getCaloriesBurned();
 
-        dailyRecord.setTotalCaloriesOut(caloriesOut);
+        dailyRecord.get().setTotalCaloriesOut(caloriesOut);
 
-        dailyRecordService.save(dailyRecord);
+        dailyRecordService.save(dailyRecord.get());
 
         return new ResponseEntity<>(activityLogSave, HttpStatus.CREATED);
     }
 
-        @Operation(
+    @Operation(
             summary = "Update activity log (MEMBER)",
             description = "Create new activivty log")
     @ApiResponses({
@@ -223,8 +223,8 @@ public class ActivityLogController {
 
         return new ResponseEntity<>(activityLogSave, HttpStatus.CREATED);
     }
-    
-        @Operation(
+
+    @Operation(
             summary = "Delete activity log (MEMBER)",
             description = "Delete activity Log by Id")
     @ApiResponses({
@@ -242,7 +242,7 @@ public class ActivityLogController {
             //find Daily record
             Optional<DailyRecord> dailyRecord = dailyRecordService.findById(actityLog.get().getRecordID());
             //Update coloriesIn
-            int coloriesOut = dailyRecord.get().getTotalCaloriesOut()- actityLog.get().getCaloriesBurned();
+            int coloriesOut = dailyRecord.get().getTotalCaloriesOut() - actityLog.get().getCaloriesBurned();
             dailyRecord.get().setTotalCaloriesOut(coloriesOut);
 
             // delete activivty log

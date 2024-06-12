@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Order", description = "Order management APIs")
 @RestController
-@RequestMapping("/api/dailyrecords")
+@RequestMapping("/api/orders/")
 public class OrderController {
 
     @Autowired
