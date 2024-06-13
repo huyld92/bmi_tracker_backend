@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdvisorResponse {
 
-    private String linkPhoto = "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-black-default-avatar-image_2237212.jpg";
+    private String linkPhoto = "https://www.avatarfitness.co.uk/wp-content/uploads/Jacob-pdf.jpg";
 
     private Integer advisorID;
     private String email;
@@ -29,7 +29,7 @@ public class AdvisorResponse {
     private LocalDate birthday;
 
     public AdvisorResponse(Integer advisorID, String email, String fullName, String phoneNumber, EGender gender, LocalDate birthday) {
-        this.advisorID =advisorID;
+        this.advisorID = advisorID;
         this.email = email;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
@@ -37,5 +37,4 @@ public class AdvisorResponse {
         this.birthday = birthday;
     }
 
-    
 }

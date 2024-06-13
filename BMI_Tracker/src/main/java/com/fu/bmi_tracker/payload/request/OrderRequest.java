@@ -5,10 +5,12 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOderRequest {
+public class OrderRequest {
 
     @Schema(example = "Order for subscription service")
     @NotBlank
@@ -28,33 +30,20 @@ public class CreateOderRequest {
     private String description;
 
     @Schema(example = "99.99")
-    @NotNull
-    @Positive
-    private Float amount;
-    //
-    // @Schema(example = "2024-06-05T10:15:30")
-    // @NotNull
-    // private LocalDateTime dateOrder;
-    //
-    // @Schema(example = "2024-06-01")
-    // @NotNull
-    // private LocalDate startDate;
+    @NotNull(message = "Amount is required")
+    @DecimalMin(value = "0.00", message = "Amount must be greater than or equal to 0.00")
+    private BigDecimal amount;
 
-    // @Schema(example = "2025-06-01")
-    // @NotNull
-    // private LocalDate endDate;
-    // @Schema(example = "1")
-    // @NotNull
-    // private Integer memberID;
     @Schema(example = "1")
     @NotNull
     private Integer advisorID;
 
-    // @Schema(example = "1")
-    // @NotNull
-    // private Integer transactionID;
     @Schema(example = "30")
     @NotNull
     @Positive
     private Integer planDuration;
+
+    @Schema(example = "323232323256")
+    @NotBlank
+    private String orderNumber;
 }
