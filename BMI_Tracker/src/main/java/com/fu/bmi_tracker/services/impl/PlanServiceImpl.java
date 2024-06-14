@@ -4,9 +4,12 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Plan;
+import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.PlanRepository;
 import com.fu.bmi_tracker.services.PlanService;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,33 +20,58 @@ import org.springframework.stereotype.Service;
  * @author BaoLG
  */
 @Service
-public class PlanServiceImpl implements PlanService{
+public class PlanServiceImpl implements PlanService {
 
     @Autowired
-    PlanRepository repository;
-   
+    PlanRepository planRepository;
+
+    @Autowired
+    AdvisorRepository advisorRepository;
+
     @Override
     public List<Plan> findAll() {
-        return repository.findAll();
+        return planRepository.findAll();
     }
 
     @Override
     public Iterable<Plan> findAllPlanByAdvisorID(int advisorID) {
-        return repository.findByAdvisorID(advisorID);
+        return planRepository.findByAdvisorID(advisorID);
     }
 
     @Override
     public Iterable<Plan> findAllAvailblePlan() {
-        return repository.findByIsActiveTrue();
+        return planRepository.findByIsActiveTrue();
     }
 
     @Override
     public Optional<Plan> findById(Integer id) {
-        return repository.findById(id);
+        return planRepository.findById(id);
     }
 
     @Override
     public Plan save(Plan t) {
-       return repository.save(t);
-    }    
+        return planRepository.save(t);
+    }
+
+    @Override
+    public Plan createPlan(Plan plan, Integer accountID) {
+
+        // find Advisor
+        Advisor advisor = advisorRepository.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
+        // set advisor ID
+        plan.setAdvisorID(advisor.getAdvisorID());
+
+        return save(plan);
+    }
+
+    @Override
+    public Iterable<Plan> findAllPlanFromPersonally(Integer accountID) {
+        // find Advisor
+        Advisor advisor = advisorRepository.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
+
+        // GỌi repository tìm tất cả plan của advisor
+        return planRepository.findByAdvisorID(advisor.getAdvisorID());
+    }
 }

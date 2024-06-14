@@ -5,12 +5,9 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
-import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Order;
-import com.fu.bmi_tracker.payload.request.CreateOderRequest;
-import com.fu.bmi_tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.payload.request.CreateOrderTransactionRequest;
 import com.fu.bmi_tracker.payload.response.OrderResponse;
-import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,18 +37,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "Order", description = "Order management APIs")
 @RestController
-@RequestMapping("/api/orders/")
+@RequestMapping("/api/orders")
 public class OrderController {
 
     @Autowired
     OrderService orderService;
 
-    @Autowired
-    MemberService memberService;
-
     @Operation(
-            summary = "Create new order",
-            description = "Create new order")
+            summary = "Create new order include transaction",
+            description = "Create new order include transaction")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = OrderResponse.class), mediaType = "application/json")}),
@@ -59,29 +53,15 @@ public class OrderController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @PostMapping(value = "/createNew")
+    @PostMapping(value = "/createTransaction")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> createNewOrder(@Valid @RequestBody CreateOderRequest createOderRequest) {
+    public ResponseEntity<?> createNewOrderAndTrasaction(@Valid @RequestBody CreateOrderTransactionRequest createRequest) {
         // Get Member id from acccount id context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<Member> member = memberService.findByAccountID(principal.getId());
 
-        if (!member.isPresent()) {
-            return new ResponseEntity<>(new MessageResponse("cannot find member!"), HttpStatus.BAD_REQUEST);
-
-        }
-
-        // khởi tạo order
-        Order order = new Order(createOderRequest, member.get().getMemberID());
-        // set Commission rate
-
-        // tính CommissionAmount
-        // Lưu trữ và kiểm tra kết quả
-        if (orderService.save(order) == null) {
-            return new ResponseEntity<>(new MessageResponse("Failled! Cannot create order"), HttpStatus.CREATED);
-        }
-
-        // tạo order response
+        // gọi order service tạo transaction và order
+        Order order = orderService.createOrderTransaction(createRequest, principal.getId());
+        // taọ order response
         OrderResponse orderResponse = new OrderResponse(order);
 
         return new ResponseEntity<>(orderResponse, HttpStatus.CREATED);

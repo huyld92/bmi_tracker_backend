@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ public class Plan {
     private String planName;
 
     @Column(name = "Price", nullable = false)
-    private Float price;
+    private BigDecimal price;
 
     @Column(name = "Description", nullable = false)
     private String description;
@@ -47,15 +48,20 @@ public class Plan {
     @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
 
+    @Column(name = "IsPopular", nullable = false)
+    private boolean isPopular;
+
     @Column(name = "IsActive", nullable = false)
     private boolean isActive;
 
-    public Plan(String planName, Float price, String description, Integer planDuration, Integer advisorID, boolean isActive) {
+    public Plan(String planName, BigDecimal price, String description,
+            Integer planDuration, Integer advisorID, boolean isActive, boolean isPopular) {
         this.planName = planName;
         this.price = price;
         this.description = description;
         this.planDuration = planDuration;
         this.advisorID = advisorID;
         this.isActive = isActive;
+        this.isPopular = isPopular;
     }
 }

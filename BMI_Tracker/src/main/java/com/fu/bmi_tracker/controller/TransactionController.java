@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
 import io.swagger.v3.oas.annotations.Hidden;
+import java.math.BigDecimal;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
@@ -43,19 +44,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/transaction")
 public class TransactionController {
-
+    
     @Autowired
     TransactionService transactionService;
-
+    
     @Autowired
     VNPayService vNPayService;
-
+    
     @Autowired
     MemberService memberService;
-
+    
     @Autowired
     DateTimeUtils dateTimeUtils;
-
+    
     @Operation(
             summary = "Top Up Balance",
             description = "Customer only can use")
@@ -75,18 +76,18 @@ public class TransactionController {
             @RequestParam("orderInfo") String orderInfo,
             HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
+        
         String vnpayUrl = vNPayService.makePayment(toUpTotal, orderInfo, baseUrl);
-
+        
         return ResponseEntity.ok()
                 .body(new MessageResponse(vnpayUrl));
     }
-
+    
     @GetMapping("/vnpay-payment")
 //    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> vnpayResult(HttpServletRequest request) {
         int paymentStatus = vNPayService.orderReturn(request);
-
+        
         if (paymentStatus == 1) {
             System.out.println("URI: " + request.getQueryString());
 
@@ -97,20 +98,20 @@ public class TransactionController {
 //            }
             Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             CustomAccountDetailsImpl accountDetailsImpl = (CustomAccountDetailsImpl) principle;
-
+            
             Integer memberID = memberService.findByAccountID(accountDetailsImpl.getId()).get().getMemberID();
-
-            Integer amount = Integer.valueOf(request.getParameter("vnp_Amount"));
-
+            
+            BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(request.getParameter("vnp_Amount")));
+            
             String paymentTime = request.getParameter("vnp_PayDate");
-
+            
             LocalDateTime topUpDate = dateTimeUtils.convertStrToLocalDateTime(paymentTime);
-
+            
             String bankCode = request.getParameter("vnp_BankCode");
             String bankTranNo = request.getParameter("vnp_BankTranNo");
             String cardType = request.getParameter("vnp_CardType");
             String orderInfo = request.getParameter("vnp_OrderInfo");
-
+            
             Transaction transaction = new Transaction(bankCode, bankTranNo,
                     cardType, amount, orderInfo,
                     topUpDate, memberID);
@@ -135,6 +136,6 @@ public class TransactionController {
             return new ResponseEntity<>(deeplink, HttpStatus.OK);
         }
         return new ResponseEntity<>("orderfail", HttpStatus.FAILED_DEPENDENCY);
-
+        
     }
 }
