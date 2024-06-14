@@ -10,7 +10,6 @@ package com.fu.bmi_tracker.model.enums;
  */
 public enum EOrderStatus {
     PENDING,
-    PAID, // Đơn hàng đã được thanh toán
     CANCELLED, // Đơn hàng đã bị hủy
     MEMBER_PAID; // khách hàng đã thanh toán
 
@@ -21,14 +20,11 @@ public enum EOrderStatus {
             case PENDING -> {
                 return "Pending";
             }
-            case PAID -> {
-                return "Paid";
-            }
             case CANCELLED -> {
                 return "Cancelled";
             }
             case MEMBER_PAID -> {
-                return "Paid";
+                return "Member Paid";
             }
             default ->
                 throw new IllegalArgumentException();

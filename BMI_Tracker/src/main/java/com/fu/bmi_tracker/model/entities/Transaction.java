@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,7 +42,7 @@ public class Transaction {
     private String cardType;
 
     @Column(name = "Amount", nullable = false)
-    private Integer amount;
+    private BigDecimal amount;
 
     @Column(name = "OrderInfo", nullable = false)
     private String orderInfo;
@@ -52,7 +53,7 @@ public class Transaction {
     @Column(name = "MemberID", nullable = false)
     private Integer memberID;
 
-    public Transaction(String bankCode, String bankTranNo, String cardType, Integer amount, String orderInfo, LocalDateTime payDate, Integer memberID) {
+    public Transaction(String bankCode, String bankTranNo, String cardType, BigDecimal amount, String orderInfo, LocalDateTime payDate, Integer memberID) {
         this.bankCode = bankCode;
         this.bankTranNo = bankTranNo;
         this.cardType = cardType;

@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Order;
+import com.fu.bmi_tracker.payload.request.CreateOrderTransactionRequest;
 
 /**
  *
@@ -12,10 +13,12 @@ import com.fu.bmi_tracker.model.entities.Order;
  */
 public interface OrderService extends GeneralService<Order> {
 
-    public Iterable<Order> getOrderByMemberAccountID(Integer id);
+    public Iterable<Order> getOrderByMemberAccountID(Integer accountID);
 
     public Iterable<Order> getOrderByMemberID(Integer memberID);
 
     public Iterable<Order> getOrderByAdvisorIDAndMonth(Integer advisorID, String month);
-    
+
+    public Order createOrderTransaction(CreateOrderTransactionRequest createRequest, Integer accountID);
+
 }
