@@ -67,7 +67,7 @@ public class MenuController {
     MenuFoodService menuFoodService;
 
     @Operation(
-            summary = "Create new menu",
+            summary = "Create new menu (Advisor)",
             description = "Create new menu with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -77,11 +77,12 @@ public class MenuController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
+    @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> createNewMenu(@Valid @RequestBody CreateMenuRequest menuRequest) {
         // lấy account iD từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
+
         // Tìm advisor
         Advisor advisor = advisorService.findByAccountID(principal.getId());
 
@@ -167,7 +168,7 @@ public class MenuController {
     }
 
     @Operation(
-            summary = "Get menu by advisor ID",
+            summary = "Get menu by advisor personally (ADVISOR) ",
             description = "Get all menu include food of advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -177,6 +178,7 @@ public class MenuController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getMenuByAdvisor")
+    @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> getMenuByAdvisor() {
         // lấy account iD từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
@@ -193,6 +195,34 @@ public class MenuController {
 
         // Lấy danh sách menu
         Iterable<Menu> menus = menuService.getAllByAdvisorID(advisor.getAdvisorID());
+        if (!menus.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo menu response
+//        List<MenuResponse> menuResponses = new ArrayList<>();
+//        for (Menu menu : menus) {
+//            List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.getMenuID());
+//            menuResponses.add(new MenuResponse(menu, menuFoodResponses));
+//
+//        }
+        return new ResponseEntity<>(menus, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get menu by advisor by advisorID",
+            description = "Get all menu include food of advisor")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getMenuByAdvisorID")
+    public ResponseEntity<?> getMenuByAdvisorID(@RequestParam Integer advisorID) {
+        // Lấy danh sách menu
+        Iterable<Menu> menus = menuService.getAllByAdvisorID(advisorID);
         if (!menus.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

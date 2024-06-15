@@ -50,7 +50,7 @@ public class DailyRecordController {
     @Autowired
     MemberService memberService;
 
-    @Operation(summary = "Retrieve total calories burned of date", description = "Get total calories burned of date from account id")
+    @Operation(summary = "Retrieve total calories burned of date (MEMBER)", description = "Get total calories burned of date from account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = ActivityLog.class), mediaType = "application/json")}),
@@ -91,7 +91,7 @@ public class DailyRecordController {
         return new ResponseEntity<>(new CaloriesOutResponse(caloriesOut), HttpStatus.OK);
     }
 
-    @Operation(summary = "Retrieve total calories meal of date", description = "Get total calories meal of date from account id")
+    @Operation(summary = "Retrieve total calories meal of date (MEMBER)", description = "Get total calories meal of date from account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
@@ -133,7 +133,7 @@ public class DailyRecordController {
     }
 
     // Lấy danh sách daily record trong một tuần từ một ngày bất kỳ trong tuần đó 
-    @Operation(summary = "Retrieve daily record of week", description = "Get daily record for a week by providing the value of a day of the week to get")
+    @Operation(summary = "Retrieve daily record of week (MEMBER)", description = "Get daily record for a week by providing the value of a day of the week to get")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = DailyRecord.class), mediaType = "application/json")}),

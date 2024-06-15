@@ -44,7 +44,7 @@ public class OrderController {
     OrderService orderService;
 
     @Operation(
-            summary = "Create new order include transaction",
+            summary = "Create new order include transaction (MEMBER)",
             description = "Create new order include transaction")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
