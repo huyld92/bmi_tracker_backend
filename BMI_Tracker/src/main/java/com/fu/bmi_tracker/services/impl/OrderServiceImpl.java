@@ -4,18 +4,20 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberTransaction;
 import com.fu.bmi_tracker.model.entities.Order;
 import com.fu.bmi_tracker.payload.request.CreateOrderTransactionRequest;
+import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.MemberRepository;
 import com.fu.bmi_tracker.repository.MemberTransactionRepository;
 import com.fu.bmi_tracker.repository.OrderRepository;
-import com.fu.bmi_tracker.repository.TransactionRepository;
 import com.fu.bmi_tracker.services.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    AdvisorRepository advisorRepository;
 
     @Autowired
     MemberTransactionRepository transactionRepository;
@@ -92,6 +97,16 @@ public class OrderServiceImpl implements OrderService {
                 member.getMemberID(),
                 transaction.getTransactionID());
         return orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getOrderByMemberAdvisor(Integer accountID) {
+        // Tim advisor từ accountID
+        Advisor advisor = advisorRepository.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
+
+        // Tìm order từ account ID với sắp xếp mới nhất
+        return orderRepository.findByAdvisor_AdvisorIDOrderByOrderDateDesc(advisor.getAdvisorID());
     }
 
 }

@@ -21,4 +21,6 @@ public interface BlogService extends GeneralService<Blog> {
 
     public Blog createBlog(CreateBlogRequest newBlog, Integer accountID);
 
+    public Iterable<Blog> findAllOfAdvisor(Integer accountID);
+
 }

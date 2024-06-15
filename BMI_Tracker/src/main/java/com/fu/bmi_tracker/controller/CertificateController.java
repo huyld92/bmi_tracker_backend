@@ -1,6 +1,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Certificate;
+import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.payload.request.CreateCertificateRequest;
 import com.fu.bmi_tracker.payload.request.UpdateCertificateRequest;
 import com.fu.bmi_tracker.services.CertificateService;
@@ -11,11 +12,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CertificateController {
 
     @Autowired
-    CertificateService service;
+    CertificateService certificateService;
 
     @Operation(
             summary = "Create new certificate",
@@ -58,7 +61,7 @@ public class CertificateController {
         Certificate certificate = new Certificate(certificateRequest);
 
         // Store to database
-        Certificate certificateSave = service.save(certificate);
+        Certificate certificateSave = certificateService.save(certificate);
 
         // check result
         if (certificateSave == null) {
@@ -83,7 +86,7 @@ public class CertificateController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> updateCertificate(@Valid @RequestBody UpdateCertificateRequest certificateRequest) {
         // Check exist certificate
-        Optional<Certificate> certificate = service.findById(certificateRequest.getCertificateID());
+        Optional<Certificate> certificate = certificateService.findById(certificateRequest.getCertificateID());
 
         if (!certificate.isPresent()) {
             return new ResponseEntity<>("Cannot find certificate with id{" + certificateRequest.getCertificateID() + "}", HttpStatus.NOT_FOUND);
@@ -92,7 +95,7 @@ public class CertificateController {
         certificate.get().updateCertificate(certificateRequest);
 
         // Store to database
-        Certificate certificateSave = service.save(certificate.get());
+        Certificate certificateSave = certificateService.save(certificate.get());
 
         // check resutl
         if (certificateSave == null) {
@@ -102,7 +105,7 @@ public class CertificateController {
 
         return new ResponseEntity<>(certificateSave, HttpStatus.OK);
     }
- 
+
     @Operation(summary = "Retrieve all Certificates (ADMIN)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -115,7 +118,32 @@ public class CertificateController {
     @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> getAllCertificates() {
 
-        Iterable<Certificate> certificates = service.findAll();
+        Iterable<Certificate> certificates = certificateService.findAll();
+
+        if (!certificates.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(certificates, HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Retrieve all Certificates personally (ADVISOR)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Certificate.class))}),
+        @ApiResponse(responseCode = "204", description = "There are no Certificates", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/advisor/getAll")
+    @PreAuthorize("hasRole('ADVISOR') ")
+    public ResponseEntity<?> getAllOfAdvisor() {
+        // Tìm account id từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // gọi service tìm tất cả certificate của advisor
+        Iterable<Certificate> certificates = certificateService.findAllOfAdvisor(principal.getId());
 
         if (!certificates.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -138,7 +166,7 @@ public class CertificateController {
     @GetMapping("/getByID")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> getCertificateById(@RequestParam("id") int id) {
-        Optional<Certificate> certificate = service.findById(id);
+        Optional<Certificate> certificate = certificateService.findById(id);
 
         if (certificate.isPresent()) {
             return new ResponseEntity<>(certificate, HttpStatus.OK);
@@ -159,9 +187,9 @@ public class CertificateController {
             @Content(schema = @Schema())})})
     @GetMapping("/getAllByID")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
-    public ResponseEntity<?> getAllCertificateByTrainerId(@RequestParam int advisorID) {
+    public ResponseEntity<?> getAllCertificateByAdvisorID(@RequestParam int advisorID) {
 
-        Iterable<Certificate> certificates = service.findAllByAdvisorAdvisorID(advisorID);
+        Iterable<Certificate> certificates = certificateService.findAllByAdvisorAdvisorID(advisorID);
 
         if (!certificates.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -181,7 +209,7 @@ public class CertificateController {
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> deleteCertificateById(@RequestParam int certificateID) {
-        service.deleteById(certificateID);
+        certificateService.deleteById(certificateID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

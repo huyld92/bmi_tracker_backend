@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Order;
 import com.fu.bmi_tracker.payload.request.CreateOrderTransactionRequest;
+import java.util.List;
 
 /**
  *
@@ -20,5 +21,7 @@ public interface OrderService extends GeneralService<Order> {
     public Iterable<Order> getOrderByAdvisorIDAndMonth(Integer advisorID, String month);
 
     public Order createOrderTransaction(CreateOrderTransactionRequest createRequest, Integer accountID);
+
+    public List<Order> getOrderByMemberAdvisor(Integer accountID);
 
 }
