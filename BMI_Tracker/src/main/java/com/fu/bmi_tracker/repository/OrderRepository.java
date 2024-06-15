@@ -23,4 +23,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByAdvisor_AdvisorIDAndOrderDateBetween(Integer advisorID, LocalDateTime startOfMonth, LocalDateTime endOfMonth);
 
+    List<Order> findByAdvisor_AdvisorIDOrderByOrderDateDesc(Integer advisorID);
+
 }

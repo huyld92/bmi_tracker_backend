@@ -16,31 +16,31 @@ import java.util.List;
 public class MenuServiceImpl implements MenuService {
 
     @Autowired
-    MenuRepository repostory;
+    MenuRepository menuRepostory;
 
     @Override
     public Iterable<Menu> findAll() {
-        return repostory.findAll();
+        return menuRepostory.findAll();
     }
 
     @Override
     public Optional<Menu> findById(Integer id) {
-        return repostory.findById(id);
+        return menuRepostory.findById(id);
     }
 
     @Override
     public Menu save(Menu t) {
-        return repostory.save(t);
+        return menuRepostory.save(t);
     }
 
     @Override
     public Iterable<Menu> getAllByAdvisorID(Integer advisorID) {
-        return repostory.findByAdvisorID(advisorID);
+        return menuRepostory.findByAdvisorID(advisorID);
     }
 
     @Override
     public List<Menu> getMenuByTagName(String tagName) {
-        return repostory.findMenusByTagName(tagName);
+        return menuRepostory.findMenusByTagName(tagName);
     }
 
 }

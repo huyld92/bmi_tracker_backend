@@ -95,6 +95,32 @@ public class BlogController {
     }
 
     @Operation(
+            summary = "Get All Blog of advisor (ADVISOR)",
+            description = "Get All Blog of advisor personally")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/advisor/getAll")
+    @PreAuthorize("hasRole('ADVISOR')") //MEMBER, ADVISOR, STAFF
+    public ResponseEntity<?> getAllOfAdvisor() {
+        // Lấy accountID từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // gọi service tim tất cả blog của advisor
+        Iterable<Blog> blogList = service.findAllOfAdvisor(principal.getId());
+
+        if (!blogList.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(blogList, HttpStatus.OK);
+    }
+
+    @Operation(
             summary = "Get All Advisor's Blog",
             description = "Get all Blog by AdvisorID")
     @ApiResponses({

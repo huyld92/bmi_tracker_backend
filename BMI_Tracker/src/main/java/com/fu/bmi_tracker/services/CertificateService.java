@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Certificate;
+import java.util.List;
 
 /**
  *
@@ -17,5 +18,7 @@ public interface CertificateService extends GeneralService<Certificate> {
     public boolean existsById(int certificateID);
 
     public void deleteById(int certificateID);
+
+    public Iterable<Certificate> findAllOfAdvisor(Integer accountID);
 
 }

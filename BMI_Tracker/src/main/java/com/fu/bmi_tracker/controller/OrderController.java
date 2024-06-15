@@ -214,4 +214,38 @@ public class OrderController {
         });
         return ResponseEntity.ok(orderResponses);
     }
+
+    @Operation(
+            summary = "Get all order by advisor (ADVISOR)",
+            description = "Get all order by advisor with  order date Desc ")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = OrderResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/advisor/getAll")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> getAllOfAdvisor() {
+
+        // lấy acccount id từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // gọi order service lấy danh sách order của advisor
+        List<Order> orders = orderService.getOrderByMemberAdvisor(principal.getId());
+
+        if (!orders.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo order response
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        orders.forEach((Order order) -> {
+            OrderResponse orderResponse = new OrderResponse(order);
+            orderResponses.add(orderResponse);
+        });
+        return ResponseEntity.ok(orderResponses);
+    }
 }

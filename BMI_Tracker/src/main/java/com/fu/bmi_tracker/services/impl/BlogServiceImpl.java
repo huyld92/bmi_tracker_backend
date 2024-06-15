@@ -21,43 +21,43 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BlogServiceImpl implements BlogService {
-    
+
     @Autowired
     BlogRepository blogRepository;
-    
+
     @Autowired
     AdvisorRepository advisorRepository;
-    
+
     @Override
     public Blog findByBlogName(String blogName) {
         return blogRepository.findByBlogName(blogName);
     }
-    
+
     @Override
     public Iterable<Blog> findByAdvisorID(int advisorID) {
         return blogRepository.findByAdvisorID(advisorID);
     }
-    
+
     @Override
     public Iterable<Blog> findAll() {
         return blogRepository.findAll();
     }
-    
+
     @Override
     public Optional<Blog> findById(Integer id) {
         return blogRepository.findById(id);
     }
-    
+
     @Override
     public Blog save(Blog t) {
         return blogRepository.save(t);
     }
-    
+
     @Override
     public void deleteBlog(Blog blog) {
         blogRepository.delete(blog);
     }
-    
+
     @Override
     public Blog createBlog(CreateBlogRequest newBlog, Integer accountID) {
         // tìm Advisor 
@@ -75,5 +75,15 @@ public class BlogServiceImpl implements BlogService {
         //gọi repository để save
         return blogRepository.save(blog);
     }
-    
+
+    @Override
+    public Iterable<Blog> findAllOfAdvisor(Integer accountID) {
+        // Tim advisor từ accountID
+        Advisor advisor = advisorRepository.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
+
+        // gọi repository tìm tất cả blog
+        return blogRepository.findByAdvisorID(advisor.getAdvisorID());
+    }
+
 }
