@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 import com.fu.bmi_tracker.payload.request.UpdateAccountRequest;
 import com.fu.bmi_tracker.payload.response.AccountResponse;
+import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AccountService;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.RoleService;
@@ -21,10 +22,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +65,8 @@ public class AccountController {
 
     @Autowired
     PasswordEncoder encoder;
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
     @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
     @ApiResponses({
@@ -117,13 +123,26 @@ public class AccountController {
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllAccount() {
-        List<AccountResponse> accountResponse = accountService.findAllAccountResponse();
+        //    gọi service tìm tất cả account
+        Iterable<Account> accounts = accountService.findAll();
 
-        if (accountResponse.isEmpty()) {
+        //kiểm tra kết quả empty  
+        if (!accounts.iterator().hasNext()) {
             return new ResponseEntity<>("Account list empty!", HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
+        // tạo account response
+        List<AccountResponse> accountResponses = new ArrayList<>();
+        for (Account account : accounts) {
+            if (account == null) {
+                logger.error("Encountered null account in iterable");
+                continue;
+            }
+            accountResponses.add(new AccountResponse(account));
+        }
+
+        return new ResponseEntity<>(accountResponses, HttpStatus.OK);
+
     }
 
     @Operation(summary = "Get account by account id (ADMIN)", description = "Get account by account id")
@@ -140,7 +159,7 @@ public class AccountController {
         Optional<Account> account = accountService.findById(accountID);
 
         if (!account.isPresent()) {
-            return new ResponseEntity<>("Cannot find account with account id{" + accountID + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + accountID + "}")), HttpStatus.NOT_FOUND);
         }
 
         AccountResponse accountResponse = new AccountResponse(account.get());
@@ -163,7 +182,7 @@ public class AccountController {
         Optional<Account> account = accountService.findById(accountRequest.getAccountID());
 
         if (!account.isPresent()) {
-            return new ResponseEntity<>("Cannot find account with id{" + accountRequest.getAccountID() + "}",
+            return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + accountRequest.getAccountID() + "}")),
                     HttpStatus.NOT_FOUND);
         }
         // update account attribute
@@ -174,7 +193,7 @@ public class AccountController {
 
         // check resutl
         if (accountSave == null) {
-            return new ResponseEntity<>("Failed to update account", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse("Failed to update account"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 

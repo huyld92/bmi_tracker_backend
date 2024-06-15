@@ -44,7 +44,7 @@ public class PlanController {
     PlanService planService;
 
     @Operation(
-            summary = "Create new Plan with form",
+            summary = "Create new Plan with form (ADVISOR)",
             description = "Create new plan with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {

@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.payload.response;
 
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.enums.ERole;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,9 +48,11 @@ public class AccountResponse {
         this.email = account.getEmail();
         this.fullName = account.getFullName();
         this.phoneNumber = account.getPhoneNumber();
-        this.roleName = account.getRoles().iterator().next().getRoleName();
-
-        account.getRoles();
+//        this.roleName = account.getRoles().iterator().next().getRoleName();
+        // Handle roles if an account can have multiple roles
+        if (account.getRoles() != null && !account.getRoles().isEmpty()) {
+            this.roleName = account.getRoles().iterator().next().getRoleName();
+        }
         this.isActive = account.getIsActive();
     }
 

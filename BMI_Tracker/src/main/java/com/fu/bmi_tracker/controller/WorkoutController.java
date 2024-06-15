@@ -65,7 +65,7 @@ public class WorkoutController {
     WorkoutExerciseService workoutExerciseService;
 
     @Operation(
-            summary = "Create new workout",
+            summary = "Create new workout (ADVISOR)",
             description = "Create new workout with form")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -187,8 +187,8 @@ public class WorkoutController {
     }
 
     @Operation(
-            summary = "Get workout by advisor id",
-            description = "Get workout by advisor id")
+            summary = "Get workout by advisor (ADVISOR)",
+            description = "Get workout by advisor ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Workout.class), mediaType = "application/json")}),
@@ -196,8 +196,9 @@ public class WorkoutController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/getByAdvisorID")
-    public ResponseEntity<?> getWorkoutByAdvisorID() {
+    @GetMapping(value = "/getByAdvisor")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> getWorkoutByAdvisor() {
         //get account from context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

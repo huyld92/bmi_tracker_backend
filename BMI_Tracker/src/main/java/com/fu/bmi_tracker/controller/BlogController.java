@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,12 +39,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/blogs")
 public class BlogController {
-    
+
     @Autowired
     BlogService service;
-    
+
     @Operation(
-            summary = "Create new Blog with form",
+            summary = "Create new Blog with form (ADVISOR)",
             description = "Create new blog with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -53,7 +54,7 @@ public class BlogController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-    //@PreAuthorize("hasRole('ADVISOR')")
+    @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> createNewBlog(@RequestBody CreateBlogRequest blogRequest) {
         // tìm accountID từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -69,7 +70,7 @@ public class BlogController {
         //If success to save new plan
         return new ResponseEntity<>(new MessageResponse("Blog is successfully created!"), HttpStatus.CREATED);
     }
-    
+
     @Operation(
             summary = "Get All Blog",
             description = "Get All Blog")
@@ -83,16 +84,16 @@ public class BlogController {
     @GetMapping(value = "/getAll")
     //@PreAuthorize("hasRole('ADMIN')") //MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllBlog() {
-        
+
         Iterable<Blog> blogList = service.findAll();
-        
+
         if (!blogList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        
+
         return new ResponseEntity<>(blogList, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Get All Advisor's Blog",
             description = "Get all Blog by AdvisorID")
@@ -106,15 +107,15 @@ public class BlogController {
     @GetMapping(value = "/getAllByAdvisorID/{id}")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllBlogByAdvisorID(@PathVariable("id") int id) {
-        
+
         Iterable<Blog> blogList = service.findByAdvisorID(id);
-        
+
         if (!blogList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(blogList, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Get Blog details",
             description = "Get blog detials by its ID")
@@ -135,10 +136,10 @@ public class BlogController {
         if (!blog.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        
+
         return new ResponseEntity<>(blog, HttpStatus.OK);
     }
-    
+
     @Operation(summary = "Update a Blog")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -158,13 +159,13 @@ public class BlogController {
             blog.get().setBlogName(blogDetails.getBlogName());
             blog.get().setBlogPhoto(blogDetails.getBlogPhoto());
             blog.get().setLink(blogDetails.getLink());
-            
+
             return new ResponseEntity<>(service.save(blog.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new MessageResponse(("Cannot find blog with id{" + blogDetails.getBlogID() + "}")), HttpStatus.NOT_FOUND);
         }
     }
-    
+
     @Operation(summary = "Delete a Blog")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {

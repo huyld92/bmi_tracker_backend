@@ -58,21 +58,12 @@ public class Ingredient {
         this.ingredientID = ingredientID;
     }
 
-    public Ingredient(String ingredientName, String ingredientPhoto, Integer quantity, String unitOfMeasurement, Integer ingredientCalories, Integer tagID, Boolean isActive) {
-        this.ingredientName = ingredientName;
-        this.ingredientPhoto = ingredientPhoto;
-        this.quantity = quantity;
-        this.unitOfMeasurement = unitOfMeasurement;
-        this.ingredientCalories = ingredientCalories;
-        this.tagID = tagID;
-        this.isActive = isActive;
-    }
-
     public Ingredient(CreateIngredientRequest ingredientRequest) {
         this.ingredientName = ingredientRequest.getIngredientName().trim();
         this.ingredientPhoto = ingredientRequest.getIngredientPhotoUrl().trim();
         this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement().trim();
         this.ingredientCalories = ingredientRequest.getIngredientCalories();
+        this.quantity = ingredientRequest.getQuantity();
         this.tagID = ingredientRequest.getTagID();
         this.isActive = true;
     }
@@ -87,7 +78,6 @@ public class Ingredient {
         }
         this.ingredientPhoto = ingredientRequest.getIngredientPhoto();
         this.quantity = ingredientRequest.getQuantity();
-        this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement();
 
         if (ingredientRequest.getIngredientCalories() > -1) {
             this.ingredientCalories = ingredientRequest.getIngredientCalories();
