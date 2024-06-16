@@ -37,6 +37,9 @@ public class Menu {
     @Column(name = "MenuName", nullable = false)
     private String menuName;
 
+    @Column(name = "MenuPhoto", nullable = true)
+    private String menuPhoto;
+
     @Column(name = "MenuDescription", nullable = true)
     private String menuDescription;
 
@@ -51,7 +54,8 @@ public class Menu {
 
     public Menu(CreateMenuRequest menuRequest, Integer advisorID) {
         this.menuName = menuRequest.getMenuName();
-        this.menuDescription = menuRequest.getMenuDescription();
+        this.menuName = menuRequest.getMenuName();
+        this.menuPhoto = menuRequest.getMenuPhoto();
         this.totalCalories = menuRequest.getTotalCalories();
         this.isActive = true;
         this.advisorID = advisorID;
@@ -59,6 +63,7 @@ public class Menu {
 
     public void update(UpdateMenuRequest menuRequest) {
         this.menuName = menuRequest.getMenuName();
+        this.menuPhoto = menuRequest.getMenuPhoto();
         this.menuDescription = menuRequest.getMenuDescription();
         this.totalCalories = menuRequest.getTotalCalories();
     }

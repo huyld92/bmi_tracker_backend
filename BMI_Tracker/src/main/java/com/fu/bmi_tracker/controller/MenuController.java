@@ -172,7 +172,7 @@ public class MenuController {
             description = "Get all menu include food of advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -200,13 +200,13 @@ public class MenuController {
         }
 
         // tạo menu response
-//        List<MenuResponse> menuResponses = new ArrayList<>();
-//        for (Menu menu : menus) {
-//            List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.getMenuID());
-//            menuResponses.add(new MenuResponse(menu, menuFoodResponses));
-//
-//        }
-        return new ResponseEntity<>(menus, HttpStatus.OK);
+        List<MenuResponseAll> menuResponses = new ArrayList<>();
+
+        menus.forEach(menu -> {
+            menuResponses.add(new MenuResponseAll(menu));
+        });
+
+        return new ResponseEntity<>(menuResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -214,7 +214,7 @@ public class MenuController {
             description = "Get all menu include food of advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -228,13 +228,12 @@ public class MenuController {
         }
 
         // tạo menu response
-//        List<MenuResponse> menuResponses = new ArrayList<>();
-//        for (Menu menu : menus) {
-//            List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.getMenuID());
-//            menuResponses.add(new MenuResponse(menu, menuFoodResponses));
-//
-//        }
-        return new ResponseEntity<>(menus, HttpStatus.OK);
+        List<MenuResponseAll> menuResponses = new ArrayList<>();
+
+        menus.forEach(menu -> {
+            menuResponses.add(new MenuResponseAll(menu));
+        });
+        return new ResponseEntity<>(menuResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -254,7 +253,6 @@ public class MenuController {
         Optional<Menu> menu = menuService.findById(menuID);
         if (!menu.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         }
 
         // tạo menu response
@@ -345,18 +343,6 @@ public class MenuController {
 
     }
 
-//    @Operation(
-//            summary = "Get menu by dietary preference",
-//            description = "Get menu from dietary preference with tag name")
-//    @ApiResponses({
-//        @ApiResponse(responseCode = "200", content = {
-//            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
-//        @ApiResponse(responseCode = "403", content = {
-//            @Content(schema = @Schema())}),
-//        @ApiResponse(responseCode = "500", content = {
-//            @Content(schema = @Schema())})})
-//    @GetMapping(value = "/suggestion/getMenu")
-//    public ResponseEntity<?> getMenuSuggestion(@RequestParam EDietPreference dietPreferenceName) {
     @Operation(
             summary = "Get menu by tag name",
             description = "Get menu with tag name")
