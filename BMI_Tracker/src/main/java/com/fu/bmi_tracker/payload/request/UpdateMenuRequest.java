@@ -21,6 +21,8 @@ public class UpdateMenuRequest {
     private Integer menuID;
     
     private String menuName;
+    
+    private String menuPhoto;
 
     private String menuDescription;
 

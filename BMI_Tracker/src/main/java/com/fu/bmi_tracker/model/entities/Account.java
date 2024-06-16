@@ -60,6 +60,9 @@ public class Account {
     @Column(name = "Password", nullable = false)
     private String password;
 
+    @Column(name = "AccountPhoto", nullable = true)
+    private String accountPhoto;
+
     @Column(name = "Gender", nullable = false)
     @Enumerated(EnumType.STRING)
     private EGender gender;
@@ -122,6 +125,9 @@ public class Account {
         if (accountRequest.getGender() != null) {
             this.gender = accountRequest.getGender();
         }
+
+        this.accountPhoto = accountRequest.getAccountPhoto();
+
         if (accountRequest.getBirthday() != null) {
             this.birthday = accountRequest.getBirthday();
         }

@@ -5,15 +5,16 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Account;
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.EmailDetails;
-import com.fu.bmi_tracker.model.entities.Role;
+import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 import com.fu.bmi_tracker.payload.request.UpdateAccountRequest;
 import com.fu.bmi_tracker.payload.response.AccountResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AccountService;
+import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.EmailService;
-import com.fu.bmi_tracker.services.RoleService;
 import com.fu.bmi_tracker.util.PasswordUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,10 +24,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,24 +49,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
-
+    
     @Autowired
     AccountService accountService;
-
+    
     @Autowired
     EmailService emailService;
-
+    
     @Autowired
-    RoleService roleService;
-
-    @Autowired
-    PasswordUtils passwordUtils;
-
+    AdvisorService advisorService;
+//    
+//    @Autowired
+//    PasswordUtils passwordUtils;
+    
     @Autowired
     PasswordEncoder encoder;
-
+    
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-
+    
     @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -79,39 +78,39 @@ public class AccountController {
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody CreateAccountRequest createAccountRequest) {
-        // Create new object
-        Account account = new Account(createAccountRequest);
-
-        // set Roles
-        Set<Role> accountRoles = new HashSet<>();
-        accountRoles.add(roleService.findByRoleName(createAccountRequest.getRole()));
-
-        account.setRoles(new HashSet<>(accountRoles));
-
         // Generate default password and endcode to save
-        String defaultPassword = passwordUtils.generateRandomPassword(10);
-
-        account.setPassword(encoder.encode(defaultPassword));
+        // passwordUtils.generateRandomPassword(10);
+        String defaultPassword = "123456";
 
         // Store to database
-        Account accountSave = accountService.save(account);
+        Account accountSave = accountService.createAccount(createAccountRequest,
+                encoder.encode(defaultPassword));
 
         // check result
         if (accountSave == null) {
             return new ResponseEntity<>("Failed to create new account", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        // nếu account là advisor thì tạo thông tin mặc định cho advisor
+        if (createAccountRequest.getRole() == ERole.ROLE_ADVISOR) {
+            Advisor advisor = new Advisor(
+                    accountSave.getAccountID(),
+                    0, 
+                    0, true);
+            advisorService.save(advisor);
+        }
+        
         EmailDetails details = new EmailDetails(accountSave.getEmail(),
                 "Your New Account Password",
                 defaultPassword,
                 accountSave.getFullName());
         emailService.sendSimpleMail(details);
-
-        AccountResponse accountResponse = new AccountResponse(account);
-
+        
+        AccountResponse accountResponse = new AccountResponse(accountSave);
+        
         return new ResponseEntity<>(accountResponse, HttpStatus.CREATED);
     }
-
+    
     @Operation(summary = "Get all account (ADMIN)", description = "Get all account")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -140,11 +139,11 @@ public class AccountController {
             }
             accountResponses.add(new AccountResponse(account));
         }
-
+        
         return new ResponseEntity<>(accountResponses, HttpStatus.OK);
-
+        
     }
-
+    
     @Operation(summary = "Get account by account id (ADMIN)", description = "Get account by account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -157,16 +156,16 @@ public class AccountController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAccountByID(@RequestParam Integer accountID) {
         Optional<Account> account = accountService.findById(accountID);
-
+        
         if (!account.isPresent()) {
             return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + accountID + "}")), HttpStatus.NOT_FOUND);
         }
-
+        
         AccountResponse accountResponse = new AccountResponse(account.get());
-
+        
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
-
+    
     @Operation(summary = "Update account by account id", description = "Update account ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -180,7 +179,7 @@ public class AccountController {
     public ResponseEntity<?> updateAccount(@Valid @RequestBody UpdateAccountRequest accountRequest) {
         // Check exist account
         Optional<Account> account = accountService.findById(accountRequest.getAccountID());
-
+        
         if (!account.isPresent()) {
             return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + accountRequest.getAccountID() + "}")),
                     HttpStatus.NOT_FOUND);
@@ -194,13 +193,13 @@ public class AccountController {
         // check resutl
         if (accountSave == null) {
             return new ResponseEntity<>(new MessageResponse("Failed to update account"), HttpStatus.INTERNAL_SERVER_ERROR);
-
+            
         }
 
         // create account response
         AccountResponse accountResponse = new AccountResponse(accountSave);
-
+        
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
-
+    
 }

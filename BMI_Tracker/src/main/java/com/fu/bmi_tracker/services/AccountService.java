@@ -5,13 +5,14 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Account;
-import com.fu.bmi_tracker.payload.response.AccountResponse;
-import java.util.List;
+import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 
 /**
  *
  * @author Duc Huy
  */
 public interface AccountService extends GeneralService<Account> {
+
+    public Account createAccount(CreateAccountRequest CreateAccountRequest, String password);
 
 }

@@ -19,6 +19,7 @@ public class MemberInformationResponse {
 
     private Integer memberID;
     private String email;
+    private String accountPhoto;
     private String fullName;
     private String gender;
     private String phoneNumber;

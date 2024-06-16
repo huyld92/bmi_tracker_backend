@@ -320,6 +320,7 @@ public class MemberController {
             memberInformationResponse = new MemberInformationResponse(
                     member.get().getMemberID(),
                     principal.getEmail(),
+                    principal.getAccountPhoto(),
                     principal.getFullName(),
                     principal.getGender().toString(),
                     principal.getPhoneNumber(),
@@ -333,6 +334,7 @@ public class MemberController {
             memberInformationResponse = new MemberInformationResponse(
                     member.get().getMemberID(),
                     principal.getEmail(),
+                    principal.getAccountPhoto(),
                     principal.getFullName(),
                     principal.getGender().toString(),
                     principal.getPhoneNumber(),

@@ -25,6 +25,7 @@ public class AccountResponse {
     private Integer accountID;
     private String email;
     private String fullName;
+    private String accountPhoto;
     private String phoneNumber;
     private List<ERole> roleNames;
 //    private ERole roleName;
@@ -36,6 +37,7 @@ public class AccountResponse {
         this.accountID = account.getAccountID();
         this.email = account.getEmail();
         this.fullName = account.getFullName();
+        this.accountPhoto = account.getAccountPhoto();
         this.phoneNumber = account.getPhoneNumber();
         this.roleNames = new ArrayList<>();
         for (Role role : account.getRoles()) {

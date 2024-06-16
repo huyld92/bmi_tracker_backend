@@ -29,6 +29,8 @@ public class CustomAccountDetailsImpl implements UserDetails {
 
     private String email;
 
+    private String accountPhoto;
+
     @JsonIgnore
     private String password;
 
@@ -42,9 +44,10 @@ public class CustomAccountDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public CustomAccountDetailsImpl(Integer id, String email, String password, EGender gender, String fullName, String phoneNumber, LocalDate birthday, Collection<? extends GrantedAuthority> authorities) {
+    public CustomAccountDetailsImpl(Integer id, String email, String accountPhoto, String password, EGender gender, String fullName, String phoneNumber, LocalDate birthday, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
+        this.accountPhoto = accountPhoto;
         this.password = password;
         this.gender = gender;
         this.fullName = fullName;
@@ -58,10 +61,11 @@ public class CustomAccountDetailsImpl implements UserDetails {
         List<GrantedAuthority> authorities = account.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
                 .collect(Collectors.toList());
-        
+
         return new CustomAccountDetailsImpl(
                 account.getAccountID(),
                 account.getEmail(),
+                account.getAccountPhoto(),
                 account.getPassword(),
                 account.getGender(),
                 account.getFullName(),

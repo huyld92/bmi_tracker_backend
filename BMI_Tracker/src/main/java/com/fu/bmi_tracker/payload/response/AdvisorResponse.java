@@ -19,22 +19,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdvisorResponse {
 
-    private String linkPhoto = "https://www.avatarfitness.co.uk/wp-content/uploads/Jacob-pdf.jpg";
-
+//    private String linkPhoto = "https://www.avatarfitness.co.uk/wp-content/uploads/Jacob-pdf.jpg";
     private Integer advisorID;
+    private String accountPhoto;
     private String email;
     private String fullName;
     private String phoneNumber;
     private EGender gender;
     private LocalDate birthday;
-
-    public AdvisorResponse(Integer advisorID, String email, String fullName, String phoneNumber, EGender gender, LocalDate birthday) {
-        this.advisorID = advisorID;
-        this.email = email;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.gender = gender;
-        this.birthday = birthday;
-    }
+//
+//    public AdvisorResponse(Integer advisorID, String accountPhoto, String email, String fullName, String phoneNumber, EGender gender, LocalDate birthday) {
+//        this.advisorID = advisorID;
+//        this.accountPhoto = accountPhoto;
+//        this.email = email;
+//        this.fullName = fullName;
+//        this.phoneNumber = phoneNumber;
+//        this.gender = gender;
+//        this.birthday = birthday;
+//    }
 
 }

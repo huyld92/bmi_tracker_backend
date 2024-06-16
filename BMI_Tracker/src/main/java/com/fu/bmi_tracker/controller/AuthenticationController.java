@@ -141,7 +141,10 @@ public class AuthenticationController {
         return ResponseEntity.ok(new LoginResponse(
                 accountDetails.getId(),
                 accountDetails.getEmail(),
-                loginRequest.getRole(), refreshToken.getToken(), jwt));
+                accountDetails.getAccountPhoto(),
+                loginRequest.getRole(),
+                refreshToken.getToken(),
+                jwt));
     }
 
     @Operation(summary = "Login for member by phone number and password", description = "Authenticate accounts by phone number and password. Returned will member information", tags = {

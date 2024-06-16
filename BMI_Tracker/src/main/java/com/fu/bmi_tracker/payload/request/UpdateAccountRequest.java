@@ -35,6 +35,9 @@ public class UpdateAccountRequest {
     @Schema(name = "phoneNumber", example = "0907111111")
     private String phoneNumber;
 
+    @Schema(description = "URL of the account photo(NULL)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String accountPhoto;
+
     @NotBlank(message = "Gender is required")
     @Schema(name = "gender", examples = {"Male", "Female"})
     private EGender gender;
