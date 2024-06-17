@@ -59,4 +59,14 @@ public class DailyRecord {
         this.member = member;
     }
 
+    public DailyRecord(Integer totalCaloriesIn, Integer totalCaloriesOut, Integer defaultCalories, LocalDate date, Member member) {
+        this.totalCaloriesIn = totalCaloriesIn;
+        this.totalCaloriesOut = totalCaloriesOut;
+        this.defaultCalories = defaultCalories;
+        this.date = date;
+        this.member = member;
+    }
+    
+    
+
 }

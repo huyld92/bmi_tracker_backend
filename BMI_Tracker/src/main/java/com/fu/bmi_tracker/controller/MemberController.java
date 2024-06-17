@@ -4,8 +4,10 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.exceptions.ErrorMessage;
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
@@ -44,7 +46,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -157,7 +161,7 @@ public class MemberController {
 
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
     }
-  
+
     @Operation(
             summary = "Retrieve All Food in menu by meal type (MEMBER)",
             description = "Member send meal type to get food list")
@@ -471,4 +475,38 @@ public class MemberController {
         return new ResponseEntity<>(exercisePageResponse, HttpStatus.OK);
 
     }
+
+    // Lấy danh sách daily record trong một ngày 
+    @Operation(summary = "Retrieve daily record of date (MEMBER)",
+            description = "Get daily record for a date")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = DailyRecord.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/dailyrecord/getByDate")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getByDate(@RequestParam String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate;
+        // Validation date 
+        try {
+            localDate = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // tìm account id từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Tìm daily record theo ngày của current account
+        DailyRecord dailyRecord = memberService.getDailyRecordOfMember(principal.getId(), localDate);
+
+        return new ResponseEntity<>(dailyRecord, HttpStatus.OK);
+
+    }
+    
+    
 }
