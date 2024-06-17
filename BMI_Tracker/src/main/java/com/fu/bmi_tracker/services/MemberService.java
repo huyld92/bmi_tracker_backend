@@ -4,11 +4,13 @@
  */
 package com.fu.bmi_tracker.services;
 
+import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.Workout;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -33,5 +35,7 @@ public interface MemberService extends GeneralService<Member> {
     public Page<Food> getPaginatedFoodWithPriority(Integer accountID, Pageable pageable);
 
     public Page<Exercise> getPaginatedExerciseWithPriority(Integer accountID, Pageable pageable);
+
+    public DailyRecord getDailyRecordOfMember(Integer accountID, LocalDate localDate);
 
 }
