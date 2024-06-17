@@ -29,5 +29,5 @@ public interface DailyRecordRepository extends JpaRepository<DailyRecord, Intege
     List<DailyRecord> findDailyRecordsForWeek( Integer memberID,
              LocalDate startDate,
            LocalDate endDate);
-
+     
 }

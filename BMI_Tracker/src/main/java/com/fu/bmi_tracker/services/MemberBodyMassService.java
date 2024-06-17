@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import java.time.LocalDate;
 
 /**
  *
@@ -15,4 +16,6 @@ public interface MemberBodyMassService extends GeneralService<MemberBodyMass> {
     public MemberBodyMass getLatestBodyMass(Integer memberID);
 
     public Iterable<MemberBodyMass> findAllByAccountID(Integer accountID);
+
+    public Iterable<MemberBodyMass> findAllWithMonth(Integer accountID, LocalDate localDate);
 }

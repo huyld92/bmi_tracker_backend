@@ -4,12 +4,14 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.Workout;
+import com.fu.bmi_tracker.repository.DailyRecordRepository;
 import com.fu.bmi_tracker.repository.ExerciseRepository;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
@@ -23,6 +25,7 @@ import com.fu.bmi_tracker.repository.WorkoutRepository;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.util.BMIUtils;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -52,6 +55,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     ExerciseRepository exerciseRepository;
+
+    @Autowired
+    DailyRecordRepository dailyRecordRepository;
 
     @Autowired
     BMIUtils bMIUtils;
@@ -178,6 +184,31 @@ public class MemberServiceImpl implements MemberService {
 
         // tạo PageImpl và return kết quả 
         return new PageImpl<>(paginatedList, pageable, combinedList.size());
+    }
+
+    @Override
+    public DailyRecord getDailyRecordOfMember(Integer accountID, LocalDate localDate) {
+        // gọi repository tìm member 
+        Member member = memberRepository.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
+
+        // gọi repository tìm daily record bằng member id
+        Optional<DailyRecord> dailyRecord = dailyRecordRepository.findByMember_MemberIDAndDate(member.getMemberID(), localDate);
+
+        // kiểm tra kết  quả nếu không tồn tại thì tạo mới daily record
+        if (!dailyRecord.isPresent()) {
+            // gọi repository tạo mới daily record
+            DailyRecord dr = new DailyRecord(0,
+                    0,
+                    member.getDefaultCalories(),
+                    localDate,
+                    member);
+            return dailyRecordRepository.save(dr);
+
+        } else {
+            return dailyRecord.get();
+        }
+
     }
 
 }
