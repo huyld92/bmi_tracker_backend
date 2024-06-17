@@ -7,6 +7,8 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
 
     @Override
     public MemberBodyMass getLatestBodyMass(Integer memberID) {
-        System.out.println("aaaaaaaaa : "+ memberID);
+        System.out.println("aaaaaaaaa : " + memberID);
         return repository.findFirstByMemberMemberIDOrderByDateInputDesc(memberID).get();
 
     }
@@ -42,6 +44,19 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
     @Override
     public Iterable<MemberBodyMass> findAllByAccountID(Integer accountID) {
         return repository.findAllByAccountID(accountID);
+    }
+
+    @Override
+    public Iterable<MemberBodyMass> findAllWithMonth(Integer accountID, LocalDate localDate) {
+        // Chuyển đổi LocalDate thành LocalDateTime bằng cách thêm thời gian mặc định (ví dụ: 00:00:00)
+        LocalDateTime startDateTime = localDate.atStartOfDay();
+
+        // Trừ đi 30 ngày
+        LocalDateTime startDate = startDateTime.minusDays(30);
+
+        // gọi repository tìm tất cả bodymass trong 30 ngày
+        return repository.findRecent30Days(accountID, startDate, localDate.atStartOfDay());
+
     }
 
 }

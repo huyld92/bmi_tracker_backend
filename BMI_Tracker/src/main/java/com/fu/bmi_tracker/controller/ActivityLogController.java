@@ -241,7 +241,7 @@ public class ActivityLogController {
         if (actityLog.isPresent()) {
             //find Daily record
             Optional<DailyRecord> dailyRecord = dailyRecordService.findById(actityLog.get().getRecordID());
-            //Update coloriesIn
+            //Update getTotalCalories Out
             int coloriesOut = dailyRecord.get().getTotalCaloriesOut() - actityLog.get().getCaloriesBurned();
             dailyRecord.get().setTotalCaloriesOut(coloriesOut);
 

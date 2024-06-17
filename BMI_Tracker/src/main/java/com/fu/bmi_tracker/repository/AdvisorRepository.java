@@ -21,7 +21,7 @@ public interface AdvisorRepository extends JpaRepository<Advisor, Integer> {
 
     public Optional<Advisor> findByAccountID(Integer accountID);
 
-    @Query("SELECT new com.fu.bmi_tracker.payload.response.AdvisorResponse(adv.advisorID ,a.email, a.fullName, a.phoneNumber, a.gender, a.birthday) "
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.AdvisorResponse(adv.advisorID, a.accountPhoto, a.email, a.fullName, a.phoneNumber, a.gender, a.birthday) "
             + "FROM Account a JOIN Advisor adv ON a.accountID = adv.accountID")
     List<AdvisorResponse> findAllAdvisorsWithDetails();
 }
