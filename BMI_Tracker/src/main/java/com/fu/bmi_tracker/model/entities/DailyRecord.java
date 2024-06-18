@@ -77,5 +77,6 @@ public class DailyRecord {
         this.date = date;
         this.member = member;
     }
+  
 
 }

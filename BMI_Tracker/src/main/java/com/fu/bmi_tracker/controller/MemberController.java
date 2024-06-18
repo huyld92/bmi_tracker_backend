@@ -509,7 +509,8 @@ public class MemberController {
         return new ResponseEntity<>(dailyRecord, HttpStatus.OK);
 
     }
-    /*
+
+  /*
     // Lấy danh sách member đang đăng ký của advisor
     @Operation(summary = "Receive a list of members currently ordering from the advisor (ADVISOR)",
             description = "Login with advisor account and get list member")

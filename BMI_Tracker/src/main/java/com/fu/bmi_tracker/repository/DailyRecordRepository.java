@@ -40,4 +40,5 @@ public interface DailyRecordRepository extends JpaRepository<DailyRecord, Intege
 
     public List<DailyRecord> findByMember_MemberID(Integer memberID);
 
+
 }
