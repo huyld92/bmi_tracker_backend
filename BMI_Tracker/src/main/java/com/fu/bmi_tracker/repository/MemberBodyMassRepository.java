@@ -21,16 +21,16 @@ public interface MemberBodyMassRepository extends JpaRepository<MemberBodyMass, 
 
     Optional<MemberBodyMass> findFirstByMemberMemberIDOrderByDateInputDesc(Integer memberId);
 
-    @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.accountID = :accountID")
+    @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.account.accountID = :accountID")
     public List<MemberBodyMass> findAllByAccountID(Integer accountID);
 
     @Query("SELECT mbm FROM MemberBodyMass mbm "
             + "JOIN mbm.member m "
-            + "WHERE m.accountID = :accountID "
+            + "WHERE m.account.accountID = :accountID "
             + "ORDER BY mbm.dateInput DESC LIMIT 1")
     public Optional<MemberBodyMass> findLatestByAccountID(Integer accountID);
 
-    @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.accountID = :accountID"
+    @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.account.accountID = :accountID"
             + " AND mbm.dateInput >= :startDate AND mbm.dateInput <= :endDate ORDER BY mbm.dateInput DESC")
     List<MemberBodyMass> findRecent30Days(Integer accountID, LocalDateTime startDate, LocalDateTime endDate);
 

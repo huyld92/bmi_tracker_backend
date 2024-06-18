@@ -4,19 +4,18 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import com.fu.bmi_tracker.model.entities.Feedback;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  *
- * @author BaoLG
+ * @author Duc Huy
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeedbackForAdminRespone {
+public class FeedbackResponseAll {
 
     private int feedbackID;
 
@@ -28,18 +27,6 @@ public class FeedbackForAdminRespone {
 
     private boolean status;
 
-    private int memberID;
-
     private String memberName;
-
-    public FeedbackForAdminRespone(Feedback feedback) {
-        this.feedbackID = feedback.getFeedbackID();
-        this.title = feedback.getTitle();
-        this.type = feedback.getType();
-        this.description = feedback.getDescription();
-        this.status = feedback.isStatus();
-        this.memberID = feedback.getMember().getMemberID();
-        this.memberName = feedback.getMember().getAccount().getFullName();
-    }
 
 }

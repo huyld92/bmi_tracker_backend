@@ -12,6 +12,8 @@ import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.payload.response.CaloriesInResponse;
 import com.fu.bmi_tracker.payload.response.CaloriesOutResponse;
+import com.fu.bmi_tracker.payload.response.DailyRecordFullResponse;
+import com.fu.bmi_tracker.payload.response.DailyRecordResponse;
 import com.fu.bmi_tracker.services.DailyRecordService;
 import com.fu.bmi_tracker.services.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -136,7 +139,7 @@ public class DailyRecordController {
     @Operation(summary = "Retrieve daily record of week (MEMBER)", description = "Get daily record for a week by providing the value of a day of the week to get")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = DailyRecord.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = DailyRecordResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "204", description = "There are no meal", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -163,10 +166,44 @@ public class DailyRecordController {
         if (dailyRecords.isEmpty()) {
             // 204 không có 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         }
-        return new ResponseEntity<>(dailyRecords, HttpStatus.OK);
+
+        // tạo response
+        List<DailyRecordResponse> responses = new ArrayList<>();
+        dailyRecords.forEach((DailyRecord dr) -> responses.add(new DailyRecordResponse(dr)));
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
 
     }
 
+    // Lấy danh sách daily record của Member
+    @Operation(summary = "Retrieve daily record by memberID",
+            description = "Get daily record of member by memberID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = DailyRecordFullResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/member/getLast-7-days")
+    public ResponseEntity<?> getLast7Days(@RequestParam Integer memberID, @RequestParam String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate endDate;
+        // Validation date 
+        try {
+            endDate = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+                    new Date(),
+                    "Invalid date format. Please provide the date in the format yyyy-MM-dd.",
+                    "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // gọi service tìm dailyrecord và trả về daily response
+        List<DailyRecordFullResponse> responses = dailyRecordService.Last7DaysByMemberID(memberID, endDate);
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+
+    }
 }

@@ -140,4 +140,8 @@ public class Account {
 
     }
 
+    public Account(Integer accountID) {
+        this.accountID = accountID;
+    }
+
 }

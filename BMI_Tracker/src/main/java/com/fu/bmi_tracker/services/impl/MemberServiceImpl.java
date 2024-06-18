@@ -79,12 +79,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean existsByAccountID(int accountID) {
-        return memberRepository.existsByAccountID(accountID);
+        return memberRepository.existsByAccount_AccountID(accountID);
     }
 
     @Override
     public Optional<Member> findByAccountID(int accountID) {
-        return memberRepository.findByAccountID(accountID);
+        return memberRepository.findByAccount_AccountID(accountID);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Page<Food> getPaginatedFoodWithPriority(Integer accountID, Pageable pageable) {
         // Tìm member từ accountID
-        Member member = memberRepository.findByAccountID(accountID)
+        Member member = memberRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         // Tìm danh sách Food phù hợp với DietaryPreference của Member
@@ -189,7 +189,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public DailyRecord getDailyRecordOfMember(Integer accountID, LocalDate localDate) {
         // gọi repository tìm member 
-        Member member = memberRepository.findByAccountID(accountID)
+        Member member = memberRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         // gọi repository tìm daily record bằng member id

@@ -182,7 +182,7 @@ public class OrderController {
     }
 
     @Operation(
-            summary = "Get all order by advisor ID",
+            summary = "Get all order of advisor with Month",
             description = "Get all order by advisor ID and month of order date")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -191,7 +191,7 @@ public class OrderController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/getByAdvisorID")
+    @GetMapping(value = "/advisor/getByMonth")
     public ResponseEntity<?> getAllOderByAdvisorIDAndMonth(
             @RequestParam("advisorID") Integer advisorID,
             @RequestParam("month") String month) {
@@ -248,4 +248,5 @@ public class OrderController {
         });
         return ResponseEntity.ok(orderResponses);
     }
+
 }

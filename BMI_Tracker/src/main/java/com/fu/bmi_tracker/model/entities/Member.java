@@ -37,8 +37,9 @@ public class Member {
     @Column(name = "MemberID", nullable = false)
     private Integer memberID;
 
-    @Column(name = "AccountID", nullable = false, unique = true)
-    private Integer accountID;
+    @ManyToOne
+    @JoinColumn(name = "AccountID", nullable = false, unique = true)
+    private Account account;
 
     @Column(name = "TargetWeight", nullable = false)
     private Integer targetWeight;
@@ -74,23 +75,10 @@ public class Member {
     @Column(name = "WorkoutID", nullable = true)
     private Integer workoutID;
 
-//    public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
-//            Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
-//            Integer dietaryPreferenceID, ActivityLevel activityLevel) {
-//        this.accountID = accountID;
-//        this.targetWeight = targetWeight;
-//        this.tdee = tdee;
-//        this.bmr = bmr;
-//        this.defaultCalories = defaultCalories;
-//        this.isPrivate = false;
-//        this.lastUpdatedTime = lastUpdatedTime;
-//        this.dietaryPreferenceID = dietaryPreferenceID;
-//        this.activityLevel = activityLevel;
-//    }
-    public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
+    public Member(Account account, Integer targetWeight, Double tdee, Double bmr,
             Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
             String dietaryPreferenceName, ActivityLevel activityLevel) {
-        this.accountID = accountID;
+        this.account = account;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
         this.bmr = bmr;
@@ -101,10 +89,10 @@ public class Member {
         this.activityLevel = activityLevel;
     }
 
-    public Member(Integer accountID, Integer targetWeight, Double tdee, Double bmr,
+    public Member(Account account, Integer targetWeight, Double tdee, Double bmr,
             Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
             String dietaryPreferenceName, ActivityLevel activityLevel, Integer menuID, Integer workoutID) {
-        this.accountID = accountID;
+        this.account = account;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
         this.bmr = bmr;

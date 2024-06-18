@@ -56,5 +56,5 @@ public class ActivityLog {
         this.duration = activityLogRequest.getDuration();
         this.exerciseID = activityLogRequest.getExerciseID();
     }
-
+ 
 }
