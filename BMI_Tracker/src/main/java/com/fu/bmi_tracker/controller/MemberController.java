@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.exceptions.ErrorMessage;
+import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.DailyRecord;
@@ -131,7 +132,8 @@ public class MemberController {
         Workout workout = memberService.getWorkoutSuggestion(bMIUtils.classifyBMI(bmi));
 
         // Save member  Bổ sung menuID
-        Member member = new Member(principal.getId(),
+        Member member = new Member(
+                new Account(principal.getId()),
                 createMemberRequest.getTargetWeight(),
                 tdee,
                 bmr,
@@ -507,6 +509,45 @@ public class MemberController {
         return new ResponseEntity<>(dailyRecord, HttpStatus.OK);
 
     }
-    
-    
+
+  /*
+    // Lấy danh sách member đang đăng ký của advisor
+    @Operation(summary = "Receive a list of members currently ordering from the advisor (ADVISOR)",
+            description = "Login with advisor account and get list member")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MemberInformationResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/advisor/getCurrent")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> getCurrentMembersOrderAdvisor() {
+        // lấy accountID từ context
+
+        // gọi serverice lấy danh sách member
+        // Chuyển đổi member response
+//        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // Lấy danh sách member đang đăng ký của advisor bằng advisorID
+    @Operation(summary = "Receive a list of members currently ordering from the advisor (ADVISOR)",
+            description = "Login with advisor account and get list member")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MemberInformationResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/advisor/getByAdvisorID")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> getCurrentMembersOrderByAdvisorID(@RequestParam Integer advisorID) {
+        // gọi serverice lấy danh sách member bằng advisor ID có list body mass
+
+        // Chuyển đổi member response 
+//        return new ResponseEntity<>(HttpStatus.OK);
+    }
+     */
 }

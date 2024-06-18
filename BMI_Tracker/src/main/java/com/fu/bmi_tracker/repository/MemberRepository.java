@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 
-    public boolean existsByAccountID(int accountID);
+    public boolean existsByAccount_AccountID(int accountID);
 
-    public Optional<Member> findByAccountID(int accountID);
+    public Optional<Member> findByAccount_AccountID(int accountID);
 }

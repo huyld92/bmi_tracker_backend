@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Feedback;
+import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.payload.request.CreateFeedbackRequest;
 import com.fu.bmi_tracker.payload.response.FeedbackForAdminRespone;
+import com.fu.bmi_tracker.payload.response.MessageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.FeedbackService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +41,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class FeedbackController {
 
     @Autowired
-    FeedbackService service;
+    FeedbackService feedbackService;
 
     @Operation(
             summary = "Create new Feedback with form",
@@ -59,12 +63,12 @@ public class FeedbackController {
         newFeedBack.setDescription(feedbackRequest.getDescription());
         newFeedBack.setStatus(Boolean.FALSE);
         newFeedBack.setType(feedbackRequest.getType());
-        newFeedBack.setMemberID(feedbackRequest.getMemberID());
+        newFeedBack.setMember(new Member(feedbackRequest.getMemberID()));
 
-        Feedback feedbackSave = service.save(newFeedBack);
+        Feedback feedbackSave = feedbackService.save(newFeedBack);
 
         if (feedbackSave == null) {
-            return new ResponseEntity<>("Failed to create new feedback", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse("Failed to create new feedback"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(feedbackSave, HttpStatus.CREATED);
     }
@@ -82,14 +86,19 @@ public class FeedbackController {
     @GetMapping(value = "/getAll")
     //@PreAuthorize("hasRole('ADMIN')") //MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllFeedback() {
+        // gọi service lấy tất cả feedback
+        Iterable<Feedback> feedbackList = feedbackService.findAll();
 
-        Iterable<Feedback> feedbackList = service.findAll();
-
+        // kiểm tra kết quả
         if (!feedbackList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(feedbackList, HttpStatus.OK);
+        // tạo Feedback response
+        List<FeedbackForAdminRespone> feedbackResponseAlls = new ArrayList<>();
+        feedbackList.forEach(feedback -> feedbackResponseAlls.add(new FeedbackForAdminRespone(feedback)));
+
+        return new ResponseEntity<>(feedbackResponseAlls, HttpStatus.OK);
     }
 
     @Operation(
@@ -106,7 +115,7 @@ public class FeedbackController {
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllFeedbackByMemberID(@PathVariable("id") int id) {
 
-        Iterable<Feedback> feedbackList = service.findFeedbackByMemberID(id);
+        Iterable<Feedback> feedbackList = feedbackService.findFeedbackByMemberID(id);
 
         if (!feedbackList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -129,7 +138,7 @@ public class FeedbackController {
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getFeedbackByID(@PathVariable("id") int id) {
 
-        Optional<Feedback> feedback = service.findById(id);
+        Optional<Feedback> feedback = feedbackService.findById(id);
 
         if (feedback.isPresent()) {
             return new ResponseEntity<>(feedback, HttpStatus.OK);
@@ -148,13 +157,17 @@ public class FeedbackController {
     @PutMapping("/approve/{id}")
     //@PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> approveFeedback(@PathVariable("id") int id) {
-        Optional<Feedback> feedback = service.findById(id);
+        Optional<Feedback> feedback = feedbackService.findById(id);
 
         if (feedback.isPresent()) {
+
             feedback.get().setStatus(Boolean.TRUE);
+
+            feedbackService.save(feedback.get());
+
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>("Cannot find feedback with id{" + id + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Cannot find feedback with id{" + id + "}"), HttpStatus.NOT_FOUND);
         }
     }
 }

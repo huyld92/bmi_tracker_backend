@@ -5,6 +5,8 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.ActivityLog;
+import com.fu.bmi_tracker.payload.response.ActivityLogResponse;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +18,7 @@ import org.springframework.stereotype.Repository;
 public interface ActivityLogRepository extends JpaRepository<ActivityLog, Integer> {
 
     public Iterable<ActivityLog> findByRecordID(Integer recordID);
+
+    public List<ActivityLogResponse> findResponseByRecordID(Integer recordID);
 
 }

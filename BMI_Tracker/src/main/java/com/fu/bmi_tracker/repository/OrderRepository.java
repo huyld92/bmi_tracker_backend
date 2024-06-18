@@ -19,7 +19,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByMemberMemberID(Integer memberID);
 
-    List<Order> findByMember_AccountID(Integer accountID);
+    List<Order> findByMember_Account_AccountID(Integer accountID);
 
     List<Order> findByAdvisor_AdvisorIDAndOrderDateBetween(Integer advisorID, LocalDateTime startOfMonth, LocalDateTime endOfMonth);
 

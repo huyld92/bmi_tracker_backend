@@ -41,7 +41,7 @@ public class FeedbackServiceImpl implements FeedbackService{
 
     @Override
     public Iterable<Feedback> findFeedbackByMemberID(int memberID) {
-        return feedbackRepository.findByMemberID(memberID);
+        return feedbackRepository.findByMember_MemberID(memberID);
     }
 
     

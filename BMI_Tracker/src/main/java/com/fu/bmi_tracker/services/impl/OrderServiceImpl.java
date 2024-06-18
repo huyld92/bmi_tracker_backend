@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Iterable<Order> getOrderByMemberAccountID(Integer accountID) {
-        return orderRepository.findByMember_AccountID(accountID);
+        return orderRepository.findByMember_Account_AccountID(accountID);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order createOrderTransaction(CreateOrderTransactionRequest createRequest, Integer accountID) {
         // Tìm member băng accountID
-        Member member = memberRepository.findByAccountID(accountID)
+        Member member = memberRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         // Tạo member transaction
