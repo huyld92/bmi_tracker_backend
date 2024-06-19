@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Order;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +25,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByAdvisor_AdvisorIDAndOrderDateBetween(Integer advisorID, LocalDateTime startOfMonth, LocalDateTime endOfMonth);
 
     List<Order> findByAdvisor_AdvisorIDOrderByOrderDateDesc(Integer advisorID);
+
+    List<Order> findByAdvisor_AccountIDAndEndDateGreaterThan(Integer accountID, LocalDate currentDate);
 
 }

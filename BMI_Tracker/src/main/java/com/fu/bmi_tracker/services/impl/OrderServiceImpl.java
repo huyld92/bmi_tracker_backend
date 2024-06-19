@@ -15,10 +15,12 @@ import com.fu.bmi_tracker.repository.MemberTransactionRepository;
 import com.fu.bmi_tracker.repository.OrderRepository;
 import com.fu.bmi_tracker.services.OrderService;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -107,6 +109,19 @@ public class OrderServiceImpl implements OrderService {
 
         // Tìm order từ account ID với sắp xếp mới nhất
         return orderRepository.findByAdvisor_AdvisorIDOrderByOrderDateDesc(advisor.getAdvisorID());
+    }
+
+    @Override
+    public List<Member> getCurrentMemeberOfAdvisor(Integer accountID) {
+        // lấy ngày hiện tại
+        LocalDate currentDate = LocalDate.now();
+
+        // gợi Order repository tìm danh sách Order bằng accountID và endDate > currentDate
+        List<Order> orders = orderRepository.findByAdvisor_AccountIDAndEndDateGreaterThan(accountID, currentDate);
+
+        // chuyển đổi từ order sang List<Member> bằng stream(), distinct đảm bảo không trùng Member
+        return orders.stream().map(Order::getMember).distinct()
+                .collect(Collectors.toList());
     }
 
 }

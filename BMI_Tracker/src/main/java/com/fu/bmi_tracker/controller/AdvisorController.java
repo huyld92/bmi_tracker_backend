@@ -6,7 +6,9 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.payload.response.AdvisorResponse;
+import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -140,5 +142,5 @@ public class AdvisorController {
         return new ResponseEntity<>(advisor, HttpStatus.OK);
 
     }
-    
+
 }

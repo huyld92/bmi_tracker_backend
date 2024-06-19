@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Order;
 import com.fu.bmi_tracker.payload.request.CreateOrderTransactionRequest;
+import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.OrderResponse;
 import com.fu.bmi_tracker.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,7 @@ import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -247,6 +250,33 @@ public class OrderController {
             orderResponses.add(orderResponse);
         });
         return ResponseEntity.ok(orderResponses);
+    }
+
+    // Lấy danh sách member đang đăng ký của advisor
+    @Operation(summary = "Receive a list of members currently ordering from the advisor (ADVISOR)",
+            description = "Login with advisor account and get list member")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MemberResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/advisor/getCurrentMember")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> getCurrentMembersOrderAdvisor() {
+        // lấy accountID từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi serverice lấy danh sách member
+        List<Member> members = orderService.getCurrentMemeberOfAdvisor(principal.getId());
+
+        // Chuyển đổi member sang member response
+        List<MemberResponse> memberResponses = members.stream().map(
+                (member)
+                -> member.toMemberResponse()).collect(Collectors.toList());
+        return new ResponseEntity<>(memberResponses, HttpStatus.OK);
     }
 
 }

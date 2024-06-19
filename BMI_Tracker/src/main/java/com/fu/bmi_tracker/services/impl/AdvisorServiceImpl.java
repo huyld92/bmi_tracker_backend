@@ -17,31 +17,31 @@ import java.util.List;
 public class AdvisorServiceImpl implements AdvisorService {
 
     @Autowired
-    AdvisorRepository repository;
+    AdvisorRepository memberRepository; 
 
     @Override
     public Iterable<Advisor> findAll() {
-        return repository.findAll();
+        return memberRepository.findAll();
     }
 
     @Override
     public Optional<Advisor> findById(Integer id) {
-        return repository.findById(id);
+        return memberRepository.findById(id);
     }
 
     @Override
     public Advisor save(Advisor t) {
-        return repository.save(t);
+        return memberRepository.save(t);
     }
 
     @Override
     public Advisor findByAccountID(Integer accountID) {
-        return repository.findByAccountID(accountID).get();
+        return memberRepository.findByAccountID(accountID).get();
     }
 
     @Override
     public List<AdvisorResponse> findAllAdvisorsWithDetails() {
-        return repository.findAllAdvisorsWithDetails();
+        return memberRepository.findAllAdvisorsWithDetails();
     }
 
 }
