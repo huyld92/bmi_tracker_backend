@@ -63,15 +63,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private EOrderStatus orderStatus;
 
-    @Column(name = "CommissionRate", nullable = false)
-    private int commissionRate;
-
-    @Column(name = "CommissionAmount", nullable = false)
-    private BigDecimal commissionAmount;
-
-    @Column(name = "IsPaid", nullable = false)
-    private Boolean isPaid;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MemberID", nullable = false)
     private Member member;
@@ -80,27 +71,31 @@ public class Order {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
+    @Column(name = "CommissionID", nullable = false)
+    private Integer commissionID;
+
     @Column(name = "TransactionID", nullable = false, unique = true)
     private Integer transactionID;
 
-    public Order(OrderRequest orderRequest, Integer memberID, int transactionID) {
+    public Order(OrderRequest orderRequest,
+            LocalDate startDate,
+            LocalDate endDate,
+            Integer memberID,
+            Advisor advisor,
+            int transactionID,
+            int commissionID) {
         this.orderDescription = orderRequest.getDescription();
         this.orderNumber = orderRequest.getOrderNumber();
         this.orderAmount = orderRequest.getAmount();
         this.orderDate = LocalDateTime.now(ZoneId.of("GMT+7"));
-        this.startDate = LocalDate.now(ZoneId.of("GMT+7"));
-        this.endDate = startDate.plusDays(orderRequest.getPlanDuration());
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.member = new Member();
         this.member.setMemberID(memberID);
-        this.advisor = new Advisor();
-        this.advisor.setAdvisorID(orderRequest.getAdvisorID());
+        this.advisor = advisor;
         this.orderStatus = EOrderStatus.MEMBER_PAID;
-        this.isPaid = false;
+        this.commissionID = commissionID;
         this.transactionID = transactionID;
-
-        this.commissionRate = 50;
-        // tính commisstion amout bằng Decimal, Order amount nhân cho BigDecimal của commissionRate chia 100 (100%)
-        this.commissionAmount = this.orderAmount.multiply(BigDecimal.valueOf(this.commissionRate / 100));
     }
 
 }

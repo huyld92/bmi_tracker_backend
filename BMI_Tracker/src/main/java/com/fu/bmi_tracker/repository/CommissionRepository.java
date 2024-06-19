@@ -4,9 +4,8 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.RefreshToken;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import com.fu.bmi_tracker.model.entities.Commission;
+import java.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,11 +14,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Integer> {
+public interface CommissionRepository extends JpaRepository<Commission, Integer> {
 
-    public Optional<RefreshToken> findByRefreshToken(String token);
+    Commission findByAdvisor_AdvisorIDAndExpectedPaymentDate(Integer advisorID, LocalDate expectedPaymentDate);
 
-    public void deleteByAccount_AccountID(Integer accountID);
-
-    public void deleteByExpiryDateLessThan(LocalDateTime now);
 }

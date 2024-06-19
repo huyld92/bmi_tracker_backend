@@ -5,16 +5,21 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
+import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberTransaction;
 import com.fu.bmi_tracker.model.entities.Order;
+import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import com.fu.bmi_tracker.payload.request.CreateOrderTransactionRequest;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
+import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.repository.MemberRepository;
 import com.fu.bmi_tracker.repository.MemberTransactionRepository;
 import com.fu.bmi_tracker.repository.OrderRepository;
 import com.fu.bmi_tracker.services.OrderService;
+import com.fu.bmi_tracker.util.DateTimeUtils;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -38,6 +43,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     MemberTransactionRepository transactionRepository;
+
+    @Autowired
+    CommissionRepository commissionRepository;
+
+    @Autowired
+    DateTimeUtils dateTimeUtils;
 
     @Override
     public Iterable<Order> findAll() {
@@ -94,10 +105,87 @@ public class OrderServiceImpl implements OrderService {
         // nhận transaction sao khi lưu xuống database
         MemberTransaction transaction = transactionRepository.save(memberTrasaction);
 
+        // lấy ngày hiện tại
+        LocalDate currentDate = LocalDate.now();
+
+        // Tạo ngày bắt đầu plan
+        // nếu endPLan không còn hiệu lực startPlan = currentDate
+        // ngược lại startDateOfPlan bằng enDateOfPlan
+        LocalDate startDateOfPlan = currentDate;
+
+        // kiểm tra và cập nhật endDateOfPlan của member
+        LocalDate endDateOfPlan = member.getEndDateOfPlan();
+        int planDuration = createRequest.getOrderRequest().getPlanDuration();
+
+        if (endDateOfPlan == null || endDateOfPlan.isBefore(currentDate)) {
+            // nếu ngày kết thúc không tồn tại hoặc ngày kết thúc bé hơn ngày hiện tại
+            // => lấy currentDate + cho PlanDuration của new plan
+            endDateOfPlan = currentDate.plusDays(planDuration);
+        } else {
+            // ngược lại plan vẫn còn hiệu lực 
+            // start plan = ngày sau của endplan
+            //=> cộng thêm plan duaration vào endDateOfPlan
+            startDateOfPlan = endDateOfPlan.plusDays(1);
+            endDateOfPlan = endDateOfPlan.plusDays(planDuration);
+        }
+
+        // cập nhật ngày kết thúc cho Member
+        member.setEndDateOfPlan(endDateOfPlan);
+        memberRepository.save(member);
+
+        // tìm advisor
+        Advisor advisor = advisorRepository.findById(createRequest.getOrderRequest().getAdvisorID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
+
+        // tính ngày dự kiến thanh toán 
+        // Tìm commission bằng ngày dự kiến và advisorID
+        LocalDate expectedPaymentDate = dateTimeUtils.calculateExpectedPaymentDate(endDateOfPlan);
+        Commission commission = commissionRepository.
+                findByAdvisor_AdvisorIDAndExpectedPaymentDate(
+                        advisor.getAdvisorID(),
+                        expectedPaymentDate);
+
+        // kiểm tra kết quả
+        if (commission == null) {
+            // tạo mới commission
+            BigDecimal commissionRate = BigDecimal.valueOf(50);
+            BigDecimal commissionAmount = createRequest.getOrderRequest()
+                    .getAmount()
+                    .multiply(commissionRate)
+                    .divide(BigDecimal.valueOf(100));
+
+            Commission c = new Commission(
+                    commissionAmount,
+                    50,
+                    null,
+                    expectedPaymentDate,
+                    BigDecimal.ZERO,
+                    EPaymentStatus.UNPAID,
+                    null,
+                    advisor);
+            // lưu commission
+            commission = commissionRepository.save(c);
+        } else {
+            BigDecimal commissionRate = BigDecimal.valueOf(commission.getCommissionRate());
+            BigDecimal commissionAmount = createRequest.getOrderRequest()
+                    .getAmount()
+                    .multiply(commissionRate)
+                    .divide(BigDecimal.valueOf(100));
+            commission.setCommissionAmount(commissionAmount);
+            commissionRepository.save(commission);
+        }
+
         // tạo order
-        Order order = new Order(createRequest.getOrderRequest(),
+        Order order = new Order(
+                createRequest.getOrderRequest(),
+                startDateOfPlan,
+                endDateOfPlan,
                 member.getMemberID(),
-                transaction.getTransactionID());
+                advisor,
+                transaction.getTransactionID(),
+                commission.getCommissionID()
+        );
+
         return orderRepository.save(order);
     }
 

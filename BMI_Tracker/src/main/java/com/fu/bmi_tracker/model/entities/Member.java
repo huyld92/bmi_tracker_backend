@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -66,6 +66,9 @@ public class Member {
 //    private Integer dietaryPreferenceID;
     @Column(name = "DietaryPreference", nullable = false)
     private String dietaryPreference;
+
+    @Column(name = "EndDateOfPlan", nullable = true)
+    private LocalDate endDateOfPlan;
 
     @ManyToOne
     @JoinColumn(name = "ActivityLevelID", nullable = false)

@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
@@ -23,5 +24,27 @@ public class DateTimeUtils {
         LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
 
         return localDateTime;
+    }
+
+    
+    //Tính ngày dự kiến thanh toán cho advisor
+    public LocalDate calculateExpectedPaymentDate(LocalDate endDate) {
+        // lấy month và year từ endDate
+        int month = endDate.getMonthValue();
+        int year = endDate.getYear();
+
+        // Mặc định là ngày 30
+        int dayOfMonth = 30;
+
+        // kiểm tra nếu ngày kế thúc trước ngày 15 thì Ngày kết toán là 15
+        if (endDate.getDayOfMonth() < 15) {
+            dayOfMonth = 15; // Set to 15th day of the month
+        } else if (dayOfMonth > endDate.lengthOfMonth()) {
+            // kiểm tra nếu tháng không có ngày 30
+            dayOfMonth = endDate.lengthOfMonth();
+        }
+
+        // tạo ExpectedPaymentDate ngày dự kiến thanh toán 
+        return LocalDate.of(year, month, dayOfMonth);
     }
 }
