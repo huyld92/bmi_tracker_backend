@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderTransactionRequest {
+public class CreateBookingTransactionRequest {
 
-    private OrderRequest orderRequest;
+    private BookingRequest bookingRequest;
     private MemberTransactionRequest transactionRequest;
 }

@@ -50,7 +50,7 @@ public class Certificate {
     public Certificate(CreateCertificateRequest certificateRequest) {
         this.certificateName = certificateRequest.getCertificateName();
         this.certificateLink = certificateRequest.getCertificateLink();
-        this.isActive = true;
+        this.isActive = false;
         this.advisor = new Advisor(certificateRequest.getAdvisorID());
     }
 

@@ -44,8 +44,8 @@ public class MealLog {
     @Enumerated(EnumType.STRING)
     private EMealType mealType;
 
-    @Column(name = "Quantity", nullable = false)
-    private String quantity;
+    @Column(name = "Quantity", nullable = true)
+    private Float quantity;
 
     @Column(name = "RecordID", nullable = false)
     private Integer recordID;
@@ -60,5 +60,4 @@ public class MealLog {
         this.quantity = createMealLogRequest.getQuantity();
         this.foodID = createMealLogRequest.getFoodID();
     }
-
 }

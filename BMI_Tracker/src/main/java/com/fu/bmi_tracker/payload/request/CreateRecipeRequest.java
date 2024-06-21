@@ -5,8 +5,9 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,13 +19,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateRecipesRequest {
+public class CreateRecipeRequest {
 
-    @Schema(example = "123")
+    @Schema(example = "1")
     @NotNull(message = "Food ID is required")
     private Integer foodID;
 
-    @Schema(example = "[1, 2, 3]")
-    @NotNull(message = "Ingredient IDs are required")
-    private List<@NotNull Integer> ingredientIDs;
+    @Schema(example = "1")
+    @NotNull(message = "Ingredient ID is required")
+    private Integer ingredientID;
+
+    @Schema(example = "grams")
+    @NotBlank(message = "Unit is required")
+    private String unit;
+
+    @Schema(example = "100")
+    @NotNull(message = "Quantity is required")
+    @Positive(message = "Quantity must be a positive number")
+    private Float quantity;
 }

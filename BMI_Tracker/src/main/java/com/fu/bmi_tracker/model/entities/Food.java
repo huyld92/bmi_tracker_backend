@@ -58,6 +58,9 @@ public class Food {
     @Column(name = "FoodNutrition", nullable = false)
     private String foodNutrition;
 
+    @Column(name = "Serving", nullable = false)
+    private String serving;
+
     @Column(name = "FoodTimeProcess", nullable = false)
     private int foodTimeProcess;
 
@@ -94,6 +97,7 @@ public class Food {
         this.foodPhoto = createFoodRequest.getFoodPhoto();
         this.foodVideo = createFoodRequest.getFoodVideo();
         this.foodNutrition = createFoodRequest.getFoodNutrition();
+        this.serving = createFoodRequest.getServing();
         this.foodTimeProcess = createFoodRequest.getFoodTimeProcess();
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isActive = true;
@@ -107,6 +111,7 @@ public class Food {
             this.foodCalories = foodRequest.getFoodCalories();
         }
         this.description = foodRequest.getDescription();
+        this.serving = foodRequest.getServing();
         this.foodPhoto = foodRequest.getFoodPhoto();
         this.foodVideo = foodRequest.getFoodVideo();
         if (foodRequest.getFoodTimeProcess() >= 0) {

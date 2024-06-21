@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -36,4 +37,6 @@ public class WorkoutExercise {
     @JoinColumn(name = "ExerciseID")
     private Exercise exercise;
 
+    @Column(name = "IsActive", nullable = false)
+    private Boolean isActive;
 }

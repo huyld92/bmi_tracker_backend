@@ -9,13 +9,12 @@ import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.enums.EDietPreference;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
-import com.fu.bmi_tracker.payload.request.CreateRecipesRequest;
+import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponseAll;
 import com.fu.bmi_tracker.payload.response.FoodPageResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
-import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.RecipeService;
 
@@ -204,9 +203,9 @@ public class FoodController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping("/deactive/{id}")
+    @DeleteMapping("/deactivate/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deactiveFood(@PathVariable("id") int id) {
+    public ResponseEntity<?> deactivateFood(@PathVariable("id") int id) {
         // Tim food by id
         Optional<Food> food = foodService.findById(id);
 
@@ -219,20 +218,6 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Create food recipes")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping("/createRecipes")
-//    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createFoodRecipes(@RequestBody CreateRecipesRequest createRecipesRequest) {
-        recipeService.createRecipes(createRecipesRequest);
-        return new ResponseEntity<>(new MessageResponse("Create food recipes success!"), HttpStatus.OK);
-
-    }
-
     @Operation(summary = "Create food recipe", description = "")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -241,8 +226,8 @@ public class FoodController {
             @Content(schema = @Schema())})})
     @PostMapping("/createRecipe")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createFoodRecipe(@RequestParam Integer foodID, @RequestParam Integer ingredientID) {
-        Recipe recipe = recipeService.createRecipe(foodID, ingredientID);
+    public ResponseEntity<?> createFoodRecipe(@RequestParam CreateRecipeRequest recipeRequest) {
+        Recipe recipe = recipeService.createRecipe(recipeRequest);
 
         return new ResponseEntity<>(recipe, HttpStatus.OK);
     }
@@ -255,7 +240,7 @@ public class FoodController {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deleteRecipe")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deactiveFood(@RequestParam Integer foodID, @RequestParam Integer ingredientID) {
+    public ResponseEntity<?> deleteRecipe(@RequestParam Integer foodID, @RequestParam Integer ingredientID) {
         recipeService.deleteRecipe(foodID, ingredientID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -106,7 +106,7 @@ public class WorkoutController {
 
         // Create Workout Exercise from list exercise
         exercises.forEach(exercise -> {
-            workoutExercises.add(new WorkoutExercise(workoutSaved, exercise));
+            workoutExercises.add(new WorkoutExercise(workoutSaved, exercise, true));
         });
 
         // store Workout Exercise
@@ -252,6 +252,24 @@ public class WorkoutController {
     public ResponseEntity<?> deleteWorkoutExersice(@RequestParam Integer workoutID, @RequestParam Integer exerciseID) {
         // gọi service để delete workout exercise
         workoutExerciseService.deleteWorkoutExercise(workoutID, exerciseID);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(
+            summary = "Deactivate workout exercise",
+            description = "Deactivate workout exercises by exercise ID and workoutID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Delete success!"),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping(value = "/workout-exercise/deactivate")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> deactivateWorkoutExersice(@RequestParam Integer workoutID, @RequestParam Integer exerciseID) {
+        // gọi service để deactivate workout exercise
+        workoutExerciseService.deactivateWorkoutExercise(workoutID, exerciseID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -18,5 +18,5 @@ public interface GeneralService<T> {
     Optional<T> findById(Integer id);
 
     T save(T t);
-    
+
 }

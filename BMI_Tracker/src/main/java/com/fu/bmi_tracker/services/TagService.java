@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Tag;
+import com.fu.bmi_tracker.model.enums.ETagType;
 import java.util.List;
 
 /**
@@ -14,5 +15,7 @@ import java.util.List;
 public interface TagService extends GeneralService<Tag> {
 
     public List<Tag> findByTagIDIn(List<Integer> tagIds);
+
+    public List<Tag> findByTagType(ETagType tagType);
 
 }

@@ -40,8 +40,8 @@ public class Ingredient {
     @Column(name = "Quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "UnitOfMeasurement", nullable = false)
-    private String unitOfMeasurement;
+    @Column(name = "Unit", nullable = false)
+    private String unit;
 
     @Column(name = "IngredientCalories", nullable = false)
     private Integer ingredientCalories;
@@ -59,7 +59,7 @@ public class Ingredient {
     public Ingredient(CreateIngredientRequest ingredientRequest) {
         this.ingredientName = ingredientRequest.getIngredientName().trim();
         this.ingredientPhoto = ingredientRequest.getIngredientPhotoUrl().trim();
-        this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement().trim();
+        this.unit = ingredientRequest.getUnit().trim();
         this.ingredientCalories = ingredientRequest.getIngredientCalories();
         this.quantity = ingredientRequest.getQuantity();
         this.tagID = ingredientRequest.getTagID();
@@ -71,8 +71,8 @@ public class Ingredient {
             this.ingredientName = ingredientRequest.getIngredientName();
         }
 
-        if (!ingredientRequest.getUnitOfMeasurement().isEmpty()) {
-            this.unitOfMeasurement = ingredientRequest.getUnitOfMeasurement();
+        if (!ingredientRequest.getUnit().isEmpty()) {
+            this.unit = ingredientRequest.getUnit();
         }
         this.ingredientPhoto = ingredientRequest.getIngredientPhoto();
         this.quantity = ingredientRequest.getQuantity();

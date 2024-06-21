@@ -4,8 +4,8 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.model.enums.EOrderStatus;
-import com.fu.bmi_tracker.payload.request.OrderRequest;
+import com.fu.bmi_tracker.model.enums.EBookingStatus;
+import com.fu.bmi_tracker.payload.request.BookingRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,25 +33,25 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "[Order]")
-public class Order {
+@Table(name = "[Booking]")
+public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "OrderID", nullable = false)
-    private Integer orderID;
+    @Column(name = "BookingID", nullable = false)
+    private Integer bookingID;
 
-    @Column(name = "OrderDescription", nullable = false)
-    private String orderDescription;
+    @Column(name = "BookingDescription", nullable = false)
+    private String bookingDescription;
 
-    @Column(name = "OrderNumber", nullable = false)
-    private String orderNumber;
+    @Column(name = "BookingNumber", nullable = false)
+    private String bookingNumber;
 
-    @Column(name = "OrderAmount", nullable = false)
-    private BigDecimal orderAmount;
+    @Column(name = "BookingAmount", nullable = false)
+    private BigDecimal bookingAmount;
 
-    @Column(name = "OrderDate", nullable = false)
-    private LocalDateTime orderDate;
+    @Column(name = "BookingDate", nullable = false)
+    private LocalDateTime bookingDate;
 
     @Column(name = "StartDate", nullable = false)
     private LocalDate startDate;
@@ -59,9 +59,9 @@ public class Order {
     @Column(name = "EndDate", nullable = false)
     private LocalDate endDate;
 
-    @Column(name = "OrderStatus", nullable = false)
+    @Column(name = "BookingStatus", nullable = false)
     @Enumerated(EnumType.STRING)
-    private EOrderStatus orderStatus;
+    private EBookingStatus bookingStatus;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MemberID", nullable = false)
@@ -77,23 +77,23 @@ public class Order {
     @Column(name = "TransactionID", nullable = false, unique = true)
     private Integer transactionID;
 
-    public Order(OrderRequest orderRequest,
+    public Booking(BookingRequest bookingRequest,
             LocalDate startDate,
             LocalDate endDate,
             Integer memberID,
             Advisor advisor,
             int transactionID,
             int commissionID) {
-        this.orderDescription = orderRequest.getDescription();
-        this.orderNumber = orderRequest.getOrderNumber();
-        this.orderAmount = orderRequest.getAmount();
-        this.orderDate = LocalDateTime.now(ZoneId.of("GMT+7"));
+        this.bookingDescription = bookingRequest.getDescription();
+        this.bookingNumber = bookingRequest.getBookingNumber();
+        this.bookingAmount = bookingRequest.getAmount();
+        this.bookingDate = LocalDateTime.now(ZoneId.of("GMT+7"));
         this.startDate = startDate;
         this.endDate = endDate;
         this.member = new Member();
         this.member.setMemberID(memberID);
         this.advisor = advisor;
-        this.orderStatus = EOrderStatus.MEMBER_PAID;
+        this.bookingStatus = EBookingStatus.MEMBER_PAID;
         this.commissionID = commissionID;
         this.transactionID = transactionID;
     }

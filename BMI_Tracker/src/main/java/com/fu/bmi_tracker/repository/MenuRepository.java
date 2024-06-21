@@ -24,10 +24,10 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
     List<Menu> findMenusByTagName(String tagName);
 
     // ABS(m.totalCalories - :recommendedCalories) biểu thức này tính giá trị chênh lệch của totalCalories
-    // và sắp xếp theo ASC và chỉ lấy menu đầu tiên trong danh sách menu advisor hệ thống id3
+    // và sắp xếp theo ASC và chỉ lấy menu đầu tiên trong danh sách menu advisor hệ thống id 1
     @Query("SELECT m FROM Menu m "
             + "JOIN TagMenu tm ON m.menuID = tm.menu.menuID"
-            + " JOIN Tag t ON tm.tag.tagID = t.tagID WHERE t.tagName = :tagName AND m.advisorID = 3"
+            + " JOIN Tag t ON tm.tag.tagID = t.tagID WHERE t.tagName = :tagName AND m.advisorID = 1"
             + " ORDER BY ABS(m.totalCalories - :recommendedCalories) ASC LIMIT 1")
     Menu findTopByTagNameAndClosestCalories(String tagName, int recommendedCalories);
 

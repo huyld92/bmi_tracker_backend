@@ -45,6 +45,9 @@ public class Exercise {
     @Column(name = "Duration", nullable = false)
     private Integer duration;
 
+    @Column(name = "Distance", nullable = true)
+    private Float distance;
+
     @Column(name = "CaloriesBurned", nullable = false)
     private Integer caloriesBurned;
 

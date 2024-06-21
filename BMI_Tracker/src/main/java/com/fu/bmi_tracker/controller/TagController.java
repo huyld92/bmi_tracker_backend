@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Tag;
+import com.fu.bmi_tracker.model.enums.ETagType;
 import com.fu.bmi_tracker.payload.request.CreateTagRequest;
 import com.fu.bmi_tracker.services.TagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -105,4 +108,22 @@ public class TagController {
         }
     }
 
+    @Operation(
+            summary = "Retrieve a Tag by Id",
+            description = "Get a Tag object by specifying its id. The response is Tag object",
+            tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = Tag.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getByTagType")
+    public ResponseEntity<?> getByTagType(@RequestParam ETagType tagType) {
+        List<Tag> tags = service.findByTagType(tagType);
+
+        return new ResponseEntity<>(tags, HttpStatus.OK);
+
+    }
 }

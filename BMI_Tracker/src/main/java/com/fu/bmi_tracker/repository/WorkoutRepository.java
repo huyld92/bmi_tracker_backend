@@ -21,7 +21,7 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     @Query("SELECT w FROM Workout w"
             + " JOIN TagWorkout tw ON w.workoutID = tw.workout.workoutID"
             + " JOIN Tag t ON tw.tag.tagID = t.tagID"
-            + " WHERE t.tagName = :tagName AND w.advisorID = 3"
+            + " WHERE t.tagName = :tagName AND w.advisorID = 1"
             + " ORDER BY w.workoutID ASC")
     Workout findFirstByTagName(String tagName);
 

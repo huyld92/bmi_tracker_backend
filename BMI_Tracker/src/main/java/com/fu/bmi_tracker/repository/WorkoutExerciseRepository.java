@@ -6,8 +6,10 @@ package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +27,10 @@ public interface WorkoutExerciseRepository extends JpaRepository<WorkoutExercise
 
     @Query("SELECT we.exercise FROM WorkoutExercise we WHERE we.workout.workoutID = :workoutID")
     public List<Exercise> findExercisesByWorkoutID(Integer workoutID);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE WorkoutExercise we SET we.isActive = false WHERE we.workout.workoutID = :workoutID "
+            + "AND we.exercise.exerciseID = :exerciseID")
+    public void deactivateWorkoutExercise(Integer workoutID, Integer exerciseID);
 }

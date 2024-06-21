@@ -124,7 +124,7 @@ public class MenuController {
             // add menu food response
             menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType()));
             // add menu food
-            menuFoods.add(new MenuFood(menu, food, request.getMealType()));
+            menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
         });
         // lưu danh sách menu food
         menuFoodService.saveAll(menuFoods);
@@ -340,7 +340,23 @@ public class MenuController {
         menuFoodService.deleteByMenuIdAndFoodId(menuID, foodID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
+    @Operation(
+            summary = "Deactivate menu food",
+            description = "Deactivate menu food by food id and menu id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping(value = "/menu-food/deactivate/{menuID}/{foodID}")
+    public ResponseEntity<?> deactivateMenu(@PathVariable Integer menuID, @PathVariable Integer foodID) {
+        menuFoodService.deactiveMenuFood(menuID, foodID);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(
@@ -369,7 +385,7 @@ public class MenuController {
             menuResponse.add(new MenuResponseAll(menu));
         });
 
-        return new ResponseEntity<>(menuResponse, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(menuResponse, HttpStatus.OK);
     }
 
 }

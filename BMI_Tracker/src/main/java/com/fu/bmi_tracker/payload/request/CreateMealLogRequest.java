@@ -40,14 +40,12 @@ public class CreateMealLogRequest {
     private EMealType mealType;
 
     @NotBlank
-    @Size(max = 50)
-    @Schema(name = "quantity", example = "1 slice")
-    private String quantity;
-
-    @NotBlank
     @Schema(name = "dateOfMeal", example = "2024-05-01")
     private String dateOfMeal;
 
     @Schema(name = "foodID", example = "1", nullable = true)
     private Integer foodID;
+
+    @Schema(name = "quantity", example = "1", nullable = true)
+    private Float quantity;
 }

@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -37,7 +38,13 @@ public class Recipe {
     @JoinColumn(name = "IngredientID")
     private Ingredient ingredient;
 
-//    @Column(name = "quantity", nullable = false)
-//    private Integer quantity;
+    @Column(name = "quantity", nullable = false)
+    private Float quantity;
+
+    @Column(name = "Unit", nullable = false)
+    private String unit;
+
+    @Column(name = "IsActive", nullable = false)
+    private Boolean isActive;
 
 }

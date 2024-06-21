@@ -72,4 +72,9 @@ public class MenuFoodServiceImpl implements MenuFoodService {
         repository.deleteByMenuIdAndFoodId(menuId, foodId);
     }
 
+    @Override
+    public void deactiveMenuFood(Integer menuID, Integer foodID) {
+        repository.deactivateMenuFood(menuID, foodID);
+    }
+
 }

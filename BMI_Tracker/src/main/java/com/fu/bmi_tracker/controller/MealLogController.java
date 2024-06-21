@@ -81,19 +81,21 @@ public class MealLogController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        // Get Member id from acccount id context
+        //Lấy accountID từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // gọi memberService tìm Member bằng accountID
         Member member = memberService.findByAccountID(principal.getId()).get();
 
+        // gọi dailyRecordService tìm Dailyrecord bằng MemberID và Date
         Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
 
-        // new chưa tồn tại record thì create new
+        // nếu chưa tồn tại record thì create new và trả về 204
         if (!dailyRecord.isPresent()) {
-            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+            dailyRecordService.save(new DailyRecord(dateOfMeal, 0, 0, member.getDefaultCalories(), member));
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        // Get all Meal log with accountid and date
+        // Lấy danh sách mealLogs bằng dailyReordID
         Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.get().getRecordID());
 
         // check meal empty
@@ -117,7 +119,7 @@ public class MealLogController {
     public ResponseEntity<?> getAllMelLogOfDateByMealType(
             @RequestParam(required = true) String date,
             @RequestParam(required = true) EMealType mealType) {
-        
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfMeal;
         // Validation date 
@@ -128,15 +130,16 @@ public class MealLogController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        // Get Member id from acccount id context
+        // Gọi memberService tìm Member bằng accountID
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberService.findByAccountID(principal.getId()).get();
 
+        // gọi dailyRecordService tìm DailyRecord bằng MemberID và Date
         Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
 
-        // new chưa tồn tại record thì create new
+        // nếu chưa tồn tại record thì create new và trả 204
         if (!dailyRecord.isPresent()) {
-            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+            dailyRecordService.save(new DailyRecord(dateOfMeal, 0, 0, member.getDefaultCalories(), member));
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
@@ -164,9 +167,10 @@ public class MealLogController {
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewMealLog(@Valid @RequestBody CreateMealLogRequest mealLogRequest) {
-        // Create new object
+        // tại mới meal log
         MealLog mealLog = new MealLog(mealLogRequest);
 
+        // conver từ String date sáng LocalDate format yyyy-MM-dd
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfMeal;
 
@@ -178,20 +182,32 @@ public class MealLogController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        // Get Member from acccount id context
+        // Tim member bằng accountID
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberService.findByAccountID(principal.getId()).get();
 
-        DailyRecord dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal).get();
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
 
-        // new chưa tồn tại record thì create new
-        if (dailyRecord == null) {
-            dailyRecord = dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+        // nếu chưa tồn tại record thì create new
+        if (!dailyRecord.isPresent()) {
+            dailyRecord = Optional.of(dailyRecordService.save(new DailyRecord(
+                    dateOfMeal,
+                    mealLogRequest.getCalories(),
+                    0,
+                    member.getDefaultCalories(),
+                    member)));
+        } else {
+            // Ngược lại  => cập nhật thông tin dailyRecord
+            // tính lại caloriesIn
+            int caloriesIn = dailyRecord.get().getTotalCaloriesIn() + mealLogRequest.getCalories();
+            dailyRecord.get().setTotalCaloriesIn(caloriesIn);
 
+            // cập nhật lại daily record
+            dailyRecordService.save(dailyRecord.get());
         }
 
         //set record ID
-        mealLog.setRecordID(dailyRecord.getRecordID());
+        mealLog.setRecordID(dailyRecord.get().getRecordID());
 
         // Store to database
         MealLog mealLogSave = mealLogService.save(mealLog);
@@ -201,13 +217,6 @@ public class MealLogController {
             return new ResponseEntity<>("Failed to create new mealLog", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
-
-        // update calories in of daily record
-        int caloriesIn = dailyRecord.getTotalCaloriesIn() + mealLogSave.getCalories();
-
-        dailyRecord.setTotalCaloriesIn(caloriesIn);
-
-        dailyRecordService.save(dailyRecord);
 
         return new ResponseEntity<>(mealLogSave, HttpStatus.CREATED);
     }
@@ -301,7 +310,7 @@ public class MealLogController {
 
         // new chưa tồn tại record thì create new
         if (dailyRecord == null) {
-            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+            dailyRecordService.save(new DailyRecord(dateOfMeal, 0, 0, member.getDefaultCalories(), member));
         } else {
             // Nếu tồn tại recore check tiếp meal log
             // Get all Meal log with accountid and date

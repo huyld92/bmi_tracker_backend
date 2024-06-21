@@ -7,16 +7,13 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
-import com.fu.bmi_tracker.model.entities.MemberTransaction;
-import com.fu.bmi_tracker.model.entities.Order;
+import com.fu.bmi_tracker.model.entities.Transaction;
+import com.fu.bmi_tracker.model.entities.Booking;
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
-import com.fu.bmi_tracker.payload.request.CreateOrderTransactionRequest;
+import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.repository.MemberRepository;
-import com.fu.bmi_tracker.repository.MemberTransactionRepository;
-import com.fu.bmi_tracker.repository.OrderRepository;
-import com.fu.bmi_tracker.services.OrderService;
 import com.fu.bmi_tracker.util.DateTimeUtils;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
@@ -28,12 +25,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fu.bmi_tracker.repository.TransactionRepository;
+import com.fu.bmi_tracker.services.BookingService;
+import com.fu.bmi_tracker.repository.BookingRepository;
 
 @Service
-public class OrderServiceImpl implements OrderService {
+public class BookingServiceImpl implements BookingService {
 
     @Autowired
-    OrderRepository orderRepository;
+    BookingRepository bookingRepository;
 
     @Autowired
     MemberRepository memberRepository;
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     AdvisorRepository advisorRepository;
 
     @Autowired
-    MemberTransactionRepository transactionRepository;
+    TransactionRepository transactionRepository;
 
     @Autowired
     CommissionRepository commissionRepository;
@@ -51,33 +51,33 @@ public class OrderServiceImpl implements OrderService {
     DateTimeUtils dateTimeUtils;
 
     @Override
-    public Iterable<Order> findAll() {
-        return orderRepository.findAll();
+    public Iterable<Booking> findAll() {
+        return bookingRepository.findAll();
     }
 
     @Override
-    public Optional<Order> findById(Integer id) {
-        return orderRepository.findById(id);
+    public Optional<Booking> findById(Integer id) {
+        return bookingRepository.findById(id);
     }
 
     @Override
-    public Order save(Order t) {
-        return orderRepository.save(t);
+    public Booking save(Booking t) {
+        return bookingRepository.save(t);
     }
 
     @Override
-    public Iterable<Order> getOrderByMemberAccountID(Integer accountID) {
-        return orderRepository.findByMember_Account_AccountID(accountID);
+    public Iterable<Booking> getBookingByMemberAccountID(Integer accountID) {
+        return bookingRepository.findByMember_Account_AccountID(accountID);
     }
 
     @Override
-    public Iterable<Order> getOrderByMemberID(Integer memberID) {
-        return orderRepository.findByMemberMemberID(memberID);
+    public Iterable<Booking> getBookingByMemberID(Integer memberID) {
+        return bookingRepository.findByMemberMemberID(memberID);
 
     }
 
     @Override
-    public Iterable<Order> getOrderByAdvisorIDAndMonth(Integer advisorID, String month) {
+    public Iterable<Booking> getBookingByAdvisorIDAndMonth(Integer advisorID, String month) {
         // Chuyển đổi chuỗi "yyyy-MM" thành YearMonth
         YearMonth yearMonthObj = YearMonth.parse(month);
 
@@ -87,23 +87,23 @@ public class OrderServiceImpl implements OrderService {
         // Tạo LocalDateTime cho ngày cuối cùng của tháng
         LocalDateTime endOfMonth = yearMonthObj.atEndOfMonth().atTime(23, 59, 59);
 
-        // Gọi phương thức find order bằng advisor ID và Order date nằm trong khoảng start-end từ repository
-        return orderRepository.findByAdvisor_AdvisorIDAndOrderDateBetween(advisorID, startOfMonth, endOfMonth);
+        // Gọi phương thức find booking bằng advisor ID và Booking date nằm trong khoảng start-end từ repository
+        return bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetween(advisorID, startOfMonth, endOfMonth);
     }
 
     @Override
-    public Order createOrderTransaction(CreateOrderTransactionRequest createRequest, Integer accountID) {
+    public Booking createBookingTransaction(CreateBookingTransactionRequest createRequest, Integer accountID) {
         // Tìm member băng accountID
         Member member = memberRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         // Tạo member transaction
-        MemberTransaction memberTrasaction = new MemberTransaction(
+        Transaction memberTrasaction = new Transaction(
                 createRequest.getTransactionRequest(),
                 member.getMemberID());
 
         // nhận transaction sao khi lưu xuống database
-        MemberTransaction transaction = transactionRepository.save(memberTrasaction);
+        Transaction transaction = transactionRepository.save(memberTrasaction);
 
         // lấy ngày hiện tại
         LocalDate currentDate = LocalDate.now();
@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
 
         // kiểm tra và cập nhật endDateOfPlan của member
         LocalDate endDateOfPlan = member.getEndDateOfPlan();
-        int planDuration = createRequest.getOrderRequest().getPlanDuration();
+        int planDuration = createRequest.getBookingRequest().getPlanDuration();
 
         if (endDateOfPlan == null || endDateOfPlan.isBefore(currentDate)) {
             // nếu ngày kết thúc không tồn tại hoặc ngày kết thúc bé hơn ngày hiện tại
@@ -134,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
         memberRepository.save(member);
 
         // tìm advisor
-        Advisor advisor = advisorRepository.findById(createRequest.getOrderRequest().getAdvisorID())
+        Advisor advisor = advisorRepository.findById(createRequest.getBookingRequest().getAdvisorID())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // tính ngày dự kiến thanh toán 
@@ -149,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
         if (commission == null) {
             // tạo mới commission
             BigDecimal commissionRate = BigDecimal.valueOf(50);
-            BigDecimal commissionAmount = createRequest.getOrderRequest()
+            BigDecimal commissionAmount = createRequest.getBookingRequest()
                     .getAmount()
                     .multiply(commissionRate)
                     .divide(BigDecimal.valueOf(100));
@@ -167,7 +167,7 @@ public class OrderServiceImpl implements OrderService {
             commission = commissionRepository.save(c);
         } else {
             BigDecimal commissionRate = BigDecimal.valueOf(commission.getCommissionRate());
-            BigDecimal commissionAmount = createRequest.getOrderRequest()
+            BigDecimal commissionAmount = createRequest.getBookingRequest()
                     .getAmount()
                     .multiply(commissionRate)
                     .divide(BigDecimal.valueOf(100));
@@ -175,9 +175,9 @@ public class OrderServiceImpl implements OrderService {
             commissionRepository.save(commission);
         }
 
-        // tạo order
-        Order order = new Order(
-                createRequest.getOrderRequest(),
+        // tạo booking
+        Booking booking = new Booking(
+                createRequest.getBookingRequest(),
                 startDateOfPlan,
                 endDateOfPlan,
                 member.getMemberID(),
@@ -186,17 +186,17 @@ public class OrderServiceImpl implements OrderService {
                 commission.getCommissionID()
         );
 
-        return orderRepository.save(order);
+        return bookingRepository.save(booking);
     }
 
     @Override
-    public List<Order> getOrderByMemberAdvisor(Integer accountID) {
+    public List<Booking> getBookingByMemberAdvisor(Integer accountID) {
         // Tim advisor từ accountID
         Advisor advisor = advisorRepository.findByAccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
-        // Tìm order từ account ID với sắp xếp mới nhất
-        return orderRepository.findByAdvisor_AdvisorIDOrderByOrderDateDesc(advisor.getAdvisorID());
+        // Tìm booking từ account ID với sắp xếp mới nhất
+        return bookingRepository.findByAdvisor_AdvisorIDOrderByBookingDateDesc(advisor.getAdvisorID());
     }
 
     @Override
@@ -204,11 +204,11 @@ public class OrderServiceImpl implements OrderService {
         // lấy ngày hiện tại
         LocalDate currentDate = LocalDate.now();
 
-        // gợi Order repository tìm danh sách Order bằng accountID và endDate > currentDate
-        List<Order> orders = orderRepository.findByAdvisor_AccountIDAndEndDateGreaterThan(accountID, currentDate);
+        // gợi Booking repository tìm danh sách Booking bằng accountID và endDate > currentDate
+        List<Booking> bookings = bookingRepository.findByAdvisor_AccountIDAndEndDateGreaterThan(accountID, currentDate);
 
-        // chuyển đổi từ order sang List<Member> bằng stream(), distinct đảm bảo không trùng Member
-        return orders.stream().map(Order::getMember).distinct()
+        // chuyển đổi từ booking sang List<Member> bằng stream(), distinct đảm bảo không trùng Member
+        return bookings.stream().map(Booking::getMember).distinct()
                 .collect(Collectors.toList());
     }
 

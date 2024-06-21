@@ -162,5 +162,4 @@ public class ControllerExceptionHandler {
                 "Error find entity");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
-
 }
