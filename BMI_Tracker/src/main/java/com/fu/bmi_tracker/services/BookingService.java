@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.services;
 
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Booking;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
@@ -26,5 +27,7 @@ public interface BookingService extends GeneralService<Booking> {
     public List<Booking> getBookingByMemberAdvisor(Integer accountID);
 
     public List<Member> getCurrentMemeberOfAdvisor(Integer accountID);
+
+    public Advisor getAdvisorOfMember(Integer accountID);
 
 }

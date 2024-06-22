@@ -93,9 +93,21 @@ public class Booking {
         this.member = new Member();
         this.member.setMemberID(memberID);
         this.advisor = advisor;
-        this.bookingStatus = EBookingStatus.MEMBER_PAID;
+        this.bookingStatus = checkBookingStatus(startDate);
         this.commissionID = commissionID;
         this.transactionID = transactionID;
     }
 
+    private EBookingStatus checkBookingStatus(LocalDate startDate) {
+        LocalDate now = LocalDate.now();
+        if (now.isBefore(startDate)) {
+            //ngày hiện tại trước startDate
+            return EBookingStatus.NOT_STARTED;
+        } else if (now.equals(startDate)) {
+            //ngày hiện tại bằng  startDate
+            return EBookingStatus.PENDING;
+        } else {
+            return EBookingStatus.CANCELLED;
+        }
+    }
 }

@@ -4,10 +4,13 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Booking;
+import com.fu.bmi_tracker.model.enums.EGender;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
+import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.BookingResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.BookingService;
+import java.time.LocalDate;
 
 /**
  *
@@ -279,4 +283,37 @@ public class BookingController {
         return new ResponseEntity<>(memberResponses, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Get advisor of member (MEMBER)",
+            description = "Get current advisor support member with booking status Pending")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AdvisorResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/advisor/getByMember")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<?> getAdvisorFromBooking() {
+        // lấy thông tin đăng nhập từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // GỌi booking service tìm advisor 
+        Advisor advisor = bookingService.getAdvisorOfMember(principal.getId());
+        if (advisor == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        // tạo Advisor response
+        AdvisorResponse advisorResponse = new AdvisorResponse(
+                advisor.getAdvisorID(),
+                advisor.getAccount().getAccountPhoto(),
+                advisor.getAccount().getEmail(),
+                advisor.getAccount().getFullName(),
+                advisor.getAccount().getPhoneNumber(),
+                advisor.getAccount().getGender(),
+                advisor.getAccount().getBirthday());
+        return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
+
+    }
 }

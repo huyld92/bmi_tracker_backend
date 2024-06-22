@@ -61,7 +61,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Blog createBlog(CreateBlogRequest newBlog, Integer accountID) {
         // tìm Advisor 
-        Advisor advisor = advisorRepository.findByAccountID(accountID)
+        Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Advisor not found"));
         // tạo mới object blog để save
         Blog blog = new Blog();
@@ -79,7 +79,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Iterable<Blog> findAllOfAdvisor(Integer accountID) {
         // Tim advisor từ accountID
-        Advisor advisor = advisorRepository.findByAccountID(accountID)
+        Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // gọi repository tìm tất cả blog

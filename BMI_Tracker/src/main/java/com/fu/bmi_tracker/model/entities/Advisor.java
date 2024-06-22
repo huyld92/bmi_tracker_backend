@@ -6,9 +6,12 @@ package com.fu.bmi_tracker.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +33,9 @@ public class Advisor {
     @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
 
-    @Column(name = "AccountID", nullable = false, unique = true)
-    private Integer accountID;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "AccountID", nullable = false, unique = true)
+    private Account account;
 
     @Column(name = "Height", nullable = false)
     private Integer height;
@@ -45,8 +49,8 @@ public class Advisor {
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    public Advisor(Integer accountID, Integer height, Integer weight, Integer totalBooking, boolean isActive) {
-        this.accountID = accountID;
+    public Advisor(Account account, Integer height, Integer weight, Integer totalBooking, boolean isActive) {
+        this.account = account;
         this.height = height;
         this.weight = weight;
         this.totalBooking = totalBooking;

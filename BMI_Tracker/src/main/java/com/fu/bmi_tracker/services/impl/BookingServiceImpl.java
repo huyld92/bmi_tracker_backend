@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Transaction;
 import com.fu.bmi_tracker.model.entities.Booking;
+import com.fu.bmi_tracker.model.enums.EBookingStatus;
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
@@ -175,7 +176,7 @@ public class BookingServiceImpl implements BookingService {
             commissionRepository.save(commission);
         }
 
-        // tạo booking
+        // tạo booking kiểm tra trạng thái status
         Booking booking = new Booking(
                 createRequest.getBookingRequest(),
                 startDateOfPlan,
@@ -192,7 +193,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getBookingByMemberAdvisor(Integer accountID) {
         // Tim advisor từ accountID
-        Advisor advisor = advisorRepository.findByAccountID(accountID)
+        Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // Tìm booking từ account ID với sắp xếp mới nhất
@@ -205,11 +206,22 @@ public class BookingServiceImpl implements BookingService {
         LocalDate currentDate = LocalDate.now();
 
         // gợi Booking repository tìm danh sách Booking bằng accountID và endDate > currentDate
-        List<Booking> bookings = bookingRepository.findByAdvisor_AccountIDAndEndDateGreaterThan(accountID, currentDate);
+        List<Booking> bookings = bookingRepository.findByAdvisor_Account_AccountIDAndEndDateGreaterThan(accountID, currentDate);
 
         // chuyển đổi từ booking sang List<Member> bằng stream(), distinct đảm bảo không trùng Member
         return bookings.stream().map(Booking::getMember).distinct()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Advisor getAdvisorOfMember(Integer accountID) {
+        Optional<Booking> booking = bookingRepository.findByMember_Account_AccountIDAndBookingStatus(accountID, EBookingStatus.PENDING);
+
+        if (booking.isPresent()) {
+            return booking.get().getAdvisor();
+        } else {
+            return null;
+        }
     }
 
 }
