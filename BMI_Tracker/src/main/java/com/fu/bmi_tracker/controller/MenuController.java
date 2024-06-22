@@ -112,17 +112,11 @@ public class MenuController {
         menuRequest.getMenuFoods().forEach((MenuFoodRequest request) -> {
             Food food = foodService.findById(request.getFoodID()).get();
 
-            FoodResponse foodResponse = new FoodResponse(
-                    food.getFoodID(), food.getFoodName(),
-                    food.getFoodCalories(), food.getDescription(),
-                    food.getFoodPhoto(),
-                    food.getFoodVideo(),
-                    food.getFoodNutrition(),
-                    food.getFoodTimeProcess(),
-                    food.getCreationDate(),
-                    food.getIsActive());
+            FoodResponse foodResponse = new FoodResponse(food);
+
             // add menu food response
             menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType()));
+
             // add menu food
             menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
         });

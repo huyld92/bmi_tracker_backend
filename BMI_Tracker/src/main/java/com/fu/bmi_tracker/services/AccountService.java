@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
+import com.fu.bmi_tracker.payload.request.UpdateProfileRequest;
 
 /**
  *
@@ -14,5 +15,9 @@ import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 public interface AccountService extends GeneralService<Account> {
 
     public Account createAccount(CreateAccountRequest CreateAccountRequest, String password);
+
+    public void updateDeviceToken(Integer accountID, String deviceToken);
+
+    public void updateProfile(Integer accountID, UpdateProfileRequest updateProfileRequest);
 
 }

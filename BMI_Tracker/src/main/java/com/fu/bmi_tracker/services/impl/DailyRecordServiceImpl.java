@@ -4,9 +4,7 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.ActivityLog;
 import com.fu.bmi_tracker.model.entities.DailyRecord;
-import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.payload.response.ActivityLogResponse;
 import com.fu.bmi_tracker.payload.response.DailyRecordFullResponse;
 import com.fu.bmi_tracker.payload.response.MealLogResponse;
@@ -16,7 +14,6 @@ import com.fu.bmi_tracker.repository.MealLogRepository;
 import com.fu.bmi_tracker.services.DailyRecordService;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

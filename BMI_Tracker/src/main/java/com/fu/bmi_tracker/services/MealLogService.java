@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.enums.EMealType;
+import com.fu.bmi_tracker.payload.request.UpdateMealLogRequest;
 
 /**
  *
@@ -18,5 +19,7 @@ public interface MealLogService extends GeneralService<MealLog> {
     public Iterable<MealLog> findByRecordIDAndByMealType(Integer recordID, EMealType mealType);
 
     public void deleteById(int mealLogID);
+
+    public MealLog updateMealLog(UpdateMealLogRequest mealLogRequest);
 
 }

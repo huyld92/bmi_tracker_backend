@@ -201,16 +201,7 @@ public class MemberController {
         }
         List<FoodResponse> foodResponses = new ArrayList<>();
         foods.forEach(food -> {
-            FoodResponse foodResponse = new FoodResponse(
-                    food.getFoodID(), food.getFoodName(),
-                    food.getFoodCalories(),
-                    food.getDescription(),
-                    food.getFoodPhoto(),
-                    food.getFoodVideo(),
-                    food.getFoodNutrition(),
-                    food.getFoodTimeProcess(),
-                    food.getCreationDate(),
-                    food.getIsActive());
+            FoodResponse foodResponse = new FoodResponse(food);
             foodResponses.add(foodResponse);
         });
         return new ResponseEntity<>(foodResponses, HttpStatus.OK);
@@ -278,13 +269,7 @@ public class MemberController {
         }
         List<FoodResponse> foodResponses = new ArrayList<>();
         foods.forEach(food -> {
-            FoodResponse foodResponse = new FoodResponse(
-                    food.getFoodID(), food.getFoodName(),
-                    food.getFoodCalories(), food.getDescription(), food.getFoodPhoto(),
-                    food.getFoodVideo(), food.getFoodNutrition(),
-                    food.getFoodTimeProcess(),
-                    food.getCreationDate(),
-                    food.getIsActive());
+            FoodResponse foodResponse = new FoodResponse(food);
             foodResponses.add(foodResponse);
         });
 

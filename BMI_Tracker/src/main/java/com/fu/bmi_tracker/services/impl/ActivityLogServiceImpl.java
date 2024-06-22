@@ -70,10 +70,15 @@ public class ActivityLogServiceImpl implements ActivityLogService {
             // cập nhật lại giá trị activiLog
             // tính caloriesBurned
             Integer caloriesBurned = optionalActivityLog.get().getCaloriesBurned() + activityLogRequest.getCaloriesBurned();
-            Float distance = optionalActivityLog.get().getDistance() + activityLogRequest.getDistance();
+
+            if (activityLogRequest.getDistance() != null) {
+                Float distance = optionalActivityLog.get().getDistance() + activityLogRequest.getDistance();
+                optionalActivityLog.get().setDistance(distance);
+
+            }
+
             Integer duration = optionalActivityLog.get().getDuration() + activityLogRequest.getDuration();
             optionalActivityLog.get().setCaloriesBurned(caloriesBurned);
-            optionalActivityLog.get().setDistance(distance);
             optionalActivityLog.get().setDuration(duration);
 
             // gọi activity repository cập nhật lại activity log

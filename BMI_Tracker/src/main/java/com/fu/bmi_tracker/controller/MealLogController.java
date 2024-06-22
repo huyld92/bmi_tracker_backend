@@ -11,6 +11,7 @@ import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMealLogRequest;
+import com.fu.bmi_tracker.payload.request.UpdateMealLogRequest;
 import com.fu.bmi_tracker.payload.response.MealWithCaloriesResponse;
 import com.fu.bmi_tracker.services.DailyRecordService;
 import com.fu.bmi_tracker.services.MealLogService;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -167,9 +169,6 @@ public class MealLogController {
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewMealLog(@Valid @RequestBody CreateMealLogRequest mealLogRequest) {
-        // tại mới meal log
-        MealLog mealLog = new MealLog(mealLogRequest);
-
         // conver từ String date sáng LocalDate format yyyy-MM-dd
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfMeal;
@@ -186,6 +185,7 @@ public class MealLogController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberService.findByAccountID(principal.getId()).get();
 
+        //gọi service tìm daily record
         Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
 
         // nếu chưa tồn tại record thì create new
@@ -206,6 +206,8 @@ public class MealLogController {
             dailyRecordService.save(dailyRecord.get());
         }
 
+        // tại mới meal log
+        MealLog mealLog = new MealLog(mealLogRequest, dailyRecord.get().getRecordID());
         //set record ID
         mealLog.setRecordID(dailyRecord.get().getRecordID());
 
@@ -219,6 +221,22 @@ public class MealLogController {
         }
 
         return new ResponseEntity<>(mealLogSave, HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "Update meal log",
+            description = "Update meal log")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/update")
+    public ResponseEntity<?> updateMealLog(@Valid @RequestBody UpdateMealLogRequest mealLogRequest) {
+        return new ResponseEntity<>(mealLogService.updateMealLog(mealLogRequest), HttpStatus.OK);
+
     }
 
     @Operation(

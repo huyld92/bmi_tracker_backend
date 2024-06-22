@@ -6,10 +6,12 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Advisor;
+import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 import com.fu.bmi_tracker.payload.request.UpdateAccountRequest;
+import com.fu.bmi_tracker.payload.request.UpdateProfileRequest;
 import com.fu.bmi_tracker.payload.response.AccountResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AccountService;
@@ -31,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -146,7 +149,7 @@ public class AccountController {
 
     }
 
-    @Operation(summary = "Get account by account id (ADMIN)", description = "Get account by account id")
+    @Operation(summary = "Get account by account id", description = "Get account by account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
@@ -155,7 +158,7 @@ public class AccountController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getByID")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAccountByID(@RequestParam Integer accountID) {
         Optional<Account> account = accountService.findById(accountID);
 
@@ -204,4 +207,72 @@ public class AccountController {
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "Update device token", description = "Client send device token to update")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/update-device-token")
+    public ResponseEntity<?> updateDeviceToken(@RequestParam String deviceToken) {
+        // lấy account từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi service update deviceToken
+        accountService.updateDeviceToken(principal.getId(), deviceToken);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Update profile", description = "Profile will be updated for the currently logged in user")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/update-profile")
+    @PreAuthorize("hasRole('ADMIN') ")
+    public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
+        // lấy account từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi service cập nhật profile
+        accountService.updateProfile(principal.getId(), updateProfileRequest);
+
+        return new ResponseEntity<>(new MessageResponse("Update profile success!"), HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Get personal profile", description = "Need to log in to get personal information")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/get-profile")
+    public ResponseEntity<?> getProfile() {
+        // lấy account từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi account service tìm thoongg tin account
+        Optional<Account> account = accountService.findById(principal.getId());
+
+        // kiểm tra kết quả
+        if (!account.isPresent()) {
+            return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + principal.getId() + "}")), HttpStatus.NOT_FOUND);
+        }
+
+        // Tạo account response
+        AccountResponse accountResponse = new AccountResponse(account.get());
+
+        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
+    }
 }

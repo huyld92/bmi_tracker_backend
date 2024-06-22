@@ -35,6 +35,8 @@ public class FoodResponse {
 
     private Integer foodTimeProcess;
 
+    private String serving;
+
     private LocalDate creationDate;
 
     private boolean isActive;
@@ -48,6 +50,7 @@ public class FoodResponse {
         this.foodVideo = food.getFoodVideo();
         this.foodNutrition = food.getFoodNutrition();
         this.foodTimeProcess = food.getFoodTimeProcess();
+        this.serving = food.getServing();
         this.creationDate = food.getCreationDate();
         this.isActive = food.getIsActive();
     }
