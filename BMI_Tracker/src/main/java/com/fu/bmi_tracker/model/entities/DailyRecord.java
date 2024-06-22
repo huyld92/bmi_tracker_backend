@@ -62,9 +62,9 @@ public class DailyRecord {
     @JoinColumn(name = "RecordID", referencedColumnName = "RecordID", insertable = false, updatable = false)
     private List<MealLog> mealLogs;
 
-    public DailyRecord(LocalDate date, int defaultCalories, Member member) {
-        this.totalCaloriesIn = 0;
-        this.totalCaloriesOut = 0;
+    public DailyRecord(LocalDate date, Integer totalCaloriesIn, Integer totalCaloriesOut, int defaultCalories, Member member) {
+        this.totalCaloriesIn = totalCaloriesIn;
+        this.totalCaloriesOut = totalCaloriesOut;
         this.defaultCalories = defaultCalories;
         this.date = date;
         this.member = member;
@@ -77,6 +77,5 @@ public class DailyRecord {
         this.date = date;
         this.member = member;
     }
-  
 
 }

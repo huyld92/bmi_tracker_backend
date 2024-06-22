@@ -82,7 +82,7 @@ public class AdvisorController {
 
     }
 
-    @Operation(summary = "Retrieve all Advisors (ADMIN)")
+    @Operation(summary = "Retrieve all Advisors")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = Advisor.class))}),
@@ -140,5 +140,5 @@ public class AdvisorController {
         return new ResponseEntity<>(advisor, HttpStatus.OK);
 
     }
-    
+
 }

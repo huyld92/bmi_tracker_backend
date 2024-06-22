@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -41,9 +42,13 @@ public class UpdateFoodRequest {
     @Schema(description = "URL of the food video(NULL)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String foodVideo;
 
-    @NotNull
+    @NotBlank
     @Schema(description = "Nutritional information of the food", requiredMode = Schema.RequiredMode.REQUIRED)
     private String foodNutrition;
+
+    @NotNull
+    @Schema(description = "Serving information of the food", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String serving;
 
     @NotNull
     @Schema(description = "Time required to prepare the food (in minutes)", requiredMode = Schema.RequiredMode.REQUIRED)

@@ -40,7 +40,7 @@ public class RefreshToken {
     private Account account;
 
     @Column(name = "Token", nullable = false, unique = true)
-    private String token;
+    private String refreshToken;
 
     @Column(name = "ExpiryDate", nullable = false)
     private LocalDateTime expiryDate;

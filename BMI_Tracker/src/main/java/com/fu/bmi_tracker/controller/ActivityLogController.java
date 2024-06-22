@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.model.entities.ActivityLog;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.payload.request.CreateActivityLogRequest;
+import com.fu.bmi_tracker.payload.request.UpdateActivityLogRequest;
 import com.fu.bmi_tracker.services.DailyRecordService;
 import com.fu.bmi_tracker.services.ActivityLogService;
 import com.fu.bmi_tracker.services.MemberService;
@@ -67,13 +68,11 @@ public class ActivityLogController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAllActivityLogByDate(
             @RequestParam(required = true) String date) {
-
+        // convert từ string date sang LocalDate format yyyy-MM-dd
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dateOfMeal;
-
-        // Validation date 
+        LocalDate dateOfActivity;
         try {
-            dateOfMeal = LocalDate.parse(date, formatter);
+            dateOfActivity = LocalDate.parse(date, formatter);
         } catch (Exception e) {
             ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
@@ -81,25 +80,25 @@ public class ActivityLogController {
 
         // Get Member id from acccount id context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // gọi service tìm danh sách activity logs
         Member member = memberService.findByAccountID(principal.getId()).get();
 
-        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfActivity);
 
-        // new chưa tồn tại record thì create new
+        // nếu chưa tồn tại record thì create new
         if (!dailyRecord.isPresent()) {
-            dailyRecordService.save(new DailyRecord(dateOfMeal, member.getDefaultCalories(), member));
+            dailyRecordService.save(new DailyRecord(
+                    dateOfActivity,
+                    0,
+                    0,
+                    member.getDefaultCalories(),
+                    member));
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        // Get all Meal log with accountid and date
-        Iterable<ActivityLog> activityLogs = activityLogService.findByRecordID(dailyRecord.get().getRecordID());
-
-        // check activity empty
-        if (!activityLogs.iterator().hasNext()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(activityLogs, HttpStatus.OK);
+        // trả danh sách activity log
+        return new ResponseEntity<>(dailyRecord.get().getActivityLogs(), HttpStatus.OK);
     }
 
     @Operation(
@@ -115,9 +114,7 @@ public class ActivityLogController {
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewActivityLog(@Valid @RequestBody CreateActivityLogRequest activityLogRequest) {
-        // Create new object
-        ActivityLog activityLog = new ActivityLog(activityLogRequest);
-
+        // conver date theo format
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateOfActivity;
 
@@ -129,23 +126,11 @@ public class ActivityLogController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        // Get Member from acccount id context
+        // Lấy accountID từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Member member = memberService.findByAccountID(principal.getId()).get();
 
-        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfActivity);
-
-        // new chưa tồn tại record thì create new
-        if (!dailyRecord.isPresent()) {
-            dailyRecord = Optional.of(dailyRecordService.save(new DailyRecord(dateOfActivity, member.getDefaultCalories(), member)));
-
-        }
-
-        //set record ID
-        activityLog.setRecordID(dailyRecord.get().getRecordID());
-
-        // Store to database
-        ActivityLog activityLogSave = activityLogService.save(activityLog);
+        // gọi service tạo mới activity log
+        ActivityLog activityLogSave = activityLogService.createActivityLog(activityLogRequest, dateOfActivity, principal.getId());
 
         // check result
         if (activityLogSave == null) {
@@ -153,19 +138,12 @@ public class ActivityLogController {
 
         }
 
-        // update calories out of daily record
-        int caloriesOut = dailyRecord.get().getTotalCaloriesOut() + activityLogSave.getCaloriesBurned();
-
-        dailyRecord.get().setTotalCaloriesOut(caloriesOut);
-
-        dailyRecordService.save(dailyRecord.get());
-
         return new ResponseEntity<>(activityLogSave, HttpStatus.CREATED);
     }
 
     @Operation(
             summary = "Update activity log (MEMBER)",
-            description = "Create new activivty log")
+            description = "Update activity log")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = ActivityLog.class), mediaType = "application/json")}),
@@ -175,51 +153,9 @@ public class ActivityLogController {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/update")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> updateActivityLog(@Valid @RequestBody CreateActivityLogRequest activityLogRequest) {
-        // Create new object
-        ActivityLog activityLog = new ActivityLog(activityLogRequest);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate dateOfActivity;
-
-        // Validation date 
-        try {
-            dateOfActivity = LocalDate.parse(activityLogRequest.getDateOfActivity(), formatter);
-        } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-        }
-
-        // Get Member from acccount id context
-        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Member member = memberService.findByAccountID(principal.getId()).get();
-
-        DailyRecord dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfActivity).get();
-
-        // new chưa tồn tại record thì create new
-        if (dailyRecord == null) {
-            dailyRecord = dailyRecordService.save(new DailyRecord(dateOfActivity, member.getDefaultCalories(), member));
-
-        }
-
-        //set record ID
-        activityLog.setRecordID(dailyRecord.getRecordID());
-
-        // Store to database
-        ActivityLog activityLogSave = activityLogService.save(activityLog);
-
-        // check result
-        if (activityLogSave == null) {
-            return new ResponseEntity<>("Failed to create new activityLog", HttpStatus.INTERNAL_SERVER_ERROR);
-
-        }
-
-        // update calories out of daily record
-        int caloriesOut = dailyRecord.getTotalCaloriesOut() + activityLogSave.getCaloriesBurned();
-
-        dailyRecord.setTotalCaloriesOut(caloriesOut);
-
-        dailyRecordService.save(dailyRecord);
+    public ResponseEntity<?> updateActivityLog(@Valid @RequestBody UpdateActivityLogRequest activityLogRequest) {
+        // gọi activity log service cập nhật thông tin activity log
+        ActivityLog activityLogSave = activityLogService.updateActivityLog(activityLogRequest);
 
         return new ResponseEntity<>(activityLogSave, HttpStatus.CREATED);
     }

@@ -5,6 +5,9 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.ActivityLog;
+import com.fu.bmi_tracker.payload.request.CreateActivityLogRequest;
+import com.fu.bmi_tracker.payload.request.UpdateActivityLogRequest;
+import java.time.LocalDate;
 
 /**
  *
@@ -15,5 +18,10 @@ public interface ActivityLogService extends GeneralService<ActivityLog> {
     public Iterable<ActivityLog> findByRecordID(Integer recordID);
 
     public void deleteById(int activityLogID);
-    
+
+    public ActivityLog createActivityLog(CreateActivityLogRequest activityLogRequest, LocalDate dateOfActivity, Integer accountID);
+
+    public ActivityLog updateActivityLog(UpdateActivityLogRequest activityLogRequest);
+
+
 }

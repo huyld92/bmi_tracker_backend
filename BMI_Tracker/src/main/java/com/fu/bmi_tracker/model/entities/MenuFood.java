@@ -39,7 +39,7 @@ public class MenuFood {
     private Menu menu;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FoodID")
     private Food food;
 
@@ -47,4 +47,6 @@ public class MenuFood {
     @Enumerated(EnumType.STRING)
     private EMealType mealType;
 
+    @Column(name = "IsActive", nullable = false)
+    private Boolean isActive;
 }

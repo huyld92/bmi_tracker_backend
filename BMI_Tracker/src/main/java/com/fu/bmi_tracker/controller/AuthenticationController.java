@@ -143,7 +143,7 @@ public class AuthenticationController {
                 accountDetails.getEmail(),
                 accountDetails.getAccountPhoto(),
                 loginRequest.getRole(),
-                refreshToken.getToken(),
+                refreshToken.getRefreshToken(),
                 jwt));
     }
 
@@ -199,7 +199,7 @@ public class AuthenticationController {
                     accountDetails.getGender().toString(),
                     accountDetails.getPhoneNumber(),
                     -1, -1, -1, -1, -1, -1,
-                    refreshToken.getToken(),
+                    refreshToken.getRefreshToken(),
                     jwt);
 
             return new ResponseEntity<>(forMemberResponse, HttpStatus.ACCEPTED);
@@ -219,7 +219,7 @@ public class AuthenticationController {
                 bodyMass.getAge(),
                 bodyMass.getBmi(),
                 member.get().getBmr(), member.get().getTdee(),
-                refreshToken.getToken(),
+                refreshToken.getRefreshToken(),
                 jwt);
         return ResponseEntity.ok(forMemberResponse);
     }
@@ -294,7 +294,7 @@ public class AuthenticationController {
         "Authentication"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Account.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = TokenRefreshResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "401", content = {
@@ -330,8 +330,10 @@ public class AuthenticationController {
         CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        Integer accountID = accountDetails.getId();
-        refreshTokenService.deleteByAccountID(accountID);
+        if (accountDetails != null) {
+            Integer accountID = accountDetails.getId();
+            refreshTokenService.deleteByAccountID(accountID);
+        }
         return ResponseEntity.ok(new MessageResponse("Log out successful!"));
     }
 

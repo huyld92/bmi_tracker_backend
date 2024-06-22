@@ -5,8 +5,11 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Account;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,5 +26,10 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     public boolean existsByEmail(String email);
 
     public boolean existsByPhoneNumber(String phoneNumber);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Account a SET a.deviceToken = :deviceToken WHERE a.accountID = :accountID")
+    public void updateDeviceToken(Integer accountID, String deviceToken);
 
 }

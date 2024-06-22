@@ -14,8 +14,10 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface TagRepository extends JpaRepository<Tag, Integer>{
+public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     public List<Tag> findByTagIDIn(List<Integer> tagIds);
-    
+
+    public List<Tag> findByTagTypeID(int id);
+
 }

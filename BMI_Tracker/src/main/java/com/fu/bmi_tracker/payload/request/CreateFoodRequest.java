@@ -51,6 +51,11 @@ public class CreateFoodRequest {
     @Schema(name = "foodNutrition", example = "100 Protein, 20 Carbs, 200 Fat")
     private String foodNutrition;
 
+    @NotBlank
+    @Size(max = 100)
+    @Schema(name = "serving", example = "1 serving")
+    private String serving;
+
     @NotNull
     @Positive
     @Schema(name = "foodTimeProcess", example = "30")

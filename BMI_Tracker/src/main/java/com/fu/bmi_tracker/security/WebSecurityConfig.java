@@ -89,14 +89,9 @@ public class WebSecurityConfig {
                 .exceptionHandling(
                         exception -> exception.authenticationEntryPoint((AuthenticationEntryPoint) unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/auth/loginMember").permitAll()
-                .requestMatchers("/api/activitylevel/getAllWithDetails").permitAll()
-                .requestMatchers("/api/dietaryPreference/getAllWithDetails").permitAll()
-                .requestMatchers("/api/auth/register").permitAll()
-                .requestMatchers("/api/auth/refreshtoken").permitAll()
-                .requestMatchers("/api/auth/vnpay-payment").permitAll()
-                .requestMatchers("/verificationEmail").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll() 
+                .requestMatchers("/api/activitylevel/getAllWithDetails").permitAll() 
+                 .requestMatchers("/verificationEmail").permitAll()
                 .requestMatchers("/api/test/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                 .anyRequest().authenticated());

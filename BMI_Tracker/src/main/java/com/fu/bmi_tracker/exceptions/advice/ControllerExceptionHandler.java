@@ -133,6 +133,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = TokenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorMessage handleTokenException(TokenException ex, WebRequest request) {
+
         return new ErrorMessage(
                 HttpStatus.FORBIDDEN.value(),
                 new Date(),
@@ -161,5 +162,4 @@ public class ControllerExceptionHandler {
                 "Error find entity");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
-
 }

@@ -6,8 +6,10 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.MealLog;
 import com.fu.bmi_tracker.model.enums.EMealType;
+import com.fu.bmi_tracker.payload.request.UpdateMealLogRequest;
 import com.fu.bmi_tracker.repository.MealLogRepository;
 import com.fu.bmi_tracker.services.MealLogService;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,17 @@ public class MealLogServiceImpl implements MealLogService {
     @Override
     public Iterable<MealLog> findByRecordIDAndByMealType(Integer recordID, EMealType mealType) {
         return repository.findByRecordIDAndMealType(recordID, mealType);
-     }
+    }
+
+    @Override
+    public MealLog updateMealLog(UpdateMealLogRequest mealLogRequest) {
+        // tìm meal log bằng meal log ID
+        MealLog mealLog = repository
+                .findById(mealLogRequest.getMealLogID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find meal log!"));
+        
+        // cập nhật lại meal log
+        return repository.save(mealLog);
+    }
 
 }

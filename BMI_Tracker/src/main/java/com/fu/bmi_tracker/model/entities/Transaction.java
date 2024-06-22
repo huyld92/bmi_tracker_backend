@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.payload.request.MemberTransactionRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,37 +30,37 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TransactionID", nullable = false)
-    private Integer transactionID;
+    @Column(name = "TransactionID")
+    private int transactionID;
 
-    @Column(name = "BankCode", nullable = false)
-    private String bankCode;
-
-    @Column(name = "BankTranNo", nullable = false)
-    private String bankTranNo;
-
-    @Column(name = "CardType", nullable = false)
-    private String cardType;
-
-    @Column(name = "Amount", nullable = false)
-    private BigDecimal amount;
-
-    @Column(name = "OrderInfo", nullable = false)
-    private String orderInfo;
+    @Column(name = "ZpTransToken", length = 20, nullable = false)
+    private String zpTransToken;
 
     @Column(name = "PayDate", nullable = false)
     private LocalDateTime payDate;
 
-    @Column(name = "MemberID", nullable = false)
-    private Integer memberID;
+    @Column(name = "TransactionMessage", length = 255, nullable = false)
+    private String transactionMessage;
 
-    public Transaction(String bankCode, String bankTranNo, String cardType, BigDecimal amount, String orderInfo, LocalDateTime payDate, Integer memberID) {
-        this.bankCode = bankCode;
-        this.bankTranNo = bankTranNo;
-        this.cardType = cardType;
-        this.amount = amount;
-        this.orderInfo = orderInfo;
-        this.payDate = payDate;
+    @Column(name = "TransactionSubMessage", length = 255, nullable = false)
+    private String transactionSubMessage;
+
+    @Column(name = "Amount", precision = 18, scale = 2, nullable = false)
+    private BigDecimal amount;
+
+    @Column(name = "OrderToken", length = 255, nullable = false)
+    private String orderToken;
+
+    @Column(name = "MemberID", nullable = false)
+    private int memberID;
+
+    public Transaction(MemberTransactionRequest transactionRequest, Integer memberID) {
+        this.zpTransToken = transactionRequest.getZpTransToken();
+        this.payDate = transactionRequest.getPayDate();
+        this.transactionMessage = transactionRequest.getTransactionMessage();
+        this.transactionSubMessage = transactionRequest.getTransactionSubMessage();
+        this.amount = transactionRequest.getAmount();
+        this.orderToken = transactionRequest.getOrderToken();
         this.memberID = memberID;
     }
 

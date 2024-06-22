@@ -30,7 +30,7 @@ public class CreateIngredientRequest {
     @NotBlank(message = "Unit of measurement is required")
     @Size(max = 100, message = "Ingreadient name must not exceed 100 characters")
     @Schema(name = "unitOfMeasurement", example = "10 Gram")
-    private String unitOfMeasurement;
+    private String unit;
 
     @NotNull
     @Positive(message = "Quantity with default value")

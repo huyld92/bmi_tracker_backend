@@ -201,16 +201,7 @@ public class MemberController {
         }
         List<FoodResponse> foodResponses = new ArrayList<>();
         foods.forEach(food -> {
-            FoodResponse foodResponse = new FoodResponse(
-                    food.getFoodID(), food.getFoodName(),
-                    food.getFoodCalories(),
-                    food.getDescription(),
-                    food.getFoodPhoto(),
-                    food.getFoodVideo(),
-                    food.getFoodNutrition(),
-                    food.getFoodTimeProcess(),
-                    food.getCreationDate(),
-                    food.getIsActive());
+            FoodResponse foodResponse = new FoodResponse(food);
             foodResponses.add(foodResponse);
         });
         return new ResponseEntity<>(foodResponses, HttpStatus.OK);
@@ -278,13 +269,7 @@ public class MemberController {
         }
         List<FoodResponse> foodResponses = new ArrayList<>();
         foods.forEach(food -> {
-            FoodResponse foodResponse = new FoodResponse(
-                    food.getFoodID(), food.getFoodName(),
-                    food.getFoodCalories(), food.getDescription(), food.getFoodPhoto(),
-                    food.getFoodVideo(), food.getFoodNutrition(),
-                    food.getFoodTimeProcess(),
-                    food.getCreationDate(),
-                    food.getIsActive());
+            FoodResponse foodResponse = new FoodResponse(food);
             foodResponses.add(foodResponse);
         });
 
@@ -510,27 +495,7 @@ public class MemberController {
 
     }
 
-  /*
-    // Lấy danh sách member đang đăng ký của advisor
-    @Operation(summary = "Receive a list of members currently ordering from the advisor (ADVISOR)",
-            description = "Login with advisor account and get list member")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MemberInformationResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/advisor/getCurrent")
-    @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> getCurrentMembersOrderAdvisor() {
-        // lấy accountID từ context
-
-        // gọi serverice lấy danh sách member
-        // Chuyển đổi member response
-//        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
+    /*
     // Lấy danh sách member đang đăng ký của advisor bằng advisorID
     @Operation(summary = "Receive a list of members currently ordering from the advisor (ADVISOR)",
             description = "Login with advisor account and get list member")

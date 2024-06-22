@@ -43,18 +43,24 @@ public class ActivityLog {
     @Column(name = "Duration", nullable = false)
     private Integer duration;
 
+    @Column(name = "Distance", nullable = true)
+    private Float distance;
+
     @Column(name = "RecordID", nullable = false)
     private Integer recordID;
 
     @Column(name = "ExerciseID", nullable = true)
     private Integer exerciseID;
 
-    public ActivityLog(CreateActivityLogRequest activityLogRequest) {
+    public ActivityLog(CreateActivityLogRequest activityLogRequest, Integer recordID) {
         this.activityName = activityLogRequest.getActivityName();
         this.emoji = activityLogRequest.getEmoji();
         this.caloriesBurned = activityLogRequest.getCaloriesBurned();
         this.duration = activityLogRequest.getDuration();
+        this.distance = activityLogRequest.getDistance();
+        this.exerciseID = activityLogRequest.getExerciseID();
+        this.recordID = recordID;
         this.exerciseID = activityLogRequest.getExerciseID();
     }
- 
+
 }

@@ -12,8 +12,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author Duc Huy
  */
-
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+public interface TransactionRepository extends JpaRepository<Transaction, Object> {
 
 }

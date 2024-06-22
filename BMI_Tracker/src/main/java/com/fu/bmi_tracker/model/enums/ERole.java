@@ -12,4 +12,5 @@ public enum ERole {
     ROLE_MEMBER,
     ROLE_ADVISOR,
     ROLE_ADMIN,
+    ROLE_MANAGER,
 }

@@ -23,17 +23,7 @@ public class MenuFoodResponse {
     private EMealType mealType;
 
     public MenuFoodResponse(Food food, EMealType mealType) {
-        this.food = new FoodResponse(food.getFoodID(),
-                food.getFoodName(),
-                food.getFoodCalories(),
-                food.getDescription(),
-                food.getFoodPhoto(),
-                food.getFoodVideo(),
-                food.getFoodNutrition(),
-                food.getFoodTimeProcess(),
-                food.getCreationDate(),
-                food.getIsActive()
-        );
+        this.food = new FoodResponse(food);
         this.mealType = mealType;
     }
 

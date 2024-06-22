@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Tag;
+import com.fu.bmi_tracker.model.enums.ETagType;
 import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.services.TagService;
 import java.util.List;
@@ -36,6 +37,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> findByTagIDIn(List<Integer> tagIds) {
         return repository.findByTagIDIn(tagIds);
+    }
+
+    @Override
+    public List<Tag> findByTagType(ETagType tagType) {
+        return repository.findByTagTypeID(tagType.getId());
     }
 
 }

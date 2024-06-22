@@ -72,7 +72,7 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
         Exercise exercise = exerciseRepository.findById(exerciseID)
                 .orElseThrow(() -> new EntityNotFoundException("Exercise not found"));
         // Khởi tạo WorkoutExercise
-        WorkoutExercise workoutExercise = new WorkoutExercise(workout, exercise);
+        WorkoutExercise workoutExercise = new WorkoutExercise(workout, exercise, true);
         return repository.save(workoutExercise);
     }
 
@@ -86,8 +86,13 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
         List<WorkoutExercise> workoutExercises = new ArrayList<>();
 
         for (Exercise exercise : exercises) {
-            workoutExercises.add(new WorkoutExercise(workout, exercise));
+            workoutExercises.add(new WorkoutExercise(workout, exercise, true));
         }
         return repository.saveAll(workoutExercises);
+    }
+
+    @Override
+    public void deactivateWorkoutExercise(Integer workoutID, Integer exerciseID) {
+        repository.deactivateWorkoutExercise(workoutID, exerciseID);
     }
 }

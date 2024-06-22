@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MenuFoodRepository extends JpaRepository<MenuFood, MenuFood> {
 
-    @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.mealType = :mealType")
+    @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.mealType = :mealType AND mf.isActive = true")
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType);
 
     @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID")
@@ -46,4 +46,8 @@ public interface MenuFoodRepository extends JpaRepository<MenuFood, MenuFood> {
     @Query("DELETE FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.food.foodID = :foodID")
     void deleteByMenuIdAndFoodId(Integer menuID, Integer foodID);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE MenuFood mf SET mf.isActive = false WHERE mf.menu.menuID = :menuID AND mf.food.foodID = :foodID")
+    void deactivateMenuFood(Integer menuID, Integer foodID);
 }
