@@ -17,4 +17,6 @@ public interface RecipeService extends GeneralService<Recipe> {
 
     public Recipe createRecipe(CreateRecipeRequest recipeRequest);
 
+    public void deactiveRecipe(Integer foodID, Integer ingredientID);
+
 }

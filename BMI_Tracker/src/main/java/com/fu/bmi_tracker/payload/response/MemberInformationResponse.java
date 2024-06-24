@@ -23,10 +23,10 @@ public class MemberInformationResponse {
     private String fullName;
     private String gender;
     private String phoneNumber;
-    private int height;
-    private int weight;
-    private int age;
-    private double BMI;
-    private double BMR;
-    private double TDEE;
+    private Integer height;
+    private Integer weight;
+    private Integer age;
+    private Double BMI;
+    private Double BMR;
+    private Double TDEE;
 }

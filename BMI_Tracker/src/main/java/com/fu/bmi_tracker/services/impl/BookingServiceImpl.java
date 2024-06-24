@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Transaction;
 import com.fu.bmi_tracker.model.entities.Booking;
+import com.fu.bmi_tracker.model.entities.Plan;
 import com.fu.bmi_tracker.model.enums.EBookingStatus;
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
@@ -29,54 +30,58 @@ import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.TransactionRepository;
 import com.fu.bmi_tracker.services.BookingService;
 import com.fu.bmi_tracker.repository.BookingRepository;
+import com.fu.bmi_tracker.repository.PlanRepository;
 
 @Service
 public class BookingServiceImpl implements BookingService {
-
+    
     @Autowired
     BookingRepository bookingRepository;
-
+    
     @Autowired
     MemberRepository memberRepository;
-
+    
     @Autowired
     AdvisorRepository advisorRepository;
-
+    
     @Autowired
     TransactionRepository transactionRepository;
-
+    
     @Autowired
     CommissionRepository commissionRepository;
-
+    
+    @Autowired
+    PlanRepository planRepository;
+    
     @Autowired
     DateTimeUtils dateTimeUtils;
-
+    
     @Override
     public Iterable<Booking> findAll() {
         return bookingRepository.findAll();
     }
-
+    
     @Override
     public Optional<Booking> findById(Integer id) {
         return bookingRepository.findById(id);
     }
-
+    
     @Override
     public Booking save(Booking t) {
         return bookingRepository.save(t);
     }
-
+    
     @Override
     public Iterable<Booking> getBookingByMemberAccountID(Integer accountID) {
         return bookingRepository.findByMember_Account_AccountID(accountID);
     }
-
+    
     @Override
     public Iterable<Booking> getBookingByMemberID(Integer memberID) {
         return bookingRepository.findByMemberMemberID(memberID);
-
+        
     }
-
+    
     @Override
     public Iterable<Booking> getBookingByAdvisorIDAndMonth(Integer advisorID, String month) {
         // Chuyển đổi chuỗi "yyyy-MM" thành YearMonth
@@ -91,7 +96,7 @@ public class BookingServiceImpl implements BookingService {
         // Gọi phương thức find booking bằng advisor ID và Booking date nằm trong khoảng start-end từ repository
         return bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetween(advisorID, startOfMonth, endOfMonth);
     }
-
+    
     @Override
     public Booking createBookingTransaction(CreateBookingTransactionRequest createRequest, Integer accountID) {
         // Tìm member băng accountID
@@ -110,14 +115,14 @@ public class BookingServiceImpl implements BookingService {
         LocalDate currentDate = LocalDate.now();
 
         // Tạo ngày bắt đầu plan
-        // nếu endPLan không còn hiệu lực startPlan = currentDate
+        // nếu endPlan không còn hiệu lực startPlan = currentDate
         // ngược lại startDateOfPlan bằng enDateOfPlan
         LocalDate startDateOfPlan = currentDate;
 
         // kiểm tra và cập nhật endDateOfPlan của member
         LocalDate endDateOfPlan = member.getEndDateOfPlan();
         int planDuration = createRequest.getBookingRequest().getPlanDuration();
-
+        
         if (endDateOfPlan == null || endDateOfPlan.isBefore(currentDate)) {
             // nếu ngày kết thúc không tồn tại hoặc ngày kết thúc bé hơn ngày hiện tại
             // => lấy currentDate + cho PlanDuration của new plan
@@ -154,7 +159,7 @@ public class BookingServiceImpl implements BookingService {
                     .getAmount()
                     .multiply(commissionRate)
                     .divide(BigDecimal.valueOf(100));
-
+            
             Commission c = new Commission(
                     commissionAmount,
                     50,
@@ -176,6 +181,16 @@ public class BookingServiceImpl implements BookingService {
             commissionRepository.save(commission);
         }
 
+        // cập nhật số lần sử dụng cho plan
+        int planID = createRequest.getBookingRequest().getPlanID();
+        Plan plan = planRepository.findById(planID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find plan with id{" + planID + "}"));
+        int numberOfUses = plan.getNumberOfUses() + 1;
+        plan.setNumberOfUses(numberOfUses);
+
+        // cập nhật lại plan
+        planRepository.save(plan);
+
         // tạo booking kiểm tra trạng thái status
         Booking booking = new Booking(
                 createRequest.getBookingRequest(),
@@ -186,10 +201,10 @@ public class BookingServiceImpl implements BookingService {
                 transaction.getTransactionID(),
                 commission.getCommissionID()
         );
-
+        
         return bookingRepository.save(booking);
     }
-
+    
     @Override
     public List<Booking> getBookingByMemberAdvisor(Integer accountID) {
         // Tim advisor từ accountID
@@ -199,7 +214,7 @@ public class BookingServiceImpl implements BookingService {
         // Tìm booking từ account ID với sắp xếp mới nhất
         return bookingRepository.findByAdvisor_AdvisorIDOrderByBookingDateDesc(advisor.getAdvisorID());
     }
-
+    
     @Override
     public List<Member> getCurrentMemeberOfAdvisor(Integer accountID) {
         // lấy ngày hiện tại
@@ -212,16 +227,16 @@ public class BookingServiceImpl implements BookingService {
         return bookings.stream().map(Booking::getMember).distinct()
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public Advisor getAdvisorOfMember(Integer accountID) {
         Optional<Booking> booking = bookingRepository.findByMember_Account_AccountIDAndBookingStatus(accountID, EBookingStatus.PENDING);
-
+        
         if (booking.isPresent()) {
             return booking.get().getAdvisor();
         } else {
             return null;
         }
     }
-
+    
 }

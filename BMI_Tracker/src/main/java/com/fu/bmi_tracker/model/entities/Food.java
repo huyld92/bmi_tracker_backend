@@ -6,14 +6,17 @@ package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -21,14 +24,12 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
-@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -70,13 +71,8 @@ public class Food {
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Recipe",
-            joinColumns = @JoinColumn(name = "FoodID"),
-            inverseJoinColumns = @JoinColumn(name = "IngredientID")
-    )
-    private List<Ingredient> ingredients;
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Recipe> recipes;
 
     @ManyToMany
     @JoinTable(

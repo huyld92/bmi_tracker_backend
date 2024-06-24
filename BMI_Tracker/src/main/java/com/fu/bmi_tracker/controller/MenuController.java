@@ -319,22 +319,22 @@ public class MenuController {
         }
     }
 
-    @Operation(
-            summary = "Delete menu food",
-            description = "Delete menu food by food id and menu id")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @DeleteMapping(value = "/delete/{menuID}/{foodID}")
-    public ResponseEntity<?> delete(@PathVariable Integer menuID, @PathVariable Integer foodID) {
-        menuFoodService.deleteByMenuIdAndFoodId(menuID, foodID);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+//    @Operation(
+//            summary = "Delete menu food",
+//            description = "Delete menu food by food id and menu id")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "204", content = {
+//            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @DeleteMapping(value = "/delete/{menuID}/{foodID}")
+//    public ResponseEntity<?> delete(@PathVariable Integer menuID, @PathVariable Integer foodID) {
+//        menuFoodService.deleteByMenuIdAndFoodId(menuID, foodID);
+//
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 
     @Operation(
             summary = "Deactivate menu food",

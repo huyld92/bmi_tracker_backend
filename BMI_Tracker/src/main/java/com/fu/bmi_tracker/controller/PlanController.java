@@ -66,8 +66,8 @@ public class PlanController {
         newPlan.setPrice(createRequest.getPrice());
         newPlan.setDescription(createRequest.getDescription());
         newPlan.setPlanDuration(createRequest.getPlanDuration());
-        newPlan.setPopular(createRequest.isPopular());
-        newPlan.setActive(Boolean.TRUE);
+        newPlan.setNumberOfUses(0);
+        newPlan.setIsActive(Boolean.TRUE);
 
         //Call service to save plan
         Plan planSave = planService.createPlan(newPlan, principal.getId());
@@ -236,7 +236,7 @@ public class PlanController {
         Optional<Plan> plan = planService.findById(id);
 
         if (plan.isPresent()) {
-            plan.get().setActive(Boolean.FALSE);
+            plan.get().setIsActive(Boolean.FALSE);
             return new ResponseEntity<>(planService.save(plan.get()), HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);

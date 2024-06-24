@@ -332,7 +332,7 @@ public class MemberController {
                     0,
                     0,
                     0,
-                    0,
+                    0.0,
                     member.get().getBmr(),
                     member.get().getTdee());
         }

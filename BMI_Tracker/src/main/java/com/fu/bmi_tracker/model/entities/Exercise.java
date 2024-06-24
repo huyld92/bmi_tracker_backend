@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.payload.request.CreateExerciseRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,14 +18,12 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
  * @author Duc Huy
  */
 @Entity
-@SQLRestriction(value = "IsActive = 1")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -61,4 +60,15 @@ public class Exercise {
             inverseJoinColumns = @JoinColumn(name = "TagID")
     )
     private List<Tag> tags;
+
+    public Exercise(CreateExerciseRequest createExerciseRequest, List<Tag> tags) {
+        this.exerciseName = createExerciseRequest.getExerciseName();
+        this.caloriesBurned = createExerciseRequest.getCaloriesBurned();
+        this.emoji = createExerciseRequest.getEmoji();
+        this.duration = createExerciseRequest.getDuration();
+        this.tags = tags;
+        this.distance = createExerciseRequest.getDistance();
+        // Mặc định vừa tạo isAtive true
+        this.isActive = true;
+    }
 }
