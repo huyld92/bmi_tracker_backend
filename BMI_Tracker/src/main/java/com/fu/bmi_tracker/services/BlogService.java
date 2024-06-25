@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Blog;
 import com.fu.bmi_tracker.payload.request.CreateBlogRequest;
+import java.util.Optional;
 
 /**
  *
@@ -22,5 +23,7 @@ public interface BlogService extends GeneralService<Blog> {
     public Blog createBlog(CreateBlogRequest newBlog, Integer accountID);
 
     public Iterable<Blog> findAllOfAdvisor(Integer accountID);
+
+    public void deactivateBlog(int blogID);
 
 }

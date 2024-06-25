@@ -97,7 +97,7 @@ public class MenuController {
         Menu menu = new Menu(menuRequest, advisor.getAdvisorID());
 
         // Store to database
-        Menu menuSave = menuService.save(menu);
+        Menu menuSave = menuService.createNewMenu(menu, menuRequest.getTagIDs());
 
         // check result
         if (menuSave == null) {
@@ -335,7 +335,6 @@ public class MenuController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-
     @Operation(
             summary = "Deactivate menu food",
             description = "Deactivate menu food by food id and menu id")
