@@ -17,4 +17,6 @@ public interface MenuService extends GeneralService<Menu> {
 
     public List<Menu> getMenuByTagName(String tagName);
 
+    public Menu createNewMenu(Menu menu, List<Integer> tagIDs);
+
 }

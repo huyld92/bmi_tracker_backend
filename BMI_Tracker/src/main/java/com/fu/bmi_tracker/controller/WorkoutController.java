@@ -92,7 +92,7 @@ public class WorkoutController {
                 createWorkoutRequest.getTotalCaloriesBurned(),
                 advisor.getAdvisorID());
 
-        Workout workoutSaved = workoutService.save(w);
+        Workout workoutSaved = workoutService.createNewWorkout(w, createWorkoutRequest.getTagIDs());
 
         if (workoutSaved == null) {
             return new ResponseEntity<>(new MessageResponse("Cannot create new workout!"), HttpStatus.BAD_REQUEST);
@@ -255,7 +255,6 @@ public class WorkoutController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-
     @Operation(
             summary = "Deactivate workout exercise",
             description = "Deactivate workout exercises by exercise ID and workoutID")

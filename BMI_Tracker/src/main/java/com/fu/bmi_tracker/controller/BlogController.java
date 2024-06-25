@@ -192,25 +192,39 @@ public class BlogController {
         }
     }
 
-    @Operation(summary = "Delete a Blog")
+//    @Operation(summary = "Delete a Blog")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "204", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @DeleteMapping("/delete/{id}")
+//    //@PreAuthorize("hasRole('ADVISOR')")
+//    public ResponseEntity<?> deleteBlog(@PathVariable("id") int id) {
+//        // tìm blog bằng ID
+//        Optional<Blog> blog = service.findById(id);
+//
+//        // kiểm tra kết quả
+//        if (blog.isPresent()) {
+//            // Delete blog
+//            service.deleteBlog(blog.get());
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        } else {
+//            return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);
+//        }
+//    }
+    @Operation(summary = "Deactivate a Blog")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deactivate/{id}")
     //@PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> deleteBlog(@PathVariable("id") int id) {
+    public ResponseEntity<?> deactivateBlog(@PathVariable("id") int id) {
         // tìm blog bằng ID
-        Optional<Blog> blog = service.findById(id);
+        service.deactivateBlog(id);
 
-        // kiểm tra kết quả
-        if (blog.isPresent()) {
-            // Delete blog
-            service.deleteBlog(blog.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

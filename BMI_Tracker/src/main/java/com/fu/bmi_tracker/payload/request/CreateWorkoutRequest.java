@@ -40,4 +40,9 @@ public class CreateWorkoutRequest {
     @NotEmpty
     @Schema(name = "exerciseIDs", example = "[1,2,3]")
     private List<Integer> exerciseIDs;
+
+    @NotEmpty
+    @Schema(name = "tagIDs", example = "[1, 2, 3]")
+    private List<Integer> tagIDs;
+
 }
