@@ -40,7 +40,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Iterable<Menu> getAllByAdvisorID(Integer advisorID) {
-        return menuRepository.findByAdvisorID(advisorID);
+        return menuRepository.findByAdvisor_AdvisorID(advisorID);
     }
 
     @Override

@@ -36,6 +36,8 @@ public class FoodResponseAll {
 
     private Integer foodTimeProcess;
 
+    private String serving;
+
     private LocalDate creationDate;
 
     private Boolean isActive;
@@ -52,6 +54,7 @@ public class FoodResponseAll {
         this.foodNutrition = foodSaved.getFoodNutrition();
         this.foodTimeProcess = foodSaved.getFoodTimeProcess();
         this.creationDate = foodSaved.getCreationDate();
+        this.serving = foodSaved.getServing();
         this.isActive = foodSaved.getIsActive();
         this.foodTags = foodTags;
     }

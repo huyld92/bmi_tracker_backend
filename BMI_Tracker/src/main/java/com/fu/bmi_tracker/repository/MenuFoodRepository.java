@@ -28,7 +28,7 @@ public interface MenuFoodRepository extends JpaRepository<MenuFood, MenuFood> {
     @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID")
     public List<Food> findFoodByMenu_MenuID(Integer menuID);
 
-    @Query("SELECT new com.fu.bmi_tracker.payload.response.MenuFoodResponse(mf.food, mf.mealType) "
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.MenuFoodResponse(mf.food, mf.mealType, mf.isActive) "
             + "FROM MenuFood mf "
             + "WHERE mf.menu.menuID = :menuId")
     List<MenuFoodResponse> findAllFoodAndMealTypeByMenuId(Integer menuId);

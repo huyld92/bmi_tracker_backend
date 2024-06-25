@@ -35,7 +35,7 @@ public class MenuResponse {
         this.menuDescription = menu.getMenuDescription();
         this.totalCalories = menu.getTotalCalories();
         this.isActive = menu.getIsActive();
-        this.advisorID = menu.getAdvisorID();
+        this.advisorID = menu.getAdvisor().getAdvisorID();
         this.menuFoods = menuFoodResponses;
     }
 

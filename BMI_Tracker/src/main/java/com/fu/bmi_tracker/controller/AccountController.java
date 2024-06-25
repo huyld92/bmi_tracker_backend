@@ -51,13 +51,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
-
+    
     @Autowired
     AccountService accountService;
-
+    
     @Autowired
     EmailService emailService;
-
+    
     @Autowired
     AdvisorService advisorService;
 //    
@@ -66,9 +66,9 @@ public class AccountController {
 
     @Autowired
     PasswordEncoder encoder;
-
+    
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
-
+    
     @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -104,18 +104,36 @@ public class AccountController {
             );
             advisorService.save(advisor);
         }
-
+        
         EmailDetails details = new EmailDetails(accountSave.getEmail(),
                 "Your New Account Password",
                 defaultPassword,
                 accountSave.getFullName());
         emailService.sendSimpleMail(details);
-
+        
         AccountResponse accountResponse = new AccountResponse(accountSave);
-
+        
         return new ResponseEntity<>(accountResponse, HttpStatus.CREATED);
     }
-
+    
+    @Operation(summary = "Create new account (ADMIN)",
+            description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/role/add-more-role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> addMoreRole(@RequestParam Integer accountID, Integer roleID) {
+        accountService.addMoreRole(accountID, roleID);
+        
+        return new ResponseEntity<>(new MessageResponse("Add role success"), HttpStatus.OK);
+        
+    }
+    
     @Operation(summary = "Get all account (ADMIN)", description = "Get all account")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -126,6 +144,7 @@ public class AccountController {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('ADMIN')")
+    
     public ResponseEntity<?> getAllAccount() {
         //    gọi service tìm tất cả account
         Iterable<Account> accounts = accountService.findAll();
@@ -144,11 +163,11 @@ public class AccountController {
             }
             accountResponses.add(new AccountResponse(account));
         }
-
+        
         return new ResponseEntity<>(accountResponses, HttpStatus.OK);
-
+        
     }
-
+    
     @Operation(summary = "Get account by account id", description = "Get account by account id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -161,16 +180,16 @@ public class AccountController {
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAccountByID(@RequestParam Integer accountID) {
         Optional<Account> account = accountService.findById(accountID);
-
+        
         if (!account.isPresent()) {
             return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + accountID + "}")), HttpStatus.NOT_FOUND);
         }
-
+        
         AccountResponse accountResponse = new AccountResponse(account.get());
-
+        
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
-
+    
     @Operation(summary = "Update account by account id", description = "Update account ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -184,7 +203,7 @@ public class AccountController {
     public ResponseEntity<?> updateAccount(@Valid @RequestBody UpdateAccountRequest accountRequest) {
         // Check exist account
         Optional<Account> account = accountService.findById(accountRequest.getAccountID());
-
+        
         if (!account.isPresent()) {
             return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + accountRequest.getAccountID() + "}")),
                     HttpStatus.NOT_FOUND);
@@ -198,15 +217,15 @@ public class AccountController {
         // check resutl
         if (accountSave == null) {
             return new ResponseEntity<>(new MessageResponse("Failed to update account"), HttpStatus.INTERNAL_SERVER_ERROR);
-
+            
         }
 
         // create account response
         AccountResponse accountResponse = new AccountResponse(accountSave);
-
+        
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
-
+    
     @Operation(summary = "Update device token", description = "Client send device token to update")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -225,7 +244,7 @@ public class AccountController {
         accountService.updateDeviceToken(principal.getId(), deviceToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    
     @Operation(summary = "Update profile", description = "Profile will be updated for the currently logged in user")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -243,11 +262,11 @@ public class AccountController {
 
         // gọi service cập nhật profile
         accountService.updateProfile(principal.getId(), updateProfileRequest);
-
+        
         return new ResponseEntity<>(new MessageResponse("Update profile success!"), HttpStatus.OK);
-
+        
     }
-
+    
     @Operation(summary = "Get personal profile", description = "Need to log in to get personal information")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -272,7 +291,7 @@ public class AccountController {
 
         // Tạo account response
         AccountResponse accountResponse = new AccountResponse(account.get());
-
+        
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
 
-    public Iterable<Menu> findByAdvisorID(Integer advisorID);
+    public Iterable<Menu> findByAdvisor_AdvisorID(Integer advisorID);
 
     @Query("SELECT m FROM Menu m JOIN TagMenu tm ON m.menuID = tm.menu.menuID "
             + "JOIN Tag t ON tm.tag.tagID = t.tagID WHERE t.tagName = :tagName")
@@ -27,7 +27,7 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
     // và sắp xếp theo ASC và chỉ lấy menu đầu tiên trong danh sách menu advisor hệ thống id 1
     @Query("SELECT m FROM Menu m "
             + "JOIN TagMenu tm ON m.menuID = tm.menu.menuID"
-            + " JOIN Tag t ON tm.tag.tagID = t.tagID WHERE t.tagName = :tagName AND m.advisorID = 1"
+            + " JOIN Tag t ON tm.tag.tagID = t.tagID WHERE t.tagName = :tagName AND m.advisor.advisorID = 1"
             + " ORDER BY ABS(m.totalCalories - :recommendedCalories) ASC LIMIT 1")
     Menu findTopByTagNameAndClosestCalories(String tagName, int recommendedCalories);
 
