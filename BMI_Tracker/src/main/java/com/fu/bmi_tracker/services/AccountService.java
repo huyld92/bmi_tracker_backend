@@ -20,4 +20,6 @@ public interface AccountService extends GeneralService<Account> {
 
     public void updateProfile(Integer accountID, UpdateProfileRequest updateProfileRequest);
 
+    public void addMoreRole(Integer accountID, Integer roleID);
+
 }

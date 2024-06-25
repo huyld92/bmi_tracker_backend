@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -51,8 +52,9 @@ public class Menu {
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @Column(name = "AdvisorID", nullable = false)
-    private Integer advisorID;
+    @ManyToOne
+    @JoinColumn(name = "AdvisorID", nullable = false)
+    private Advisor advisor;
 
     @ManyToMany
     @JoinTable(
@@ -68,7 +70,7 @@ public class Menu {
         this.menuPhoto = menuRequest.getMenuPhoto();
         this.totalCalories = menuRequest.getTotalCalories();
         this.isActive = true;
-        this.advisorID = advisorID;
+        this.advisor = new Advisor(advisorID);
     }
 
     public void update(UpdateMenuRequest menuRequest) {

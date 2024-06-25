@@ -21,10 +21,17 @@ public class MenuFoodResponse {
 
     private FoodResponse food;
     private EMealType mealType;
+    private Boolean isActive;
 
-    public MenuFoodResponse(Food food, EMealType mealType) {
+//    public MenuFoodResponse(Food food, EMealType mealType) {
+//        this.food = new FoodResponse(food);
+//        this.mealType = mealType;
+//    }
+
+    public MenuFoodResponse(Food food, EMealType mealType, Boolean isActive) {
         this.food = new FoodResponse(food);
         this.mealType = mealType;
+        this.isActive = isActive;
     }
 
 }

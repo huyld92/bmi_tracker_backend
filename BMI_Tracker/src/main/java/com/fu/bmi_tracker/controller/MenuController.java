@@ -115,7 +115,7 @@ public class MenuController {
             FoodResponse foodResponse = new FoodResponse(food);
 
             // add menu food response
-            menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType()));
+            menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType(), menu.getIsActive()));
 
             // add menu food
             menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
@@ -346,7 +346,7 @@ public class MenuController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping(value = "/menu-food/deactivate/{menuID}/{foodID}")
-    public ResponseEntity<?> deactivateMenu(@PathVariable Integer menuID, @PathVariable Integer foodID) {
+    public ResponseEntity<?> deactivateMenuFood(@PathVariable Integer menuID, @PathVariable Integer foodID) {
         menuFoodService.deactiveMenuFood(menuID, foodID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -25,6 +25,7 @@ public class MenuResponseAll {
     private Integer totalCalories;
     private Boolean isActive;
     private Integer advisorID;
+    private String advisorName;
 
     public MenuResponseAll(Menu menu) {
         this.menuID = menu.getMenuID();
@@ -33,6 +34,7 @@ public class MenuResponseAll {
         this.menuDescription = menu.getMenuDescription();
         this.totalCalories = menu.getTotalCalories();
         this.isActive = menu.getIsActive();
-        this.advisorID = menu.getAdvisorID();
+        this.advisorID = menu.getAdvisor().getAdvisorID();
+        this.advisorName = menu.getAdvisor().getAccount().getFullName();
     }
 }
