@@ -66,7 +66,6 @@ public class CreateFoodRequest {
     private List<Integer> tagIDs;
 
     @NotEmpty
-    @Schema(name = "ingredientIDs", example = "[1, 2, 3]")
-    private List<Integer> ingredientIDs;
+    private List<RecipeRequest> recipeRequests;
 
 }

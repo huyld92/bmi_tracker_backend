@@ -96,7 +96,7 @@ public class AccountController {
         // nếu account là advisor thì tạo thông tin mặc định cho advisor
         if (createAccountRequest.getRole() == ERole.ROLE_ADVISOR) {
             Advisor advisor = new Advisor(
-                    accountSave.getAccountID(),
+                    accountSave,
                     0,
                     0,
                     0,

@@ -46,20 +46,20 @@ public class Plan {
     @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
 
-    @Column(name = "IsPopular", nullable = false)
-    private boolean isPopular;
+    @Column(name = "NumberOfUses", nullable = false)
+    private Integer numberOfUses;
 
     @Column(name = "IsActive", nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 
     public Plan(String planName, BigDecimal price, String description,
-            Integer planDuration, Integer advisorID, boolean isActive, boolean isPopular) {
+            Integer planDuration, Integer advisorID, Boolean isActive, Integer numberOfUses) {
         this.planName = planName;
         this.price = price;
         this.description = description;
         this.planDuration = planDuration;
         this.advisorID = advisorID;
         this.isActive = isActive;
-        this.isPopular = isPopular;
+        this.numberOfUses = numberOfUses;
     }
 }

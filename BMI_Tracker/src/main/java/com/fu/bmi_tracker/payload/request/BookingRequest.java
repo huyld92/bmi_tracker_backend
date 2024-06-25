@@ -38,6 +38,11 @@ public class BookingRequest {
     @NotNull
     private Integer advisorID;
 
+    @Schema(example = "1")
+    @NotNull
+    @Positive
+    private Integer planID;
+
     @Schema(example = "30")
     @NotNull
     @Positive

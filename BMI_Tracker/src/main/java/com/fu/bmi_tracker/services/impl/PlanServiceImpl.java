@@ -57,7 +57,7 @@ public class PlanServiceImpl implements PlanService {
     public Plan createPlan(Plan plan, Integer accountID) {
 
         // find Advisor
-        Advisor advisor = advisorRepository.findByAccountID(accountID)
+        Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
         // set advisor ID
         plan.setAdvisorID(advisor.getAdvisorID());
@@ -68,7 +68,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public Iterable<Plan> findAllPlanFromPersonally(Integer accountID) {
         // find Advisor
-        Advisor advisor = advisorRepository.findByAccountID(accountID)
+        Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // GỌi repository tìm tất cả plan của advisor

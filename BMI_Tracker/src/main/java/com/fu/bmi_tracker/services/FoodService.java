@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Food;
+import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +19,7 @@ public interface FoodService extends GeneralService<Food> {
     public Iterable<Food> findByFoodIDIn(List<Integer> foodIDs);
 
     public Page<Food> getFoodsByTagName(String dietPreferenceName, Pageable pageable);
+
+    public Food createNewFood(CreateFoodRequest createFoodRequest);
 
 }

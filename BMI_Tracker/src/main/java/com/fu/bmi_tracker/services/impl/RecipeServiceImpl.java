@@ -56,12 +56,13 @@ public class RecipeServiceImpl implements RecipeService {
         Ingredient ingredient = ingredientRepository.findById(recipeRequest.getIngredientID())
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
 
-        // tạo recipe
+        // tạo recipe full contructor
         Recipe recipe = new Recipe(food,
                 ingredient,
                 recipeRequest.getQuantity(),
                 recipeRequest.getUnit(),
                 Boolean.TRUE);
+
         return repository.save(recipe);
 
     }
@@ -70,6 +71,17 @@ public class RecipeServiceImpl implements RecipeService {
     @Transactional
     public void deleteRecipe(Integer foodID, Integer ingredientID) {
         repository.deleteByFood_FoodIDAndIngredient_IngredientID(foodID, ingredientID);
+    }
+
+    @Override
+    public void deactiveRecipe(Integer foodID, Integer ingredientID) {
+        // tìm recipe bằng foodID và ingredientID
+        Recipe recipe = repository.findByFood_FoodIDAndIngredient_IngredientID(foodID, ingredientID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
+        // set IsActive  = false để deactivate
+        recipe.setIsActive(false);
+        // lưu lại recipe đã cập nhật
+        save(recipe);
     }
 
 }

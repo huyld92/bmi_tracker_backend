@@ -10,13 +10,16 @@ import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.enums.EDietPreference;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
+import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponseAll;
 import com.fu.bmi_tracker.payload.response.FoodPageResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
+import com.fu.bmi_tracker.payload.response.RecipeResponse;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.RecipeService;
+import com.fu.bmi_tracker.util.RecipeConverter;
 
 import com.fu.bmi_tracker.util.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,36 +76,13 @@ public class FoodController {
     @PostMapping(value = "/createNew")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewFood(@Valid @RequestBody CreateFoodRequest createFoodRequest) {
-        // create food from request
-        Food food = new Food(createFoodRequest);
-        // Create list tag from createFoodRequest
-        List<com.fu.bmi_tracker.model.entities.Tag> tags = new ArrayList<>();
-        // Add tagID to Tag
-        createFoodRequest.getTagIDs().forEach((Integer tagID) -> {
-            tags.add(new com.fu.bmi_tracker.model.entities.Tag(tagID));
-        });
-        // set tags to food
-        food.setFoodTags(tags);
+        // gọi foodService Tạo mới food
+        Food food = foodService.createNewFood(createFoodRequest);
 
-        // Add ingredientID to Ingredient
-        List<Ingredient> ingredients = new ArrayList<>();
-        createFoodRequest.getIngredientIDs().forEach((Integer ingredientID) -> {
-            ingredients.add(new Ingredient(ingredientID));
-        });
-        // set ingredients to food
-        food.setIngredients(ingredients);
-
-        // Store food
-        Food foodSave = foodService.save(food);
-
-        if (foodSave == null) {
-            return new ResponseEntity<>("Failed to create new food", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        // create food response
-        FoodEntityResponse foodResponse = new FoodEntityResponse(foodSave,
-                TagConverter.convertToTagResponseList(foodSave.getFoodTags()),
-                foodSave.getIngredients());
+        // Tạo food entity response
+        FoodEntityResponse foodResponse = new FoodEntityResponse(food,
+                TagConverter.convertToTagResponseList(food.getFoodTags()),
+                RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
 
         return new ResponseEntity<>(foodResponse, HttpStatus.CREATED);
     }
@@ -154,11 +134,10 @@ public class FoodController {
         Optional<Food> food = foodService.findById(id);
         // kiểm tra tồn tại
         if (food.isPresent()) {
-            // chuyển đổi thành food response
+            // Tạo food entity response
             FoodEntityResponse foodResponse = new FoodEntityResponse(food.get(),
-                    // Chuyển đổi Tag sang TagResponse
                     TagConverter.convertToTagResponseList(food.get().getFoodTags()),
-                    food.get().getIngredients());
+                    RecipeConverter.convertToRecipeResponseList(food.get().getRecipes()));
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
@@ -186,10 +165,10 @@ public class FoodController {
             // lưu trữ cập nhật xuống databse
             foodService.save(food.get());
 
-            // tạo food reponse 
+            // Tạo food entity response
             FoodEntityResponse foodResponse = new FoodEntityResponse(food.get(),
                     TagConverter.convertToTagResponseList(food.get().getFoodTags()),
-                    food.get().getIngredients());
+                    RecipeConverter.convertToRecipeResponseList(food.get().getRecipes()));
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
@@ -200,7 +179,7 @@ public class FoodController {
     @Operation(summary = "Deactive a Food by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema())}),
+            @Content(schema = @Schema(implementation = RecipeResponse.class))}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deactivate/{id}")
@@ -218,6 +197,21 @@ public class FoodController {
         }
     }
 
+    @Operation(summary = "Deactive a Food by Id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema(implementation = RecipeResponse.class))}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping("/recipe/deactivate")
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deactivateRecipe(@RequestParam Integer foodID, @RequestParam Integer ingredientID) {
+        // Gọi recipeService deactivate recipe
+        recipeService.deactiveRecipe(foodID, ingredientID);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    }
+
     @Operation(summary = "Create food recipe", description = "")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -226,10 +220,14 @@ public class FoodController {
             @Content(schema = @Schema())})})
     @PostMapping("/createRecipe")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createFoodRecipe(@RequestParam CreateRecipeRequest recipeRequest) {
+    public ResponseEntity<?> createFoodRecipe(@RequestBody CreateRecipeRequest recipeRequest) {
+        // gọi recipeService  tạo mới recipe
         Recipe recipe = recipeService.createRecipe(recipeRequest);
 
-        return new ResponseEntity<>(recipe, HttpStatus.OK);
+        // chuyển đổi từ recipe sáng RecipesResponse
+        RecipeResponse recipeResponse = new RecipeResponse(recipe);
+
+        return new ResponseEntity<>(recipeResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "Deactive a Food by Id")
@@ -267,17 +265,7 @@ public class FoodController {
         FoodPageResponse foodPageResponses = new FoodPageResponse();
         List<FoodResponse> foodResponses = new ArrayList<>();
         for (Food food : foods.getContent()) {
-            FoodResponse response = new FoodResponse();
-            response.setFoodID(food.getFoodID());
-            response.setFoodName(food.getFoodName());
-            response.setFoodCalories(food.getFoodCalories());
-            response.setDescription(food.getDescription());
-            response.setFoodPhoto(food.getFoodPhoto());
-            response.setFoodVideo(food.getFoodVideo());
-            response.setFoodNutrition(food.getFoodNutrition());
-            response.setFoodTimeProcess(food.getFoodTimeProcess());
-            response.setCreationDate(food.getCreationDate());
-            response.setActive(food.getIsActive());
+            FoodResponse response = new FoodResponse(food);
             foodResponses.add(response);
         }
         foodPageResponses.setFoods(foodResponses);

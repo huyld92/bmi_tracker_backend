@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,5 +47,13 @@ public class Recipe {
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
+
+    public Recipe(Food food, Ingredient ingredient, RecipeRequest recipeRequest) {
+        this.food = food;
+        this.ingredient = ingredient;
+        this.unit = recipeRequest.getUnit();
+        this.quantity = recipeRequest.getQuantity();
+        this.isActive = true;
+    }
 
 }

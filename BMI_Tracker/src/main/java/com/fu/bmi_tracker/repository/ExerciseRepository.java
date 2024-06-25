@@ -28,12 +28,12 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
 
     @Query("SELECT e FROM Exercise e WHERE e.exerciseID IN "
             + "(SELECT te.exercise.exerciseID FROM TagExercise te JOIN Tag t ON te.tag.tagID = t.tagID "
-            + "WHERE t.tagName = :tagName)")
+            + "WHERE t.tagName = :tagName) AND e.isActive = true")
     public List<Exercise> findExerciseWithTagName(String tagName);
 
     @Query("SELECT e FROM Exercise e WHERE e.exerciseID NOT IN "
             + "(SELECT te.exercise.exerciseID FROM TagExercise te JOIN Tag t ON te.tag.tagID = t.tagID "
-            + "WHERE t.tagName = :tagName)")
+            + "WHERE t.tagName = :tagName) AND e.isActive = true")
     public List<Exercise> findExerciseWithoutTagName(String tagName);
 
 }

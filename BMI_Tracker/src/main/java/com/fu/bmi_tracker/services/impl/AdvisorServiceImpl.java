@@ -36,7 +36,7 @@ public class AdvisorServiceImpl implements AdvisorService {
 
     @Override
     public Advisor findByAccountID(Integer accountID) {
-        return memberRepository.findByAccountID(accountID).get();
+        return memberRepository.findByAccount_AccountID(accountID).get();
     }
 
     @Override

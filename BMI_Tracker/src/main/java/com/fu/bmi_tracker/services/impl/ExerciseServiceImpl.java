@@ -62,14 +62,8 @@ public class ExerciseServiceImpl implements ExerciseService {
         List<Tag> tags = tagRepository.findByTagIDIn(createExerciseRequest.getTagIDs());
 
         // Tạo mới exercise từ createExerciseRequest
-        Exercise exercise = new Exercise();
-        exercise.setExerciseName(createExerciseRequest.getExerciseName());
-        exercise.setCaloriesBurned(createExerciseRequest.getCaloriesBurned());
-        exercise.setEmoji(createExerciseRequest.getEmoji());
-        exercise.setDuration(createExerciseRequest.getDuration());
-        exercise.setTags(tags);
-        // Mặc định vừa tạo isAtive true
-        exercise.setIsActive(Boolean.TRUE);
+        Exercise exercise = new Exercise(createExerciseRequest, tags);
+
         return repository.save(exercise);
     }
 
@@ -83,6 +77,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         exercise.setExerciseName(updateExercerRequest.getExerciseName());
         exercise.setCaloriesBurned(updateExercerRequest.getCaloriesBurned());
         exercise.setDuration(updateExercerRequest.getDuration());
+        exercise.setDistance(updateExercerRequest.getDistance());
         exercise.setEmoji(updateExercerRequest.getEmoji());
         exercise.setIsActive(updateExercerRequest.getIsActive());
 

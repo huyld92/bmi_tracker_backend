@@ -33,11 +33,14 @@ public class CreateExerciseRequest {
     @PositiveOrZero(message = "Duration must be a positive number or zero")
     private Integer duration;
 
+    @Schema(example = "60")
+    private Float distance;
+
     @Schema(example = "300")
     @NotNull(message = "Calories burned is required")
     @PositiveOrZero(message = "Calories burned must be a positive number or zero")
     private Integer caloriesBurned;
-    
+
     @NotNull
     @Schema(example = "[1,2,3]")
     private List<Integer> tagIDs;

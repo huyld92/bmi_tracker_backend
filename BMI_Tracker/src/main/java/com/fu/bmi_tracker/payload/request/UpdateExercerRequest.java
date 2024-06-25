@@ -37,6 +37,9 @@ public class UpdateExercerRequest {
     @PositiveOrZero(message = "Duration must be a positive number or zero")
     private Integer duration;
 
+    @Schema(example = "60")
+    private Float distance;
+
     @Schema(example = "300")
     @NotNull(message = "Calories burned is required")
     @PositiveOrZero(message = "Calories burned must be a positive number or zero")

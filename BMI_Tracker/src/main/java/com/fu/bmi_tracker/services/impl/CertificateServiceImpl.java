@@ -56,7 +56,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public Iterable<Certificate> findAllOfAdvisor(Integer accountID) {
         // Tim advisor từ accountID
-        Advisor advisor = advisorRepository.findByAccountID(accountID)
+        Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
         // gọi repository tìm tất cả certificate của Advisor
         return certificateRepository.findAllByAdvisorAdvisorID(advisor.getAdvisorID());

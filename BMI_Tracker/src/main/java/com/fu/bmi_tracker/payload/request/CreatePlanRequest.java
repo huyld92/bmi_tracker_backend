@@ -43,9 +43,6 @@ public class CreatePlanRequest {
     @Positive
     @Schema(name = "planDuration", example = "30")
     private int planDuration;
-
-    @NotNull
-    @Schema(name = "isPopular", example = "true")
-    private boolean isPopular;
+ 
 
 }

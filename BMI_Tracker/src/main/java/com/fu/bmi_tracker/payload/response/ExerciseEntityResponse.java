@@ -24,6 +24,7 @@ public class ExerciseEntityResponse {
     private String emoji;
     private Integer duration;
     private Integer caloriesBurned;
+    private Float distance;
     private Boolean isActive;
     private List<TagResponse> tags;
 
@@ -32,6 +33,7 @@ public class ExerciseEntityResponse {
         this.exerciseName = exercise.getExerciseName();
         this.emoji = exercise.getEmoji();
         this.duration = exercise.getDuration();
+        this.distance = exercise.getDistance();
         this.caloriesBurned = exercise.getCaloriesBurned();
         this.isActive = exercise.getIsActive();
         this.tags = tags;

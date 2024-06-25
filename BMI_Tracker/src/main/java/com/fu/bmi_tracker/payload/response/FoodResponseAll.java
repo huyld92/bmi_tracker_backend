@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FoodResponseAll {
 
-    private int foodID;
+    private Integer foodID;
 
     private String foodName;
 
-    private int foodCalories;
+    private Integer foodCalories;
 
     private String description;
 
@@ -34,11 +34,11 @@ public class FoodResponseAll {
 
     private String foodNutrition;
 
-    private int foodTimeProcess;
+    private Integer foodTimeProcess;
 
     private LocalDate creationDate;
 
-    private boolean isActive;
+    private Boolean isActive;
 
     private List<TagResponse> foodTags;
 

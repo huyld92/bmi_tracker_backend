@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Recipe;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +17,7 @@ import org.springframework.stereotype.Repository;
 public interface RecipeRepository extends JpaRepository<Recipe, Recipe> {
 
     public void deleteByFood_FoodIDAndIngredient_IngredientID(Integer foodID, Integer ingredientID);
+
+    public Optional<Recipe> findByFood_FoodIDAndIngredient_IngredientID(Integer foodID, Integer ingredientID);
 
 }

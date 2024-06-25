@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedbackForAdminRespone {
 
-    private int feedbackID;
+    private Integer feedbackID;
 
     private String title;
 
@@ -26,9 +26,9 @@ public class FeedbackForAdminRespone {
 
     private String description;
 
-    private boolean status;
+    private Boolean status;
 
-    private int memberID;
+    private Integer memberID;
 
     private String memberName;
 

@@ -39,7 +39,7 @@ public class FoodResponse {
 
     private LocalDate creationDate;
 
-    private boolean isActive;
+    private Boolean isActive;
 
     public FoodResponse(Food food) {
         this.foodID = food.getFoodID();

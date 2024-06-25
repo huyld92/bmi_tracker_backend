@@ -24,16 +24,16 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
     @Query("SELECT f FROM Food f "
             + "JOIN TagFood tf ON f.foodID = tf.food.foodID "
             + "JOIN Tag t ON tf.tag.tagID = t.tagID"
-            + " WHERE t.tagName = :dietPreferenceName")
+            + " WHERE t.tagName = :dietPreferenceName AND f.isActive = true")
     public Page<Food> findFoodWithTagName(String dietPreferenceName, Pageable pageable);
 
     @Query("SELECT f FROM Food f WHERE f.foodID IN "
             + "(SELECT tf.food.foodID FROM TagFood tf JOIN Tag t ON tf.tag.tagID = t.tagID "
-            + "WHERE t.tagName = :tagName)")
+            + "WHERE t.tagName = :tagName) AND f.isActive = true")
     public List<Food> findFoodWithTagName(String tagName);
 
     @Query("SELECT f FROM Food f WHERE f.foodID NOT IN "
             + "(SELECT tf.food.foodID FROM TagFood tf JOIN Tag t ON tf.tag.tagID = t.tagID "
-            + "WHERE t.tagName = :tagName)")
+            + "WHERE t.tagName = :tagName) AND f.isActive = true")
     List<Food> findFoodWithoutTagName(String tagName);
 }
