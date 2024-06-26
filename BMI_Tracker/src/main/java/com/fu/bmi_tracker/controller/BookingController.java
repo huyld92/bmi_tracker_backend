@@ -8,7 +8,6 @@ import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Booking;
-import com.fu.bmi_tracker.model.enums.EGender;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.BookingService;
-import java.time.LocalDate;
 
 /**
  *
@@ -305,14 +303,7 @@ public class BookingController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         // tạo Advisor response
-        AdvisorResponse advisorResponse = new AdvisorResponse(
-                advisor.getAdvisorID(),
-                advisor.getAccount().getAccountPhoto(),
-                advisor.getAccount().getEmail(),
-                advisor.getAccount().getFullName(),
-                advisor.getAccount().getPhoneNumber(),
-                advisor.getAccount().getGender(),
-                advisor.getAccount().getBirthday());
+        AdvisorResponse advisorResponse = new AdvisorResponse(advisor);
         return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
 
     }

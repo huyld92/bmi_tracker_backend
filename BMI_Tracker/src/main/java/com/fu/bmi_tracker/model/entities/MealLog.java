@@ -47,6 +47,9 @@ public class MealLog {
     @Column(name = "Quantity", nullable = true)
     private Float quantity;
 
+    @Column(name = "Unit", nullable = true)
+    private String unit;
+
     @Column(name = "RecordID", nullable = false)
     private Integer recordID;
 
@@ -58,6 +61,7 @@ public class MealLog {
         this.calories = createMealLogRequest.getCalories();
         this.mealType = createMealLogRequest.getMealType();
         this.quantity = createMealLogRequest.getQuantity();
+        this.unit = createMealLogRequest.getUnit();
         this.foodID = createMealLogRequest.getFoodID();
         this.recordID = recordID;
     }

@@ -8,9 +8,7 @@ import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.payload.response.ActivityLogResponse;
 import com.fu.bmi_tracker.payload.response.DailyRecordFullResponse;
 import com.fu.bmi_tracker.payload.response.MealLogResponse;
-import com.fu.bmi_tracker.repository.ActivityLogRepository;
 import com.fu.bmi_tracker.repository.DailyRecordRepository;
-import com.fu.bmi_tracker.repository.MealLogRepository;
 import com.fu.bmi_tracker.services.DailyRecordService;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -25,12 +23,6 @@ public class DailyRecordServiceImpl implements DailyRecordService {
 
     @Autowired
     DailyRecordRepository dailyRecordRepository;
-
-    @Autowired
-    ActivityLogRepository activityLogRepository;
-
-    @Autowired
-    MealLogRepository mealLogRepository;
 
     @Override
     public Iterable<DailyRecord> findAll() {
