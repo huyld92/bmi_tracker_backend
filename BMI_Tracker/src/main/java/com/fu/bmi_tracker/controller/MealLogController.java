@@ -236,7 +236,6 @@ public class MealLogController {
     @PutMapping(value = "/update")
     public ResponseEntity<?> updateMealLog(@Valid @RequestBody UpdateMealLogRequest mealLogRequest) {
         return new ResponseEntity<>(mealLogService.updateMealLog(mealLogRequest), HttpStatus.OK);
-
     }
 
     @Operation(

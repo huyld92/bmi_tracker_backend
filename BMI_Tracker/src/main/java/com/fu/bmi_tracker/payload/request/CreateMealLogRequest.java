@@ -48,4 +48,7 @@ public class CreateMealLogRequest {
 
     @Schema(name = "quantity", example = "1", nullable = true)
     private Float quantity;
+
+    @Schema(name = "unit", example = "bowl (250g)")
+    private String unit;
 }

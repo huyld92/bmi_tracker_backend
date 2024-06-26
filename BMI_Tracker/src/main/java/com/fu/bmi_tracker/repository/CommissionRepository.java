@@ -18,4 +18,6 @@ public interface CommissionRepository extends JpaRepository<Commission, Integer>
 
     Commission findByAdvisor_AdvisorIDAndExpectedPaymentDate(Integer advisorID, LocalDate expectedPaymentDate);
 
+    public Iterable<Commission> findByAdvisor_AdvisorID(Integer advisorID);
+
 }

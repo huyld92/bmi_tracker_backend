@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
-import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import java.util.List;
 public class AdvisorServiceImpl implements AdvisorService {
 
     @Autowired
-    AdvisorRepository memberRepository; 
+    AdvisorRepository memberRepository;
 
     @Override
     public Iterable<Advisor> findAll() {
@@ -40,8 +39,8 @@ public class AdvisorServiceImpl implements AdvisorService {
     }
 
     @Override
-    public List<AdvisorResponse> findAllAdvisorsWithDetails() {
-        return memberRepository.findAllAdvisorsWithDetails();
+    public List<Advisor> findAllAdvisorsWithDetails() {
+        return memberRepository.findAllByIsActiveTrue();
     }
 
 }

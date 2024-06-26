@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class AdvisorController {
     @Operation(summary = "Retrieve all Advisors")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Advisor.class))}),
+            @Content(schema = @Schema(implementation = AdvisorResponse.class))}),
         @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -57,7 +58,42 @@ public class AdvisorController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(advisors, HttpStatus.OK);
+        // tạo advisor response
+        List<AdvisorResponse> advisorsResponses = new ArrayList<>();
+
+        advisors.forEach(advisor -> {
+            advisorsResponses.add(new AdvisorResponse(advisor));
+        });
+
+        return new ResponseEntity<>(advisorsResponses, HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Retrieve all Advisors (MEMBER)", description = "Member don't get isActive = false")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AdvisorResponse.class))}),
+        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/getWithDetails")
+    public ResponseEntity<?> getAllAdvisorsWithDetails() {
+
+        List<Advisor> advisors = advisorService.findAllAdvisorsWithDetails();
+
+        if (advisors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo advisor response
+        List<AdvisorResponse> advisorsResponses = new ArrayList<>();
+
+        advisors.forEach(advisor -> {
+            advisorsResponses.add(new AdvisorResponse(advisor));
+        });
+
+        return new ResponseEntity<>(advisorsResponses, HttpStatus.OK);
 
     }
 
@@ -69,37 +105,19 @@ public class AdvisorController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping("/getWithDetails")
-    public ResponseEntity<?> getAllAdvisorsWithDetails() {
-
-        List<AdvisorResponse> advisors = advisorService.findAllAdvisorsWithDetails();
-
-        if (advisors.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(advisors, HttpStatus.OK);
-
-    }
-
-    @Operation(summary = "Retrieve all Advisors")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Advisor.class))}),
-        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
     @GetMapping("/getByID")
     public ResponseEntity<?> getAdvisorByID(@RequestParam Integer advisorID) {
-        //
-        Optional<Advisor> advisors = advisorService.findById(advisorID);
+        //tìm adivosr bằng adivsorID
+        Optional<Advisor> advisor = advisorService.findById(advisorID);
 
-        if (!advisors.isPresent()) {
+        if (!advisor.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(advisors, HttpStatus.OK);
+        // tạo AdvisorResposne
+        AdvisorResponse advisorResponse = new AdvisorResponse(advisor.get());
+
+        return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
 
     }
 

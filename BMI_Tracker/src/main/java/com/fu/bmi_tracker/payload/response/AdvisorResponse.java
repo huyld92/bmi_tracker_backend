@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.enums.EGender;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdvisorResponse {
 
-//    private String linkPhoto = "https://www.avatarfitness.co.uk/wp-content/uploads/Jacob-pdf.jpg";
     private Integer advisorID;
     private String accountPhoto;
     private String email;
@@ -27,6 +27,7 @@ public class AdvisorResponse {
     private String phoneNumber;
     private EGender gender;
     private LocalDate birthday;
+    private Integer totalBooking;
 //
 //    public AdvisorResponse(Integer advisorID, String accountPhoto, String email, String fullName, String phoneNumber, EGender gender, LocalDate birthday) {
 //        this.advisorID = advisorID;
@@ -37,5 +38,16 @@ public class AdvisorResponse {
 //        this.gender = gender;
 //        this.birthday = birthday;
 //    }
+
+    public AdvisorResponse(Advisor advisor) {
+        this.advisorID = advisor.getAdvisorID();
+        this.accountPhoto = advisor.getAccount().getAccountPhoto();
+        this.email = advisor.getAccount().getEmail();
+        this.fullName = advisor.getAccount().getFullName();
+        this.phoneNumber = advisor.getAccount().getPhoneNumber();
+        this.gender = advisor.getAccount().getGender();
+        this.birthday = advisor.getAccount().getBirthday();
+        this.totalBooking = advisor.getTotalBooking();
+    }
 
 }

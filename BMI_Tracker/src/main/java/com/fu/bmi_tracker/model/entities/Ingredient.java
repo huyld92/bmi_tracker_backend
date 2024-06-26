@@ -38,7 +38,7 @@ public class Ingredient {
     private String ingredientPhoto;
 
     @Column(name = "Quantity", nullable = false)
-    private Integer quantity;
+    private Float quantity;
 
     @Column(name = "Unit", nullable = false)
     private String unit;

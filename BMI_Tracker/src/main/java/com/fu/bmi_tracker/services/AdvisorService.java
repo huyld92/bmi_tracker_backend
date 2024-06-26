@@ -16,6 +16,6 @@ public interface AdvisorService extends GeneralService<Advisor> {
 
     public Advisor findByAccountID(Integer accountID);
 
-    public List<AdvisorResponse> findAllAdvisorsWithDetails();
+    public List<Advisor> findAllAdvisorsWithDetails();
 
 }

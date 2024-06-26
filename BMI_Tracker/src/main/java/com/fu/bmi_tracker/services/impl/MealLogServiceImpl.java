@@ -56,8 +56,10 @@ public class MealLogServiceImpl implements MealLogService {
         MealLog mealLog = repository
                 .findById(mealLogRequest.getMealLogID())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find meal log!"));
-        
+
         // cập nhật lại meal log
+        mealLog.setCalories(mealLogRequest.getCalories());
+        mealLog.setQuantity(mealLogRequest.getQuantity());
         return repository.save(mealLog);
     }
 
