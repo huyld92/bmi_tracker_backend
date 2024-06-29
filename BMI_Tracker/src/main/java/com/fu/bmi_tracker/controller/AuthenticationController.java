@@ -23,6 +23,7 @@ import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
 import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
+import com.fu.bmi_tracker.services.AccountService;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.EmailVerificationCodeService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
@@ -78,7 +79,7 @@ public class AuthenticationController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    AccountRepository accountRepository;
+    AccountService accountService;
 
     @Autowired
     RoleService roleService;
@@ -237,12 +238,12 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(@Valid @RequestBody RegisterRequest registerRequest) throws Exception {
 
-        if (accountRepository.existsByEmail(registerRequest.getEmail())) {
+        if (accountService.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-        if (accountRepository.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
+        if (accountService.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Phone number is already taken!"));
@@ -260,7 +261,7 @@ public class AuthenticationController {
                 true, accountRoles);
 
         // Save thông tin account xuống database
-        accountRepository.save(account);
+        accountService.save(account);
 
         // Create New User in firebase
         try {
@@ -331,9 +332,15 @@ public class AuthenticationController {
                 .getAuthentication().getPrincipal();
 
         if (accountDetails != null) {
+            // lấy account id từ context
             Integer accountID = accountDetails.getId();
+            // gọi refreshTokenService xóa refreshtoken
             refreshTokenService.deleteByAccountID(accountID);
+            
+            // gọi accountService xóa deviceToken
+            accountService.updateDeviceToken(accountID, null);
         }
+
         return ResponseEntity.ok(new MessageResponse("Log out successful!"));
     }
 

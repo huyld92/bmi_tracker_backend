@@ -97,17 +97,19 @@ public class ExercieController {
             return new ResponseEntity<>(new MessageResponse("Error update exercise!"), HttpStatus.BAD_REQUEST);
         }
         // tạo ExerciseResponse
-        ExerciseResponse exerciseEntityResponse
-                = new ExerciseResponse(exercise);
+        ExerciseEntityResponse exerciseEntityResponse = new ExerciseEntityResponse(
+                exercise,
+                TagConverter.convertToTagResponseList(
+                        exercise.getTags()));
         return new ResponseEntity<>(exerciseEntityResponse, HttpStatus.OK);
     }
 
     @Operation(
             summary = "Get all exercise",
-            description = "Get all exercise information not include Tag")
+            description = "Get all exercise information include Tag")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = ExerciseResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = ExerciseEntityResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -124,11 +126,17 @@ public class ExercieController {
         }
 
         // tạo Exercise response
-        List<ExerciseResponse> exerciseResponses = new ArrayList<>();
+        List<ExerciseEntityResponse> exerciseResponses = new ArrayList<>();
 
         // chuyển đổi từ Exercise sang ExerciseResponse
         exercises.forEach(exercise -> {
-            exerciseResponses.add(new ExerciseResponse(exercise));
+            // tạo Exercise entity response
+            ExerciseEntityResponse response = new ExerciseEntityResponse(
+                    exercise,
+                    TagConverter.convertToTagResponseList(
+                            exercise.getTags()));
+
+            exerciseResponses.add(response);
         });
 
         return new ResponseEntity<>(exerciseResponses, HttpStatus.OK);
@@ -164,25 +172,41 @@ public class ExercieController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Add tag to excercise",
-            description = "Add tag to excercise by tagID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = TagExercise.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping(value = "/addTag")
-//    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addTag(@RequestParam Integer exerciseID, @RequestParam Integer tagID) {
-        // gọi service để add tag vào exercise;
-        TagExercise exerciseTag = exerciseService.addTag(exerciseID, tagID);
-
-        return new ResponseEntity<>(exerciseTag, HttpStatus.CREATED);
-    }
-
+//    @Operation(
+//            summary = "Add tag to excercise",
+//            description = "Add tag to excercise by tagID")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "201", content = {
+//            @Content(schema = @Schema(implementation = TagExercise.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @PostMapping(value = "/addTag")
+////    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<?> addTag(@RequestParam Integer exerciseID, @RequestParam Integer tagID) {
+//        // gọi service để add tag vào exercise;
+//        TagExercise exerciseTag = exerciseService.addTag(exerciseID, tagID);
+//
+//        return new ResponseEntity<>(exerciseTag, HttpStatus.CREATED);
+//    }
+//
+//    @Operation(
+//            summary = "Delete exercise tag",
+//            description = "Delete exercise tag by exerciseID and tagID")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "204"),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @DeleteMapping(value = "/deleteExerciseTag")
+//    //@PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<?> deleteExerciseTag(@RequestParam Integer exerciseID, @RequestParam Integer tagID) {
+//        // gọi service deactivate exercise
+//        exerciseService.deleteTag(exerciseID, tagID);
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
     @Operation(
             summary = "Deactivate exercise ",
             description = "Deactivate exercise by id")
@@ -200,20 +224,4 @@ public class ExercieController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(
-            summary = "Delete exercise tag",
-            description = "Delete exercise tag by exerciseID and tagID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @DeleteMapping(value = "/deleteExerciseTag")
-    //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteExerciseTag(@RequestParam Integer exerciseID, @RequestParam Integer tagID) {
-        // gọi service deactivate exercise
-        exerciseService.deleteTag(exerciseID, tagID);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 }

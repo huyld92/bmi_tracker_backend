@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,21 +35,20 @@ public class CommissionController {
     @Autowired
     CommissionService commissionService;
 
-    @Operation(
-            summary = "Get all commission by advisor (ADVISOR)",
-            description = "Login with role advisor to get all commission")
+    @Operation(summary = "Get all commission by advisor (ADVISOR)", description = "Login with role advisor to get all commission")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Commission.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Commission.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "403", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @GetMapping(value = "/advisor/getAll")
     @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> getAllByAdvisor() {
         // Tìm account id từ context
-        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
 
         // Gọi Commission servicce lấy danh sách Commission của advisor
         Iterable<Commission> commissions = commissionService.getByAdvisor(principal.getId());
@@ -64,16 +62,14 @@ public class CommissionController {
         return new ResponseEntity<>(commissions, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Get all commission by advisorID",
-            description = "Send advisor ID and get all commisssion")
+    @Operation(summary = "Get all commission by advisorID", description = "Send advisor ID and get all commisssion")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Commission.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Commission.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "403", content = {
+                    @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = {
+                    @Content(schema = @Schema()) }) })
     @GetMapping(value = "/advisor/getByID")
     public ResponseEntity<?> getAllByAdvisorID(@RequestParam Integer advisorID) {
         // Gọi Commission servicce lấy danh sách Commission của advisor

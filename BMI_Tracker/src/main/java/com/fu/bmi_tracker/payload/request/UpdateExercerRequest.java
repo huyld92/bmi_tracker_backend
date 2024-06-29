@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,8 +45,11 @@ public class UpdateExercerRequest {
     @NotNull(message = "Calories burned is required")
     @PositiveOrZero(message = "Calories burned must be a positive number or zero")
     private Integer caloriesBurned;
-
+    
     @NotNull
-    @Schema(example = "true")
-    private Boolean isActive;
+    @Schema(example = "[1,2,3]")
+    private List<Integer> tagIDs;
+//    @NotNull
+//    @Schema(example = "true")
+//    private Boolean isActive;
 }

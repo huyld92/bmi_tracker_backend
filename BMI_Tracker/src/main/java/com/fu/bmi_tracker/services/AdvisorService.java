@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
-import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import java.util.List;
 
 /**

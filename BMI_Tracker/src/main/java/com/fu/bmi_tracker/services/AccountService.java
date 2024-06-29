@@ -22,4 +22,8 @@ public interface AccountService extends GeneralService<Account> {
 
     public void addMoreRole(Integer accountID, Integer roleID);
 
+    public boolean existsByEmail(String email);
+
+    public boolean existsByPhoneNumber(String phoneNumber);
+
 }

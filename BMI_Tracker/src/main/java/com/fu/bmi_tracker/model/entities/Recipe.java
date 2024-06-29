@@ -53,7 +53,7 @@ public class Recipe {
         this.ingredient = ingredient;
         this.unit = recipeRequest.getUnit();
         this.quantity = recipeRequest.getQuantity();
-        this.isActive = true;
+        this.isActive = recipeRequest.getIsActive();
     }
 
 }
