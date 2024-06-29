@@ -10,8 +10,10 @@ import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.RecipeRequest;
+import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.IngredientRepository;
+import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.services.FoodService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -30,6 +32,9 @@ public class FoodServiceImpl implements FoodService {
 
     @Autowired
     IngredientRepository ingredientRepository;
+
+    @Autowired
+    TagRepository tagRepository;
 
     @Override
     public Iterable<Food> findAll() {
@@ -87,6 +92,33 @@ public class FoodServiceImpl implements FoodService {
 
         // Gọi foodRepository lưu trữ food
         return foodRepository.save(food);
+    }
+
+    @Override
+    public Food updateFood(UpdateFoodRequest foodRequest) {
+        // tìm food bằng foodID
+        Food food = foodRepository.findById(foodRequest.getFoodID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find food with id{" + foodRequest.getFoodID() + "}!"));
+
+        // tìm tag từ list Tag ids
+        List<Tag> tags = tagRepository.findByTagIDIn(foodRequest.getTagIDs());
+
+        // Chuyển đổi từ List RecipeRequest thành List Recipe
+        List<Recipe> recipes = new ArrayList<>();
+
+        foodRequest.getRecipeRequests().forEach((RecipeRequest recipeRequest) -> {
+
+            // gọi ingredient repository tìm ingredient
+            Ingredient ingredient = ingredientRepository.findById(recipeRequest.getIngredientID())
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with ID {" + recipeRequest.getIngredientID() + "}"));
+            recipes.add(new Recipe(food, ingredient, recipeRequest));
+        });
+
+        //cập nhật lại giá trị foood
+        food.update(foodRequest, tags, recipes);
+
+        // lưu food đã cập nhật vào database
+        return save(food);
     }
 
 }

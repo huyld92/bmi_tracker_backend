@@ -67,7 +67,8 @@ public class PlanController {
         newPlan.setDescription(createRequest.getDescription());
         newPlan.setPlanDuration(createRequest.getPlanDuration());
         newPlan.setNumberOfUses(0);
-        newPlan.setIsActive(Boolean.TRUE);
+        // mặc định false đợi manager duyệt
+        newPlan.setIsActive(Boolean.FALSE);
 
         //Call service to save plan
         Plan planSave = planService.createPlan(newPlan, principal.getId());

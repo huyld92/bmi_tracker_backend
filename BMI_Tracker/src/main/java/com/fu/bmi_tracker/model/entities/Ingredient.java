@@ -87,4 +87,8 @@ public class Ingredient {
         this.isActive = ingredientRequest.isActive;
 
     }
+
+    public Integer get() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

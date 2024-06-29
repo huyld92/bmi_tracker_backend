@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -58,7 +59,11 @@ public class UpdateFoodRequest {
     @Schema(description = "Date when the food was created", requiredMode = Schema.RequiredMode.REQUIRED, example = "2024-06-06")
     private LocalDate creationDate;
 
-    @NotNull
-    @Schema(description = "Status indicating whether the food is active or not", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Boolean isActive;
+//    @NotNull
+//    @Schema(description = "Status indicating whether the food is active or not", requiredMode = Schema.RequiredMode.REQUIRED)
+//    private Boolean isActive;
+    @Schema(example = "[1,2,3]")
+    private List<Integer> tagIDs;
+
+    private List<RecipeRequest> recipeRequests;
 }

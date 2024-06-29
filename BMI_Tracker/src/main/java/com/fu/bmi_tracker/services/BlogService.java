@@ -6,7 +6,6 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Blog;
 import com.fu.bmi_tracker.payload.request.CreateBlogRequest;
-import java.util.Optional;
 
 /**
  *

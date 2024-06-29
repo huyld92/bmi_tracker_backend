@@ -16,6 +16,7 @@ import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponseAll;
 import com.fu.bmi_tracker.payload.response.FoodPageResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
+import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.payload.response.RecipeResponse;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.RecipeService;
@@ -156,23 +157,18 @@ public class FoodController {
     @PutMapping("/update")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateFood(@RequestBody UpdateFoodRequest foodRequest) {
-        // create UpdatefoodReuqest
-        // Tìm food 
-        Optional<Food> food = foodService.findById(foodRequest.getFoodID());
-        // kiểm tra food tồn tại
-        if (food.isPresent()) {
-            food.get().update(foodRequest);
-            // lưu trữ cập nhật xuống databse
-            foodService.save(food.get());
+        Food food = foodService.updateFood(foodRequest);
 
+        // kiểm tra kết quả
+        if (food != null) {
             // Tạo food entity response
-            FoodEntityResponse foodResponse = new FoodEntityResponse(food.get(),
-                    TagConverter.convertToTagResponseList(food.get().getFoodTags()),
-                    RecipeConverter.convertToRecipeResponseList(food.get().getRecipes()));
+            FoodEntityResponse foodResponse = new FoodEntityResponse(food,
+                    TagConverter.convertToTagResponseList(food.getFoodTags()),
+                    RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Cannot find food with id{" + foodRequest.getFoodID() + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Error update food!"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -197,7 +193,7 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Deactive a Food by Id")
+    @Operation(summary = "Deactive a recipe by food Id and IngredientID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema(implementation = RecipeResponse.class))}),
@@ -230,7 +226,7 @@ public class FoodController {
         return new ResponseEntity<>(recipeResponse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Deactive a Food by Id")
+    @Operation(summary = "Delete a recipe of Food by FoodId and IngredientID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),

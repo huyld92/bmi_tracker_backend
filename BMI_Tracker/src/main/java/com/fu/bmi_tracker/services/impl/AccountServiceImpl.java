@@ -20,28 +20,28 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-    
+
     @Autowired
     AccountRepository accountRepository;
-    
+
     @Autowired
     RoleRepository roleRepository;
-    
+
     @Override
     public Iterable<Account> findAll() {
         return accountRepository.findAll();
     }
-    
+
     @Override
     public Optional<Account> findById(Integer id) {
         return accountRepository.findById(id);
     }
-    
+
     @Override
     public Account save(Account t) {
         return accountRepository.save(t);
     }
-    
+
     @Override
     public Account createAccount(CreateAccountRequest createAccountRequest, String password) {
         // Create new object
@@ -50,20 +50,20 @@ public class AccountServiceImpl implements AccountService {
         // set Roles
         Set<Role> accountRoles = new HashSet<>();
         accountRoles.add(roleRepository.findByRoleName(createAccountRequest.getRole()));
-        
+
         account.setRoles(new HashSet<>(accountRoles));
-        
+
         account.setPassword(password);
-        
+
         return accountRepository.save(account);
     }
-    
+
     @Override
     public void updateDeviceToken(Integer accountID, String deviceToken) {
         // update deviceToken
         accountRepository.updateDeviceToken(accountID, deviceToken);
     }
-    
+
     @Override
     public void updateProfile(Integer accountID, UpdateProfileRequest updateProfileRequest) {
         // tìm account bằng accountID
@@ -78,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
         // cập nhật account xuống database
         save(account);
     }
-    
+
     @Override
     public void addMoreRole(Integer accountID, Integer roleID) {
         // tìm account bằng accountID
@@ -93,7 +93,17 @@ public class AccountServiceImpl implements AccountService {
         account.getRoles().add(role);
         // cập nhật lại account
         save(account);
-        
+
     }
-    
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return accountRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        return accountRepository.existsByPhoneNumber(phoneNumber);
+    }
+
 }
