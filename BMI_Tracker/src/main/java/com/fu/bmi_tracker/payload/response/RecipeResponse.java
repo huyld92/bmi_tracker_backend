@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RecipeResponse {
 
+    private Integer recipeID;
     private Integer ingredientID;
     private String ingredientName;
     private String ingredientPhoto;
@@ -26,6 +27,7 @@ public class RecipeResponse {
     private Boolean isActive;
 
     public RecipeResponse(Recipe recipe) {
+        this.recipeID = recipe.getRecipeID();
         this.ingredientID = recipe.getIngredient().getIngredientID();
         this.ingredientName = recipe.getIngredient().getIngredientName();
         this.ingredientPhoto = recipe.getIngredient().getIngredientPhoto();

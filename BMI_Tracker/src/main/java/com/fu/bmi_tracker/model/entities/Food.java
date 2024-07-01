@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import jakarta.persistence.CascadeType;
@@ -35,45 +36,45 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "Food")
 public class Food {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FoodID", nullable = false)
     private int foodID;
-    
+
     @Column(name = "FoodName", nullable = false)
     private String foodName;
-    
+
     @Column(name = "FoodCalories", nullable = false)
     private int foodCalories;
-    
+
     @Column(name = "Description", nullable = true)
     private String description;
-    
+
     @Column(name = "FoodPhoto", nullable = true)
     private String foodPhoto;
-    
+
     @Column(name = "FoodVideo", nullable = true)
     private String foodVideo;
-    
+
     @Column(name = "FoodNutrition", nullable = false)
     private String foodNutrition;
-    
+
     @Column(name = "Serving", nullable = false)
     private String serving;
-    
+
     @Column(name = "FoodTimeProcess", nullable = false)
     private int foodTimeProcess;
-    
+
     @Column(name = "CreationDate", nullable = false)
     private LocalDate creationDate;
-    
+
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
-    
-    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private List<Recipe> recipes;
-    
+
     @ManyToMany
     @JoinTable(
             name = "TagFood",
@@ -81,11 +82,11 @@ public class Food {
             inverseJoinColumns = @JoinColumn(name = "TagID")
     )
     private List<Tag> foodTags;
-    
+
     public Food(int foodID) {
         this.foodID = foodID;
     }
-    
+
     public Food(CreateFoodRequest createFoodRequest) {
         this.foodName = createFoodRequest.getFoodName();
         this.foodCalories = createFoodRequest.getFoodCalories();
@@ -98,7 +99,7 @@ public class Food {
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isActive = true;
     }
-    
+
     public void update(UpdateFoodRequest foodRequest, List<Tag> foodTags, List<Recipe> recipes) {
         if (foodRequest.getFoodName() != null) {
             this.foodName = foodRequest.getFoodName();
@@ -119,10 +120,8 @@ public class Food {
         if (foodRequest.getCreationDate() != null) {
             this.creationDate = foodRequest.getCreationDate();
         }
-        this.recipes.clear();
-        this.recipes.addAll(recipes);
-        this.foodTags.clear();
-        this.foodTags.addAll(foodTags);
+        this.recipes = recipes;
+        this.foodTags = foodTags;
     }
-    
+
 }

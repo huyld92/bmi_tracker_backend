@@ -4,6 +4,8 @@ import com.fu.bmi_tracker.model.entities.Certificate;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.payload.request.CreateCertificateRequest;
 import com.fu.bmi_tracker.payload.request.UpdateCertificateRequest;
+import com.fu.bmi_tracker.payload.response.CertificateResponse;
+import com.fu.bmi_tracker.payload.response.CertificatedNoAdvisor;
 import com.fu.bmi_tracker.services.CertificateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,7 +52,7 @@ public class CertificateController {
             description = "Create new certificate with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = Certificate.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = CertificateResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -68,7 +72,10 @@ public class CertificateController {
 
         }
 
-        return new ResponseEntity<>(certificateSave, HttpStatus.CREATED);
+        // tạo Certificate Response
+        CertificateResponse certificateResponse = new CertificateResponse(certificateSave);
+
+        return new ResponseEntity<>(certificateResponse, HttpStatus.CREATED);
     }
 
     @Operation(
@@ -76,7 +83,7 @@ public class CertificateController {
             description = "Update certificate name and link")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Certificate.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = CertificateResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -101,14 +108,16 @@ public class CertificateController {
             return new ResponseEntity<>("Failed to update certificate", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
+        // tạo Certificate Response
+        CertificateResponse certificateResponse = new CertificateResponse(certificateSave);
 
-        return new ResponseEntity<>(certificateSave, HttpStatus.OK);
+        return new ResponseEntity<>(certificateResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "Retrieve all Certificates")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Certificate.class))}),
+            @Content(schema = @Schema(implementation = CertificateResponse.class))}),
         @ApiResponse(responseCode = "204", description = "There are no Certificates", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -123,14 +132,22 @@ public class CertificateController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(certificates, HttpStatus.OK);
+        // tạo certificateResponse
+        List<CertificateResponse> certificateResponse = new ArrayList<>();
+
+        certificates.forEach(certificate -> {
+            certificateResponse.add(new CertificateResponse(certificate));
+
+        });
+
+        return new ResponseEntity<>(certificateResponse, HttpStatus.OK);
 
     }
 
     @Operation(summary = "Retrieve all Certificates personally (ADVISOR)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Certificate.class))}),
+            @Content(schema = @Schema(implementation = CertificateResponse.class))}),
         @ApiResponse(responseCode = "204", description = "There are no Certificates", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -148,7 +165,15 @@ public class CertificateController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(certificates, HttpStatus.OK);
+        // tạo certificateResponse
+        List<CertificateResponse> certificateResponse = new ArrayList<>();
+
+        certificates.forEach(certificate -> {
+            certificateResponse.add(new CertificateResponse(certificate));
+
+        });
+
+        return new ResponseEntity<>(certificateResponse, HttpStatus.OK);
 
     }
 
@@ -157,7 +182,7 @@ public class CertificateController {
             description = "Get a Certificate object by specifying its id. The response is Certificate object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Certificate.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = CertificateResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -168,7 +193,9 @@ public class CertificateController {
         Optional<Certificate> certificate = certificateService.findById(id);
 
         if (certificate.isPresent()) {
-            return new ResponseEntity<>(certificate, HttpStatus.OK);
+            // tạo Certificate Response
+            CertificateResponse certificateResponse = new CertificateResponse(certificate.get());
+            return new ResponseEntity<>(certificateResponse, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find certificate with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
@@ -179,7 +206,7 @@ public class CertificateController {
             description = "Get a Certificate object by specifying advisor id. The response is Certificate object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Certificate.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = CertificatedNoAdvisor.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -194,7 +221,15 @@ public class CertificateController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(certificates, HttpStatus.OK);
+        // tạo certificateResponse
+        List<CertificatedNoAdvisor> certificateResponse = new ArrayList<>();
+
+        certificates.forEach(certificate -> {
+            certificateResponse.add(new CertificatedNoAdvisor(certificate));
+
+        });
+
+        return new ResponseEntity<>(certificateResponse, HttpStatus.OK);
     }
 
     @Operation(
