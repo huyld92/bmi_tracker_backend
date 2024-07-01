@@ -13,10 +13,10 @@ import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
  */
 public interface RecipeService extends GeneralService<Recipe> {
 
-    public void deleteRecipe(Integer foodID, Integer ingredientID);
+    public void deleteRecipe(Integer recipeID);
 
     public Recipe createRecipe(CreateRecipeRequest recipeRequest);
 
-    public void deactiveRecipe(Integer foodID, Integer ingredientID);
+    public void deactiveRecipe(Integer recipeID);
 
 }

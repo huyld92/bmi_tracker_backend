@@ -65,5 +65,5 @@ public class UpdateFoodRequest {
     @Schema(example = "[1,2,3]")
     private List<Integer> tagIDs;
 
-    private List<RecipeRequest> recipeRequests;
+    private List<UpdateFoodRecipeRequest> recipeRequests;
 }

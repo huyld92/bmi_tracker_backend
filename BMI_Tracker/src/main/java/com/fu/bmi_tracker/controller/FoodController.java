@@ -158,7 +158,6 @@ public class FoodController {
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateFood(@RequestBody UpdateFoodRequest foodRequest) {
         Food food = foodService.updateFood(foodRequest);
-
         // kiểm tra kết quả
         if (food != null) {
             // Tạo food entity response
@@ -193,7 +192,7 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Deactive a recipe by food Id and IngredientID")
+    @Operation(summary = "Deactivate a recipe by recipeID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema(implementation = RecipeResponse.class))}),
@@ -201,10 +200,10 @@ public class FoodController {
             @Content(schema = @Schema())})})
     @DeleteMapping("/recipe/deactivate")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deactivateRecipe(@RequestParam Integer foodID, @RequestParam Integer ingredientID) {
+    public ResponseEntity<?> deactivateRecipe(@RequestParam Integer recipeID) {
         // Gọi recipeService deactivate recipe
-        recipeService.deactiveRecipe(foodID, ingredientID);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        recipeService.deactiveRecipe(recipeID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
 
@@ -226,7 +225,7 @@ public class FoodController {
         return new ResponseEntity<>(recipeResponse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete a recipe of Food by FoodId and IngredientID")
+    @Operation(summary = "Delete a recipe of Food by recipeID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
@@ -234,8 +233,8 @@ public class FoodController {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deleteRecipe")
 //    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteRecipe(@RequestParam Integer foodID, @RequestParam Integer ingredientID) {
-        recipeService.deleteRecipe(foodID, ingredientID);
+    public ResponseEntity<?> deleteRecipe(@RequestParam Integer recipeID) {
+        recipeService.deleteRecipe(recipeID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 

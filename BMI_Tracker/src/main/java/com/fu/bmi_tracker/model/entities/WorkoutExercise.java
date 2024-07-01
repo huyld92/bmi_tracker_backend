@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class WorkoutExercise {
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "WorkoutID")
     private Workout workout;
 

@@ -21,6 +21,7 @@ import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import com.fu.bmi_tracker.services.MenuService;
+import com.fu.bmi_tracker.util.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -125,7 +126,9 @@ public class MenuController {
 
         // tạo menu response
         MenuResponse menuResponse = new MenuResponse(
-                menu, menuFoodResponses);
+                menuSave,
+                TagConverter.convertToTagResponseList(menuSave.getTags()),
+                menuFoodResponses);
 
         return new ResponseEntity<>(menuResponse, HttpStatus.CREATED);
     }
@@ -251,7 +254,10 @@ public class MenuController {
 
         // tạo menu response
         List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.get().getMenuID());
-        MenuResponse menuResponses = new MenuResponse(menu.get(), menuFoodResponses);
+        MenuResponse menuResponses = new MenuResponse(
+                menu.get(),
+                TagConverter.convertToTagResponseList(menu.get().getTags()),
+                menuFoodResponses);
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
     }

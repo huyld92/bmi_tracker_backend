@@ -69,15 +69,15 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    public void deleteRecipe(Integer foodID, Integer ingredientID) {
-        repository.deleteByFood_FoodIDAndIngredient_IngredientID(foodID, ingredientID);
+    public void deleteRecipe(Integer recipeID) {
+        repository.deleteById(recipeID);
     }
 
     @Override
-    public void deactiveRecipe(Integer foodID, Integer ingredientID) {
+    public void deactiveRecipe(Integer recipeID) {
         // tìm recipe bằng foodID và ingredientID
-        Recipe recipe = repository.findByFood_FoodIDAndIngredient_IngredientID(foodID, ingredientID)
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
+        Recipe recipe = repository.findById(recipeID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find recipe!"));
         // set IsActive  = false để deactivate
         recipe.setIsActive(false);
         // lưu lại recipe đã cập nhật
