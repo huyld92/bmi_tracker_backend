@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Booking;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
+import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
 import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.BookingResponse;
@@ -286,7 +287,7 @@ public class BookingController {
             description = "Get current advisor support member with booking status Pending")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AdvisorResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = AdvisorDetailsResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -298,13 +299,9 @@ public class BookingController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // GỌi booking service tìm advisor 
-        Advisor advisor = bookingService.getAdvisorOfMember(principal.getId());
-        if (advisor == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        // tạo Advisor response
-        AdvisorResponse advisorResponse = new AdvisorResponse(advisor);
-        return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
+        AdvisorDetailsResponse advisorDetailsResponse = bookingService.getAdvisorOfMember(principal.getId());
+
+        return new ResponseEntity<>(advisorDetailsResponse, HttpStatus.OK);
 
     }
 }
