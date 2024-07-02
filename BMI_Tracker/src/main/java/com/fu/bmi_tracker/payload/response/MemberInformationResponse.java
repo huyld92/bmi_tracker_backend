@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,8 @@ public class MemberInformationResponse {
     private String fullName;
     private String gender;
     private String phoneNumber;
+    private LocalDate endDateOfPlan;
+    private LocalDate birthday;
     private Integer height;
     private Integer weight;
     private Integer age;

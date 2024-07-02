@@ -124,7 +124,7 @@ public class AdvisorController {
     @Operation(summary = "Update Advisors information (ADVISOR)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Advisor.class))}),
+            @Content(schema = @Schema(implementation = AdvisorResponse.class))}),
         @ApiResponse(responseCode = "400", description = "There are no Advisors", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -155,7 +155,10 @@ public class AdvisorController {
         // store advisor
         advisorService.save(advisor);
 
-        return new ResponseEntity<>(advisor, HttpStatus.OK);
+        // tạo AdvisorResposne
+        AdvisorResponse advisorResponse = new AdvisorResponse(advisor);
+
+        return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
 
     }
 

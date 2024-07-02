@@ -35,7 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author BaoLG
  */
-@Tag(name = "[Feedback]", description = "Feedback management APIs")
+
+@Tag(name = "Feedback", description = "Feedback management APIs")
 @RestController
 @RequestMapping("/api/feedbacks")
 public class FeedbackController {

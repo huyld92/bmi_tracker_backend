@@ -245,7 +245,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
-    @Operation(summary = "Update profile", description = "Profile will be updated for the currently logged in user")
+    @Operation(summary = "Update profile (Need to login)", description = "Profile will be updated for the currently logged in user")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
@@ -254,7 +254,6 @@ public class AccountController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PutMapping(value = "/update-profile")
-    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateProfileRequest updateProfileRequest) {
         // lấy account từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()

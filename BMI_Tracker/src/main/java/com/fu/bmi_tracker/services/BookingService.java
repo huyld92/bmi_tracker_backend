@@ -4,10 +4,10 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Booking;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
+import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
 import java.util.List;
 
 /**
@@ -28,6 +28,6 @@ public interface BookingService extends GeneralService<Booking> {
 
     public List<Member> getCurrentMemeberOfAdvisor(Integer accountID);
 
-    public Advisor getAdvisorOfMember(Integer accountID);
+    public AdvisorDetailsResponse getAdvisorOfMember(Integer accountID);
 
 }

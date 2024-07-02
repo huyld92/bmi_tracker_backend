@@ -209,12 +209,13 @@ public class WorkoutController {
             workoutExercisesResponses.add(new WorkoutExerciseResponse(workoutExercise));
         });
 
-        WorkoutResonse resonse = new WorkoutResonse(
+        // tạo workout response
+        WorkoutResonse response = new WorkoutResonse(
                 workout.get(),
                 TagConverter.convertToTagResponseList(workout.get().getTags()),
                 workoutExercisesResponses);
 
-        return new ResponseEntity<>(resonse, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(
@@ -222,7 +223,7 @@ public class WorkoutController {
             description = "Get workout by advisor ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Workout.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = WorkoutResonse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -244,8 +245,21 @@ public class WorkoutController {
         if (!workouts.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        
+ 
+        // tạo workout response
+        List<WorkoutResonse> workoutResonses = new ArrayList<>();
+        // duyeejt list workout
+        workouts.forEach(workout -> {
 
-        return new ResponseEntity<>(workouts, HttpStatus.OK);
+            workoutResonses.add(new WorkoutResonse(
+                    workout,
+                    TagConverter.convertToTagResponseList(workout.getTags()),
+                    WorkoutExerciseConverter.convertToTagResponseList(workout.getWorkoutExercises())));
+        });
+
+        
+        return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
 
     }
 
