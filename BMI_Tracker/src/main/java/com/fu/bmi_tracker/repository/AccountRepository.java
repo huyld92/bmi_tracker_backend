@@ -32,4 +32,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("UPDATE Account a SET a.deviceToken = :deviceToken WHERE a.accountID = :accountID")
     public void updateDeviceToken(Integer accountID, String deviceToken);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Account a SET a.accountPhoto = :imageLink WHERE a.accountID = :accountID")
+    public void updateAccountPhoto(Integer accountID, String imageLink);
+
 }

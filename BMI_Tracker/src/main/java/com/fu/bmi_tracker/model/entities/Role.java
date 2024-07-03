@@ -33,7 +33,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoleID", nullable = false)
-    private int roleId;
+    private Integer roleID;
 
     @Column(name = "RoleName", nullable = false)
     @Enumerated(EnumType.STRING)

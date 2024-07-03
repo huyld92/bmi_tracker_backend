@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import com.fu.bmi_tracker.model.entities.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,16 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagResponse {
+public class TagBasicResponse {
 
     private Integer tagID;
     private String tagName;
-    private String tagDesription;
-
-    public TagResponse(Tag tag) {
-        this.tagID = tag.getTagID();
-        this.tagName = tag.getTagName();
-        this.tagDesription = tag.getTagDescription();
-    }
-
 }

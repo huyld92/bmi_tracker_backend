@@ -26,4 +26,8 @@ public interface AccountService extends GeneralService<Account> {
 
     public boolean existsByPhoneNumber(String phoneNumber);
 
+    public void updateAccountPhoto(Integer accountID, String imageLink);
+
+    public void deleteRole(Integer accountID, Integer roleID);
+
 }

@@ -26,10 +26,10 @@ public class WorkoutResonse {
     private Integer totalCloriesBurned;
     private Boolean isActive;
     private Integer advisorID;
-    private List<TagResponse> workoutTags;
+    private List<TagBasicResponse> workoutTags;
     private List<WorkoutExerciseResponse> workoutExercises;
 
-    public WorkoutResonse(Workout workout, List<TagResponse> workoutTags, List<WorkoutExerciseResponse> workoutExercisesResponses) {
+    public WorkoutResonse(Workout workout, List<TagBasicResponse> workoutTags, List<WorkoutExerciseResponse> workoutExercisesResponses) {
         this.workoutID = workout.getWorkoutID();
         this.workoutName = workout.getWorkoutName();
         this.workoutDescription = workout.getWorkoutDescription();

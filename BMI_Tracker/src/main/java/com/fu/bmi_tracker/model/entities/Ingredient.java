@@ -37,6 +37,9 @@ public class Ingredient {
     @Column(name = "IngredientPhoto", nullable = true)
     private String ingredientPhoto;
 
+    @Column(name = "NutritionalInformation", nullable = true)
+    private String nutritionalInformation;
+
     @Column(name = "Quantity", nullable = false)
     private Float quantity;
 

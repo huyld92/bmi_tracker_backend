@@ -42,11 +42,11 @@ public class FoodEntityResponse {
 
     private Boolean isActive;
 
-    private List<TagResponse> foodTags;
+    private List<TagBasicResponse> foodTags;
 
     private List<RecipeResponse> recipes;
 
-    public FoodEntityResponse(Food food, List<TagResponse> foodTags, List<RecipeResponse> recipes) {
+    public FoodEntityResponse(Food food, List<TagBasicResponse> foodTags, List<RecipeResponse> recipes) {
         this.foodID = food.getFoodID();
         this.foodName = food.getFoodName();
         this.foodCalories = food.getFoodCalories();

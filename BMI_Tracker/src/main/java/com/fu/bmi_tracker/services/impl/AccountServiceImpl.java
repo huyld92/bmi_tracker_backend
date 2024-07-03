@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -104,6 +105,31 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean existsByPhoneNumber(String phoneNumber) {
         return accountRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public void updateAccountPhoto(Integer accountID, String imageLink) {
+        // update account photo
+        accountRepository.updateAccountPhoto(accountID, imageLink);
+    }
+
+    @Override
+    public void deleteRole(Integer accountID, Integer roleID) {
+        // tìm account bằng account ID
+        Account account = accountRepository.findById(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find acount!"));
+
+        // remove role trong account
+        Set<Role> roles
+                = account.getRoles().stream() // Sử dụng stream để lọc các vai trò mà không có roleID cần xóa
+                        .filter(role -> !role.getRoleID().equals(roleID))// Giữ lại các vai trò không có roleID này
+                        .collect(Collectors.toSet());  // collect các vai trò còn lại vào một tập hợp mới
+
+        // set lại roles cho account
+        account.setRoles(roles);
+        
+        // cập nhật lại thông tin account
+        save(account);
     }
 
 }
