@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.controller;
 import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.model.enums.ETagType;
 import com.fu.bmi_tracker.payload.request.CreateTagRequest;
+import com.fu.bmi_tracker.payload.response.TagResponse;
 import com.fu.bmi_tracker.services.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +126,84 @@ public class TagController {
         List<Tag> tags = service.findByTagType(tagType);
 
         return new ResponseEntity<>(tags, HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Retrieve all Tags to create food", tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TagResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("food/getAll")
+    public ResponseEntity<?> getAllToCreateFood() {
+
+        // gọi service lấy danh sách tag phù hợp create food
+        Iterable<Tag> tags = service.getTagCreateFood();
+
+        if (!tags.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo tag Response
+        List<TagResponse> tagResponses = new ArrayList<>();
+
+        tags.forEach(tag -> tagResponses.add(new TagResponse(tag)));
+        return new ResponseEntity<>(tagResponses, HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Retrieve all Tags to create exercise", tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TagResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("exercise/getAll")
+    public ResponseEntity<?> getAllToCreateExercise() {
+
+        // gọi service lấy danh sách tag phù hợp create exercise
+        Iterable<Tag> tags = service.getTagCreateExercise();
+
+        if (!tags.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo tag Response
+        List<TagResponse> tagResponses = new ArrayList<>();
+
+        tags.forEach(tag -> tagResponses.add(new TagResponse(tag)));
+        return new ResponseEntity<>(tagResponses, HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Retrieve all Tags to create ingredient", tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TagResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("ingredient/getAll")
+    public ResponseEntity<?> getAllToCreateIngredient() {
+
+        // gọi service lấy danh sách tag phù hợp create ingredient
+        Iterable<Tag> tags = service.getTagCreateIngredient();
+
+        if (!tags.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo tag Response
+        List<TagResponse> tagResponses = new ArrayList<>();
+
+        tags.forEach(tag -> tagResponses.add(new TagResponse(tag)));
+        return new ResponseEntity<>(tagResponses, HttpStatus.OK);
 
     }
 }

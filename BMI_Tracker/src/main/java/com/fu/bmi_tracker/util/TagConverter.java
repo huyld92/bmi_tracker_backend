@@ -5,7 +5,7 @@
 package com.fu.bmi_tracker.util;
 
 import com.fu.bmi_tracker.model.entities.Tag;
-import com.fu.bmi_tracker.payload.response.TagResponse;
+import com.fu.bmi_tracker.payload.response.TagBasicResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 
 public class TagConverter {
 
-    public static TagResponse convertToTagResponse(Tag tag) {
-        TagResponse tagResponse = new TagResponse();
+    public static TagBasicResponse convertToTagResponse(Tag tag) {
+        TagBasicResponse tagResponse = new TagBasicResponse();
         tagResponse.setTagID(tag.getTagID());
         tagResponse.setTagName(tag.getTagName());
         return tagResponse;
     }
 
-    public static List<TagResponse> convertToTagResponseList(List<Tag> tags) {
+    public static List<TagBasicResponse> convertToTagResponseList(List<Tag> tags) {
         return tags.stream()
                 .map(TagConverter::convertToTagResponse)
                 .collect(Collectors.toList());

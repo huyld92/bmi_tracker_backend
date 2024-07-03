@@ -42,9 +42,9 @@ public class FoodResponseAll {
 
     private Boolean isActive;
 
-    private List<TagResponse> foodTags;
+    private List<TagBasicResponse> foodTags;
 
-    public FoodResponseAll(Food foodSaved, List<TagResponse> foodTags) {
+    public FoodResponseAll(Food foodSaved, List<TagBasicResponse> foodTags) {
         this.foodID = foodSaved.getFoodID();
         this.foodName = foodSaved.getFoodName();
         this.foodCalories = foodSaved.getFoodCalories();

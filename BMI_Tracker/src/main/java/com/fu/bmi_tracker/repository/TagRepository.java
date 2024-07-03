@@ -20,4 +20,8 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     public List<Tag> findByTagTypeID(int id);
 
+    public Iterable<Tag> findByIsActiveTrueAndTagTypeIDNotIn(List<Integer> tagTypeIDs);
+    
+    public Iterable<Tag> findByIsActiveTrueAndTagTypeIDIn(List<Integer> tagTypeIDs);
+
 }

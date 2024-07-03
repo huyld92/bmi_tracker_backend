@@ -18,4 +18,10 @@ public interface TagService extends GeneralService<Tag> {
 
     public List<Tag> findByTagType(ETagType tagType);
 
+    public Iterable<Tag> getTagCreateFood();
+
+    public Iterable<Tag> getTagCreateExercise();
+
+    public Iterable<Tag> getTagCreateIngredient();
+
 }

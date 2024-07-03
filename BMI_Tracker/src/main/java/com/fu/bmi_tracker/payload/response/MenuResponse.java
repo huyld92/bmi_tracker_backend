@@ -26,10 +26,10 @@ public class MenuResponse {
     private Integer totalCalories;
     private Boolean isActive;
     private Integer advisorID;
-    private List<TagResponse> menuTags;
+    private List<TagBasicResponse> menuTags;
     private List<MenuFoodResponse> menuFoods;
 
-    public MenuResponse(Menu menu, List<TagResponse> menuTags, List<MenuFoodResponse> menuFoodResponses) {
+    public MenuResponse(Menu menu, List<TagBasicResponse> menuTags, List<MenuFoodResponse> menuFoodResponses) {
         this.menuID = menu.getMenuID();
         this.menuName = menu.getMenuName();
         this.menuPhoto = menu.getMenuPhoto();
