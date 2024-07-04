@@ -34,7 +34,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role findByRoleName(ERole eRole) {
+    public Optional<Role> findByRoleName(ERole eRole) {
         return repository.findByRoleName(eRole);
     }
 

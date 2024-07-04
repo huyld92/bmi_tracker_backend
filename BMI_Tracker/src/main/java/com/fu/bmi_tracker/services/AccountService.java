@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Account;
+import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 import com.fu.bmi_tracker.payload.request.UpdateProfileRequest;
 
@@ -20,7 +21,7 @@ public interface AccountService extends GeneralService<Account> {
 
     public void updateProfile(Integer accountID, UpdateProfileRequest updateProfileRequest);
 
-    public void addMoreRole(Integer accountID, Integer roleID);
+    public void addMoreRole(Integer accountID, ERole roleName);
 
     public boolean existsByEmail(String email);
 

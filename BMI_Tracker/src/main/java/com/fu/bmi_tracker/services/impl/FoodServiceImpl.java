@@ -10,7 +10,6 @@ import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.RecipeRequest;
-import com.fu.bmi_tracker.payload.request.UpdateFoodRecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.IngredientRepository;
@@ -129,6 +128,11 @@ public class FoodServiceImpl implements FoodService {
 
         // Lưu Food đã được cập nhật vào cơ sở dữ liệu
         return foodRepository.save(food);
+    }
+
+    @Override
+    public Iterable<Food> searchLikeFoodName(String foodName) {
+        return foodRepository.findByFoodNameContains(foodName);
     }
 
 }

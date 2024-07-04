@@ -43,7 +43,7 @@ public class Commission {
     private BigDecimal commissionAmount;
 
     @Column(name = "CommissionRate", nullable = false)
-    private int commissionRate;
+    private Integer commissionRate;
 
     @Column(name = "PaidDate", nullable = true)
     private LocalDateTime paidDate;

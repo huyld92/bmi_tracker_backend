@@ -36,4 +36,6 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
             + "(SELECT tf.food.foodID FROM TagFood tf JOIN Tag t ON tf.tag.tagID = t.tagID "
             + "WHERE t.tagName = :tagName) AND f.isActive = true")
     List<Food> findFoodWithoutTagName(String tagName);
+
+    public Iterable<Food> findByFoodNameContains(String foodName);
 }

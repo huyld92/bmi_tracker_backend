@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,10 +109,12 @@ public class MenuController {
         // Tạo danh sách Menu Food object từ menuRequest và menu food reponse
         List<MenuFood> menuFoods = new ArrayList<>();
 
+        // tạo menu food responses
         List<MenuFoodResponse> menuFoodResponses = new ArrayList<>();
 
         menuRequest.getMenuFoods().forEach((MenuFoodRequest request) -> {
-            Food food = foodService.findById(request.getFoodID()).get();
+            Food food = foodService.findById(request.getFoodID())
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find food id{" + request.getFoodID() + "}!"));
 
             FoodResponse foodResponse = new FoodResponse(food);
 
@@ -121,6 +124,7 @@ public class MenuController {
             // add menu food
             menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
         });
+
         // lưu danh sách menu food
         menuFoodService.saveAll(menuFoods);
 

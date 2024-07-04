@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Role;
+import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 import com.fu.bmi_tracker.payload.request.UpdateProfileRequest;
 import com.fu.bmi_tracker.repository.AccountRepository;
@@ -48,9 +49,13 @@ public class AccountServiceImpl implements AccountService {
         // Create new object
         Account account = new Account(createAccountRequest);
 
+        // gọi repository tìm Role bằng roleName
+        Role role = roleRepository.findByRoleName(createAccountRequest.getRole())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find role!"));
+
         // set Roles
         Set<Role> accountRoles = new HashSet<>();
-        accountRoles.add(roleRepository.findByRoleName(createAccountRequest.getRole()));
+        accountRoles.add(role);
 
         account.setRoles(new HashSet<>(accountRoles));
 
@@ -81,13 +86,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addMoreRole(Integer accountID, Integer roleID) {
+    public void addMoreRole(Integer accountID, ERole roleName) {
         // tìm account bằng accountID
         Account account = accountRepository.findById(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find acount!"));
 
         // tìm role bằng role ID
-        Role role = roleRepository.findById(roleID)
+        Role role = roleRepository.findByRoleName(roleName)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find role!"));
 
         // thêm role mới
@@ -127,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
 
         // set lại roles cho account
         account.setRoles(roles);
-        
+
         // cập nhật lại thông tin account
         save(account);
     }

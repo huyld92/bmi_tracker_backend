@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.model.enums.ERole;
+import java.util.Optional;
 
 /**
  *
@@ -13,6 +14,6 @@ import com.fu.bmi_tracker.model.enums.ERole;
  */
 public interface RoleService extends GeneralService<Role> {
 
-    public Role findByRoleName(ERole eRole);
+    public Optional<Role> findByRoleName(ERole eRole);
 
 }

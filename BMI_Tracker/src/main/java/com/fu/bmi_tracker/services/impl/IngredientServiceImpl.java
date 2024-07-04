@@ -38,4 +38,9 @@ public class IngredientServiceImpl implements IngredientService {
         return repository.findByIngredientIDIn(ingredientIds);
     }
 
+    @Override
+    public Iterable<Ingredient> searchLikeIngredientName(String ingredientName) {
+        return repository.findByIngredientNameContains(ingredientName);
+    }
+
 }

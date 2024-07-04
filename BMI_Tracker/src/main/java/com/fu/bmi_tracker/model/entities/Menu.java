@@ -66,7 +66,7 @@ public class Menu {
 
     public Menu(CreateMenuRequest menuRequest, Integer advisorID) {
         this.menuName = menuRequest.getMenuName();
-        this.menuName = menuRequest.getMenuName();
+        this.menuDescription = menuRequest.getMenuDescription();
         this.menuPhoto = menuRequest.getMenuPhoto();
         this.totalCalories = menuRequest.getTotalCalories();
         this.isActive = true;

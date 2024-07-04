@@ -276,4 +276,34 @@ public class FoodController {
 
     }
 
+    @Operation(
+            summary = "Search food by name",
+            description = "Search food with like name")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/search-by-name")
+    public ResponseEntity<?> getFoodWithDietPreference(@RequestParam String foodName) {
+        // gọi service tìm food bằng foodName
+        Iterable<Food> foods = foodService.searchLikeFoodName(foodName.trim());
+
+        // kiểm tra empty
+        if (!foods.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        //chuyển đổi từ food sang FoodResponse 
+        List<FoodResponse> foodsResponse = new ArrayList<>();
+        for (Food food : foods) {
+            FoodResponse foodResponse = new FoodResponse(food);
+
+            foodsResponse.add(foodResponse);
+        }
+        return new ResponseEntity<>(foodsResponse, HttpStatus.OK);
+
+    }
 }

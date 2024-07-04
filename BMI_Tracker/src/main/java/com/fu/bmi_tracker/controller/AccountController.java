@@ -128,8 +128,8 @@ public class AccountController {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/role/add-more-role")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addMoreRole(@RequestParam Integer accountID, Integer roleID) {
-        accountService.addMoreRole(accountID, roleID);
+    public ResponseEntity<?> addMoreRole(@RequestParam Integer accountID, ERole roleName) {
+        accountService.addMoreRole(accountID, roleName);
 
         return new ResponseEntity<>(new MessageResponse("Add role success"), HttpStatus.OK);
 
@@ -311,7 +311,7 @@ public class AccountController {
 
         // gọi service update account photo
         accountService.updateAccountPhoto(principal.getId(), imageLink);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "Delete account role", description = "Admin delete role of account (Manage account)")

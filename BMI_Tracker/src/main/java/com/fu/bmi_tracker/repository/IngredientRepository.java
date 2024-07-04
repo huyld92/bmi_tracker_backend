@@ -18,4 +18,6 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Integer>
 
     public List<Ingredient> findByIngredientIDIn(List<Integer> ingredientIds);
 
+    public Iterable<Ingredient> findByIngredientNameContains(String ingredientName);
+
 }
