@@ -5,12 +5,10 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.model.enums.EDietPreference;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
-import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponseAll;
@@ -142,7 +140,7 @@ public class FoodController {
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Cannot find food with id{" + id + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Cannot find food with id{" + id + "}"), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -305,5 +303,33 @@ public class FoodController {
         }
         return new ResponseEntity<>(foodsResponse, HttpStatus.OK);
 
+    }
+
+    @Operation(summary = "Retrieve all recipes by foodID ")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = RecipeResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("recipe/getAll")
+    public ResponseEntity<?> getAllRecipesByFoodID(@RequestParam Integer foodID) {
+        // Lấy danh sách food từ service
+        Iterable<Recipe> recipes = foodService.findAllRecipesByFoodID(foodID);
+
+        // kiểm tra empty
+        if (!recipes.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        //chuyển đổi từ recipe sang RecipeResponse
+        List<RecipeResponse> recipesResponse = new ArrayList<>();
+        for (Recipe recipe : recipes) {
+            RecipeResponse recipeResponse = new RecipeResponse(recipe);
+
+            recipesResponse.add(recipeResponse);
+        }
+
+        return new ResponseEntity<>(recipesResponse, HttpStatus.OK);
     }
 }

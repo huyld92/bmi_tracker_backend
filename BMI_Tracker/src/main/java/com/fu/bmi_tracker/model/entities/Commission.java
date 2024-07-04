@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
+import com.fu.bmi_tracker.payload.request.UpdateCommissionRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -45,11 +46,11 @@ public class Commission {
     @Column(name = "CommissionRate", nullable = false)
     private Integer commissionRate;
 
-    @Column(name = "PaidDate", nullable = true)
-    private LocalDateTime paidDate;
-
     @Column(name = "ExpectedPaymentDate", nullable = false)
     private LocalDate expectedPaymentDate;
+
+    @Column(name = "PaidDate", nullable = true)
+    private LocalDateTime paidDate;
 
     @Column(name = "PaidAmount", nullable = false)
     private BigDecimal paidAmount;
@@ -74,6 +75,13 @@ public class Commission {
         this.paymentStatus = paymentStatus;
         this.commissionDescription = commissionDescription;
         this.advisor = advisor;
+    }
+
+    public void update(UpdateCommissionRequest commissionRequest) {
+        this.paidDate = commissionRequest.getPaidDate();
+        this.paidAmount = commissionRequest.getPaidAmount();
+        this.paymentStatus = commissionRequest.getPaymentStatus();
+        this.commissionDescription = commissionRequest.getCommissionDescription();
     }
 
 }

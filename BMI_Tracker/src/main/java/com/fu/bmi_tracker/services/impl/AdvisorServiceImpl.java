@@ -10,37 +10,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.services.AdvisorService;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
 public class AdvisorServiceImpl implements AdvisorService {
 
     @Autowired
-    AdvisorRepository memberRepository;
+    AdvisorRepository advisorRepository;
 
     @Override
     public Iterable<Advisor> findAll() {
-        return memberRepository.findAll();
+        return advisorRepository.findAll();
     }
 
     @Override
     public Optional<Advisor> findById(Integer id) {
-        return memberRepository.findById(id);
+        return advisorRepository.findById(id);
     }
 
     @Override
     public Advisor save(Advisor t) {
-        return memberRepository.save(t);
+        return advisorRepository.save(t);
     }
 
     @Override
     public Advisor findByAccountID(Integer accountID) {
-        return memberRepository.findByAccount_AccountID(accountID).get();
+        return advisorRepository.findByAccount_AccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor with account id{" + accountID + "}!"));
+
     }
 
     @Override
     public List<Advisor> findAllAdvisorsWithDetails() {
-        return memberRepository.findAllByIsActiveTrue();
+        return advisorRepository.findAllByIsActiveTrue();
     }
 
 }

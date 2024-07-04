@@ -117,7 +117,6 @@ public class PlanController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAllAvaible")
-    //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllAvaiblePlan() {
 
         Iterable<Plan> planList = planService.findAllAvailblePlan();
@@ -162,9 +161,9 @@ public class PlanController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/getByAdvisorID")
+    @GetMapping(value = "/getByAdvisor")
     @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> getPlanByAdvisorID() {
+    public ResponseEntity<?> getPlanByAdvisor() {
         // lấy accountID từ context
         CustomAccountDetailsImpl princal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

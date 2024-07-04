@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.payload.request.UpdateCommissionRequest;
 import com.fu.bmi_tracker.payload.response.CommissionAdvisorResponse;
 import com.fu.bmi_tracker.services.CommissionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,8 +60,7 @@ public class CommissionController {
 
         // check result
         if (!commissions.iterator().hasNext()) {
-            return new ResponseEntity<>("Failed to get commissions of advisor", HttpStatus.INTERNAL_SERVER_ERROR);
-
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         List<CommissionAdvisorResponse> commissionResponses = new ArrayList<>();
 
@@ -73,7 +74,7 @@ public class CommissionController {
     @Operation(summary = "Get all commission by advisorID", description = "Send advisor ID and get all commisssion")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Commission.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = CommissionAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -85,14 +86,34 @@ public class CommissionController {
 
         // check result
         if (!commissions.iterator().hasNext()) {
-            return new ResponseEntity<>("Failed to get commissions of advisor", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
+        // taoj commission response
         List<CommissionAdvisorResponse> commissionResponses = new ArrayList<>();
 
         commissions.forEach(commission -> {
             commissionResponses.add(new CommissionAdvisorResponse(commission));
         });
+        return new ResponseEntity<>(commissionResponses, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all commission by advisorID", description = "Send advisor ID and get all commisssion")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CommissionAdvisorResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/update-paid")
+    public ResponseEntity<?> updateCommission(@RequestParam UpdateCommissionRequest commissionRequest) {
+        // Gọi Commission servicce update commission
+        Commission commission = commissionService.updateCommission(commissionRequest);
+
+        CommissionAdvisorResponse commissionResponses = new CommissionAdvisorResponse(commission);
 
         return new ResponseEntity<>(commissionResponses, HttpStatus.OK);
     }
+
 }

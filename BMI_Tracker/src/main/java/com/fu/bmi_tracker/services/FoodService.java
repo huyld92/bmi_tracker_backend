@@ -5,9 +5,11 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Food;
+import com.fu.bmi_tracker.model.entities.Recipe;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Pageable;
  * @author Duc Huy
  */
 public interface FoodService extends GeneralService<Food> {
+
+    public Optional<Food> findByFoodIDAndIsActive(Integer foodID);
 
     public Iterable<Food> findByFoodIDIn(List<Integer> foodIDs);
 
@@ -26,5 +30,7 @@ public interface FoodService extends GeneralService<Food> {
     public Food updateFood(UpdateFoodRequest foodRequest);
 
     public Iterable<Food> searchLikeFoodName(String foodName);
+
+    public Iterable<Recipe> findAllRecipesByFoodID(Integer foodID);
 
 }
