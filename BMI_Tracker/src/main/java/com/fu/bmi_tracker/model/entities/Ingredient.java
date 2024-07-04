@@ -5,11 +5,14 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.payload.request.CreateIngredientRequest;
+import com.fu.bmi_tracker.payload.request.UpdateIngredientRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,8 +52,9 @@ public class Ingredient {
     @Column(name = "IngredientCalories", nullable = false)
     private Integer ingredientCalories;
 
-    @Column(name = "TagID", nullable = false)
-    private Integer tagID;
+    @ManyToOne
+    @JoinColumn(name = "TagID", nullable = false)
+    private Tag tag;
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
@@ -65,11 +69,11 @@ public class Ingredient {
         this.unit = ingredientRequest.getUnit().trim();
         this.ingredientCalories = ingredientRequest.getIngredientCalories();
         this.quantity = ingredientRequest.getQuantity();
-        this.tagID = ingredientRequest.getTagID();
+        this.tag = new Tag(ingredientRequest.getTagID());
         this.isActive = true;
     }
 
-    public void update(Ingredient ingredientRequest) {
+    public void update(UpdateIngredientRequest ingredientRequest) {
         if (!ingredientRequest.getIngredientName().isEmpty()) {
             this.ingredientName = ingredientRequest.getIngredientName();
         }
@@ -85,9 +89,8 @@ public class Ingredient {
         }
 
         if (ingredientRequest.getTagID() <= 0) {
-            this.tagID = ingredientRequest.getTagID();
+            this.tag = new Tag(ingredientRequest.getTagID());
         }
-        this.isActive = ingredientRequest.isActive;
 
     }
 

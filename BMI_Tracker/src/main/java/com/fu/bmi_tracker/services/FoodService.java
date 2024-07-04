@@ -25,4 +25,6 @@ public interface FoodService extends GeneralService<Food> {
 
     public Food updateFood(UpdateFoodRequest foodRequest);
 
+    public Iterable<Food> searchLikeFoodName(String foodName);
+
 }

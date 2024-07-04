@@ -15,4 +15,6 @@ public interface IngredientService extends GeneralService<Ingredient> {
 
     public List<Ingredient> findByIngredientIDIn(List<Integer> ingredientIds);
 
+    public Iterable<Ingredient> searchLikeIngredientName(String ingredientName);
+
 }

@@ -32,4 +32,8 @@ public class MenuFoodRequest {
     @Enumerated(EnumType.STRING)
     @Schema(description = "Type of meal (Breakfast,Lunch, Dinner, Snack)", example = "Breakfast")
     private EMealType mealType;
+
+//    @NotNull
+//    @Schema(example = "true")
+//    private Boolean isActive;
 }

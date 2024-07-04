@@ -55,6 +55,7 @@ import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.services.RoleService;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -248,10 +249,12 @@ public class AuthenticationController {
                     .badRequest()
                     .body(new MessageResponse("Error: Phone number is already taken!"));
         }
-
+        // tìm role bằng role name
+        Role role = roleService.findByRoleName(ERole.ROLE_MEMBER)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find role!"));
         // set Role
         Set<Role> accountRoles = new HashSet<>();
-        accountRoles.add(roleService.findByRoleName(ERole.ROLE_MEMBER));
+        accountRoles.add(role);
 
         // Create new member's account
         Account account = new Account(registerRequest.getFullName(),
@@ -336,7 +339,7 @@ public class AuthenticationController {
             Integer accountID = accountDetails.getId();
             // gọi refreshTokenService xóa refreshtoken
             refreshTokenService.deleteByAccountID(accountID);
-            
+
             // gọi accountService xóa deviceToken
             accountService.updateDeviceToken(accountID, null);
         }
