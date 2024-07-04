@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Commission;
+import com.fu.bmi_tracker.payload.request.UpdateCommissionRequest;
 
 /**
  *
@@ -15,5 +16,7 @@ public interface CommissionService extends GeneralService<Commission> {
     public Iterable<Commission> getByAdvisor(Integer accountID);
 
     public Iterable<Commission> getByAdvisorID(Integer advisorID);
+
+    public Commission updateCommission(UpdateCommissionRequest commissionRequest);
 
 }

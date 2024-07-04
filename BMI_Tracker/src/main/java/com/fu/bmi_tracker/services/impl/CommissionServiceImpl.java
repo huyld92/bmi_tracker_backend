@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Commission;
+import com.fu.bmi_tracker.payload.request.UpdateCommissionRequest;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.services.CommissionService;
@@ -52,6 +53,16 @@ public class CommissionServiceImpl implements CommissionService {
     public Iterable<Commission> getByAdvisorID(Integer advisorID) {
         // gọi commissionRepository tìm tất cả commission của advisor
         return commissionRepository.findByAdvisor_AdvisorID(advisorID);
+    }
+
+    @Override
+    public Commission updateCommission(UpdateCommissionRequest commissionRequest) {
+        // tìm commission bằng commission ID
+        Commission commission = commissionRepository.findById(commissionRequest.getCommissionID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find commission with id{" + commissionRequest.getCommissionID() + "}!"));
+
+        commission.update(commissionRequest);
+        return save(commission);
     }
 
 }

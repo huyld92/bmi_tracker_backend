@@ -103,7 +103,7 @@ public class MenuController {
 
         // check result
         if (menuSave == null) {
-            return new ResponseEntity<>("Failed to create new menu", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse("Failed to create new menu"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // Tạo danh sách Menu Food object từ menuRequest và menu food reponse

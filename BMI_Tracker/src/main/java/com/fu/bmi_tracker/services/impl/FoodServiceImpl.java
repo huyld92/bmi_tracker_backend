@@ -13,7 +13,6 @@ import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.IngredientRepository;
-import com.fu.bmi_tracker.repository.RecipeRepository;
 import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.services.FoodService;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,9 +32,6 @@ public class FoodServiceImpl implements FoodService {
 
     @Autowired
     IngredientRepository ingredientRepository;
-
-    @Autowired
-    RecipeRepository recipeRepository;
 
     @Autowired
     TagRepository tagRepository;
@@ -85,7 +81,7 @@ public class FoodServiceImpl implements FoodService {
         List<Recipe> recipes = new ArrayList<>();
         createFoodRequest.getRecipeRequests().forEach((RecipeRequest recipeRequest) -> {
             // gọi ingredient repository tìm ingredient
-            Ingredient ingredient = ingredientRepository.findById(recipeRequest.getIngredientID())
+            Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with ID {" + recipeRequest.getIngredientID() + "}"));
 
             recipes.add(new Recipe(food, ingredient, recipeRequest));
@@ -101,7 +97,7 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public Food updateFood(UpdateFoodRequest foodRequest) {
         // tìm food bằng foodID
-        Food food = foodRepository.findById(foodRequest.getFoodID())
+        Food food = foodRepository.findByFoodIDAndIsActiveTrue(foodRequest.getFoodID())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find food with id{" + foodRequest.getFoodID() + "}!"));
 
         // tìm tag từ list Tag ids
@@ -112,7 +108,7 @@ public class FoodServiceImpl implements FoodService {
 
         foodRequest.getRecipeRequests().forEach(recipeRequest -> {
             // timf ingredinent
-            Ingredient ingredient = ingredientRepository.findById(recipeRequest.getIngredientID())
+            Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with id{" + recipeRequest.getIngredientID() + "}!"));
 
             // tạo recipe mới
@@ -133,6 +129,20 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public Iterable<Food> searchLikeFoodName(String foodName) {
         return foodRepository.findByFoodNameContains(foodName);
+    }
+
+    @Override
+    public Optional<Food> findByFoodIDAndIsActive(Integer foodID) {
+        return foodRepository.findByFoodIDAndIsActiveTrue(foodID);
+    }
+
+    @Override
+    public Iterable<Recipe> findAllRecipesByFoodID(Integer foodID) {
+        // tìm food bằng foodID
+        Food food = foodRepository.findByFoodIDAndIsActiveTrue(foodID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find food with id{" + foodID + "}!"));
+
+        return food.getRecipes();
     }
 
 }

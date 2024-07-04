@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import lombok.AllArgsConstructor;
 import lombok.Data;

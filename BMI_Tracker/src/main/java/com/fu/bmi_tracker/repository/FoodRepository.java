@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Food;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,4 +39,6 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
     List<Food> findFoodWithoutTagName(String tagName);
 
     public Iterable<Food> findByFoodNameContains(String foodName);
+
+    public Optional<Food> findByFoodIDAndIsActiveTrue(Integer foodID);
 }

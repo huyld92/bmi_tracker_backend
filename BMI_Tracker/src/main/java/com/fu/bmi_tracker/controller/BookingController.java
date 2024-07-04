@@ -4,13 +4,11 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Booking;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
-import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.BookingResponse;
 import io.swagger.v3.oas.annotations.Operation;
