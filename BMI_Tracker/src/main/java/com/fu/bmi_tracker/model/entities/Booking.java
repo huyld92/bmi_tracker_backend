@@ -63,7 +63,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private EBookingStatus bookingStatus;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MemberID", nullable = false)
     private Member member;
 

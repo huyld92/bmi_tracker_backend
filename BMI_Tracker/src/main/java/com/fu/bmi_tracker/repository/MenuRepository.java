@@ -31,4 +31,6 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
             + " ORDER BY ABS(m.totalCalories - :recommendedCalories) ASC LIMIT 1")
     Menu findTopByTagNameAndClosestCalories(String tagName, int recommendedCalories);
 
+    public int countByAdvisor_AdvisorIDAndIsActiveTrue(Integer advisorID);
+
 }

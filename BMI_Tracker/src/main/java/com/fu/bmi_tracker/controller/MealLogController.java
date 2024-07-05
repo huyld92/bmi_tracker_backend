@@ -297,7 +297,8 @@ public class MealLogController {
 
         Member member = memberService.findByAccountID(principal.getId()).get();
 
-        // caculate calories of meal type
+        // caculate calories of meal type 
+        // sáng 30%, trưa 40%, tối 20%, phụ 10% 
         int defaultBreakfast = member.getDefaultCalories() * 30 / 100;
         int defaultLunch = member.getDefaultCalories() * 40 / 100;
         int defaultDinner = member.getDefaultCalories() * 20 / 100;

@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.Workout;
+import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -37,5 +38,7 @@ public interface MemberService extends GeneralService<Member> {
     public Page<Exercise> getPaginatedExerciseWithPriority(Integer accountID, Pageable pageable);
 
     public DailyRecord getDailyRecordOfMember(Integer accountID, LocalDate localDate);
+
+    public List<MemberBmiResponse> getMemberBMISummary();
 
 }

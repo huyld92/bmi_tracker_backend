@@ -80,7 +80,7 @@ public class AdvisorController {
     @GetMapping("/getWithDetails")
     public ResponseEntity<?> getAllAdvisorsWithDetails() {
 
-        List<Advisor> advisors = advisorService.findAllAdvisorsWithDetails();
+        List<Advisor> advisors = advisorService.findAllAdvisorIsActive();
 
         if (advisors.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
