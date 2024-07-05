@@ -24,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -107,7 +108,7 @@ public class CommissionController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PutMapping(value = "/update-paid")
-    public ResponseEntity<?> updateCommission(@RequestParam UpdateCommissionRequest commissionRequest) {
+    public ResponseEntity<?> updateCommission(@RequestBody UpdateCommissionRequest commissionRequest) {
         // Gọi Commission servicce update commission
         Commission commission = commissionService.updateCommission(commissionRequest);
 

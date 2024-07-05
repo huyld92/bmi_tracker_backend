@@ -13,6 +13,7 @@ import com.fu.bmi_tracker.model.entities.Plan;
 import com.fu.bmi_tracker.model.enums.EBookingStatus;
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
+import com.fu.bmi_tracker.payload.response.AdvisorBookingSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
@@ -32,57 +33,58 @@ import com.fu.bmi_tracker.repository.TransactionRepository;
 import com.fu.bmi_tracker.services.BookingService;
 import com.fu.bmi_tracker.repository.BookingRepository;
 import com.fu.bmi_tracker.repository.PlanRepository;
+import java.time.LocalTime;
 
 @Service
 public class BookingServiceImpl implements BookingService {
-    
+
     @Autowired
     BookingRepository bookingRepository;
-    
+
     @Autowired
     MemberRepository memberRepository;
-    
+
     @Autowired
     AdvisorRepository advisorRepository;
-    
+
     @Autowired
     TransactionRepository transactionRepository;
-    
+
     @Autowired
     CommissionRepository commissionRepository;
-    
+
     @Autowired
     PlanRepository planRepository;
-    
+
     @Autowired
     DateTimeUtils dateTimeUtils;
-    
+
     @Override
     public Iterable<Booking> findAll() {
         return bookingRepository.findAll();
     }
-    
+
     @Override
     public Optional<Booking> findById(Integer id) {
         return bookingRepository.findById(id);
     }
-    
+
     @Override
     public Booking save(Booking t) {
         return bookingRepository.save(t);
     }
-    
+
     @Override
     public Iterable<Booking> getBookingByMemberAccountID(Integer accountID) {
         return bookingRepository.findByMember_Account_AccountID(accountID);
     }
-    
+
     @Override
     public Iterable<Booking> getBookingByMemberID(Integer memberID) {
         return bookingRepository.findByMemberMemberID(memberID);
-        
+
     }
-    
+
     @Override
     public Iterable<Booking> getBookingByAdvisorIDAndMonth(Integer advisorID, String month) {
         // Chuyển đổi chuỗi "yyyy-MM" thành YearMonth
@@ -97,7 +99,7 @@ public class BookingServiceImpl implements BookingService {
         // Gọi phương thức find booking bằng advisor ID và Booking date nằm trong khoảng start-end từ repository
         return bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetween(advisorID, startOfMonth, endOfMonth);
     }
-    
+
     @Override
     public Booking createBookingTransaction(CreateBookingTransactionRequest createRequest, Integer accountID) {
         // Tìm member băng accountID
@@ -123,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
         // kiểm tra và cập nhật endDateOfPlan của member
         LocalDate endDateOfPlan = member.getEndDateOfPlan();
         int planDuration = createRequest.getBookingRequest().getPlanDuration();
-        
+
         if (endDateOfPlan == null || endDateOfPlan.isBefore(currentDate)) {
             // nếu ngày kết thúc không tồn tại hoặc ngày kết thúc bé hơn ngày hiện tại
             // => lấy currentDate + cho PlanDuration của new plan
@@ -160,7 +162,7 @@ public class BookingServiceImpl implements BookingService {
                     .getAmount()
                     .multiply(commissionRate)
                     .divide(BigDecimal.valueOf(100));
-            
+
             Commission c = new Commission(
                     commissionAmount,
                     50,
@@ -202,10 +204,10 @@ public class BookingServiceImpl implements BookingService {
                 transaction.getTransactionID(),
                 commission.getCommissionID()
         );
-        
+
         return bookingRepository.save(booking);
     }
-    
+
     @Override
     public List<Booking> getBookingByMemberAdvisor(Integer accountID) {
         // Tim advisor từ accountID
@@ -215,7 +217,7 @@ public class BookingServiceImpl implements BookingService {
         // Tìm booking từ account ID với sắp xếp mới nhất
         return bookingRepository.findByAdvisor_AdvisorIDOrderByBookingDateDesc(advisor.getAdvisorID());
     }
-    
+
     @Override
     public List<Member> getCurrentMemeberOfAdvisor(Integer accountID) {
         // lấy ngày hiện tại
@@ -228,16 +230,16 @@ public class BookingServiceImpl implements BookingService {
         return bookings.stream().map(Booking::getMember).distinct()
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public AdvisorDetailsResponse getAdvisorOfMember(Integer accountID) {
         Optional<Booking> booking = bookingRepository.findByMember_Account_AccountIDAndBookingStatus(accountID, EBookingStatus.PENDING);
-        
+
         if (booking.isPresent()) {
             // tạo advisor response
             int totalMenu = advisorRepository.countMenusByAdvisorID(accountID);
             int totalWorkout = advisorRepository.countWorkoutsByAdvisorID(accountID);
-            
+
             AdvisorDetailsResponse response = new AdvisorDetailsResponse(
                     booking.get().getAdvisor(),
                     totalMenu,
@@ -247,5 +249,31 @@ public class BookingServiceImpl implements BookingService {
             return null;
         }
     }
-    
+
+    @Override
+    public void updateBookingStatus() {
+        LocalDate today = LocalDate.now();
+
+        System.out.println("today:" + today);
+        // Cập nhật trạng thái của các booking hết hạn thành "FINISHED"
+        bookingRepository.updateExpiredBookings(today);
+
+        // Cập nhật trạng thái của các booking mới bắt đầu vào hôm nay thành "PENDING"
+        bookingRepository.updatePendingBookings(today);
+    }
+
+    @Override
+    public List<AdvisorBookingSummary> getAdvisorBookingSummaryByMonth(LocalDate localDate) {
+        //Tìm ngày đầu tiên và ngày cuối cùng của tháng
+        LocalDate startDate = localDate.withDayOfMonth(1);
+        LocalDate endDate = localDate.withDayOfMonth(localDate.lengthOfMonth());
+
+        // chuyển đổi từ LocalDate sang LocalDateTime cho trùng datatype dưới database
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+        // gọi repository tìm AdvisorBookingSummary
+        return bookingRepository.findAdvisorBookingSummaryByMonth(startDateTime, endDateTime);
+    }
+
 }

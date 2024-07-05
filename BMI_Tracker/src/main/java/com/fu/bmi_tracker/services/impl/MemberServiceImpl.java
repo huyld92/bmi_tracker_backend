@@ -11,6 +11,7 @@ import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.Workout;
+import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
 import com.fu.bmi_tracker.repository.DailyRecordRepository;
 import com.fu.bmi_tracker.repository.ExerciseRepository;
 import com.fu.bmi_tracker.repository.FoodRepository;
@@ -208,6 +209,28 @@ public class MemberServiceImpl implements MemberService {
         } else {
             return dailyRecord.get();
         }
+
+    }
+
+    @Override
+    public List<MemberBmiResponse> getMemberBMISummary() {
+        // list MemberBMIresponse 
+        List<MemberBmiResponse> memberBmiResponses = new ArrayList<>();
+
+        // tìm danh sách member đang hoạt dộng
+        List<Member> members = memberRepository.findAll();
+
+        if (members.isEmpty()) {
+            return memberBmiResponses;
+        }
+
+        // add value vào memberBmiResponses
+        members.forEach(member -> {
+            MemberBodyMass bodyMass = bodyMassRepository.findLatestByAccountID(member.getAccount().getAccountID()).get();
+
+            memberBmiResponses.add(new MemberBmiResponse(member, bodyMass.getHeight(), bodyMass.getWeight()));
+        });
+        return memberBmiResponses;
 
     }
 

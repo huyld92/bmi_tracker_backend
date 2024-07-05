@@ -7,7 +7,9 @@ package com.fu.bmi_tracker.services;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Booking;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
+import com.fu.bmi_tracker.payload.response.AdvisorBookingSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -29,5 +31,9 @@ public interface BookingService extends GeneralService<Booking> {
     public List<Member> getCurrentMemeberOfAdvisor(Integer accountID);
 
     public AdvisorDetailsResponse getAdvisorOfMember(Integer accountID);
+
+    public void updateBookingStatus();
+
+    public List<AdvisorBookingSummary> getAdvisorBookingSummaryByMonth(LocalDate localDate);
 
 }

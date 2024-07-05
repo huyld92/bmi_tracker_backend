@@ -25,4 +25,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
             + " ORDER BY w.workoutID ASC")
     Workout findFirstByTagName(String tagName);
 
+    public int countByAdvisorIDAndIsActiveTrue(Integer advisorID);
+
 }
