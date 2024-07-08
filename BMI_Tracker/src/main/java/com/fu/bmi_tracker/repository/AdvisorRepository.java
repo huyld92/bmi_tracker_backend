@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
-import com.fu.bmi_tracker.payload.response.AdvisorCommissionSummary;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,7 +25,7 @@ public interface AdvisorRepository extends JpaRepository<Advisor, Integer> {
     @Query("SELECT COUNT(m) FROM Menu m WHERE m.advisor.advisorID = :advisorID")
     public Integer countMenusByAdvisorID(Integer advisorID);
 
-    @Query("SELECT COUNT(w) FROM Workout w WHERE w.advisorID = :advisorID")
+    @Query("SELECT COUNT(w) FROM Workout w WHERE w.advisor.advisorID = :advisorID")
     public Integer countWorkoutsByAdvisorID(Integer advisorID);
 
 }

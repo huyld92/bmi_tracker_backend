@@ -5,11 +5,10 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Commission;
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,14 +22,16 @@ public interface CommissionRepository extends JpaRepository<Commission, Integer>
 
     public Iterable<Commission> findByAdvisor_AdvisorID(Integer advisorID);
 
-    @Query("SELECT COALESCE(SUM(c.commissionAmount), 0) "
-            + "FROM Commission c "
-            + "WHERE c.advisor.advisorID = :advisorId "
-            + "AND FUNCTION('YEAR', c.expectedPaymentDate) = :year "
-            + "AND FUNCTION('MONTH', c.expectedPaymentDate) = :month ")
-    BigDecimal getTotalCommissionByAdvisorIdAndMonth(
-            @Param("advisorId") Integer advisorId,
-            @Param("year") int year,
-            @Param("month") int month);
+    @Query("SELECT c FROM Commission c WHERE  c.advisor.advisorID = :advisorID AND c.expectedPaymentDate < :currentDate")
+    List<Commission> findAllBeforeCurrentDate(Integer advisorID, LocalDate currentDate);
 
+    @Query("SELECT c FROM Commission c "
+            + "WHERE c.advisor.advisorID = :advisorID "
+            + "AND c.expectedPaymentDate >= :startDate "
+            + "AND c.expectedPaymentDate <= :endDate "
+            + "ORDER BY c.expectedPaymentDate DESC")
+    List<Commission> findCommissionsForAdvisorInLastSixMonths(Integer advisorID, LocalDate startDate, LocalDate endDate);
+
+    List<Commission> findByAdvisor_AdvisorIDAndExpectedPaymentDateBetweenOrderByExpectedPaymentDateDesc(
+            Integer advisorID, LocalDate startDate, LocalDate endDate);
 }

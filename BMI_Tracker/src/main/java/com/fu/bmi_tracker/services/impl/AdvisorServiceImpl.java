@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
+import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.payload.response.AdvisorCommissionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorSummaryMenuWorkout;
+import com.fu.bmi_tracker.payload.response.CommissionSummary;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,11 @@ import com.fu.bmi_tracker.services.AdvisorService;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AdvisorServiceImpl implements AdvisorService {
@@ -80,41 +85,50 @@ public class AdvisorServiceImpl implements AdvisorService {
         advisors.forEach(advisor -> {
             // gọi repository của menu và workout đếm số lượng của advisor
             int totalMenu = menuRepository.countByAdvisor_AdvisorIDAndIsActiveTrue(advisor.getAdvisorID());
-            int totalWorkout = workoutRepository.countByAdvisorIDAndIsActiveTrue(advisor.getAdvisorID());
+            int totalWorkout = workoutRepository.countByAdvisor_AdvisorIDAndIsActiveTrue(advisor.getAdvisorID());
 
             // thêm dữ liệu vào summaryMenuWorkouts
-            summaryMenuWorkouts.add(new AdvisorSummaryMenuWorkout(advisor, totalMenu, totalWorkout));
+            summaryMenuWorkouts.add(new AdvisorSummaryMenuWorkout(advisor.getAdvisorID(), totalMenu, totalWorkout));
         });
 
         return summaryMenuWorkouts;
     }
 
     @Override
-    public List<AdvisorCommissionSummary> getAdvisorCommissionSummary(LocalDate localDate) {
+    public List<AdvisorCommissionSummary> getAdvisorCommissionSummary() {
         // Tạo AdvisorCommissionSummary
         List<AdvisorCommissionSummary> commissionSummarys = new ArrayList<>();
 
         // tìm tất cả advisor đang Active
         Iterable<Advisor> advisors = advisorRepository.findAllByIsActiveTrue();
-        System.out.println("aaaaaaaaaaaaaaaa");
+
         // kiểm tra kết quả
         if (!advisors.iterator().hasNext()) {
             return commissionSummarys;
         }
-
-        // Conver advisors thành commissionSummarys
         advisors.forEach(advisor -> {
-            int month = localDate.getMonthValue();
-            int year = localDate.getYear();
-            BigDecimal totalComisstionAmount
-                    = commissionRepository.getTotalCommissionByAdvisorIdAndMonth(
-                            advisor.getAdvisorID(), year, month);
-            System.out.println("aaaaaa: " + totalComisstionAmount);
-            // thêm dữ liệu vào summaryMenuWorkouts
-            commissionSummarys.add(new AdvisorCommissionSummary(advisor, totalComisstionAmount));
-        });
+            // lấy tất cả các commission trước ngày hiện tại trong vòng 6 tháng
+            LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+            LocalDate endDate = LocalDate.now();
 
+            List<Commission> commissions = commissionRepository.findByAdvisor_AdvisorIDAndExpectedPaymentDateBetweenOrderByExpectedPaymentDateDesc(advisor.getAdvisorID(), startDate, endDate);
+            // Nhóm và tính tổng CommissionAmount theo từng tháng cho mỗi Advisor
+            List<CommissionSummary> summarys = calculateMonthlyTotal(commissions);
+
+            commissionSummarys.add(new AdvisorCommissionSummary(advisor.getAdvisorID(), summarys));
+        });
         return commissionSummarys;
     }
 
+    public List<CommissionSummary> calculateMonthlyTotal(List<Commission> commissions) {
+        Map<YearMonth, BigDecimal> monthlyTotals = commissions.stream()
+                .collect(Collectors.groupingBy(
+                        commission -> YearMonth.from(commission.getExpectedPaymentDate()),
+                        Collectors.reducing(BigDecimal.ZERO, Commission::getCommissionAmount, BigDecimal::add)
+                ));
+
+        return monthlyTotals.entrySet().stream()
+                .map(entry -> new CommissionSummary(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
 }

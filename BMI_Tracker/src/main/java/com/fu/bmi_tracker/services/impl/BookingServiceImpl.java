@@ -15,6 +15,7 @@ import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorBookingSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
+import com.fu.bmi_tracker.payload.response.BookingSummaryResponse;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.repository.MemberRepository;
@@ -34,6 +35,8 @@ import com.fu.bmi_tracker.services.BookingService;
 import com.fu.bmi_tracker.repository.BookingRepository;
 import com.fu.bmi_tracker.repository.PlanRepository;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Map;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -97,7 +100,7 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime endOfMonth = yearMonthObj.atEndOfMonth().atTime(23, 59, 59);
 
         // Gọi phương thức find booking bằng advisor ID và Booking date nằm trong khoảng start-end từ repository
-        return bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetween(advisorID, startOfMonth, endOfMonth);
+        return bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetweenOrderByBookingDateDesc(advisorID, startOfMonth, endOfMonth);
     }
 
     @Override
@@ -254,7 +257,6 @@ public class BookingServiceImpl implements BookingService {
     public void updateBookingStatus() {
         LocalDate today = LocalDate.now();
 
-        System.out.println("today:" + today);
         // Cập nhật trạng thái của các booking hết hạn thành "FINISHED"
         bookingRepository.updateExpiredBookings(today);
 
@@ -263,17 +265,51 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<AdvisorBookingSummary> getAdvisorBookingSummaryByMonth(LocalDate localDate) {
-        //Tìm ngày đầu tiên và ngày cuối cùng của tháng
-        LocalDate startDate = localDate.withDayOfMonth(1);
-        LocalDate endDate = localDate.withDayOfMonth(localDate.lengthOfMonth());
+    public List<AdvisorBookingSummary> getAdvisorBookingSummaryByMonth() {
+        // tạo danh sách advisorBookingSummary
+        List<AdvisorBookingSummary> advisorBookingSummarys = new ArrayList<>();
 
-        // chuyển đổi từ LocalDate sang LocalDateTime cho trùng datatype dưới database
-        LocalDateTime startDateTime = startDate.atStartOfDay();
+        // lấy danh sách advisor isActive = true
+        List<Advisor> advisors = advisorRepository.findAllByIsActiveTrue();
+
+        // lấy tất cả các commission trước ngày hiện tại trong vòng 6 tháng
+        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now();
+        //Tìm ngày đầu tiên và ngày cuối cùng của tháng
+        LocalDateTime startDateTime = startDate.atTime(LocalTime.MIN);
+
+        // chuyển đổi từ LocalDate sang LocalDateTime cho trùng datatype dưới database 
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
+        advisors.forEach(advisor -> {
+            List<Booking> bookings = bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetweenOrderByBookingDateDesc(
+                    advisor.getAdvisorID(), startDateTime, endDateTime);
+
+            // duyệt bookings tạo  List<BookingSummaryResponse>
+            List<BookingSummaryResponse> bookingSummaryResponses = calculateMonthlyBookingTotal(bookings);
+
+            // add value vào advisorBookingSummarys
+            advisorBookingSummarys.add(new AdvisorBookingSummary(
+                    advisor.getAdvisorID(),
+                    bookingSummaryResponses));
+        });
+
         // gọi repository tìm AdvisorBookingSummary
-        return bookingRepository.findAdvisorBookingSummaryByMonth(startDateTime, endDateTime);
+        return advisorBookingSummarys;
     }
 
+    public static List<BookingSummaryResponse> calculateMonthlyBookingTotal(List<Booking> bookings) {
+
+        // Nhóm các booking theo YearMonth và tính tổng số booking cho mỗi nhóm
+        Map<YearMonth, Long> monthlyBookingCounts = bookings.stream()
+                .collect(Collectors.groupingBy(
+                        booking -> YearMonth.from(booking.getBookingDate()),
+                        Collectors.counting()
+                ));
+
+        // Chuyển đổi Map thành List<MonthlyBookingTotal>
+        return monthlyBookingCounts.entrySet().stream()
+                .map(entry -> new BookingSummaryResponse(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
 }

@@ -16,15 +16,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
 
-    public Iterable<Workout> findByAdvisorID(Integer advisorID);
+    public Iterable<Workout> findByAdvisor_AdvisorID(Integer advisorID);
 
     @Query("SELECT w FROM Workout w"
             + " JOIN TagWorkout tw ON w.workoutID = tw.workout.workoutID"
             + " JOIN Tag t ON tw.tag.tagID = t.tagID"
-            + " WHERE t.tagName = :tagName AND w.advisorID = 1"
+            + " WHERE t.tagName = :tagName AND w.advisor.advisorID = 1"
             + " ORDER BY w.workoutID ASC")
     Workout findFirstByTagName(String tagName);
 
-    public int countByAdvisorIDAndIsActiveTrue(Integer advisorID);
+    public int countByAdvisor_AdvisorIDAndIsActiveTrue(Integer advisorID);
 
 }

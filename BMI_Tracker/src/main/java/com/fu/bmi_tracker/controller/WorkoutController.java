@@ -245,8 +245,7 @@ public class WorkoutController {
         if (!workouts.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        
- 
+
         // tạo workout response
         List<WorkoutResonse> workoutResonses = new ArrayList<>();
         // duyeejt list workout
@@ -258,7 +257,6 @@ public class WorkoutController {
                     WorkoutExerciseConverter.convertToTagResponseList(workout.getWorkoutExercises())));
         });
 
-        
         return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
 
     }

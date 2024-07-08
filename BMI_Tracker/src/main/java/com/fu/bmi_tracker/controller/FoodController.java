@@ -89,7 +89,7 @@ public class FoodController {
     @Operation(summary = "Retrieve all Foods ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = FoodResponseAll.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -103,17 +103,18 @@ public class FoodController {
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        //chuyển đổi từ food sang FoodResponseAll
-        List<FoodResponseAll> foodsResponse = new ArrayList<>();
+        //chuyển đổi từ food sang FoodEntityResponse
+        List<FoodEntityResponse> foodsResponse = new ArrayList<>();
         for (Food food : foods) {
-            FoodResponseAll foodResponse = new FoodResponseAll(food,
-                    // chuyển đổi từ Tag sáng Tag Response
-                    TagConverter.convertToTagResponseList(food.getFoodTags()));
+            FoodEntityResponse foodResponse = new FoodEntityResponse(
+                    food,
+                    TagConverter.convertToTagResponseList(food.getFoodTags()),
+                    RecipeConverter.convertToRecipeResponseList(food.getRecipes())
+            );
 
             foodsResponse.add(foodResponse);
         }
 
-//        foodsResponse.add(new FoodResponse(foodSaved, foodTags, recipes));
         return new ResponseEntity<>(foodsResponse, HttpStatus.OK);
     }
 

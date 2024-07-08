@@ -7,7 +7,6 @@ package com.fu.bmi_tracker.services;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.payload.response.AdvisorCommissionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorSummaryMenuWorkout;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -22,6 +21,6 @@ public interface AdvisorService extends GeneralService<Advisor> {
 
     public List<AdvisorSummaryMenuWorkout> getAdvisorMenuWorkoutSummary();
 
-    public List<AdvisorCommissionSummary> getAdvisorCommissionSummary(LocalDate localDate);
+    public List<AdvisorCommissionSummary> getAdvisorCommissionSummary();
 
 }
