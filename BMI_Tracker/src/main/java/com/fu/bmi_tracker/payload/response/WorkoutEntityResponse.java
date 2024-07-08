@@ -24,14 +24,16 @@ public class WorkoutEntityResponse {
     private Integer totalCloriesBurned;
     private Boolean isActive;
     private Integer advisorID;
+    private String fullName;
 
     public WorkoutEntityResponse(Workout workout) {
         this.workoutID = workout.getWorkoutID();
         this.workoutName = workout.getWorkoutName();
         this.workoutDescription = workout.getWorkoutDescription();
-        this.totalCloriesBurned = workout.getAdvisorID();
+        this.totalCloriesBurned = workout.getTotalCloriesBurned();
         this.isActive = workout.getIsActive();
-        this.advisorID = workout.getAdvisorID();
+        this.advisorID = workout.getAdvisor().getAdvisorID();
+        this.fullName = workout.getAdvisor().getAccount().getFullName();
     }
 
 }

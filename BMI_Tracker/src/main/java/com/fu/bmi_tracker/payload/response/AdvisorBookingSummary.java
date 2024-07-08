@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,6 @@ import lombok.NoArgsConstructor;
 public class AdvisorBookingSummary {
 
     private Integer advisorID;
-    private String accountPhoto;
-    private String email;
-    private String fullName;
-    private Long totalBooking;
+    private List<BookingSummaryResponse> bookingSummary;
 
 }

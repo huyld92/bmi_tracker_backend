@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -49,8 +50,9 @@ public class Workout {
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @Column(name = "AdvisorID", nullable = false)
-    private Integer advisorID;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "AdvisorID", nullable = false)
+    private Advisor advisor;
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkoutExercise> workoutExercises;
@@ -68,7 +70,7 @@ public class Workout {
         this.workoutName = workoutName;
         this.workoutDescription = workoutDescription;
         this.totalCloriesBurned = totalCloriesBurned;
-        this.advisorID = advisorID;
+        this.advisor = new Advisor(advisorID);
         this.isActive = true;
     }
 

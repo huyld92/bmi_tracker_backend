@@ -228,7 +228,7 @@ public class MemberServiceImpl implements MemberService {
         members.forEach(member -> {
             MemberBodyMass bodyMass = bodyMassRepository.findLatestByAccountID(member.getAccount().getAccountID()).get();
 
-            memberBmiResponses.add(new MemberBmiResponse(member, bodyMass.getHeight(), bodyMass.getWeight()));
+            memberBmiResponses.add(new MemberBmiResponse(member.getMemberID(), bodyMass.getDateInput().toLocalDate(), bodyMass.getBmi()));
         });
         return memberBmiResponses;
 

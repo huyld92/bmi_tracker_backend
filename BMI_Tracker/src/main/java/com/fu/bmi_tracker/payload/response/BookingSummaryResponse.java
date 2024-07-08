@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import java.util.List;
+import java.time.YearMonth;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +16,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdvisorCommissionSummary {
+public class BookingSummaryResponse {
 
-    private Integer advisorID;
-    private List<CommissionSummary> commissionSummary;
+    private YearMonth yearMonth;
+    private Long totalBooking;
+
 }

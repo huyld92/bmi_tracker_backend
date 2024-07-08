@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.exceptions.ErrorMessage;
 import com.fu.bmi_tracker.payload.response.AdvisorBookingSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorCommissionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorSummaryMenuWorkout;
@@ -18,16 +17,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -69,7 +64,7 @@ public class StatisticsController {
         return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Statistics booking of advisor in month", description = "Pass the month and receive advisor information and the total number of bookings")
+    @Operation(summary = "Statistics booking of advisor in 6 month", description = "")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = AdvisorBookingSummary.class))}),
@@ -78,19 +73,9 @@ public class StatisticsController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/advisor-booking-summary")
-    public ResponseEntity<?> getTotalBookingInMonth(@RequestParam(required = true, defaultValue = "yyyy-MM") String date) {
-        // convert từ string date sang LocalDate format yyyy-MM
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse((date + "-01"), formatter);
-        } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
-                    new Date(), "Invalid date format. Please provide the date in the format yyyy-MM.", "");
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> getTotalBookingIn6Month() {
 
-        List<AdvisorBookingSummary> advisorBookingSummarys = bookingService.getAdvisorBookingSummaryByMonth(localDate);
+        List<AdvisorBookingSummary> advisorBookingSummarys = bookingService.getAdvisorBookingSummaryByMonth();
 
         if (advisorBookingSummarys.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -98,7 +83,6 @@ public class StatisticsController {
         }
 
         return new ResponseEntity<>(advisorBookingSummarys, HttpStatus.OK);
-
     }
 
     @Operation(summary = "Statistics commission of advisor in month", description = "Pass the month and receive advisor information and commission")
@@ -110,20 +94,9 @@ public class StatisticsController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/advisor-commission-summary")
-    public ResponseEntity<?> getAdvisorCommissionSummary(@RequestParam(required = true, defaultValue = "yyyy-MM") String date) {
-        // convert từ string date sang LocalDate format yyyy-MM
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse((date + "-01"), formatter);
-        } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
-                    new Date(), "Invalid date format. Please provide the date in the format yyyy-MM.", "");
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<?> getAdvisorCommissionSummary() {
         // gọi service tìm thông tin AdvisorCommissionSumary
-        List<AdvisorCommissionSummary> commissionSumarys = advisorService.getAdvisorCommissionSummary(localDate);
+        List<AdvisorCommissionSummary> commissionSumarys = advisorService.getAdvisorCommissionSummary();
 
         if (commissionSumarys.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

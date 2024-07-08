@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface PlanRepository extends JpaRepository<Plan, Integer>{
     
-    public Iterable<Plan> findByAdvisorID(int advisorID);
+    public Iterable<Plan> findByAdvisor_AdvisorID(int advisorID);
     
     public Iterable<Plan> findByIsActiveTrue();
 }

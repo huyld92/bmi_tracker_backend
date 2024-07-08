@@ -6,7 +6,6 @@ package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Booking;
 import com.fu.bmi_tracker.model.enums.EBookingStatus;
-import com.fu.bmi_tracker.payload.response.AdvisorBookingSummary;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,7 +27,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findByMember_Account_AccountID(Integer accountID);
 
-    List<Booking> findByAdvisor_AdvisorIDAndBookingDateBetween(Integer advisorID, LocalDateTime startOfMonth, LocalDateTime endOfMonth);
+    List<Booking> findByAdvisor_AdvisorIDAndBookingDateBetweenOrderByBookingDateDesc(Integer advisorID, LocalDateTime startOfMonth, LocalDateTime endOfMonth);
 
     List<Booking> findByAdvisor_AdvisorIDOrderByBookingDateDesc(Integer advisorID);
 
@@ -45,14 +44,4 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Modifying
     @Query("UPDATE Booking b SET b.bookingStatus = 'PENDING' WHERE b.startDate = :today")
     void updatePendingBookings(LocalDate today);
-
-    @Query("SELECT new com.fu.bmi_tracker.payload.response.AdvisorBookingSummary(b.advisor.advisorID, b.advisor.account.accountPhoto, "
-            + "b.advisor.account.email, b.advisor.account.fullName, COUNT(b)) "
-            + "FROM Booking b "
-            + "WHERE b.bookingDate >= :startDate AND b.bookingDate <= :endDate "
-            + "GROUP BY b.advisor.advisorID, b.advisor.account.accountPhoto, "
-            + "b.advisor.account.email, b.advisor.account.fullName")
-    List<AdvisorBookingSummary> findAdvisorBookingSummaryByMonth(LocalDateTime startDate,
-            LocalDateTime endDate);
-
 }

@@ -6,9 +6,12 @@ package com.fu.bmi_tracker.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
@@ -43,8 +46,9 @@ public class Plan {
     @Column(name = "PlanDuration", nullable = false)
     private Integer planDuration;
 
-    @Column(name = "AdvisorID", nullable = false)
-    private Integer advisorID;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "AdvisorID", nullable = false)
+    private Advisor advisor;
 
     @Column(name = "NumberOfUses", nullable = false)
     private Integer numberOfUses;
@@ -58,7 +62,7 @@ public class Plan {
         this.price = price;
         this.description = description;
         this.planDuration = planDuration;
-        this.advisorID = advisorID;
+        this.advisor = new Advisor(advisorID);
         this.isActive = isActive;
         this.numberOfUses = numberOfUses;
     }

@@ -56,7 +56,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public Iterable<Workout> getWorkoutByAdvisorID(Integer advisorID) {
-        return workoutRepository.findByAdvisorID(advisorID);
+        return workoutRepository.findByAdvisor_AdvisorID(advisorID);
     }
 
     @Override
