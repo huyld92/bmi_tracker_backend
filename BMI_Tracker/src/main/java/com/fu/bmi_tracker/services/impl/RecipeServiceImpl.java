@@ -74,7 +74,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public void deactiveRecipe(Integer recipeID) {
+    public void deactivateRecipe(Integer recipeID) {
         // tìm recipe bằng foodID và ingredientID
         Recipe recipe = repository.findById(recipeID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find recipe!"));

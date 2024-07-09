@@ -23,7 +23,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,10 +42,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/plans")
 public class PlanController {
-    
+
     @Autowired
     PlanService planService;
-    
+
     @Operation(
             summary = "Create new Plan with form (ADVISOR)",
             description = "Create new plan with form")
@@ -84,9 +83,9 @@ public class PlanController {
 
         //If success to save new plan
         return new ResponseEntity<>(new MessageResponse("Plan is successfully created"), HttpStatus.CREATED);
-        
+
     }
-    
+
     @Operation(
             summary = "Get All Plan",
             description = "Get All Plan")
@@ -100,9 +99,9 @@ public class PlanController {
     @GetMapping(value = "/getAll")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllPlan() {
-        
+
         Iterable<Plan> planList = planService.findAll();
-        
+
         if (!planList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -113,7 +112,7 @@ public class PlanController {
         });
         return new ResponseEntity<>(planResponses, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Get All Availble Plan",
             description = "Get All Plan that have is active")
@@ -126,9 +125,9 @@ public class PlanController {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAllAvaible")
     public ResponseEntity<?> getAllAvaiblePlan() {
-        
+
         Iterable<Plan> planList = planService.findAllAvailblePlan();
-        
+
         if (!planList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -137,10 +136,10 @@ public class PlanController {
         planList.forEach(plan -> {
             planResponses.add(new PlanResponse(plan));
         });
-        
+
         return new ResponseEntity<>(planResponses, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Get All Plan of an Advisor",
             description = "Get plan list by specifying AdvisorID of its. The respone is a list of plan of that Advisor")
@@ -154,16 +153,16 @@ public class PlanController {
     @GetMapping(value = "/getByAdvisorID/{id}")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getPlanByAdvisorID(@PathVariable("id") int id) {
-        
+
         Iterable<Plan> planList = planService.findAllPlanByAdvisorID(id);
-        
+
         if (!planList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        
+
         return new ResponseEntity<>(planList, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Receive all plans from the advisor personally (ADVISOR)",
             description = "Get plan list by advisor personally if it's. The response is a list of plan of that Advisor")
@@ -182,7 +181,7 @@ public class PlanController {
 
         // gọi service tìm Plan
         Iterable<Plan> planList = planService.findAllPlanFromPersonally(princal.getId());
-        
+
         if (!planList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -192,10 +191,10 @@ public class PlanController {
         planList.forEach(plan -> {
             planResponses.add(new PlanResponse(plan));
         });
-        
+
         return new ResponseEntity<>(planResponses, HttpStatus.OK);
     }
-    
+
     @Operation(
             summary = "Retrieve a Plan detials by id",
             description = "Get a Plan object by specifying its id. The response is Plan object")
@@ -209,19 +208,19 @@ public class PlanController {
     @GetMapping(value = "/getByID/{id}")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getByID(@PathVariable("id") int id) {
-        
+
         Optional<Plan> plan = planService.findById(id);
-        
+
         if (plan.isPresent()) {
             return new ResponseEntity<>(plan, HttpStatus.OK);
-            
+
         }
 
         // tạo plan response
         PlanResponse planResponse = new PlanResponse(plan.get());
         return new ResponseEntity<>(planResponse, HttpStatus.OK);
     }
-    
+
     @Operation(summary = "Update a Plan by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -234,7 +233,7 @@ public class PlanController {
     @PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> updatePlan(@RequestBody UpdatePlanRequest updateRequest) {
         Optional<Plan> plan = planService.findById(updateRequest.getPlanID());
-        
+
         if (plan.isPresent()) {
             plan.get().setPlanName(updateRequest.getPlanName());
             plan.get().setPrice(updateRequest.getPrice());
@@ -245,21 +244,22 @@ public class PlanController {
             return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + updateRequest.getPlanID() + "}"), HttpStatus.NOT_FOUND);
         }
     }
-    
-    @Operation(summary = "Deactive a Plan by Id")
+
+    @Operation(summary = "Deactivate a Plan by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping("/deactive/{id}")
+    @DeleteMapping("/deactivate/{id}")
     @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> deactivePlan(@PathVariable("id") int id) {
+    public ResponseEntity<?> deactivatePlan(@PathVariable("id") int id) {
         Optional<Plan> plan = planService.findById(id);
-        
+
         if (plan.isPresent()) {
             plan.get().setIsActive(Boolean.FALSE);
-            return new ResponseEntity<>(planService.save(plan.get()), HttpStatus.NO_CONTENT);
+            planService.save(plan.get());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);
         }

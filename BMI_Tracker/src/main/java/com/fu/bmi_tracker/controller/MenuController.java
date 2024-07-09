@@ -131,7 +131,7 @@ public class MenuController {
         // tạo menu response
         MenuResponse menuResponse = new MenuResponse(
                 menuSave,
-                TagConverter.convertToTagResponseList(menuSave.getTags()),
+                TagConverter.convertToTagBasicResponseList(menuSave.getTags()),
                 menuFoodResponses);
 
         return new ResponseEntity<>(menuResponse, HttpStatus.CREATED);
@@ -260,7 +260,7 @@ public class MenuController {
         List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.get().getMenuID());
         MenuResponse menuResponses = new MenuResponse(
                 menu.get(),
-                TagConverter.convertToTagResponseList(menu.get().getTags()),
+                TagConverter.convertToTagBasicResponseList(menu.get().getTags()),
                 menuFoodResponses);
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
@@ -357,7 +357,7 @@ public class MenuController {
             @Content(schema = @Schema())})})
     @DeleteMapping(value = "/menu-food/deactivate/{menuID}/{foodID}")
     public ResponseEntity<?> deactivateMenuFood(@PathVariable Integer menuID, @PathVariable Integer foodID) {
-        menuFoodService.deactiveMenuFood(menuID, foodID);
+        menuFoodService.deactivateMenuFood(menuID, foodID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

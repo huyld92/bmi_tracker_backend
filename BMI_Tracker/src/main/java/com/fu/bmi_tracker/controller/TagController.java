@@ -5,10 +5,13 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Tag;
+import com.fu.bmi_tracker.model.entities.TagType;
 import com.fu.bmi_tracker.model.enums.ETagType;
 import com.fu.bmi_tracker.payload.request.CreateTagRequest;
 import com.fu.bmi_tracker.payload.response.TagResponse;
+import com.fu.bmi_tracker.payload.response.TagTypeResponse;
 import com.fu.bmi_tracker.services.TagService;
+import com.fu.bmi_tracker.util.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -206,4 +209,35 @@ public class TagController {
         return new ResponseEntity<>(tagResponses, HttpStatus.OK);
 
     }
+
+    @Operation(summary = "Retrieve all tag food group by tagType", tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TagResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("food/group-by-tag-type")
+    public ResponseEntity<?> getAllGroupByTagType() {
+
+        // gọi service lấy danh sách tag phù hợp create food
+        Iterable<TagType> tagTypes = service.getTagsGroupByTagType();
+
+        if (!tagTypes.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo tag type Response
+        List<TagTypeResponse> tagResponses = new ArrayList<>();
+        System.out.println("tagTypes: " + tagTypes.toString());
+        tagTypes.forEach(tagType -> tagResponses.add(
+                new TagTypeResponse(
+                        tagType.getTagTypeID(),
+                        tagType.getTagTypeName(),
+                        TagConverter.convertToTagResponseList(tagType.getTags()))));
+        return new ResponseEntity<>(tagResponses, HttpStatus.OK);
+
+    }
+
 }

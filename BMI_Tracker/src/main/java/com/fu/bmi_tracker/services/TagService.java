@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Tag;
+import com.fu.bmi_tracker.model.entities.TagType;
 import com.fu.bmi_tracker.model.enums.ETagType;
 import java.util.List;
 
@@ -23,5 +24,7 @@ public interface TagService extends GeneralService<Tag> {
     public Iterable<Tag> getTagCreateExercise();
 
     public Iterable<Tag> getTagCreateIngredient();
+
+    public Iterable<TagType> getTagsGroupByTagType();
 
 }

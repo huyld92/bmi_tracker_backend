@@ -6,13 +6,10 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Recipe;
-import com.fu.bmi_tracker.model.enums.EDietPreference;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
-import com.fu.bmi_tracker.payload.response.FoodResponseAll;
-import com.fu.bmi_tracker.payload.response.FoodPageResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.payload.response.RecipeResponse;
@@ -32,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -62,9 +57,7 @@ public class FoodController {
     @Autowired
     RecipeService recipeService;
 
-    @Operation(
-            summary = "Create new food with form",
-            description = "Create new food with form")
+    @Operation(summary = "Create new food with form", description = "Create new food with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
@@ -73,14 +66,14 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createNew")
-//    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewFood(@Valid @RequestBody CreateFoodRequest createFoodRequest) {
         // gọi foodService Tạo mới food
         Food food = foodService.createNewFood(createFoodRequest);
 
         // Tạo food entity response
         FoodEntityResponse foodResponse = new FoodEntityResponse(food,
-                TagConverter.convertToTagResponseList(food.getFoodTags()),
+                TagConverter.convertToTagBasicResponseList(food.getFoodTags()),
                 RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
 
         return new ResponseEntity<>(foodResponse, HttpStatus.CREATED);
@@ -103,14 +96,13 @@ public class FoodController {
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        //chuyển đổi từ food sang FoodEntityResponse
+        // chuyển đổi từ food sang FoodEntityResponse
         List<FoodEntityResponse> foodsResponse = new ArrayList<>();
         for (Food food : foods) {
             FoodEntityResponse foodResponse = new FoodEntityResponse(
                     food,
-                    TagConverter.convertToTagResponseList(food.getFoodTags()),
-                    RecipeConverter.convertToRecipeResponseList(food.getRecipes())
-            );
+                    TagConverter.convertToTagBasicResponseList(food.getFoodTags()),
+                    RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
 
             foodsResponse.add(foodResponse);
         }
@@ -118,9 +110,7 @@ public class FoodController {
         return new ResponseEntity<>(foodsResponse, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Retrieve a Food by Id",
-            description = "Get a Food object by specifying its id. The response is Food object")
+    @Operation(summary = "Retrieve a Food by Id", description = "Get a Food object by specifying its id. The response is Food object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = FoodEntityResponse.class), mediaType = "application/json")}),
@@ -136,12 +126,13 @@ public class FoodController {
         if (food.isPresent()) {
             // Tạo food entity response
             FoodEntityResponse foodResponse = new FoodEntityResponse(food.get(),
-                    TagConverter.convertToTagResponseList(food.get().getFoodTags()),
+                    TagConverter.convertToTagBasicResponseList(food.get().getFoodTags()),
                     RecipeConverter.convertToRecipeResponseList(food.get().getRecipes()));
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new MessageResponse("Cannot find food with id{" + id + "}"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Cannot find food with id{" + id + "}"),
+                    HttpStatus.NOT_FOUND);
         }
     }
 
@@ -154,14 +145,14 @@ public class FoodController {
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())})})
     @PutMapping("/update")
-//    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateFood(@RequestBody UpdateFoodRequest foodRequest) {
         Food food = foodService.updateFood(foodRequest);
         // kiểm tra kết quả
         if (food != null) {
             // Tạo food entity response
             FoodEntityResponse foodResponse = new FoodEntityResponse(food,
-                    TagConverter.convertToTagResponseList(food.getFoodTags()),
+                    TagConverter.convertToTagBasicResponseList(food.getFoodTags()),
                     RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
@@ -170,14 +161,14 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Deactive a Food by Id")
+    @Operation(summary = "Deactivate a Food by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema(implementation = RecipeResponse.class))}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deactivate/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deactivateFood(@PathVariable("id") int id) {
         // Tim food by id
         Optional<Food> food = foodService.findById(id);
@@ -198,10 +189,10 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/recipe/deactivate")
-//    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deactivateRecipe(@RequestParam Integer recipeID) {
         // Gọi recipeService deactivate recipe
-        recipeService.deactiveRecipe(recipeID);
+        recipeService.deactivateRecipe(recipeID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
@@ -213,9 +204,9 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/createRecipe")
-//    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createFoodRecipe(@RequestBody CreateRecipeRequest recipeRequest) {
-        // gọi recipeService  tạo mới recipe
+        // gọi recipeService tạo mới recipe
         Recipe recipe = recipeService.createRecipe(recipeRequest);
 
         // chuyển đổi từ recipe sáng RecipesResponse
@@ -231,7 +222,7 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deleteRecipe")
-//    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteRecipe(@RequestParam Integer recipeID) {
         recipeService.deleteRecipe(recipeID);
 
@@ -239,45 +230,42 @@ public class FoodController {
 
     }
 
-    @Operation(
-            summary = "Retrieve list food with dietPreferene",
-            description = "Get a Food list with")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = FoodPageResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "404", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/getByDietPreference")
-    public ResponseEntity<?> getFoodWithDietPreference(@RequestParam EDietPreference dietPreferenceName, Pageable pageable) {
-        Page<Food> foods = foodService.getFoodsByTagName(dietPreferenceName.toString(), pageable);
-        if (foods.isEmpty()) {
+//    @Operation(summary = "Retrieve list food with dietPreferene", description = "Get a Food list with")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = FoodPageResponse.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "404", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping("/getByDietPreference")
+//    public ResponseEntity<?> getFoodWithDietPreference(@RequestParam EDietPreference dietPreferenceName,
+//            Pageable pageable) {
+//        Page<Food> foods = foodService.getFoodsByTagName(dietPreferenceName.toString(), pageable);
+//        if (foods.isEmpty()) {
+//
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        FoodPageResponse foodPageResponses = new FoodPageResponse();
+//        List<FoodResponse> foodResponses = new ArrayList<>();
+//        for (Food food : foods.getContent()) {
+//            FoodResponse response = new FoodResponse(food);
+//            foodResponses.add(response);
+//        }
+//        foodPageResponses.setFoods(foodResponses);
+//        foodPageResponses.setPageNumber(foods.getNumber());
+//        foodPageResponses.setPageSize(foods.getSize());
+//        foodPageResponses.setTotalElements(foods.getTotalElements());
+//        foodPageResponses.setTotalPages(foods.getTotalPages());
+//        foodPageResponses.setLast(foods.isLast());
+//        foodPageResponses.setFirst(foods.isFirst());
+//        foodPageResponses.setNumberOfElements(foods.getNumberOfElements());
+//
+//        return new ResponseEntity<>(foodPageResponses, HttpStatus.OK);
+//
+//    }
 
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        FoodPageResponse foodPageResponses = new FoodPageResponse();
-        List<FoodResponse> foodResponses = new ArrayList<>();
-        for (Food food : foods.getContent()) {
-            FoodResponse response = new FoodResponse(food);
-            foodResponses.add(response);
-        }
-        foodPageResponses.setFoods(foodResponses);
-        foodPageResponses.setPageNumber(foods.getNumber());
-        foodPageResponses.setPageSize(foods.getSize());
-        foodPageResponses.setTotalElements(foods.getTotalElements());
-        foodPageResponses.setTotalPages(foods.getTotalPages());
-        foodPageResponses.setLast(foods.isLast());
-        foodPageResponses.setFirst(foods.isFirst());
-        foodPageResponses.setNumberOfElements(foods.getNumberOfElements());
-
-        return new ResponseEntity<>(foodPageResponses, HttpStatus.OK);
-
-    }
-
-    @Operation(
-            summary = "Search food by name",
-            description = "Search food with like name")
+    @Operation(summary = "Search food by name", description = "Search food with like name")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
@@ -295,7 +283,7 @@ public class FoodController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        //chuyển đổi từ food sang FoodResponse 
+        // chuyển đổi từ food sang FoodResponse
         List<FoodResponse> foodsResponse = new ArrayList<>();
         for (Food food : foods) {
             FoodResponse foodResponse = new FoodResponse(food);
@@ -323,7 +311,7 @@ public class FoodController {
         if (!recipes.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        //chuyển đổi từ recipe sang RecipeResponse
+        // chuyển đổi từ recipe sang RecipeResponse
         List<RecipeResponse> recipesResponse = new ArrayList<>();
         for (Recipe recipe : recipes) {
             RecipeResponse recipeResponse = new RecipeResponse(recipe);

@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Tag;
+import com.fu.bmi_tracker.model.entities.TagType;
 import com.fu.bmi_tracker.model.enums.ETagType;
 import com.fu.bmi_tracker.repository.TagRepository;
+import com.fu.bmi_tracker.repository.TagTypeRepository;
 import com.fu.bmi_tracker.services.TagService;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +20,34 @@ import org.springframework.stereotype.Service;
 public class TagServiceImpl implements TagService {
 
     @Autowired
-    TagRepository repository;
+    TagRepository tagRepository;
+
+    @Autowired
+    TagTypeRepository tagTypeRepository;
 
     @Override
     public Iterable<Tag> findAll() {
-        return repository.findAll();
+        return tagRepository.findAll();
     }
 
     @Override
     public Optional<Tag> findById(Integer id) {
-        return repository.findById(id);
+        return tagRepository.findById(id);
     }
 
     @Override
     public Tag save(Tag t) {
-        return repository.save(t);
+        return tagRepository.save(t);
     }
 
     @Override
     public List<Tag> findByTagIDIn(List<Integer> tagIds) {
-        return repository.findByTagIDIn(tagIds);
+        return tagRepository.findByTagIDIn(tagIds);
     }
 
     @Override
     public List<Tag> findByTagType(ETagType tagType) {
-        return repository.findByTagTypeID(tagType.getId());
+        return tagRepository.findByTagTypeID(tagType.getId());
     }
 
     @Override
@@ -53,7 +58,7 @@ public class TagServiceImpl implements TagService {
         tagTypeIDs.add(6);//Ingredient Type
         tagTypeIDs.add(7);// BMI Category
 
-        return repository.findByIsActiveTrueAndTagTypeIDNotIn(tagTypeIDs);
+        return tagRepository.findByIsActiveTrueAndTagTypeIDNotIn(tagTypeIDs);
     }
 
     @Override
@@ -63,14 +68,24 @@ public class TagServiceImpl implements TagService {
         tagTypeIDs.add(5); //Exercise Type
         tagTypeIDs.add(7);// BMI Category
 
-        return repository.findByIsActiveTrueAndTagTypeIDIn(tagTypeIDs);
+        return tagRepository.findByIsActiveTrueAndTagTypeIDIn(tagTypeIDs);
     }
 
     @Override
     public Iterable<Tag> getTagCreateIngredient() {
         // tạo danh sách tag type phù hợp với exercise 
         int tagID = 6; // Ingredient Type
-        return repository.findByTagTypeID(tagID);
+        return tagRepository.findByTagTypeID(tagID);
+    }
+
+    @Override
+    public Iterable<TagType> getTagsGroupByTagType() {
+        // tạo danh sách tag type không phù hợp với food MealType, 
+        List<Integer> tagTypeIDs = new ArrayList<>();
+        tagTypeIDs.add(5); //Exercise Type
+        tagTypeIDs.add(6);//Ingredient Type
+        tagTypeIDs.add(7);// BMI Category 
+        return tagTypeRepository.findAllByTagTypeIDNotIn(tagTypeIDs);
     }
 
 }

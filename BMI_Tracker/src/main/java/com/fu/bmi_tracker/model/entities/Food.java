@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import jakarta.persistence.CascadeType;
@@ -60,7 +59,7 @@ public class Food {
     @Column(name = "FoodNutrition", nullable = false)
     private String foodNutrition;
 
-    @Column(name = "Serving", nullable = false)
+    @Column(name = "Serving", nullable = true)
     private String serving;
 
     @Column(name = "FoodTimeProcess", nullable = false)
