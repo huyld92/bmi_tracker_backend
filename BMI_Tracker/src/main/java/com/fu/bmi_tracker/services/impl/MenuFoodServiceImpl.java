@@ -73,7 +73,7 @@ public class MenuFoodServiceImpl implements MenuFoodService {
     }
 
     @Override
-    public void deactiveMenuFood(Integer menuID, Integer foodID) {
+    public void deactivateMenuFood(Integer menuID, Integer foodID) {
         repository.deactivateMenuFood(menuID, foodID);
     }
 

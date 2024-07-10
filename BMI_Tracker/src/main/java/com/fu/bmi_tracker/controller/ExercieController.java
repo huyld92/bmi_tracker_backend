@@ -68,7 +68,7 @@ public class ExercieController {
         // tạo ExerciseEntityResponse
         ExerciseEntityResponse exerciseEntityResponse = new ExerciseEntityResponse(
                 exercise,
-                TagConverter.convertToTagResponseList(exercise.getTags()));
+                TagConverter.convertToTagBasicResponseList(exercise.getTags()));
         return new ResponseEntity<>(exerciseEntityResponse, HttpStatus.CREATED);
     }
 
@@ -93,7 +93,7 @@ public class ExercieController {
         // tạo ExerciseResponse
         ExerciseEntityResponse exerciseEntityResponse = new ExerciseEntityResponse(
                 exercise,
-                TagConverter.convertToTagResponseList(
+                TagConverter.convertToTagBasicResponseList(
                         exercise.getTags()));
         return new ResponseEntity<>(exerciseEntityResponse, HttpStatus.OK);
     }
@@ -125,7 +125,7 @@ public class ExercieController {
             // tạo Exercise entity response
             ExerciseEntityResponse response = new ExerciseEntityResponse(
                     exercise,
-                    TagConverter.convertToTagResponseList(
+                    TagConverter.convertToTagBasicResponseList(
                             exercise.getTags()));
 
             exerciseResponses.add(response);
@@ -156,7 +156,7 @@ public class ExercieController {
         // tạo Exercise entity response
         ExerciseEntityResponse response = new ExerciseEntityResponse(
                 exercise.get(),
-                TagConverter.convertToTagResponseList(
+                TagConverter.convertToTagBasicResponseList(
                         exercise.get().getTags()));
 
         return new ResponseEntity<>(response, HttpStatus.OK);

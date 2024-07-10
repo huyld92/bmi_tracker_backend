@@ -127,24 +127,25 @@ public class WorkoutController {
         // tạo Workout response
         WorkoutResonse workoutResonse = new WorkoutResonse(
                 workoutSaved,
-                TagConverter.convertToTagResponseList(workoutSaved.getTags()),
+                TagConverter.convertToTagBasicResponseList(workoutSaved.getTags()),
                 workoutExercisesResponses);
 
         return new ResponseEntity<>(workoutResonse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Deactive a Workout by Id")
+    @Operation(summary = "Deactivate a Workout by Id")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Delete success!"),
+        @ApiResponse(responseCode = "204", description = "Deactivate success!"),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping("/deactive/{id}")
-    public ResponseEntity<?> deactiveWorkout(@PathVariable("id") int id) {
+    @DeleteMapping("/deactivate/{id}")
+    public ResponseEntity<?> deactivateeWorkout(@PathVariable("id") int id) {
         Optional<Workout> workout = workoutService.findById(id);
 
         if (workout.isPresent()) {
             workout.get().setIsActive(Boolean.FALSE);
-            return new ResponseEntity<>(workoutService.save(workout.get()), HttpStatus.NO_CONTENT);
+            workoutService.save(workout.get());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>("Cannot find food with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
@@ -177,7 +178,7 @@ public class WorkoutController {
 
             workoutResonses.add(new WorkoutResonse(
                     workout,
-                    TagConverter.convertToTagResponseList(workout.getTags()),
+                    TagConverter.convertToTagBasicResponseList(workout.getTags()),
                     WorkoutExerciseConverter.convertToTagResponseList(workout.getWorkoutExercises())));
         });
 
@@ -212,7 +213,7 @@ public class WorkoutController {
         // tạo workout response
         WorkoutResonse response = new WorkoutResonse(
                 workout.get(),
-                TagConverter.convertToTagResponseList(workout.get().getTags()),
+                TagConverter.convertToTagBasicResponseList(workout.get().getTags()),
                 workoutExercisesResponses);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -253,7 +254,7 @@ public class WorkoutController {
 
             workoutResonses.add(new WorkoutResonse(
                     workout,
-                    TagConverter.convertToTagResponseList(workout.getTags()),
+                    TagConverter.convertToTagBasicResponseList(workout.getTags()),
                     WorkoutExerciseConverter.convertToTagResponseList(workout.getWorkoutExercises())));
         });
 

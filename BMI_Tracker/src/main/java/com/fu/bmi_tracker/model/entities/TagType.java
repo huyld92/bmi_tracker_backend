@@ -6,10 +6,14 @@ package com.fu.bmi_tracker.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +34,10 @@ public class TagType {
     @Column(name = "TagTypeID", nullable = false)
     private Integer tagTypeID;
 
-    @Column(name = "TagName", nullable = false)
-    private Integer tagNameD;
+    @Column(name = "TypeName", nullable = false)
+    private String tagTypeName;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TagTypeID")
+    private List<Tag> tags;
 }
