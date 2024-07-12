@@ -40,12 +40,6 @@ public class MemberBodyMass {
     @Column(name = "Weight", nullable = false)
     private Integer weight;
 
-    @Column(name = "Age", nullable = false)
-    private Integer age;
-
-    @Column(name = "BMI", nullable = false)
-    private Double bmi;
-
     @Column(name = "DateInput", nullable = false)
     private LocalDateTime dateInput;
 
@@ -53,11 +47,9 @@ public class MemberBodyMass {
     @JoinColumn(name = "MemberID")
     private Member member;
 
-    public MemberBodyMass(Integer height, Integer weight, Integer age, double bmi, LocalDateTime dateInput, Member member) {
+    public MemberBodyMass(Integer height, Integer weight, LocalDateTime dateInput, Member member) {
         this.height = height;
         this.weight = weight;
-        this.age = age;
-        this.bmi = bmi;
         this.dateInput = dateInput;
         this.member = member;
     }

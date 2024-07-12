@@ -4,7 +4,8 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.Workout;
+import com.fu.bmi_tracker.model.entities.MenuHistory;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +14,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
+public interface MenuHistoryRepository extends JpaRepository<MenuHistory, Integer> {
 
-    public Iterable<Workout> findByAdvisor_AdvisorID(Integer advisorID);
-
-    public int countByAdvisor_AdvisorIDAndIsActiveTrue(Integer advisorID);
+    public Optional<MenuHistory> findByMemberIDAndIsActiveTrue(Integer memberID);
 
 }

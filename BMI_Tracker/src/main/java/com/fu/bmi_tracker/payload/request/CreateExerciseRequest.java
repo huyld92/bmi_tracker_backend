@@ -36,10 +36,8 @@ public class CreateExerciseRequest {
     @Schema(example = "60")
     private Float distance;
 
-    @Schema(example = "300")
-    @NotNull(message = "Calories burned is required")
-    @PositiveOrZero(message = "Calories burned must be a positive number or zero")
-    private Integer caloriesBurned;
+    @Schema(example = "10")
+    private Float met;
 
     @NotNull
     @Schema(example = "[1,2,3]")

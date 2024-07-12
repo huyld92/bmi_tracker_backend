@@ -27,4 +27,6 @@ public class PushNotificationController {
     public String sendSampleNotification(@RequestBody PnsRequest pnsRequest) {
         return fcmService.pushNotification(pnsRequest);
     }
+    
+    
 }

@@ -6,7 +6,6 @@ package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
-import java.util.List;
 
 /**
  *
@@ -17,7 +16,5 @@ public interface WorkoutService extends GeneralService<Workout> {
     public Workout updateWorkoutInformation(UpdateWorkoutRequest updateWorkoutRequest);
 
     public Iterable<Workout> getWorkoutByAdvisorID(Integer advisorID);
-
-    public Workout createNewWorkout(Workout w, List<Integer> tagIDs);
 
 }

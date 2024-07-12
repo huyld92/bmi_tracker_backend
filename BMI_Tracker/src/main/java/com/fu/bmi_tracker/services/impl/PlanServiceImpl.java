@@ -39,7 +39,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Iterable<Plan> findAllAvailblePlan() {
+    public Iterable<Plan> findAllAvailablePlan() {
         return planRepository.findByIsActiveTrue();
     }
 
@@ -73,5 +73,10 @@ public class PlanServiceImpl implements PlanService {
 
         // GỌi repository tìm tất cả plan của advisor
         return planRepository.findByAdvisor_AdvisorID(advisor.getAdvisorID());
+    }
+
+    @Override
+    public Iterable<Plan> getAllPlanForSubscription(Integer advisorID) {
+        return planRepository.findByAdvisor_AdvisorIDAndIsActiveTrueAndIsApprovedTrue(advisorID);
     }
 }

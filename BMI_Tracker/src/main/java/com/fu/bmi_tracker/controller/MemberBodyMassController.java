@@ -59,9 +59,9 @@ public class MemberBodyMassController {
     @Operation(
             summary = "Create member body mass (MEMBER)")
     @ApiResponses({
-        @ApiResponse(responseCode = "200",
+        @ApiResponse(responseCode = "201",
                 content = {
-                    @Content(schema = @Schema(implementation = MemberBodyMass.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = MemberBodyMassResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "401", content = {
@@ -79,20 +79,20 @@ public class MemberBodyMassController {
         }
         LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
 
-        int age = now.getYear() - princal.getBirthday().getYear();
-        Double bmi = bMIUtils.calculateBMI(weight, height);
-
         // Save member body mass
         MemberBodyMass bodyMass = new MemberBodyMass(height,
                 weight,
-                age,
-                bmi,
                 now, member.get()
         );
 
-        bodyMassService.save(bodyMass);
+        // tạo bodymass response 
+        double bmi = bMIUtils.calculateBMI(weight, height);
 
-        return ResponseEntity.ok(new MessageResponse("Log out successful!"));
+        int age = now.getYear() - member.get().getAccount().getBirthday().getYear();
+
+        MemberBodyMassResponse bodyMassResponse = new MemberBodyMassResponse(bodyMassService.save(bodyMass), age, bmi);
+
+        return new ResponseEntity<>(bodyMassResponse, HttpStatus.CREATED);
     }
 
     @Operation(
@@ -122,9 +122,18 @@ public class MemberBodyMassController {
 
         // tạo member body mass response
         List<MemberBodyMassResponse> bodyMassResponses = new ArrayList<>();
-        bodyMasses.forEach(bodyMass -> bodyMassResponses.add(new MemberBodyMassResponse(bodyMass)));
+        bodyMasses.forEach(bodyMass -> {
 
-        return ResponseEntity.ok(bodyMasses);
+            double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+            int age = LocalDate.now().getYear() - member.get().getAccount().getBirthday().getYear();
+
+            bodyMassResponses.add(new MemberBodyMassResponse(bodyMass, age, bmi));
+
+        }
+        );
+
+        return ResponseEntity.ok(bodyMassResponses);
     }
 
     @Operation(
@@ -163,8 +172,15 @@ public class MemberBodyMassController {
 
         // tạo member body mass response
         List<MemberBodyMassResponse> bodyMassResponses = new ArrayList<>();
-        bodyMasses.forEach(bodyMass -> bodyMassResponses.add(new MemberBodyMassResponse(bodyMass)));
+        bodyMasses.forEach(bodyMass -> {
 
+            double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+            int age = LocalDate.now().getYear() - bodyMass.getMember().getAccount().getBirthday().getYear();
+
+            bodyMassResponses.add(new MemberBodyMassResponse(bodyMass, age, bmi));
+        }
+        );
         return ResponseEntity.ok(bodyMassResponses);
     }
 }

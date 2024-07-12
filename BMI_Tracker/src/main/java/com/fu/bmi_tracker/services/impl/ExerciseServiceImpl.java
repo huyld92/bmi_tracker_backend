@@ -26,36 +26,36 @@ import com.fu.bmi_tracker.repository.TagExerciseRepository;
  */
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
-    
+
     @Autowired
     ExerciseRepository repository;
-    
+
     @Autowired
     TagRepository tagRepository;
-    
+
     @Autowired
     TagExerciseRepository exerciseTagRepository;
-    
+
     @Override
     public Iterable<Exercise> findAll() {
         return repository.findAll();
     }
-    
+
     @Override
     public Optional<Exercise> findById(Integer id) {
         return repository.findById(id);
     }
-    
+
     @Override
     public Exercise save(Exercise t) {
         return repository.save(t);
     }
-    
+
     @Override
     public List<Exercise> findByExerciseIDIn(List<Integer> exerciseIDs) {
         return repository.findByExerciseIDIn(exerciseIDs);
     }
-    
+
     @Override
     public Exercise createExercise(CreateExerciseRequest createExerciseRequest) {
         //Tìm danh sách tags từ List tagIDs
@@ -63,10 +63,10 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         // Tạo mới exercise từ createExerciseRequest
         Exercise exercise = new Exercise(createExerciseRequest, tags);
-        
+
         return repository.save(exercise);
     }
-    
+
     @Override
     public Exercise updateExercise(UpdateExercerRequest updateExercerRequest) {
         // tim exercise
@@ -78,7 +78,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         // Cập nhật thông tin exercise
         exercise.setExerciseName(updateExercerRequest.getExerciseName());
-        exercise.setCaloriesBurned(updateExercerRequest.getCaloriesBurned());
         exercise.setDuration(updateExercerRequest.getDuration());
         exercise.setDistance(updateExercerRequest.getDistance());
         exercise.setEmoji(updateExercerRequest.getEmoji());
@@ -86,13 +85,13 @@ public class ExerciseServiceImpl implements ExerciseService {
         // cập nhật exercise
         return repository.save(exercise);
     }
-    
+
     @Override
     @Transactional
     public void deactivateExercise(Integer exerciseID) {
         repository.deactivateById(exerciseID);
     }
-    
+
     @Override
     public TagExercise addTag(Integer exerciseID, Integer tagID) {
         // Tìm exercise 
@@ -108,11 +107,11 @@ public class ExerciseServiceImpl implements ExerciseService {
         //gọi repository để lưu 
         return exerciseTagRepository.save(exerciseTag);
     }
-    
+
     @Override
     @Transactional
     public void deleteTag(Integer exerciseID, Integer tagID) {
         exerciseTagRepository.deleteByExercise_ExerciseIDAndTag_TagID(exerciseID, tagID);
     }
-    
+
 }

@@ -5,12 +5,12 @@
 package com.fu.bmi_tracker.model.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,25 +23,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Notification")
-public class Notification {
+@Table(name = "MenuHistory")
+public class MenuHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "NotificationID", nullable = false)
-    private Integer notificationID;
+    @Column(name = "MenuHistoryID", nullable = false)
+    private Integer menuHistoryID;
 
-    @Column(name = "Content", nullable = false)
-    private String content;
+    @Column(name = "DateOfAssigned", nullable = false)
+    private LocalDate dateOfAssigned;
 
-    @Column(name = "Title", nullable = false)
-    private String title;
+    @Column(name = "MenuID", nullable = false)
+    private Integer menuID;
 
-    @Column(name = "CreatedTime", nullable = false)
-    private LocalDateTime createdTime;
-
-    @Column(name = "IsRead", nullable = false)
-    private Boolean isRead;
+    @Column(name = "MemberID", nullable = false)
+    private Integer memberID;
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;

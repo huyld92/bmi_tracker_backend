@@ -22,9 +22,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingRequest {
+public class SubscriptionRequest {
 
-    @Schema(example = "Booking for subscription plan")
+    @Schema(example = "Description for subscription plan")
     @NotBlank
     @Size(max = 255)
     private String description;
@@ -50,5 +50,5 @@ public class BookingRequest {
 
     @Schema(example = "323232323256")
     @NotBlank
-    private String bookingNumber;
+    private String subscriptionNumber;
 }

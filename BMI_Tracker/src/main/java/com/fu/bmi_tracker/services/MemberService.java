@@ -10,6 +10,8 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.Workout;
+import com.fu.bmi_tracker.model.enums.EMealType;
+import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,10 +31,9 @@ public interface MemberService extends GeneralService<Member> {
 
     public List<Exercise> getllExerciseResponseInWorkout(Integer accountID);
 
-    public Menu getMenuSuggestion(int defaultCalories, String dietaryPreference);
-
-    public Workout getWorkoutSuggestion(String classifyBMI);
-
+//    public Menu getMenuSuggestion(int defaultCalories, String dietaryPreference);
+//
+//    public Workout getWorkoutSuggestion(String classifyBMI);
     public Page<Food> getPaginatedFoodWithPriority(Integer accountID, Pageable pageable);
 
     public Page<Exercise> getPaginatedExerciseWithPriority(Integer accountID, Pageable pageable);
@@ -40,5 +41,11 @@ public interface MemberService extends GeneralService<Member> {
     public DailyRecord getDailyRecordOfMember(Integer accountID, LocalDate localDate);
 
     public List<MemberBmiResponse> getMemberBMISummary();
+
+    public List<Food> getFoodsInMenuByMealType(Integer accountID, EMealType mealType);
+
+    public List<Food> getAllFoodInMenu(Integer accountID);
+
+    public Page<Food> getPaginatedFoodFilterTag(Pageable pageable, List<Integer> tagIDs);
 
 }

@@ -13,8 +13,6 @@ import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
-import com.fu.bmi_tracker.model.entities.Menu;
-import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
@@ -45,7 +43,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.fu.bmi_tracker.services.MemberService;
-import com.fu.bmi_tracker.services.MenuFoodService;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -57,7 +54,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -77,9 +73,6 @@ public class MemberController {
 
     @Autowired
     ActivityLevelService activityLevelService;
-
-    @Autowired
-    MenuFoodService menuFoodService;
 
     @Autowired
     BMIUtils bMIUtils;
@@ -125,34 +118,24 @@ public class MemberController {
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
 
-        // tìm menu suggestion theo dietatry preference và default calories
-        Menu menu = memberService.getMenuSuggestion(defaultCalories, createMemberRequest.getDietaryPreference());
-
-        // Tìm workout suggestion dựa trên BMI
-        Workout workout = memberService.getWorkoutSuggestion(bMIUtils.classifyBMI(bmi));
-
         // Save member  Bổ sung menuID
         Member member = new Member(
                 new Account(principal.getId()),
                 createMemberRequest.getTargetWeight(),
                 tdee,
-                bmr,
                 defaultCalories,
                 false,
                 now,
                 createMemberRequest.getDietaryPreference(),
-                new ActivityLevel(createMemberRequest.getActivityLevelID()),
-                //Thay đổi menuDI and WorkoutID
-                menu.getMenuID(),
-                workout.getWorkoutID()
+                new ActivityLevel(createMemberRequest.getActivityLevelID())
         );
 
         Member memberSaved = memberService.save(member);
 
         // Save member body mass
-        MemberBodyMass bodyMass = new MemberBodyMass(createMemberRequest.getHeight(),
+        MemberBodyMass bodyMass = new MemberBodyMass(
+                createMemberRequest.getHeight(),
                 createMemberRequest.getWeight(),
-                age, bmi,
                 now, memberSaved);
 
         memberBodyMassService.save(bodyMass);
@@ -180,26 +163,17 @@ public class MemberController {
     public ResponseEntity<?> getMemberMenuByMealType(@RequestParam EMealType mealType) {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-        // Find member by accountID
-        Optional<Member> member = memberService.findByAccountID(principal.getId());
 
-        if (!member.isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Member already exists!"));
-        }
-
-        // call service find food
-        List<Food> foods = menuFoodService.findFoodByMenu_MenuIDAndMealType(member.get().getMenuID(), mealType);
+        // gọi memberService tìm Food trong menu của advisor theo 
+        List<Food> foods = memberService.getFoodsInMenuByMealType(principal.getId(), mealType);
 
         //check food list 
         if (foods.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        if (foods.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+
         List<FoodResponse> foodResponses = new ArrayList<>();
+
         foods.forEach(food -> {
             FoodResponse foodResponse = new FoodResponse(food);
             foodResponses.add(foodResponse);
@@ -207,33 +181,32 @@ public class MemberController {
         return new ResponseEntity<>(foodResponses, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Assign menu for member (ADVISOR)",
-            description = "Create new menu with form")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PutMapping(value = "/assignMenu")
-    @PreAuthorize("hasRole('AVISOR')")
-    public ResponseEntity<?> assignMenu(@Valid @RequestParam Integer menuID, Integer memberID) {
-        // find member by member id
-        Optional<Member> member = memberService.findById(memberID);
-        // check existed
-        if (!member.isPresent()) {
-            return new ResponseEntity<>(new MessageResponse("Cannot find member with id {" + memberID + "}"), HttpStatus.BAD_REQUEST);
-        }
-        // set menuID
-        member.get().setMenuID(menuID);
-        //Update member
-        memberService.save(member.get());
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
+//    @Operation(
+//            summary = "Assign menu for member (ADVISOR)",
+//            description = "Create new menu with form")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @PutMapping(value = "/assignMenu")
+//    @PreAuthorize("hasRole('AVISOR')")
+//    public ResponseEntity<?> assignMenu(@Valid @RequestParam Integer menuID, Integer memberID) {
+//        // find member by member id
+//        Optional<Member> member = memberService.findById(memberID);
+//        // check existed
+//        if (!member.isPresent()) {
+//            return new ResponseEntity<>(new MessageResponse("Cannot find member with id {" + memberID + "}"), HttpStatus.BAD_REQUEST);
+//        }
+//        // set menuID
+//        member.get().setMenuID(menuID);
+//        //Update member
+//        memberService.save(member.get());
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
     @Operation(
             summary = "Retrieve All Food in menu (MEMBER)",
             description = "Member get food list")
@@ -251,22 +224,14 @@ public class MemberController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        // Find member by accountID
-        Optional<Member> member = memberService.findByAccountID(principal.getId());
-
-        if (!member.isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Member already exists!"));
-        }
-
-        // call service find food
-        List<Food> foods = menuFoodService.findFoodByMenu_MenuID(member.get().getMenuID());
+        // gọi service tìm tất cả food có trong menu hiện tại của member
+        List<Food> foods = memberService.getAllFoodInMenu(principal.getId());
 
         //check food list 
         if (foods.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
         List<FoodResponse> foodResponses = new ArrayList<>();
         foods.forEach(food -> {
             FoodResponse foodResponse = new FoodResponse(food);
@@ -307,39 +272,28 @@ public class MemberController {
                         member.get().getMemberID());
 
         MemberInformationResponse memberInformationResponse;
-        if (bodyMass != null) {
-            memberInformationResponse = new MemberInformationResponse(
-                    member.get().getMemberID(),
-                    principal.getEmail(),
-                    principal.getAccountPhoto(),
-                    principal.getFullName(),
-                    principal.getGender().toString(),
-                    principal.getPhoneNumber(),
-                    member.get().getEndDateOfPlan(),
-                    member.get().getAccount().getBirthday(),
-                    bodyMass.getHeight(),
-                    bodyMass.getWeight(),
-                    bodyMass.getAge(),
-                    bodyMass.getBmi(),
-                    member.get().getBmr(),
-                    member.get().getTdee());
-        } else {
-            memberInformationResponse = new MemberInformationResponse(
-                    member.get().getMemberID(),
-                    principal.getEmail(),
-                    principal.getAccountPhoto(),
-                    principal.getFullName(),
-                    principal.getGender().toString(),
-                    principal.getPhoneNumber(),
-                    LocalDate.now(),
-                    LocalDate.now(),
-                    0,
-                    0,
-                    0,
-                    0.0,
-                    member.get().getBmr(),
-                    member.get().getTdee());
-        }
+
+        double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+        int age = LocalDate.now().getYear() - member.get().getAccount().getBirthday().getYear();
+
+        double bmr = bMIUtils.calculateBMR(bodyMass.getWeight(), bodyMass.getHeight(), age, principal.getGender());
+
+        memberInformationResponse = new MemberInformationResponse(
+                member.get().getMemberID(),
+                principal.getEmail(),
+                principal.getAccountPhoto(),
+                principal.getFullName(),
+                principal.getGender().toString(),
+                principal.getPhoneNumber(),
+                member.get().getEndDateOfPlan(),
+                member.get().getAccount().getBirthday(),
+                bodyMass.getHeight(),
+                bodyMass.getWeight(),
+                age,
+                bmi,
+                bmr,
+                member.get().getTdee());
 
         return new ResponseEntity<>(memberInformationResponse, HttpStatus.OK);
     }
@@ -393,14 +347,23 @@ public class MemberController {
             @Content(schema = @Schema())})})
     @GetMapping("/foods/getPriority")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getAllFoodWithpriorityTagName(Pageable pageable) {
-        // Lấy account ID từ context
-        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+    public ResponseEntity<?> getAllFoodWithpriorityTagName(Pageable pageable, @RequestParam(required = false) List<Integer> tagIDs) {
+
+        Page<Food> page;
+
+        // nếu tagIDs có giá trị thì gọi service để filter
+        if (tagIDs == null) {
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            // Lấy account ID từ context
+            CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                    .getAuthentication().getPrincipal();
+            page = memberService.getPaginatedFoodWithPriority(principal.getId(), pageable);
+
+        } else {
+            page = memberService.getPaginatedFoodFilterTag(pageable, tagIDs);
+        }
 
         // gọi service tìm danh sách food và phân trang
-        Page<Food> page = memberService.getPaginatedFoodWithPriority(principal.getId(), pageable);
-
         // chuyển dổi từ food sang food response
         List<FoodResponse> foodResponses = page.get()
                 .map(food -> {
@@ -499,24 +462,4 @@ public class MemberController {
 
     }
 
-    /*
-    // Lấy danh sách member đang đăng ký của advisor bằng advisorID
-    @Operation(summary = "Receive a list of members currently ordering from the advisor (ADVISOR)",
-            description = "Login with advisor account and get list member")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MemberInformationResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/advisor/getByAdvisorID")
-    @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> getCurrentMembersOrderByAdvisorID(@RequestParam Integer advisorID) {
-        // gọi serverice lấy danh sách member bằng advisor ID có list body mass
-
-        // Chuyển đổi member response 
-//        return new ResponseEntity<>(HttpStatus.OK);
-    }
-     */
 }

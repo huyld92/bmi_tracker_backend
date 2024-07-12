@@ -131,7 +131,7 @@ public class AccountController {
     public ResponseEntity<?> addMoreRole(@RequestParam Integer accountID, ERole roleName) {
         accountService.addMoreRole(accountID, roleName);
 
-        return new ResponseEntity<>(new MessageResponse("Add role success"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Add role success"), HttpStatus.CREATED);
 
     }
 
@@ -145,7 +145,6 @@ public class AccountController {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAll")
     @PreAuthorize("hasRole('ADMIN')")
-
     public ResponseEntity<?> getAllAccount() {
         //    gọi service tìm tất cả account
         Iterable<Account> accounts = accountService.findAll();
@@ -229,7 +228,7 @@ public class AccountController {
 
     @Operation(summary = "Update device token", description = "Client send device token to update")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
+        @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),

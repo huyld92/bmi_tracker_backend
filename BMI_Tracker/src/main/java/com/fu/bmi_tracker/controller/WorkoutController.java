@@ -11,9 +11,9 @@ import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import com.fu.bmi_tracker.payload.request.CreateWorkoutRequest;
 import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
+import com.fu.bmi_tracker.payload.response.ExerciseResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.payload.response.WorkoutEntityResponse;
-import com.fu.bmi_tracker.payload.response.WorkoutExerciseResponse;
 import com.fu.bmi_tracker.payload.response.WorkoutResonse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.ExerciseService;
@@ -37,8 +37,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.WorkoutExerciseService;
-import com.fu.bmi_tracker.util.TagConverter;
-import com.fu.bmi_tracker.util.WorkoutExerciseConverter;
+import com.fu.bmi_tracker.util.ExerciseConverter;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,8 +94,8 @@ public class WorkoutController {
                 createWorkoutRequest.getTotalCaloriesBurned(),
                 advisor.getAdvisorID());
 
-        // lưu account vào database
-        Workout workoutSaved = workoutService.createNewWorkout(w, createWorkoutRequest.getTagIDs());
+        // lưu Workout vào database
+        Workout workoutSaved = workoutService.save(w);
 
         if (workoutSaved == null) {
             return new ResponseEntity<>(new MessageResponse("Cannot create new workout!"), HttpStatus.BAD_REQUEST);
@@ -108,15 +107,15 @@ public class WorkoutController {
 
         List<WorkoutExercise> workoutExercises = new ArrayList<>();
 
-        //tạo workoutExercise response
-        List<WorkoutExerciseResponse> workoutExercisesResponses = new ArrayList<>();
+        //tạo ExerciseResponse
+        List<ExerciseResponse> workoutExercisesResponses = new ArrayList<>();
 
         // tạo workoutExercises từ  exercises
         exercises.forEach(exercise -> {
             WorkoutExercise workoutExercise = new WorkoutExercise(workoutSaved, exercise, true);
             workoutExercises.add(workoutExercise);
 
-            workoutExercisesResponses.add(new WorkoutExerciseResponse(workoutExercise));
+            workoutExercisesResponses.add(new ExerciseResponse(workoutExercise.getExercise()));
         });
 
         // Gọi workoutService lưu tất cả workouExercise
@@ -127,7 +126,6 @@ public class WorkoutController {
         // tạo Workout response
         WorkoutResonse workoutResonse = new WorkoutResonse(
                 workoutSaved,
-                TagConverter.convertToTagBasicResponseList(workoutSaved.getTags()),
                 workoutExercisesResponses);
 
         return new ResponseEntity<>(workoutResonse, HttpStatus.OK);
@@ -178,8 +176,7 @@ public class WorkoutController {
 
             workoutResonses.add(new WorkoutResonse(
                     workout,
-                    TagConverter.convertToTagBasicResponseList(workout.getTags()),
-                    WorkoutExerciseConverter.convertToTagResponseList(workout.getWorkoutExercises())));
+                    ExerciseConverter.convertToWorkoutExerciseResponseList(workout.getWorkoutExercises())));
         });
 
         return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
@@ -204,16 +201,15 @@ public class WorkoutController {
         }
 
         //tạo workoutExercise response
-        List<WorkoutExerciseResponse> workoutExercisesResponses = new ArrayList<>();
+        List<ExerciseResponse> workoutExercisesResponses = new ArrayList<>();
 
         workout.get().getWorkoutExercises().forEach(workoutExercise -> {
-            workoutExercisesResponses.add(new WorkoutExerciseResponse(workoutExercise));
+            workoutExercisesResponses.add(new ExerciseResponse(workoutExercise.getExercise()));
         });
 
         // tạo workout response
         WorkoutResonse response = new WorkoutResonse(
                 workout.get(),
-                TagConverter.convertToTagBasicResponseList(workout.get().getTags()),
                 workoutExercisesResponses);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -224,7 +220,7 @@ public class WorkoutController {
             description = "Get workout by advisor ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = WorkoutResonse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = WorkoutEntityResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -248,14 +244,10 @@ public class WorkoutController {
         }
 
         // tạo workout response
-        List<WorkoutResonse> workoutResonses = new ArrayList<>();
+        List<WorkoutEntityResponse> workoutResonses = new ArrayList<>();
         // duyeejt list workout
         workouts.forEach(workout -> {
-
-            workoutResonses.add(new WorkoutResonse(
-                    workout,
-                    TagConverter.convertToTagBasicResponseList(workout.getTags()),
-                    WorkoutExerciseConverter.convertToTagResponseList(workout.getWorkoutExercises())));
+            workoutResonses.add(new WorkoutEntityResponse(workout));
         });
 
         return new ResponseEntity<>(workoutResonses, HttpStatus.OK);

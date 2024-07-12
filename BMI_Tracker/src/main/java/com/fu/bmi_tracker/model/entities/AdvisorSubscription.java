@@ -4,8 +4,8 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.model.enums.EBookingStatus;
-import com.fu.bmi_tracker.payload.request.BookingRequest;
+import com.fu.bmi_tracker.model.enums.ESubscriptionStatus;
+import com.fu.bmi_tracker.payload.request.SubscriptionRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,25 +33,25 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "[Booking]")
-public class Booking {
+@Table(name = "[AdvisorSubscription]")
+public class AdvisorSubscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BookingID", nullable = false)
-    private Integer bookingID;
+    @Column(name = "SubscriptionID", nullable = false)
+    private Integer subscriptionID;
 
-    @Column(name = "BookingDescription", nullable = false)
-    private String bookingDescription;
+    @Column(name = "SubscriptionDescription", nullable = false)
+    private String subscriptionDescription;
 
-    @Column(name = "BookingNumber", nullable = false)
-    private String bookingNumber;
+    @Column(name = "SubscriptionNumber", nullable = false)
+    private String subscriptionNumber;
 
-    @Column(name = "BookingAmount", nullable = false)
-    private BigDecimal bookingAmount;
+    @Column(name = "SubscriptionAmount", nullable = false)
+    private BigDecimal subscriptionAmount;
 
-    @Column(name = "BookingDate", nullable = false)
-    private LocalDateTime bookingDate;
+    @Column(name = "SubscriptionDate", nullable = false)
+    private LocalDateTime subscriptionDate;
 
     @Column(name = "StartDate", nullable = false)
     private LocalDate startDate;
@@ -59,9 +59,9 @@ public class Booking {
     @Column(name = "EndDate", nullable = false)
     private LocalDate endDate;
 
-    @Column(name = "BookingStatus", nullable = false)
+    @Column(name = "SubscriptionStatus", nullable = false)
     @Enumerated(EnumType.STRING)
-    private EBookingStatus bookingStatus;
+    private ESubscriptionStatus subscriptionStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MemberID", nullable = false)
@@ -77,37 +77,36 @@ public class Booking {
     @Column(name = "TransactionID", nullable = false, unique = true)
     private Integer transactionID;
 
-    public Booking(BookingRequest bookingRequest,
+    public AdvisorSubscription(SubscriptionRequest subscriptionRequest,
             LocalDate startDate,
             LocalDate endDate,
-            Integer memberID,
+            Member member,
             Advisor advisor,
             int transactionID,
             int commissionID) {
-        this.bookingDescription = bookingRequest.getDescription();
-        this.bookingNumber = bookingRequest.getBookingNumber();
-        this.bookingAmount = bookingRequest.getAmount();
-        this.bookingDate = LocalDateTime.now(ZoneId.of("GMT+7"));
+        this.subscriptionDescription = subscriptionRequest.getDescription();
+        this.subscriptionNumber = subscriptionRequest.getSubscriptionNumber();
+        this.subscriptionAmount = subscriptionRequest.getAmount();
+        this.subscriptionDate = LocalDateTime.now(ZoneId.of("GMT+7"));
         this.startDate = startDate;
         this.endDate = endDate;
-        this.member = new Member();
-        this.member.setMemberID(memberID);
+        this.member = member;
         this.advisor = advisor;
-        this.bookingStatus = checkBookingStatus(startDate);
+        this.subscriptionStatus = checkSubscriptionStatus(startDate);
         this.commissionID = commissionID;
         this.transactionID = transactionID;
     }
 
-    private EBookingStatus checkBookingStatus(LocalDate startDate) {
+    private ESubscriptionStatus checkSubscriptionStatus(LocalDate startDate) {
         LocalDate now = LocalDate.now();
         if (now.isBefore(startDate)) {
             //ngày hiện tại trước startDate
-            return EBookingStatus.NOT_STARTED;
+            return ESubscriptionStatus.NOT_STARTED;
         } else if (now.equals(startDate)) {
             //ngày hiện tại bằng  startDate
-            return EBookingStatus.PENDING;
+            return ESubscriptionStatus.PENDING;
         } else {
-            return EBookingStatus.CANCELLED;
+            return ESubscriptionStatus.CANCELLED;
         }
     }
 }

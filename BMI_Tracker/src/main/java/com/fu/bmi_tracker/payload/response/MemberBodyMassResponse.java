@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.payload.response;
 
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import com.fu.bmi_tracker.util.BMIUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -52,12 +53,12 @@ public class MemberBodyMassResponse {
     @PastOrPresent(message = "Date input must be in the past or present")
     private LocalDateTime dateInput;
 
-    public MemberBodyMassResponse(MemberBodyMass bodyMass) {
+    public MemberBodyMassResponse(MemberBodyMass bodyMass, int age, double bmi) {
         this.memberBodyMassID = bodyMass.getMemberBodyMassID();
         this.height = bodyMass.getHeight();
         this.weight = bodyMass.getWeight();
-        this.age = bodyMass.getAge();
-        this.bmi = bodyMass.getBmi();
+        this.age = age;
+        this.bmi = bmi;
         this.dateInput = bodyMass.getDateInput();
     }
 

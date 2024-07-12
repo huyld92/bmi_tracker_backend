@@ -2,9 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.fu.bmi_tracker.payload.response;
+package com.fu.bmi_tracker.payload.request;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,9 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdvisorBookingSummary {
+public class CreateSubscriptionTransactionRequest {
 
-    private Integer advisorID;
-    private List<BookingSummaryResponse> bookingSummary;
-
+    private SubscriptionRequest subscriptionRequest;
+    private MemberTransactionRequest transactionRequest;
 }
