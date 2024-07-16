@@ -12,11 +12,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.List;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,6 +46,9 @@ public class Menu {
 
     @Column(name = "TotalCalories", nullable = false)
     private Integer totalCalories;
+ 
+    @Column(name = "CreationDate", nullable = false)
+    private LocalDate creationDate;
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
@@ -61,6 +62,7 @@ public class Menu {
         this.menuDescription = menuRequest.getMenuDescription();
         this.menuPhoto = menuRequest.getMenuPhoto();
         this.totalCalories = menuRequest.getTotalCalories();
+        this.creationDate = LocalDate.now();
         this.isActive = true;
         this.advisor = new Advisor(advisorID);
     }

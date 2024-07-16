@@ -5,6 +5,8 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Menu;
+import com.fu.bmi_tracker.payload.response.CountMenuResponse;
+import java.util.List;
 
 /**
  *
@@ -15,5 +17,7 @@ public interface MenuService extends GeneralService<Menu> {
     public Iterable<Menu> getAllByAdvisorID(Integer advisorID);
 
     public Menu createNewMenu(Menu menu);
+
+    public List<CountMenuResponse> countTotalMenuIn6Months();
 
 }

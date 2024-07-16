@@ -8,10 +8,14 @@ import com.fu.bmi_tracker.payload.response.AdvisorSubscriptionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorCommissionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorSummaryMenuWorkout;
 import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
+import com.fu.bmi_tracker.payload.response.CountMenuResponse;
+import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
+import com.fu.bmi_tracker.payload.response.CountWorkoutResponse;
 import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.CommissionService;
 import com.fu.bmi_tracker.services.MemberService;
+import com.fu.bmi_tracker.services.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.SubscriptionService;
+import com.fu.bmi_tracker.services.WorkoutService;
 
 /**
  *
@@ -33,7 +38,7 @@ import com.fu.bmi_tracker.services.SubscriptionService;
  */
 @Tag(name = "Statistics", description = "Advisor management APIs")
 @RestController
-@RequestMapping("/api/statistics")
+@RequestMapping("/api/test/statistics")
 public class StatisticsController {
 
     @Autowired
@@ -44,6 +49,12 @@ public class StatisticsController {
 
     @Autowired
     MemberService memberService;
+
+    @Autowired
+    MenuService menuService;
+
+    @Autowired
+    WorkoutService workoutService;
 
     @Autowired
     CommissionService commissionService;
@@ -130,41 +141,82 @@ public class StatisticsController {
         return new ResponseEntity<>(memberBmiResponses, HttpStatus.OK);
 
     }
-//
-//    @Operation(summary = "Statistics total commission in 6 months", description = "")
-//    @ApiResponses({
-//        @ApiResponse(responseCode = "200", content = {
-//            @Content(schema = @Schema(implementation = CommissionSummaryResponse.class))}),
-//        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-//            @Content(schema = @Schema())}),
-//        @ApiResponse(responseCode = "500", content = {
-//            @Content(schema = @Schema())})})
-//    @GetMapping("/commission-summary")
-//    public ResponseEntity<?> getCommissionSummaryIn6Months() {
-//        // goij service tìm tổng số commission trong vòng 6 tháng
-//        List<CommissionSummaryResponse> commissionSummaryResponses = commissionService.getCommissionSummaryIn6Months();
-//        if (commissionSummaryResponses.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        return new ResponseEntity<>(commissionSummaryResponses, HttpStatus.OK);
-//    }
 
-//    @Operation(summary = "Statistics total commission in 6 months", description = "")
-//    @ApiResponses({
-//        @ApiResponse(responseCode = "200", content = {
-//            @Content(schema = @Schema(implementation = CommissionSummaryResponse.class))}),
-//        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-//            @Content(schema = @Schema())}),
-//        @ApiResponse(responseCode = "500", content = {
-//            @Content(schema = @Schema())})})
-//    @GetMapping("/get-total-menu")
-//    public ResponseEntity<?> getTotalMenu() {
-//        // gọi service lấy tổng số menu
-//        List<CommissionSummaryResponse> commissionSummaryResponses = commissionService.getCommissionSummaryIn6Months();
-//        if (commissionSummaryResponses.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        return new ResponseEntity<>(commissionSummaryResponses, HttpStatus.OK);
-//    }
+    @Operation(summary = "Statistics total commission in 6 months", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CommissionSummaryResponse.class))}),
+        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/commission-summary")
+    public ResponseEntity<?> getCommissionSummaryIn6Months() {
+        // goij service tìm tổng số commission trong vòng 6 tháng
+        List<CommissionSummaryResponse> commissionSummaryResponses = commissionService.getCommissionSummaryIn6Months();
+        if (commissionSummaryResponses.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(commissionSummaryResponses, HttpStatus.OK);
+    }
 
+    @Operation(summary = "Statistics total menu in 6 months", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CountMenuResponse.class))}),
+        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/get-total-menu")
+    public ResponseEntity<?> getTotalMenu() {
+        // gọi service lấy tổng số menu
+        List<CountMenuResponse> countMenuResponses = menuService.countTotalMenuIn6Months();
+
+        if (countMenuResponses.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(countMenuResponses, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Statistics total menu in 6 months", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CountWorkoutResponse.class))}),
+        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/get-total-workout")
+    public ResponseEntity<?> getTotalWorkout() {
+        // gọi service lấy tổng số workout
+        List<CountWorkoutResponse> countWorkoutResponses = workoutService.countTotalWorkoutIn6Months();
+
+        if (countWorkoutResponses.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(countWorkoutResponses, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Statistics total subscription in 6 months", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CountSubscriptionResponse.class))}),
+        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/get-total-subscription")
+    public ResponseEntity<?> getTotalsubscription() {
+        // gọi service lấy tổng số booking
+        List<CountSubscriptionResponse> countSubscriptionResponses = subscriptionService.countTotalSubscriptionIn6Months();
+
+        if (countSubscriptionResponses.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(countSubscriptionResponses, HttpStatus.OK);
+    }
 }

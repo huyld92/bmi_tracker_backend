@@ -12,11 +12,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,6 +46,9 @@ public class Workout {
     @Column(name = "TotalCloriesBurned", nullable = false)
     private Integer totalCloriesBurned;
 
+    @Column(name = "CreationDate", nullable = false)
+    private LocalDate creationDate;
+
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
@@ -62,6 +64,7 @@ public class Workout {
         this.workoutName = workoutName;
         this.workoutDescription = workoutDescription;
         this.totalCloriesBurned = totalCloriesBurned;
+        this.creationDate = LocalDate.now();
         this.advisor = new Advisor(advisorID);
         this.isActive = true;
     }

@@ -5,11 +5,14 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Menu;
+import com.fu.bmi_tracker.payload.response.CountMenuResponse;
 import com.fu.bmi_tracker.services.MenuService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.MenuRepository;
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -41,6 +44,14 @@ public class MenuServiceImpl implements MenuService {
     public Menu createNewMenu(Menu menu) {
         // lưu trữ Menu
         return save(menu);
+    }
+
+    @Override
+    public List<CountMenuResponse> countTotalMenuIn6Months() {
+        // lấy tất cả các commission trước ngày hiện tại trong vòng 6 tháng
+        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now();
+        return menuRepository.countTotalMenuPerMonthInBetween(startDate, endDate);
     }
 
 }

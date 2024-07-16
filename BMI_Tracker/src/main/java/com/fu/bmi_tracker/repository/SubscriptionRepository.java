@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
 import com.fu.bmi_tracker.model.enums.ESubscriptionStatus;
+import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,4 +45,11 @@ public interface SubscriptionRepository extends JpaRepository<AdvisorSubscriptio
     @Modifying
     @Query("UPDATE AdvisorSubscription as SET as.subscriptionStatus = 'PENDING' WHERE as.startDate = :today")
     void updatePendingSubscriptions(LocalDate today);
+
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.CountSubscriptionResponse(YEAR(as.creationDate), MONTH(as.creationDate), COUNT(as)) "
+            + "FROM AdvisorSubscription as "
+            + "WHERE as.subscriptionDate  BETWEEN :startDate AND :endDate "
+            + "GROUP BY YEAR(as.subscriptionDate), MONTH(as.subscriptionDate) "
+            + "ORDER BY YEAR(as.subscriptionDate) DESC, MONTH(as.subscriptionDate) DESC")
+    public List<CountSubscriptionResponse> countTotalSubscriptionPerMonthInBetween(LocalDate startDate, LocalDate endDate);
 }

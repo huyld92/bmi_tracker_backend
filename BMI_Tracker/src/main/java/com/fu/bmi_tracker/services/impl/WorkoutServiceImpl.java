@@ -6,9 +6,12 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
+import com.fu.bmi_tracker.payload.response.CountWorkoutResponse;
 import com.fu.bmi_tracker.repository.WorkoutRepository;
 import com.fu.bmi_tracker.services.WorkoutService;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +54,14 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public Iterable<Workout> getWorkoutByAdvisorID(Integer advisorID) {
         return workoutRepository.findByAdvisor_AdvisorID(advisorID);
+    }
+
+    @Override
+    public List<CountWorkoutResponse> countTotalWorkoutIn6Months() {
+        // đếm số workout theo từng tháng trong 6 tháng
+        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now();
+        return workoutRepository.countTotalWorkoutPerMonthInBetween(startDate, endDate);
     }
 
 }
