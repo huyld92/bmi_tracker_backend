@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanResponse {
+public class PlanAdvisorResponse {
 
     private Integer planID;
     private String planName;
@@ -25,16 +25,22 @@ public class PlanResponse {
     private String description;
     private Integer planDuration;
     private Integer advisorID;
+    private String fullName;
     private Integer numberOfUses;
+    private Boolean isApproved;
+    private Boolean isActive;
 
-    public PlanResponse(Plan plan) {
+    public PlanAdvisorResponse(Plan plan) {
         this.planID = plan.getPlanID();
         this.planName = plan.getPlanName();
         this.price = plan.getPrice();
         this.description = plan.getDescription();
         this.planDuration = plan.getPlanDuration();
         this.advisorID = plan.getAdvisor().getAdvisorID();
+        this.fullName = plan.getAdvisor().getAccount().getFullName();
         this.numberOfUses = plan.getNumberOfUses();
+        this.isApproved = plan.getIsApproved();
+        this.isActive = plan.getIsActive();
     }
 
 }

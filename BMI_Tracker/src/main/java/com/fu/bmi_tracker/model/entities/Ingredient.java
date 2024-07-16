@@ -65,7 +65,7 @@ public class Ingredient {
 
     public Ingredient(CreateIngredientRequest ingredientRequest) {
         this.ingredientName = ingredientRequest.getIngredientName().trim();
-        this.ingredientPhoto = ingredientRequest.getIngredientPhotoUrl().trim();
+        this.ingredientPhoto = ingredientRequest.getIngredientPhoto().trim();
         this.unit = ingredientRequest.getUnit().trim();
         this.ingredientCalories = ingredientRequest.getIngredientCalories();
         this.quantity = ingredientRequest.getQuantity();

@@ -9,8 +9,10 @@ import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
-import com.fu.bmi_tracker.model.entities.Menu;
-import com.fu.bmi_tracker.model.entities.Workout;
+import com.fu.bmi_tracker.model.entities.MenuHistory;
+import com.fu.bmi_tracker.model.entities.WorkoutHistory;
+import com.fu.bmi_tracker.model.enums.EMealType;
+import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
 import com.fu.bmi_tracker.repository.DailyRecordRepository;
 import com.fu.bmi_tracker.repository.ExerciseRepository;
@@ -20,9 +22,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.MemberRepository;
+import com.fu.bmi_tracker.repository.MenuFoodRepository;
+import com.fu.bmi_tracker.repository.MenuHistoryRepository;
 import com.fu.bmi_tracker.repository.MenuRepository;
 import com.fu.bmi_tracker.repository.WorkoutExerciseRepository;
-import com.fu.bmi_tracker.repository.WorkoutRepository;
+import com.fu.bmi_tracker.repository.WorkoutHistoryRepository;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.util.BMIUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -49,7 +53,13 @@ public class MemberServiceImpl implements MemberService {
     MenuRepository menuRepository;
 
     @Autowired
-    WorkoutRepository workoutRepository;
+    WorkoutHistoryRepository workoutHistoryRepository;
+
+    @Autowired
+    MenuHistoryRepository menuHistoryRepository;
+
+    @Autowired
+    MenuFoodRepository menuFoodRepository;
 
     @Autowired
     FoodRepository foodRepository;
@@ -94,18 +104,17 @@ public class MemberServiceImpl implements MemberService {
         Member member = this.findByAccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
-        return workoutExerciseRepository.findExercisesByWorkoutID(member.getWorkoutID());
+        // gọi workout history tìm tìm tất cả workout hiện tịa của member
+        // *chưa kiểm soát việc trả về có nhiều hơn 1 result
+        Optional<WorkoutHistory> workoutHistory = workoutHistoryRepository.findByMemberIDAndIsActiveTrue(member.getMemberID());
 
-    }
+        // nếu không tìm thấy kết quả return mảng rỗng
+        if (!workoutHistory.isPresent()) {
+            return new ArrayList<>();
+        }
 
-    @Override
-    public Menu getMenuSuggestion(int defaultCalories, String dietaryPreference) {
-        return menuRepository.findTopByTagNameAndClosestCalories(dietaryPreference, defaultCalories);
-    }
-
-    @Override
-    public Workout getWorkoutSuggestion(String classifyBMI) {
-        return workoutRepository.findFirstByTagName(classifyBMI);
+        // gọi WorkoutExerciseRepository tìm List exercise
+        return workoutExerciseRepository.findExercisesByWorkoutID(workoutHistory.get().getWorkoutID());
     }
 
     @Override
@@ -153,7 +162,8 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         // Nhận trạng thái BMI của member
-        String classifyBMI = bMIUtils.classifyBMI(memberBodyMass.getBmi());
+        double bmi = bMIUtils.calculateBMI(memberBodyMass.getWeight(), memberBodyMass.getHeight());
+        String classifyBMI = bMIUtils.classifyBMI(bmi);
 
         // Tìm danh sách Exercise phù hợp với BMI của Member
         List<Exercise> withTagList = exerciseRepository.findExerciseWithTagName(classifyBMI);
@@ -228,10 +238,61 @@ public class MemberServiceImpl implements MemberService {
         members.forEach(member -> {
             MemberBodyMass bodyMass = bodyMassRepository.findLatestByAccountID(member.getAccount().getAccountID()).get();
 
-            memberBmiResponses.add(new MemberBmiResponse(member.getMemberID(), bodyMass.getDateInput().toLocalDate(), bodyMass.getBmi()));
+            double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+            memberBmiResponses.add(new MemberBmiResponse(
+                    member.getMemberID(),
+                    bodyMass.getDateInput().toLocalDate(),
+                    bmi));
         });
         return memberBmiResponses;
 
+    }
+
+    @Override
+    public List<Food> getFoodsInMenuByMealType(Integer accountID, EMealType mealType) {
+        // Find member by accountID
+        Member member = this.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
+
+        // gọi workout history tìm tìm tất cả workout hiện tịa của member
+        // *chưa kiểm soát việc trả về có nhiều hơn 1 result
+        Optional<MenuHistory> menuHistory = menuHistoryRepository.findByMemberIDAndIsActiveTrue(member.getMemberID());
+
+        // nếu không tìm thấy kết quả return mảng rỗng
+        if (!menuHistory.isPresent()) {
+            return new ArrayList<>();
+        }
+
+        // gọi menuFoodRepository tìm List food
+        return menuFoodRepository.findFoodByMenu_MenuIDAndMealType(menuHistory.get().getMenuID(), mealType);
+    }
+
+    @Override
+    public List<Food> getAllFoodInMenu(Integer accountID) {
+        // Find member by accountID
+        Member member = this.findByAccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
+
+        // gọi workout history tìm tìm tất cả workout hiện tịa của member
+        // *chưa kiểm soát việc trả về có nhiều hơn 1 result
+        Optional<MenuHistory> menuHistory = menuHistoryRepository.findByMemberIDAndIsActiveTrue(member.getMemberID());
+
+        // nếu không tìm thấy kết quả return mảng rỗng
+        if (!menuHistory.isPresent()) {
+            return new ArrayList<>();
+        }
+
+        // gọi menuFoodRepository tìm List food
+        return menuFoodRepository.findFoodByMenu_MenuID(menuHistory.get().getMenuID());
+    }
+
+    @Override
+    public Page<Food> getPaginatedFoodFilterTag(Pageable pageable, List<Integer> tagIDs) {
+        // gọi food reposiotry tìm food theo Tagid
+        Page<Food> foods = foodRepository.findAllByTagIDs(tagIDs, tagIDs.size(), pageable);
+
+        return foods;
     }
 
 }

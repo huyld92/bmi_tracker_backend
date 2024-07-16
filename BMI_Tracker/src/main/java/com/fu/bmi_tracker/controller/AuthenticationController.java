@@ -52,9 +52,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.services.RoleService;
+import com.fu.bmi_tracker.util.BMIUtils;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -113,7 +115,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) { 
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
@@ -210,6 +212,19 @@ public class AuthenticationController {
                 = memberBodyMassService.getLatestBodyMass(
                         member.get().getMemberID());
 
+        // tính tuổi
+        int age = LocalDate.now().getYear() - member.get().getAccount().getBirthday().getYear();
+        // tính BMI
+        BMIUtils bMIUtils = new BMIUtils();
+        double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+        // tính BMR
+        double bmr = bMIUtils.calculateBMR(
+                bodyMass.getWeight(),
+                bodyMass.getHeight(),
+                age,
+                member.get().getAccount().getGender());
+
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
                 member.get().getMemberID(), accountDetails.getEmail(),
                 accountDetails.getFullName(),
@@ -217,9 +232,10 @@ public class AuthenticationController {
                 accountDetails.getPhoneNumber(),
                 bodyMass.getHeight(),
                 bodyMass.getWeight(),
-                bodyMass.getAge(),
-                bodyMass.getBmi(),
-                member.get().getBmr(), member.get().getTdee(),
+                age,
+                bmi,
+                bmr,
+                member.get().getTdee(),
                 refreshToken.getRefreshToken(),
                 jwt);
         return ResponseEntity.ok(forMemberResponse);

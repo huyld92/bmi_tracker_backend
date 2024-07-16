@@ -21,7 +21,6 @@ import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import com.fu.bmi_tracker.services.MenuService;
-import com.fu.bmi_tracker.util.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -99,7 +98,7 @@ public class MenuController {
         Menu menu = new Menu(menuRequest, advisor.getAdvisorID());
 
         // Store to database
-        Menu menuSave = menuService.createNewMenu(menu, menuRequest.getTagIDs());
+        Menu menuSave = menuService.createNewMenu(menu);
 
         // check result
         if (menuSave == null) {
@@ -131,7 +130,6 @@ public class MenuController {
         // tạo menu response
         MenuResponse menuResponse = new MenuResponse(
                 menuSave,
-                TagConverter.convertToTagBasicResponseList(menuSave.getTags()),
                 menuFoodResponses);
 
         return new ResponseEntity<>(menuResponse, HttpStatus.CREATED);
@@ -260,7 +258,6 @@ public class MenuController {
         List<MenuFoodResponse> menuFoodResponses = menuFoodService.getMenuFoodResponse(menu.get().getMenuID());
         MenuResponse menuResponses = new MenuResponse(
                 menu.get(),
-                TagConverter.convertToTagBasicResponseList(menu.get().getTags()),
                 menuFoodResponses);
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
@@ -362,33 +359,32 @@ public class MenuController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(
-            summary = "Get menu by tag name",
-            description = "Get menu with tag name")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping(value = "/getMenuByTagName")
-    public ResponseEntity<?> getMenuSuggestion(@RequestParam String tagName) {
-        // gọi service lấy menu suggestion
-        List<Menu> menus = menuService.getMenuByTagName(tagName);
-
-        // kiểm tra kết quả
-        if (menus.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        // taoj menu response
-        List<MenuResponseAll> menuResponse = new ArrayList<>();
-
-        menus.forEach(menu -> {
-            menuResponse.add(new MenuResponseAll(menu));
-        });
-
-        return new ResponseEntity<>(menuResponse, HttpStatus.OK);
-    }
-
+//    @Operation(
+//            summary = "Get menu by tag name",
+//            description = "Get menu with tag name")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping(value = "/getMenuByTagName")
+//    public ResponseEntity<?> getMenuSuggestion(@RequestParam String tagName) {
+//        // gọi service lấy menu suggestion
+//        List<Menu> menus = menuService.getMenuByTagName(tagName);
+//
+//        // kiểm tra kết quả
+//        if (menus.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        // taoj menu response
+//        List<MenuResponseAll> menuResponse = new ArrayList<>();
+//
+//        menus.forEach(menu -> {
+//            menuResponse.add(new MenuResponseAll(menu));
+//        });
+//
+//        return new ResponseEntity<>(menuResponse, HttpStatus.OK);
+//    }
 }

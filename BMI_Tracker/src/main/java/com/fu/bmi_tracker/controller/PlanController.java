@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.Plan;
 import com.fu.bmi_tracker.payload.request.CreatePlanRequest;
 import com.fu.bmi_tracker.payload.request.UpdatePlanRequest;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.payload.response.PlanAdvisorResponse;
 import com.fu.bmi_tracker.payload.response.PlanResponse;
 import com.fu.bmi_tracker.services.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,7 +72,8 @@ public class PlanController {
         newPlan.setPlanDuration(createRequest.getPlanDuration());
         newPlan.setNumberOfUses(0);
         // mặc định false đợi manager duyệt
-        newPlan.setIsActive(Boolean.FALSE);
+        newPlan.setIsApproved(Boolean.FALSE);
+        newPlan.setIsActive(Boolean.TRUE);
 
         //Call service to save plan
         Plan planSave = planService.createPlan(newPlan, principal.getId());
@@ -91,7 +93,7 @@ public class PlanController {
             description = "Get All Plan")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = PlanResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = PlanAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -106,9 +108,9 @@ public class PlanController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         // tạo plan response 
-        List<PlanResponse> planResponses = new ArrayList<>();
+        List<PlanAdvisorResponse> planResponses = new ArrayList<>();
         planList.forEach(plan -> {
-            planResponses.add(new PlanResponse(plan));
+            planResponses.add(new PlanAdvisorResponse(plan));
         });
         return new ResponseEntity<>(planResponses, HttpStatus.OK);
     }
@@ -118,23 +120,23 @@ public class PlanController {
             description = "Get All Plan that have is active")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = PlanResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = PlanAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/getAllAvaible")
+    @GetMapping(value = "/getAllAvailable")
     public ResponseEntity<?> getAllAvaiblePlan() {
 
-        Iterable<Plan> planList = planService.findAllAvailblePlan();
+        Iterable<Plan> planList = planService.findAllAvailablePlan();
 
         if (!planList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         // tạo plan response 
-        List<PlanResponse> planResponses = new ArrayList<>();
+        List<PlanAdvisorResponse> planResponses = new ArrayList<>();
         planList.forEach(plan -> {
-            planResponses.add(new PlanResponse(plan));
+            planResponses.add(new PlanAdvisorResponse(plan));
         });
 
         return new ResponseEntity<>(planResponses, HttpStatus.OK);
@@ -145,7 +147,7 @@ public class PlanController {
             description = "Get plan list by specifying AdvisorID of its. The respone is a list of plan of that Advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = Plan.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = PlanAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -159,8 +161,43 @@ public class PlanController {
         if (!planList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        // tạo plan response
+        List<PlanAdvisorResponse> planResponses = new ArrayList<>();
 
-        return new ResponseEntity<>(planList, HttpStatus.OK);
+        planList.forEach(plan -> {
+            planResponses.add(new PlanAdvisorResponse(plan));
+        });
+
+        return new ResponseEntity<>(planResponses, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get All Plan of an Advisor",
+            description = "Get plan list by specifying AdvisorID of its. The respone is a list of plan of that Advisor")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = PlanResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/get-for-subscription/{advisorID}")
+    //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
+    public ResponseEntity<?> getPlanForSubscription(@PathVariable("advisorID") Integer advisorID) {
+
+        Iterable<Plan> planList = planService.getAllPlanForSubscription(advisorID);
+
+        if (!planList.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        // tạo plan response
+        List<PlanResponse> planResponses = new ArrayList<>();
+
+        planList.forEach(plan -> {
+            planResponses.add(new PlanResponse(plan));
+        });
+
+        return new ResponseEntity<>(planResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -168,7 +205,7 @@ public class PlanController {
             description = "Get plan list by advisor personally if it's. The response is a list of plan of that Advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = PlanResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = PlanAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -187,9 +224,9 @@ public class PlanController {
         }
 
         // tạo plan response 
-        List<PlanResponse> planResponses = new ArrayList<>();
+        List<PlanAdvisorResponse> planResponses = new ArrayList<>();
         planList.forEach(plan -> {
-            planResponses.add(new PlanResponse(plan));
+            planResponses.add(new PlanAdvisorResponse(plan));
         });
 
         return new ResponseEntity<>(planResponses, HttpStatus.OK);
@@ -200,7 +237,7 @@ public class PlanController {
             description = "Get a Plan object by specifying its id. The response is Plan object")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = PlanResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = PlanAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -217,7 +254,7 @@ public class PlanController {
         }
 
         // tạo plan response
-        PlanResponse planResponse = new PlanResponse(plan.get());
+        PlanAdvisorResponse planResponse = new PlanAdvisorResponse(plan.get());
         return new ResponseEntity<>(planResponse, HttpStatus.OK);
     }
 
@@ -239,7 +276,7 @@ public class PlanController {
             plan.get().setPrice(updateRequest.getPrice());
             plan.get().setDescription(updateRequest.getDescription());
             plan.get().setPlanDuration(updateRequest.getPlanDuration());
-            return new ResponseEntity<>(new PlanResponse(planService.save(plan.get())), HttpStatus.OK);
+            return new ResponseEntity<>(new PlanAdvisorResponse(planService.save(plan.get())), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + updateRequest.getPlanID() + "}"), HttpStatus.NOT_FOUND);
         }

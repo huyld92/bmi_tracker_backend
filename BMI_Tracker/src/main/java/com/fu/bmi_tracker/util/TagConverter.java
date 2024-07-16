@@ -33,7 +33,7 @@ public class TagConverter {
         TagResponse tagResponse = new TagResponse();
         tagResponse.setTagID(tag.getTagID());
         tagResponse.setTagName(tag.getTagName());
-        tagResponse.setTagDesription(tag.getTagDescription());
+        tagResponse.setTagDescription(tag.getTagDescription());
         return tagResponse;
     }
 

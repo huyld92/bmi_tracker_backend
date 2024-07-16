@@ -8,14 +8,14 @@ import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Transaction;
-import com.fu.bmi_tracker.model.entities.Booking;
+import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
 import com.fu.bmi_tracker.model.entities.Plan;
-import com.fu.bmi_tracker.model.enums.EBookingStatus;
+import com.fu.bmi_tracker.model.enums.ESubscriptionStatus;
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
-import com.fu.bmi_tracker.payload.request.CreateBookingTransactionRequest;
-import com.fu.bmi_tracker.payload.response.AdvisorBookingSummary;
+import com.fu.bmi_tracker.payload.request.CreateSubscriptionTransactionRequest;
+import com.fu.bmi_tracker.payload.response.AdvisorSubscriptionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
-import com.fu.bmi_tracker.payload.response.BookingSummaryResponse;
+import com.fu.bmi_tracker.payload.response.SubscriptionSummaryResponse;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.repository.MemberRepository;
@@ -31,18 +31,18 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.TransactionRepository;
-import com.fu.bmi_tracker.services.BookingService;
-import com.fu.bmi_tracker.repository.BookingRepository;
 import com.fu.bmi_tracker.repository.PlanRepository;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Map;
+import com.fu.bmi_tracker.services.SubscriptionService;
+import com.fu.bmi_tracker.repository.SubscriptionRepository;
 
 @Service
-public class BookingServiceImpl implements BookingService {
+public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Autowired
-    BookingRepository bookingRepository;
+    SubscriptionRepository subscriptionRepository;
 
     @Autowired
     MemberRepository memberRepository;
@@ -63,33 +63,33 @@ public class BookingServiceImpl implements BookingService {
     DateTimeUtils dateTimeUtils;
 
     @Override
-    public Iterable<Booking> findAll() {
-        return bookingRepository.findAll();
+    public Iterable<AdvisorSubscription> findAll() {
+        return subscriptionRepository.findAll();
     }
 
     @Override
-    public Optional<Booking> findById(Integer id) {
-        return bookingRepository.findById(id);
+    public Optional<AdvisorSubscription> findById(Integer id) {
+        return subscriptionRepository.findById(id);
     }
 
     @Override
-    public Booking save(Booking t) {
-        return bookingRepository.save(t);
+    public AdvisorSubscription save(AdvisorSubscription t) {
+        return subscriptionRepository.save(t);
     }
 
     @Override
-    public Iterable<Booking> getBookingByMemberAccountID(Integer accountID) {
-        return bookingRepository.findByMember_Account_AccountID(accountID);
+    public Iterable<AdvisorSubscription> getSubscriptionByMemberAccountID(Integer accountID) {
+        return subscriptionRepository.findByMember_Account_AccountID(accountID);
     }
 
     @Override
-    public Iterable<Booking> getBookingByMemberID(Integer memberID) {
-        return bookingRepository.findByMemberMemberID(memberID);
+    public Iterable<AdvisorSubscription> getSubscriptionByMemberID(Integer memberID) {
+        return subscriptionRepository.findByMemberMemberID(memberID);
 
     }
 
     @Override
-    public Iterable<Booking> getBookingByAdvisorIDAndMonth(Integer advisorID, String month) {
+    public Iterable<AdvisorSubscription> getSubscriptionByAdvisorIDAndMonth(Integer advisorID, String month) {
         // Chuyển đổi chuỗi "yyyy-MM" thành YearMonth
         YearMonth yearMonthObj = YearMonth.parse(month);
 
@@ -99,12 +99,12 @@ public class BookingServiceImpl implements BookingService {
         // Tạo LocalDateTime cho ngày cuối cùng của tháng
         LocalDateTime endOfMonth = yearMonthObj.atEndOfMonth().atTime(23, 59, 59);
 
-        // Gọi phương thức find booking bằng advisor ID và Booking date nằm trong khoảng start-end từ repository
-        return bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetweenOrderByBookingDateDesc(advisorID, startOfMonth, endOfMonth);
+        // Gọi phương thức find subscription bằng advisor ID và Subscription date nằm trong khoảng start-end từ repository
+        return subscriptionRepository.findByAdvisor_AdvisorIDAndSubscriptionDateBetweenOrderBySubscriptionDateDesc(advisorID, startOfMonth, endOfMonth);
     }
 
     @Override
-    public Booking createBookingTransaction(CreateBookingTransactionRequest createRequest, Integer accountID) {
+    public AdvisorSubscription createSubscriptionTransaction(CreateSubscriptionTransactionRequest createRequest, Integer accountID) {
         // Tìm member băng accountID
         Member member = memberRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
@@ -127,7 +127,7 @@ public class BookingServiceImpl implements BookingService {
 
         // kiểm tra và cập nhật endDateOfPlan của member
         LocalDate endDateOfPlan = member.getEndDateOfPlan();
-        int planDuration = createRequest.getBookingRequest().getPlanDuration();
+        int planDuration = createRequest.getSubscriptionRequest().getPlanDuration();
 
         if (endDateOfPlan == null || endDateOfPlan.isBefore(currentDate)) {
             // nếu ngày kết thúc không tồn tại hoặc ngày kết thúc bé hơn ngày hiện tại
@@ -146,7 +146,7 @@ public class BookingServiceImpl implements BookingService {
         memberRepository.save(member);
 
         // tìm advisor
-        Advisor advisor = advisorRepository.findById(createRequest.getBookingRequest().getAdvisorID())
+        Advisor advisor = advisorRepository.findById(createRequest.getSubscriptionRequest().getAdvisorID())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // tính ngày dự kiến thanh toán 
@@ -161,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
         if (commission == null) {
             // tạo mới commission
             BigDecimal commissionRate = BigDecimal.valueOf(50);
-            BigDecimal commissionAmount = createRequest.getBookingRequest()
+            BigDecimal commissionAmount = createRequest.getSubscriptionRequest()
                     .getAmount()
                     .multiply(commissionRate)
                     .divide(BigDecimal.valueOf(100));
@@ -179,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
             commission = commissionRepository.save(c);
         } else {
             BigDecimal commissionRate = BigDecimal.valueOf(commission.getCommissionRate());
-            BigDecimal commissionAmount = createRequest.getBookingRequest()
+            BigDecimal commissionAmount = createRequest.getSubscriptionRequest()
                     .getAmount()
                     .multiply(commissionRate)
                     .divide(BigDecimal.valueOf(100));
@@ -188,7 +188,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         // cập nhật số lần sử dụng cho plan
-        int planID = createRequest.getBookingRequest().getPlanID();
+        int planID = createRequest.getSubscriptionRequest().getPlanID();
         Plan plan = planRepository.findById(planID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find plan with id{" + planID + "}"));
         int numberOfUses = plan.getNumberOfUses() + 1;
@@ -197,28 +197,28 @@ public class BookingServiceImpl implements BookingService {
         // cập nhật lại plan
         planRepository.save(plan);
 
-        // tạo booking kiểm tra trạng thái status
-        Booking booking = new Booking(
-                createRequest.getBookingRequest(),
+        // tạo subscription kiểm tra trạng thái status
+        AdvisorSubscription subscription = new AdvisorSubscription(
+                createRequest.getSubscriptionRequest(),
                 startDateOfPlan,
                 endDateOfPlan,
-                member.getMemberID(),
+                member,
                 advisor,
                 transaction.getTransactionID(),
                 commission.getCommissionID()
         );
 
-        return bookingRepository.save(booking);
+        return subscriptionRepository.save(subscription);
     }
 
     @Override
-    public List<Booking> getBookingByMemberAdvisor(Integer accountID) {
+    public List<AdvisorSubscription> getSubscriptionByMemberAdvisor(Integer accountID) {
         // Tim advisor từ accountID
         Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
-        // Tìm booking từ account ID với sắp xếp mới nhất
-        return bookingRepository.findByAdvisor_AdvisorIDOrderByBookingDateDesc(advisor.getAdvisorID());
+        // Tìm subscription từ account ID với sắp xếp mới nhất
+        return subscriptionRepository.findByAdvisor_AdvisorIDOrderBySubscriptionDateDesc(advisor.getAdvisorID());
     }
 
     @Override
@@ -226,25 +226,25 @@ public class BookingServiceImpl implements BookingService {
         // lấy ngày hiện tại
         LocalDate currentDate = LocalDate.now();
 
-        // gợi Booking repository tìm danh sách Booking bằng accountID và endDate > currentDate
-        List<Booking> bookings = bookingRepository.findByAdvisor_Account_AccountIDAndEndDateGreaterThan(accountID, currentDate);
+        // gợi Subscription repository tìm danh sách Subscription bằng accountID và endDate > currentDate
+        List<AdvisorSubscription> subscriptions = subscriptionRepository.findByAdvisor_Account_AccountIDAndEndDateGreaterThan(accountID, currentDate);
 
-        // chuyển đổi từ booking sang List<Member> bằng stream(), distinct đảm bảo không trùng Member
-        return bookings.stream().map(Booking::getMember).distinct()
+        // chuyển đổi từ subscription sang List<Member> bằng stream(), distinct đảm bảo không trùng Member
+        return subscriptions.stream().map(AdvisorSubscription::getMember).distinct()
                 .collect(Collectors.toList());
     }
 
     @Override
     public AdvisorDetailsResponse getAdvisorOfMember(Integer accountID) {
-        Optional<Booking> booking = bookingRepository.findByMember_Account_AccountIDAndBookingStatus(accountID, EBookingStatus.PENDING);
+        Optional<AdvisorSubscription> subscription = subscriptionRepository.findByMember_Account_AccountIDAndSubscriptionStatus(accountID, ESubscriptionStatus.PENDING);
 
-        if (booking.isPresent()) {
+        if (subscription.isPresent()) {
             // tạo advisor response
             int totalMenu = advisorRepository.countMenusByAdvisorID(accountID);
             int totalWorkout = advisorRepository.countWorkoutsByAdvisorID(accountID);
 
             AdvisorDetailsResponse response = new AdvisorDetailsResponse(
-                    booking.get().getAdvisor(),
+                    subscription.get().getAdvisor(),
                     totalMenu,
                     totalWorkout);
             return response;
@@ -254,20 +254,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void updateBookingStatus() {
+    public void updateSubscriptionStatus() {
         LocalDate today = LocalDate.now();
 
-        // Cập nhật trạng thái của các booking hết hạn thành "FINISHED"
-        bookingRepository.updateExpiredBookings(today);
+        // Cập nhật trạng thái của các subscription hết hạn thành "FINISHED"
+        subscriptionRepository.updateExpiredSubscriptions(today);
 
-        // Cập nhật trạng thái của các booking mới bắt đầu vào hôm nay thành "PENDING"
-        bookingRepository.updatePendingBookings(today);
+        // Cập nhật trạng thái của các subscription mới bắt đầu vào hôm nay thành "PENDING"
+        subscriptionRepository.updatePendingSubscriptions(today);
     }
 
     @Override
-    public List<AdvisorBookingSummary> getAdvisorBookingSummaryByMonth() {
-        // tạo danh sách advisorBookingSummary
-        List<AdvisorBookingSummary> advisorBookingSummarys = new ArrayList<>();
+    public List<AdvisorSubscriptionSummary> getAdvisorSubscriptionSummaryByMonth() {
+        // tạo danh sách advisorSubscriptionSummary
+        List<AdvisorSubscriptionSummary> advisorSubscriptionSummarys = new ArrayList<>();
 
         // lấy danh sách advisor isActive = true
         List<Advisor> advisors = advisorRepository.findAllByIsActiveTrue();
@@ -282,34 +282,34 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
         advisors.forEach(advisor -> {
-            List<Booking> bookings = bookingRepository.findByAdvisor_AdvisorIDAndBookingDateBetweenOrderByBookingDateDesc(
+            List<AdvisorSubscription> subscriptions = subscriptionRepository.findByAdvisor_AdvisorIDAndSubscriptionDateBetweenOrderBySubscriptionDateDesc(
                     advisor.getAdvisorID(), startDateTime, endDateTime);
 
-            // duyệt bookings tạo  List<BookingSummaryResponse>
-            List<BookingSummaryResponse> bookingSummaryResponses = calculateMonthlyBookingTotal(bookings);
+            // duyệt subscriptions tạo  List<SubscriptionSummaryResponse>
+            List<SubscriptionSummaryResponse> subscriptionSummaryResponses = calculateMonthlySubscriptionTotal(subscriptions);
 
-            // add value vào advisorBookingSummarys
-            advisorBookingSummarys.add(new AdvisorBookingSummary(
+            // add value vào advisorSubscriptionSummarys
+            advisorSubscriptionSummarys.add(new AdvisorSubscriptionSummary(
                     advisor.getAdvisorID(),
-                    bookingSummaryResponses));
+                    subscriptionSummaryResponses));
         });
 
-        // gọi repository tìm AdvisorBookingSummary
-        return advisorBookingSummarys;
+        // gọi repository tìm AdvisorSubscriptionSummary
+        return advisorSubscriptionSummarys;
     }
 
-    public static List<BookingSummaryResponse> calculateMonthlyBookingTotal(List<Booking> bookings) {
+    public static List<SubscriptionSummaryResponse> calculateMonthlySubscriptionTotal(List<AdvisorSubscription> subscriptions) {
 
-        // Nhóm các booking theo YearMonth và tính tổng số booking cho mỗi nhóm
-        Map<YearMonth, Long> monthlyBookingCounts = bookings.stream()
+        // Nhóm các subscription theo YearMonth và tính tổng số subscription cho mỗi nhóm
+        Map<YearMonth, Long> monthlySubscriptionCounts = subscriptions.stream()
                 .collect(Collectors.groupingBy(
-                        booking -> YearMonth.from(booking.getBookingDate()),
+                        subscription -> YearMonth.from(subscription.getSubscriptionDate()),
                         Collectors.counting()
                 ));
 
-        // Chuyển đổi Map thành List<MonthlyBookingTotal>
-        return monthlyBookingCounts.entrySet().stream()
-                .map(entry -> new BookingSummaryResponse(entry.getKey(), entry.getValue()))
+        // Chuyển đổi Map thành List<MonthlySubscriptionTotal>
+        return monthlySubscriptionCounts.entrySet().stream()
+                .map(entry -> new SubscriptionSummaryResponse(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 }

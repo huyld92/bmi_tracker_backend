@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Menu;
-import java.util.List;
 
 /**
  *
@@ -15,8 +14,6 @@ public interface MenuService extends GeneralService<Menu> {
 
     public Iterable<Menu> getAllByAdvisorID(Integer advisorID);
 
-    public List<Menu> getMenuByTagName(String tagName);
-
-    public Menu createNewMenu(Menu menu, List<Integer> tagIDs);
+    public Menu createNewMenu(Menu menu);
 
 }

@@ -56,14 +56,6 @@ public class Menu {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
-    @ManyToMany
-    @JoinTable(
-            name = "TagMenu",
-            joinColumns = @JoinColumn(name = "MenuID"),
-            inverseJoinColumns = @JoinColumn(name = "TagID")
-    )
-    private List<Tag> tags;
-
     public Menu(CreateMenuRequest menuRequest, Integer advisorID) {
         this.menuName = menuRequest.getMenuName();
         this.menuDescription = menuRequest.getMenuDescription();

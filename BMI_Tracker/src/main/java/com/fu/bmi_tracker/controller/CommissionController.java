@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.payload.request.UpdateCommissionRequest;
 import com.fu.bmi_tracker.payload.response.CommissionAdvisorResponse;
 import com.fu.bmi_tracker.services.CommissionService;
+import com.fu.bmi_tracker.util.CommissionRateUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,36 @@ public class CommissionController {
 
     @Autowired
     CommissionService commissionService;
+
+    @Autowired
+    private CommissionRateUtils commissionRateUtils;
+
+    @Operation(summary = "Get all commission", description = " ")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CommissionAdvisorResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getAll")
+    public ResponseEntity<?> getAll() {
+
+        // Gọi Commission servicce lấy danh sách Commission của advisor
+        Iterable<Commission> commissions = commissionService.findAll();
+
+        // check result
+        if (!commissions.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<CommissionAdvisorResponse> commissionResponses = new ArrayList<>();
+
+        commissions.forEach(commission -> {
+            commissionResponses.add(new CommissionAdvisorResponse(commission));
+        });
+
+        return new ResponseEntity<>(commissionResponses, HttpStatus.OK);
+    }
 
     @Operation(summary = "Get all commission by advisor (ADVISOR)", description = "Login with role advisor to get all commission")
     @ApiResponses({
@@ -115,6 +147,45 @@ public class CommissionController {
         CommissionAdvisorResponse commissionResponses = new CommissionAdvisorResponse(commission);
 
         return new ResponseEntity<>(commissionResponses, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get Commision Rate",
+            description = "Get commision rate")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = Float.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/getCommisionRate")
+    public ResponseEntity<?> getCommissionRate() {
+        commissionRateUtils = new CommissionRateUtils();
+        float commissionRate = commissionRateUtils.getCommissionRate();
+
+        if (commissionRate != 0) {
+            return new ResponseEntity<>(commissionRate, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(
+            summary = "Get Commision Rate",
+            description = "Get commision rate")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping("/configRate/{rate}")
+    public ResponseEntity<?> updateCommissionRate(@PathVariable("rate") float rate) {
+
+        commissionRateUtils.updateCommissionRate(rate);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

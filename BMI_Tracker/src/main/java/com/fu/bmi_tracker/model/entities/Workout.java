@@ -57,14 +57,6 @@ public class Workout {
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkoutExercise> workoutExercises;
 
-    @ManyToMany
-    @JoinTable(
-            name = "TagWorkout",
-            joinColumns = @JoinColumn(name = "WorkoutID"),
-            inverseJoinColumns = @JoinColumn(name = "TagID")
-    )
-    private List<Tag> tags;
-
     //Create new workout
     public Workout(String workoutName, String workoutDescription, Integer totalCloriesBurned, Integer advisorID) {
         this.workoutName = workoutName;

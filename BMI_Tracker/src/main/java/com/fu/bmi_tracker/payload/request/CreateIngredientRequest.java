@@ -52,7 +52,7 @@ public class CreateIngredientRequest {
 
     @NotBlank(message = "Ingredient photo url is required")
     @Size(max = 100, message = "Ingreadient photo url must not exceed 100 characters")
-    @Schema(name = "ingredientPhotoUrl", example = "photourl.com")
-    private String ingredientPhotoUrl;
+    @Schema(name = "ingredientPhoto", example = "photourl.com")
+    private String ingredientPhoto;
 
 }

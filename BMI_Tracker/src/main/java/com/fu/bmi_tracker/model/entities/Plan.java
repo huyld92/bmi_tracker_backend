@@ -53,17 +53,21 @@ public class Plan {
     @Column(name = "NumberOfUses", nullable = false)
     private Integer numberOfUses;
 
+    @Column(name = "IsApproved", nullable = false)
+    private Boolean isApproved;
+
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
     public Plan(String planName, BigDecimal price, String description,
-            Integer planDuration, Integer advisorID, Boolean isActive, Integer numberOfUses) {
+            Integer planDuration, Integer advisorID, Boolean isApproved, Boolean isActive, Integer numberOfUses) {
         this.planName = planName;
         this.price = price;
         this.description = description;
         this.planDuration = planDuration;
         this.advisor = new Advisor(advisorID);
         this.isActive = isActive;
+        this.isApproved = isApproved;
         this.numberOfUses = numberOfUses;
     }
 }

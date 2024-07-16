@@ -26,10 +26,9 @@ public class WorkoutResonse {
     private Boolean isActive;
     private Integer advisorID;
     private String fullName;
-    private List<TagBasicResponse> workoutTags;
-    private List<WorkoutExerciseResponse> workoutExercises;
+    private List<ExerciseResponse> workoutExercises;
 
-    public WorkoutResonse(Workout workout, List<TagBasicResponse> workoutTags, List<WorkoutExerciseResponse> workoutExercisesResponses) {
+    public WorkoutResonse(Workout workout, List<ExerciseResponse> workoutExercisesResponses) {
         this.workoutID = workout.getWorkoutID();
         this.workoutName = workout.getWorkoutName();
         this.workoutDescription = workout.getWorkoutDescription();
@@ -37,7 +36,6 @@ public class WorkoutResonse {
         this.isActive = workout.getIsActive();
         this.advisorID = workout.getAdvisor().getAdvisorID();
         this.fullName = workout.getAdvisor().getAccount().getFullName();
-        this.workoutTags = workoutTags;
         this.workoutExercises = workoutExercisesResponses;
     }
 

@@ -16,9 +16,11 @@ public interface PlanService extends GeneralService<Plan> {
     public Iterable<Plan> findAllPlanByAdvisorID(int advisorID);
 
     //Find All Plan by isActive = true;
-    public Iterable<Plan> findAllAvailblePlan();
+    public Iterable<Plan> findAllAvailablePlan();
 
     public Plan createPlan(Plan newPlan, Integer accountID);
 
     public Iterable<Plan> findAllPlanFromPersonally(Integer accountID);
+
+    public Iterable<Plan> getAllPlanForSubscription(Integer advisorID);
 }

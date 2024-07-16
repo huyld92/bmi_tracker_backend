@@ -7,10 +7,12 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.payload.request.UpdateCommissionRequest;
+import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.services.CommissionService;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,5 +66,10 @@ public class CommissionServiceImpl implements CommissionService {
         commission.update(commissionRequest);
         return save(commission);
     }
+
+//    @Override
+//    public List<CommissionSummaryResponse> getCommissionSummaryIn6Months() {
+//
+//    }
 
 }

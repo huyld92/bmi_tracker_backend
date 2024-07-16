@@ -162,7 +162,7 @@ public class IngredientController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/search-by-name")
-    public ResponseEntity<?> getFoodWithDietPreference(@RequestParam String ingredientName) {
+    public ResponseEntity<?> searchIngredientByName(@RequestParam String ingredientName) {
         // gọi service tìm ingredient bằng ingredientName
         Iterable<Ingredient> ingredients = service.searchLikeIngredientName(ingredientName.trim());
 

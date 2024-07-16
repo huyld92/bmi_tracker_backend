@@ -4,14 +4,11 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
-import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.repository.WorkoutRepository;
 import com.fu.bmi_tracker.services.WorkoutService;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +18,6 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Autowired
     WorkoutRepository workoutRepository;
-
-    @Autowired
-    TagRepository tagRepository;
 
     @Override
     public Iterable<Workout> findAll() {
@@ -57,17 +51,6 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public Iterable<Workout> getWorkoutByAdvisorID(Integer advisorID) {
         return workoutRepository.findByAdvisor_AdvisorID(advisorID);
-    }
-
-    @Override
-    public Workout createNewWorkout(Workout workout, List<Integer> tagIDs) {
-        // tìm list tag từ list tagID
-        List<Tag> tags = tagRepository.findByTagIDIn(tagIDs);
-        // set tags cho menu
-        workout.setTags(tags);
-
-        // lưu trữ Menu
-        return save(workout);
     }
 
 }

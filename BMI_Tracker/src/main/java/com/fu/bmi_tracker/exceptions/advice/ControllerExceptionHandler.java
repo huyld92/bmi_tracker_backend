@@ -11,6 +11,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mail.MailException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  *
@@ -120,16 +120,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ErrorMessage> handleMaxSizeException(MaxUploadSizeExceededException ex) {
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.EXPECTATION_FAILED.value(),
-                new Date(),
-                "File too large!",
-                ex.getMessage());
-        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
-    }
-
+    // lôi về jwt token
     @ExceptionHandler(value = TokenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorMessage handleTokenException(TokenException ex, WebRequest request) {
@@ -141,6 +132,7 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
     }
 
+    // handle lỗi liên quan email
     @ExceptionHandler(MailException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<?> handleMailException(MailException ex) {
@@ -152,6 +144,7 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(message);
     }
 
+    // handle khi không tìm thấy entity
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex) {
@@ -161,5 +154,17 @@ public class ControllerExceptionHandler {
                 ex.getMessage(),
                 "Error find entity");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    }
+
+    // handles convert role
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.FORBIDDEN.value(),
+                new Date(),
+                "Role with no access.",
+                "");
+
+        return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
     }
 }

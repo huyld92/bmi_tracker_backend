@@ -41,8 +41,4 @@ public class CreateMenuRequest {
     @Schema(description = "List of foods included in the menu")
     @NotNull(message = "Menu foods are required")
     private List<@NotNull MenuFoodRequest> menuFoods;
-
-    @NotEmpty
-    @Schema(name = "tagIDs", example = "[1, 2, 3]")
-    private List<Integer> tagIDs;
 }

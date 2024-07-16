@@ -45,11 +45,11 @@ public class Exercise {
     @Column(name = "Duration", nullable = false)
     private Integer duration;
 
+    @Column(name = "MET", nullable = false)
+    private Float met;
+
     @Column(name = "Distance", nullable = true)
     private Float distance;
-
-    @Column(name = "CaloriesBurned", nullable = false)
-    private Integer caloriesBurned;
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
@@ -64,10 +64,10 @@ public class Exercise {
 
     public Exercise(CreateExerciseRequest createExerciseRequest, List<Tag> tags) {
         this.exerciseName = createExerciseRequest.getExerciseName();
-        this.caloriesBurned = createExerciseRequest.getCaloriesBurned();
         this.emoji = createExerciseRequest.getEmoji();
         this.duration = createExerciseRequest.getDuration();
         this.tags = tags;
+        this.met = createExerciseRequest.getMet();
         this.distance = createExerciseRequest.getDistance();
         // Mặc định vừa tạo isAtive true
         this.isActive = true;
