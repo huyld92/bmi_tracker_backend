@@ -36,8 +36,7 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
 
     @Override
     public MemberBodyMass getLatestBodyMass(Integer memberID) {
-        System.out.println("aaaaaaaaa : " + memberID);
-        return repository.findFirstByMemberMemberIDOrderByDateInputDesc(memberID).get();
+         return repository.findFirstByMemberMemberIDOrderByDateInputDesc(memberID).get();
 
     }
 

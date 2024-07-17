@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,14 +16,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountSubscriptionResponse {
+public class MenuHistoryResponse {
 
-    private String yearMonth;
-    private Long totalSubscription;
-
-    public CountSubscriptionResponse(Integer year, Integer month, Long totalSubscription) {
-        this.yearMonth = Integer.toString(year) + "-" + Integer.toString(month);
-        this.totalSubscription = totalSubscription;
-    }
+    private Integer menuHistoryID;
+    private LocalDate dateOfAssigned;
+    private Integer menuID;
+    private String menuPhoto;
+    private Integer totalCalories;
+    private String menuDescription;
+    private String menuName;
+    private Integer memberID;
+    private String fullName;
+    private Boolean isActive;
 
 }

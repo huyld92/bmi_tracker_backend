@@ -46,10 +46,10 @@ public interface SubscriptionRepository extends JpaRepository<AdvisorSubscriptio
     @Query("UPDATE AdvisorSubscription as SET as.subscriptionStatus = 'PENDING' WHERE as.startDate = :today")
     void updatePendingSubscriptions(LocalDate today);
 
-    @Query("SELECT new com.fu.bmi_tracker.payload.response.CountSubscriptionResponse(YEAR(as.creationDate), MONTH(as.creationDate), COUNT(as)) "
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.CountSubscriptionResponse(YEAR(as.subscriptionDate), MONTH(as.subscriptionDate), COUNT(as)) "
             + "FROM AdvisorSubscription as "
-            + "WHERE as.subscriptionDate  BETWEEN :startDate AND :endDate "
+            + "WHERE as.subscriptionDate BETWEEN :startDateTime AND :endDateTime "
             + "GROUP BY YEAR(as.subscriptionDate), MONTH(as.subscriptionDate) "
             + "ORDER BY YEAR(as.subscriptionDate) DESC, MONTH(as.subscriptionDate) DESC")
-    public List<CountSubscriptionResponse> countTotalSubscriptionPerMonthInBetween(LocalDate startDate, LocalDate endDate);
+    public List<CountSubscriptionResponse> countTotalSubscriptionPerMonthInBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

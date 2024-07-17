@@ -4,13 +4,19 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Menu;
+import com.fu.bmi_tracker.model.entities.MenuFood;
+import com.fu.bmi_tracker.payload.request.CreateMenuFoodRequest;
 import com.fu.bmi_tracker.payload.response.CountMenuResponse;
+import com.fu.bmi_tracker.repository.FoodRepository;
+import com.fu.bmi_tracker.repository.MenuFoodRepository;
 import com.fu.bmi_tracker.services.MenuService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.MenuRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,6 +25,12 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     MenuRepository menuRepository;
+
+    @Autowired
+    FoodRepository foodRepository;
+
+    @Autowired
+    MenuFoodRepository menuFoodRepository;
 
     @Override
     public Iterable<Menu> findAll() {
@@ -52,6 +64,23 @@ public class MenuServiceImpl implements MenuService {
         LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
         LocalDate endDate = LocalDate.now();
         return menuRepository.countTotalMenuPerMonthInBetween(startDate, endDate);
+    }
+
+    @Override
+    public MenuFood createNewMenuFood(CreateMenuFoodRequest menuFoodRequest) {
+        // gọi menuRepository tìm Menu
+        Menu menu = menuRepository.findById(menuFoodRequest.getMenuID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find menu id{" + menuFoodRequest.getMenuID() + "}!"));
+
+        // tìm Food repository
+        Food food = foodRepository.findById(menuFoodRequest.getFoodID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find food id{" + menuFoodRequest.getFoodID() + "}!"));
+    
+        // tạo Menu food
+        MenuFood menuFood = new MenuFood(menu, food, menuFoodRequest.getMealType(), Boolean.TRUE);
+
+        // gọi menuFoodRepository lưu menu food
+        return menuFoodRepository.save(menuFood);
     }
 
 }

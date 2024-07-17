@@ -318,7 +318,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public List<CountSubscriptionResponse> countTotalSubscriptionIn6Months() {
         // lấy tất cả các Subscription trước ngày hiện tại trong vòng 6 tháng
         LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
-        LocalDate endDate = LocalDate.now();
-        return subscriptionRepository.countTotalSubscriptionPerMonthInBetween(startDate, endDate);
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = LocalDateTime.now();
+
+        return subscriptionRepository.countTotalSubscriptionPerMonthInBetween(startDateTime, endDateTime);
     }
 }

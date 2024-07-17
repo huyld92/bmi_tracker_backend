@@ -37,5 +37,4 @@ public interface SubscriptionService extends GeneralService<AdvisorSubscription>
     public List<AdvisorSubscriptionSummary> getAdvisorSubscriptionSummaryByMonth();
 
     public List<CountSubscriptionResponse> countTotalSubscriptionIn6Months();
-
 }

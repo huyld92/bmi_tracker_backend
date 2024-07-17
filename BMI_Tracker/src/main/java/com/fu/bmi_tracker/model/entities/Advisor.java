@@ -22,9 +22,9 @@ import lombok.NoArgsConstructor;
  * @author Duc Huy
  */
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Table(name = "Advisor")
 public class Advisor {
 

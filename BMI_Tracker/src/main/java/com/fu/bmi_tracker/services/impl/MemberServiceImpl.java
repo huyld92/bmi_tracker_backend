@@ -12,7 +12,6 @@ import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.model.entities.MenuHistory;
 import com.fu.bmi_tracker.model.entities.WorkoutHistory;
 import com.fu.bmi_tracker.model.enums.EMealType;
-import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
 import com.fu.bmi_tracker.repository.DailyRecordRepository;
 import com.fu.bmi_tracker.repository.ExerciseRepository;
@@ -257,7 +256,7 @@ public class MemberServiceImpl implements MemberService {
 
         // gọi workout history tìm tìm tất cả workout hiện tịa của member
         // *chưa kiểm soát việc trả về có nhiều hơn 1 result
-        Optional<MenuHistory> menuHistory = menuHistoryRepository.findByMemberIDAndIsActiveTrue(member.getMemberID());
+        Optional<MenuHistory> menuHistory = menuHistoryRepository.findByMember_MemberIDAndIsActiveTrue(member.getMemberID());
 
         // nếu không tìm thấy kết quả return mảng rỗng
         if (!menuHistory.isPresent()) {
@@ -265,7 +264,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // gọi menuFoodRepository tìm List food
-        return menuFoodRepository.findFoodByMenu_MenuIDAndMealType(menuHistory.get().getMenuID(), mealType);
+        return menuFoodRepository.findFoodByMenu_MenuIDAndMealType(menuHistory.get().getMenu().getMenuID(), mealType);
     }
 
     @Override
@@ -276,7 +275,7 @@ public class MemberServiceImpl implements MemberService {
 
         // gọi workout history tìm tìm tất cả workout hiện tịa của member
         // *chưa kiểm soát việc trả về có nhiều hơn 1 result
-        Optional<MenuHistory> menuHistory = menuHistoryRepository.findByMemberIDAndIsActiveTrue(member.getMemberID());
+        Optional<MenuHistory> menuHistory = menuHistoryRepository.findByMember_MemberIDAndIsActiveTrue(member.getMemberID());
 
         // nếu không tìm thấy kết quả return mảng rỗng
         if (!menuHistory.isPresent()) {
@@ -284,7 +283,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // gọi menuFoodRepository tìm List food
-        return menuFoodRepository.findFoodByMenu_MenuID(menuHistory.get().getMenuID());
+        return menuFoodRepository.findFoodByMenu_MenuID(menuHistory.get().getMenu().getMenuID());
     }
 
     @Override
