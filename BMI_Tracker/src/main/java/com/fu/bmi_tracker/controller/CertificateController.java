@@ -6,6 +6,7 @@ import com.fu.bmi_tracker.payload.request.CreateCertificateRequest;
 import com.fu.bmi_tracker.payload.request.UpdateCertificateRequest;
 import com.fu.bmi_tracker.payload.response.CertificateResponse;
 import com.fu.bmi_tracker.payload.response.CertificatedNoAdvisor;
+import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.CertificateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,7 +53,7 @@ public class CertificateController {
             description = "Create new certificate with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = CertificateResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -60,11 +61,8 @@ public class CertificateController {
     @PostMapping(value = "/createNew")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> createNewCertificate(@Valid @RequestBody CreateCertificateRequest certificateRequest) {
-        // Create new object
-        Certificate certificate = new Certificate(certificateRequest);
-
         // Store to database
-        Certificate certificateSave = certificateService.save(certificate);
+        Certificate certificateSave = certificateService.createNewCertificate(certificateRequest);
 
         // check result
         if (certificateSave == null) {

@@ -27,4 +27,6 @@ public interface TagService extends GeneralService<Tag> {
 
     public Iterable<TagType> getTagsGroupByTagType();
 
+    public void deactivateTag(Integer tagID);
+
 }

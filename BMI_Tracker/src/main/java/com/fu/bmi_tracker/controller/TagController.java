@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TagController {
 
     @Autowired
-    TagService service;
+    TagService tagService;
 
     @Operation(
             summary = "Create new tag with form",
@@ -60,7 +60,7 @@ public class TagController {
 
         Tag tag = new Tag(createTagRequest);
 
-        Tag tagSave = service.save(tag);
+        Tag tagSave = tagService.save(tag);
 
         if (tagSave == null) {
             return new ResponseEntity<>("Failed to create new tag", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,7 +81,7 @@ public class TagController {
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllTags() {
 
-        Iterable<Tag> tags = service.findAll();
+        Iterable<Tag> tags = tagService.findAll();
 
         if (!tags.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -104,7 +104,7 @@ public class TagController {
             @Content(schema = @Schema())})})
     @GetMapping("/getByID/{id}")
     public ResponseEntity<?> getTagById(@PathVariable("id") int id) {
-        Optional<Tag> tag = service.findById(id);
+        Optional<Tag> tag = tagService.findById(id);
 
         if (tag.isPresent()) {
             return new ResponseEntity<>(tag, HttpStatus.OK);
@@ -126,7 +126,7 @@ public class TagController {
             @Content(schema = @Schema())})})
     @GetMapping("/getByTagType")
     public ResponseEntity<?> getByTagType(@RequestParam ETagType tagType) {
-        List<Tag> tags = service.findByTagType(tagType);
+        List<Tag> tags = tagService.findByTagType(tagType);
 
         return new ResponseEntity<>(tags, HttpStatus.OK);
 
@@ -143,8 +143,8 @@ public class TagController {
     @GetMapping("food/getAll")
     public ResponseEntity<?> getAllToCreateFood() {
 
-        // gọi service lấy danh sách tag phù hợp create food
-        Iterable<Tag> tags = service.getTagCreateFood();
+        // gọi tagService lấy danh sách tag phù hợp create food
+        Iterable<Tag> tags = tagService.getTagCreateFood();
 
         if (!tags.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -169,8 +169,8 @@ public class TagController {
     @GetMapping("exercise/getAll")
     public ResponseEntity<?> getAllToCreateExercise() {
 
-        // gọi service lấy danh sách tag phù hợp create exercise
-        Iterable<Tag> tags = service.getTagCreateExercise();
+        // gọi tagService lấy danh sách tag phù hợp create exercise
+        Iterable<Tag> tags = tagService.getTagCreateExercise();
 
         if (!tags.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -195,8 +195,8 @@ public class TagController {
     @GetMapping("ingredient/getAll")
     public ResponseEntity<?> getAllToCreateIngredient() {
 
-        // gọi service lấy danh sách tag phù hợp create ingredient
-        Iterable<Tag> tags = service.getTagCreateIngredient();
+        // gọi tagService lấy danh sách tag phù hợp create ingredient
+        Iterable<Tag> tags = tagService.getTagCreateIngredient();
 
         if (!tags.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -221,8 +221,8 @@ public class TagController {
     @GetMapping("food/group-by-tag-type")
     public ResponseEntity<?> getAllGroupByTagType() {
 
-        // gọi service lấy danh sách tag phù hợp create food
-        Iterable<TagType> tagTypes = service.getTagsGroupByTagType();
+        // gọi tagService lấy danh sách tag phù hợp create food
+        Iterable<TagType> tagTypes = tagService.getTagsGroupByTagType();
 
         if (!tagTypes.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -240,4 +240,19 @@ public class TagController {
 
     }
 
+        @Operation(summary = "Deactivate Tag", tags = {"Tag"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content( mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Tags", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("deactivate")
+    public ResponseEntity<?> getAllGroupByTagType(@RequestParam Integer tagID){
+        tagService.deactivateTag(tagID);
+        
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    
 }

@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MenuHistoryRepository extends JpaRepository<MenuHistory, Integer> {
 
-    public Optional<MenuHistory> findByMemberIDAndIsActiveTrue(Integer memberID);
+    public Optional<MenuHistory> findByMember_MemberIDAndIsActiveTrue(Integer memberID);
+
+    public Iterable<MenuHistory> findByMember_MemberID(Integer memberID);
 
 }

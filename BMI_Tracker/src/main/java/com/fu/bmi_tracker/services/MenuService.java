@@ -5,6 +5,8 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Menu;
+import com.fu.bmi_tracker.model.entities.MenuFood;
+import com.fu.bmi_tracker.payload.request.CreateMenuFoodRequest;
 import com.fu.bmi_tracker.payload.response.CountMenuResponse;
 import java.util.List;
 
@@ -19,5 +21,7 @@ public interface MenuService extends GeneralService<Menu> {
     public Menu createNewMenu(Menu menu);
 
     public List<CountMenuResponse> countTotalMenuIn6Months();
+
+    public MenuFood createNewMenuFood(CreateMenuFoodRequest menuFoodRequest);
 
 }

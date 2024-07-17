@@ -47,11 +47,11 @@ public class Certificate {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
-    public Certificate(CreateCertificateRequest certificateRequest) {
+    public Certificate(CreateCertificateRequest certificateRequest, Advisor advisor) {
         this.certificateName = certificateRequest.getCertificateName();
         this.certificateLink = certificateRequest.getCertificateLink();
         this.isActive = false;
-        this.advisor = new Advisor(certificateRequest.getAdvisorID());
+        this.advisor = advisor;
     }
 
     public void updateCertificate(UpdateCertificateRequest certificateRequest) {

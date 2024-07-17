@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Certificate;
+import com.fu.bmi_tracker.payload.request.CreateCertificateRequest;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CertificateRepository;
 import com.fu.bmi_tracker.services.CertificateService;
@@ -60,6 +61,18 @@ public class CertificateServiceImpl implements CertificateService {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
         // gọi repository tìm tất cả certificate của Advisor
         return certificateRepository.findAllByAdvisorAdvisorID(advisor.getAdvisorID());
+    }
+    
+    @Override
+    public Certificate createNewCertificate(CreateCertificateRequest certificateRequest) {
+        // Tim advisor từ advisorID
+        Advisor advisor = advisorRepository.findById(certificateRequest.getAdvisorID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
+
+        //tạo object certificate
+        Certificate c = new Certificate(certificateRequest, advisor);
+        
+        return save(c);
     }
     
 }

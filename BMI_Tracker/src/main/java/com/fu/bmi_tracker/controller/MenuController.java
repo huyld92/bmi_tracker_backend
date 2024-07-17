@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.MenuFood;
+import com.fu.bmi_tracker.payload.request.CreateMenuFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateMenuRequest;
 import com.fu.bmi_tracker.payload.request.MenuFoodRequest;
 import com.fu.bmi_tracker.payload.request.UpdateMenuRequest;
@@ -136,6 +137,29 @@ public class MenuController {
     }
 
     @Operation(
+            summary = "Create menu food",
+            description = "Add more food for menu")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "menu-food/createNew")
+    public ResponseEntity<?> createNewMenu(@Valid @RequestBody CreateMenuFoodRequest menuFoodRequest) {
+        MenuFood menuFood = menuService.createNewMenuFood(menuFoodRequest);
+
+        if (menuFood == null) {
+            return new ResponseEntity<>(new MessageResponse("Create new menu food failed"), HttpStatus.BAD_REQUEST);
+        }
+
+        MenuFoodResponse menuFoodResponse = new MenuFoodResponse(menuFood.getFood(), menuFood.getMealType(), menuFood.getIsActive());
+        return new ResponseEntity<>(menuFoodResponse, HttpStatus.CREATED);
+
+    }
+
+    @Operation(
             summary = "Get all menu",
             description = "Get all menu include food")
     @ApiResponses({
@@ -146,7 +170,8 @@ public class MenuController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAllMenu")
-//    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<?> getAllMenu() {
         // Lấy danh sách menu
         Iterable<Menu> menus = menuService.findAll();
