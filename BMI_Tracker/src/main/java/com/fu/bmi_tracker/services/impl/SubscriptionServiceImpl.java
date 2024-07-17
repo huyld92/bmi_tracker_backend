@@ -15,6 +15,7 @@ import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import com.fu.bmi_tracker.payload.request.CreateSubscriptionTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorSubscriptionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
+import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
 import com.fu.bmi_tracker.payload.response.SubscriptionSummaryResponse;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
@@ -311,5 +312,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return monthlySubscriptionCounts.entrySet().stream()
                 .map(entry -> new SubscriptionSummaryResponse(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CountSubscriptionResponse> countTotalSubscriptionIn6Months() {
+        // lấy tất cả các Subscription trước ngày hiện tại trong vòng 6 tháng
+        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now();
+        return subscriptionRepository.countTotalSubscriptionPerMonthInBetween(startDate, endDate);
     }
 }

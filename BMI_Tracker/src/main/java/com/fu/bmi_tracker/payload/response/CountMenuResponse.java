@@ -15,14 +15,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommissionSummaryResponse {
-    
+public class CountMenuResponse {
+
     private String yearMonth;
-    private Long totalCommission;
+    private Long totalMenu;
 
-    public CommissionSummaryResponse(Integer year, Integer month, Long totalCommission) {
+    public CountMenuResponse(Integer year, Integer month, Long totalMenu) {
         this.yearMonth = Integer.toString(year) + "-" + Integer.toString(month);
-        this.totalCommission = totalCommission;
+        this.totalMenu = totalMenu;
     }
-
 }

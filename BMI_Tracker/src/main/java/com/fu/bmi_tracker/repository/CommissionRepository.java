@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.Commission;
+import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +35,11 @@ public interface CommissionRepository extends JpaRepository<Commission, Integer>
 
     List<Commission> findByAdvisor_AdvisorIDAndExpectedPaymentDateBetweenOrderByExpectedPaymentDateDesc(
             Integer advisorID, LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.CommissionSummaryResponse(YEAR(c.expectedPaymentDate), MONTH(c.expectedPaymentDate), COUNT(c)) "
+            + "FROM Commission c "
+            + "WHERE c.expectedPaymentDate  BETWEEN :startDate AND :endDate "
+            + "GROUP BY YEAR(c.expectedPaymentDate), MONTH(c.expectedPaymentDate) "
+            + "ORDER BY YEAR(c.expectedPaymentDate) DESC, MONTH(c.expectedPaymentDate) DESC")
+    List<CommissionSummaryResponse> countCommissionsPerMonth(LocalDate startDate, LocalDate endDate);
 }

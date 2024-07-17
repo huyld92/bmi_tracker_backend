@@ -12,6 +12,7 @@ import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.services.CommissionService;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +68,12 @@ public class CommissionServiceImpl implements CommissionService {
         return save(commission);
     }
 
-//    @Override
-//    public List<CommissionSummaryResponse> getCommissionSummaryIn6Months() {
-//
-//    }
+    @Override
+    public List<CommissionSummaryResponse> getCommissionSummaryIn6Months() {
+        // lấy tất cả các commission trước ngày hiện tại trong vòng 6 tháng
+        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now();
+        return commissionRepository.countCommissionsPerMonth(startDate, endDate);
+    }
 
 }

@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
 import com.fu.bmi_tracker.payload.request.CreateSubscriptionTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorSubscriptionSummary;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
+import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
 import java.util.List;
 
 /**
@@ -34,5 +35,7 @@ public interface SubscriptionService extends GeneralService<AdvisorSubscription>
     public void updateSubscriptionStatus();
 
     public List<AdvisorSubscriptionSummary> getAdvisorSubscriptionSummaryByMonth();
+
+    public List<CountSubscriptionResponse> countTotalSubscriptionIn6Months();
 
 }
