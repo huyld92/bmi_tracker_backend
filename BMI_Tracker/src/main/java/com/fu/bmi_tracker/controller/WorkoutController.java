@@ -6,17 +6,16 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
-import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
+import com.fu.bmi_tracker.payload.request.CreateWorkoutExerciseRequest;
 import com.fu.bmi_tracker.payload.request.CreateWorkoutRequest;
 import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
-import com.fu.bmi_tracker.payload.response.ExerciseResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.payload.response.WorkoutEntityResponse;
+import com.fu.bmi_tracker.payload.response.WorkoutExerciseResponse;
 import com.fu.bmi_tracker.payload.response.WorkoutResonse;
 import com.fu.bmi_tracker.services.AdvisorService;
-import com.fu.bmi_tracker.services.ExerciseService;
 import com.fu.bmi_tracker.services.WorkoutService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.WorkoutExerciseService;
-import com.fu.bmi_tracker.util.ExerciseConverter;
+import com.fu.bmi_tracker.util.WorkoutExerciseConverter;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,9 +58,6 @@ public class WorkoutController {
 
     @Autowired
     AdvisorService advisorService;
-
-    @Autowired
-    ExerciseService exerciseService;
 
     @Autowired
     WorkoutExerciseService workoutExerciseService;
@@ -90,9 +86,9 @@ public class WorkoutController {
         // tạo mới workout
         Workout w = new Workout(
                 createWorkoutRequest.getWorkoutName(),
+                createWorkoutRequest.getStandardWeight(),
                 createWorkoutRequest.getWorkoutDescription(),
-                createWorkoutRequest.getTotalCaloriesBurned(),
-                advisor.getAdvisorID());
+                advisor);
 
         // lưu Workout vào database
         Workout workoutSaved = workoutService.save(w);
@@ -101,34 +97,11 @@ public class WorkoutController {
             return new ResponseEntity<>(new MessageResponse("Cannot create new workout!"), HttpStatus.BAD_REQUEST);
         }
 
-        // Tạo mớ workout exercise
-        //Tìm exercise từ dnah sách ID
-        List<Exercise> exercises = exerciseService.findByExerciseIDIn(createWorkoutRequest.getExerciseIDs());
-
-        List<WorkoutExercise> workoutExercises = new ArrayList<>();
-
-        //tạo ExerciseResponse
-        List<ExerciseResponse> workoutExercisesResponses = new ArrayList<>();
-
-        // tạo workoutExercises từ  exercises
-        exercises.forEach(exercise -> {
-            WorkoutExercise workoutExercise = new WorkoutExercise(workoutSaved, exercise, true);
-            workoutExercises.add(workoutExercise);
-
-            workoutExercisesResponses.add(new ExerciseResponse(workoutExercise.getExercise()));
-        });
-
-        // Gọi workoutService lưu tất cả workouExercise
-        if (workoutExerciseService.saveAll(workoutExercises).isEmpty()) {
-            return new ResponseEntity<>("Failed to create new workout exercise", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         // tạo Workout response
-        WorkoutResonse workoutResonse = new WorkoutResonse(
-                workoutSaved,
-                workoutExercisesResponses);
+        WorkoutEntityResponse workoutEntityResponse = new WorkoutEntityResponse(
+                workoutSaved);
 
-        return new ResponseEntity<>(workoutResonse, HttpStatus.OK);
+        return new ResponseEntity<>(workoutEntityResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "Deactivate a Workout by Id")
@@ -137,7 +110,7 @@ public class WorkoutController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deactivate/{id}")
-    public ResponseEntity<?> deactivateeWorkout(@PathVariable("id") int id) {
+    public ResponseEntity<?> deactivateWorkout(@PathVariable("id") int id) {
         Optional<Workout> workout = workoutService.findById(id);
 
         if (workout.isPresent()) {
@@ -171,12 +144,13 @@ public class WorkoutController {
 
         // tạo workout response
         List<WorkoutResonse> workoutResonses = new ArrayList<>();
-        // duyeejt list workout
-        workouts.forEach(workout -> {
 
+        // duyệt list workout
+        workouts.forEach(workout -> {
             workoutResonses.add(new WorkoutResonse(
                     workout,
-                    ExerciseConverter.convertToWorkoutExerciseResponseList(workout.getWorkoutExercises())));
+                    WorkoutExerciseConverter.convertToWorkoutExerciseResponseList(
+                            workout.getWorkoutExercises())));
         });
 
         return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
@@ -201,10 +175,10 @@ public class WorkoutController {
         }
 
         //tạo workoutExercise response
-        List<ExerciseResponse> workoutExercisesResponses = new ArrayList<>();
+        List<WorkoutExerciseResponse> workoutExercisesResponses = new ArrayList<>();
 
         workout.get().getWorkoutExercises().forEach(workoutExercise -> {
-            workoutExercisesResponses.add(new ExerciseResponse(workoutExercise.getExercise()));
+            workoutExercisesResponses.add(new WorkoutExerciseResponse(workoutExercise));
         });
 
         // tạo workout response
@@ -269,28 +243,30 @@ public class WorkoutController {
     public ResponseEntity<?> updateWorkoutInformation(@Valid @RequestBody UpdateWorkoutRequest updateWorkoutRequest) {
         // gọi workout service để cập nhật workout information
         Workout workout = workoutService.updateWorkoutInformation(updateWorkoutRequest);
+
         // tạo Workout entity response
         WorkoutEntityResponse entityResponse = new WorkoutEntityResponse(workout);
         return new ResponseEntity<>(entityResponse, HttpStatus.OK);
     }
 
-//    @Operation(
-//            summary = "Delete workout exercise",
-//            description = "Delete workout exercises by exercise ID and workoutID")
-//    @ApiResponses({
-//        @ApiResponse(responseCode = "204", description = "Delete success!"),
-//        @ApiResponse(responseCode = "403", content = {
-//            @Content(schema = @Schema())}),
-//        @ApiResponse(responseCode = "500", content = {
-//            @Content(schema = @Schema())})})
-//    @DeleteMapping(value = "/deleteExersice")
-//    @PreAuthorize("hasRole('ADVISOR')")
-//    public ResponseEntity<?> deleteWorkoutExersice(@RequestParam Integer workoutID, @RequestParam Integer exerciseID) {
-//        // gọi service để delete workout exercise
-//        workoutExerciseService.deleteWorkoutExercise(workoutID, exerciseID);
-//
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @Operation(
+            summary = "Delete workout exercise",
+            description = "Delete workout exercises by exercise ID and workoutID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Delete success!"),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping(value = "/workout-exercise/delete")
+    @PreAuthorize("hasRole('ADVISOR')")
+    public ResponseEntity<?> deleteWorkoutExersice(@RequestParam Integer workoutExerciseID) {
+        // gọi service để delete workout exercise
+        workoutExerciseService.deleteWorkoutExercise(workoutExerciseID);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @Operation(
             summary = "Deactivate workout exercise",
             description = "Deactivate workout exercises by exercise ID and workoutID")
@@ -302,52 +278,36 @@ public class WorkoutController {
             @Content(schema = @Schema())})})
     @DeleteMapping(value = "/workout-exercise/deactivate")
     @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> deactivateWorkoutExersice(@RequestParam Integer workoutID, @RequestParam Integer exerciseID) {
+    public ResponseEntity<?> deactivateWorkoutExersice(@RequestParam Integer workoutExerciseID) {
         // gọi service để deactivate workout exercise
-        workoutExerciseService.deactivateWorkoutExercise(workoutID, exerciseID);
+        workoutExerciseService.deactivateWorkoutExercise(workoutExerciseID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(
-            summary = "Create workout exercise",
-            description = "Create workout exercises by exercise ID and workoutID")
+            summary = "Create workout exercise")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Delete success!"),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PostMapping(value = "/createWorkoutExercise")
-    @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> createWorkoutExercise(@RequestParam Integer workoutID, @RequestParam Integer exerciseID) {
-        WorkoutExercise workoutExercise = workoutExerciseService.createWorkoutExercise(workoutID, exerciseID);
-
-        return new ResponseEntity<>(workoutExercise, HttpStatus.OK);
-
-    }
-
-    @Operation(
-            summary = "Create workout exercise",
-            description = "Delete workout exercises by list exerciseID and workoutID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Delete success!"),
+        @ApiResponse(responseCode = "201", description = "Creatate success!", content = {
+            @Content(schema = @Schema(implementation = MessageResponse.class))
+        }),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "/createWorkoutExercises")
     @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> createWorkoutExercises(@RequestParam Integer workoutID, @RequestParam List<Integer> exerciseIDs) {
+    public ResponseEntity<?> createWorkoutExercise(@Valid @RequestBody CreateWorkoutExerciseRequest workoutExerciseRequest) {
         // gọi service tạo workout exercise
-        List<WorkoutExercise> workoutExercise = workoutExerciseService.createWorkoutExercises(workoutID, exerciseIDs);
+        WorkoutExercise workoutExercise = workoutExerciseService.createWorkoutExercise(workoutExerciseRequest);
 
         // kiểm tra danh sách rỗng
-        if (workoutExercise.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (workoutExercise == null) {
+            return new ResponseEntity<>(new MessageResponse("Create workout exercise failed"), HttpStatus.BAD_REQUEST);
 
         }
-        return new ResponseEntity<>(workoutExercise, HttpStatus.OK);
+
+        return new ResponseEntity<>(new MessageResponse("Create workout exercise success"), HttpStatus.CREATED);
 
     }
 }

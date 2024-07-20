@@ -4,13 +4,9 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,19 +14,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface WorkoutExerciseRepository extends JpaRepository<WorkoutExercise, WorkoutExercise> {
+public interface WorkoutExerciseRepository extends JpaRepository<WorkoutExercise, Integer> {
 
-    @Query("SELECT we.exercise FROM WorkoutExercise we WHERE we.workout.workoutID = :workoutID")
-    public List<Exercise> findExerciseByWorkout_WorkoutID(Integer workoutID);
+    public List<WorkoutExercise> findByWorkout_WorkoutIDAndIsActiveTrue(Integer workoutID);
 
-    public void deleteByWorkout_WorkoutIDAndExercise_ExerciseID(Integer workoutID, Integer exerciseID);
-
-    @Query("SELECT we.exercise FROM WorkoutExercise we WHERE we.workout.workoutID = :workoutID")
-    public List<Exercise> findExercisesByWorkoutID(Integer workoutID);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE WorkoutExercise we SET we.isActive = false WHERE we.workout.workoutID = :workoutID "
-            + "AND we.exercise.exerciseID = :exerciseID")
-    public void deactivateWorkoutExercise(Integer workoutID, Integer exerciseID);
 }

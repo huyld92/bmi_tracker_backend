@@ -46,6 +46,9 @@ public class Workout {
     @Column(name = "TotalCloriesBurned", nullable = false)
     private Integer totalCloriesBurned;
 
+    @Column(name = "StandardWeight", nullable = false)
+    private Integer standardWeight;
+
     @Column(name = "CreationDate", nullable = false)
     private LocalDate creationDate;
 
@@ -60,12 +63,13 @@ public class Workout {
     private List<WorkoutExercise> workoutExercises;
 
     //Create new workout
-    public Workout(String workoutName, String workoutDescription, Integer totalCloriesBurned, Integer advisorID) {
+    public Workout(String workoutName, Integer standardWeight, String workoutDescription, Advisor advisor) {
         this.workoutName = workoutName;
         this.workoutDescription = workoutDescription;
-        this.totalCloriesBurned = totalCloriesBurned;
+        this.totalCloriesBurned = 0;
+        this.standardWeight = standardWeight;
         this.creationDate = LocalDate.now();
-        this.advisor = new Advisor(advisorID);
+        this.advisor = advisor;
         this.isActive = true;
     }
 

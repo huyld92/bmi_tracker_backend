@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.payload.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class UpdateWorkoutRequest {
     @Min(1)
     @Schema(name = "workoutID", example = "1")
     private Integer workoutID;
-    
+
     @NotNull
     @Size(min = 3, max = 100) // Đảm bảo tên bài tập không được null, độ dài từ 3 đến 100 ký tự
     @Schema(name = "workoutName", example = "Runing in one hour")
@@ -35,12 +36,12 @@ public class UpdateWorkoutRequest {
     @Schema(name = "workoutDescription", example = "Can be null")
     private String workoutDescription;
 
-    @NotNull
-    @Min(0) // Tổng lượng calo đốt cháy không được null và phải lớn hơn hoặc bằng 0
-    @Schema(name = "totalCaloriesBurned", example = "500")
-    private Integer totalCaloriesBurned;
-
-    @NotNull
-    @Schema(example = "true", description = "Status indicating whether the workout is active or not", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Boolean isActive;
+    @Schema(example = "80")
+    @NotNull(message = "Weight is required")
+    @Positive(message = "Weight must be a positive number")
+    private Integer standardWeight;
+//
+//    @NotNull
+//    @Schema(example = "true", description = "Status indicating whether the workout is active or not", requiredMode = Schema.RequiredMode.REQUIRED)
+//    private Boolean isActive;
 }

@@ -5,17 +5,14 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.payload.request.CreateExerciseRequest;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,37 +36,34 @@ public class Exercise {
     @Column(name = "ExerciseName", nullable = false)
     private String exerciseName;
 
-    @Column(name = "Emoji", nullable = true)
-    private String emoji;
+    @Column(name = "ExercisePhoto", nullable = true)
+    private String exercisePhoto;
 
-    @Column(name = "Duration", nullable = false)
-    private Integer duration;
+    @Column(name = "ExerciseVideo", nullable = true)
+    private String exerciseVideo;
 
     @Column(name = "MET", nullable = false)
     private Float met;
 
-    @Column(name = "Distance", nullable = true)
-    private Float distance;
+    @Column(name = "ExerciseDescription", nullable = true)
+    private String exerciseDescription;
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "TagExercise",
-            joinColumns = @JoinColumn(name = "ExerciseID"),
-            inverseJoinColumns = @JoinColumn(name = "TagID")
-    )
-    private List<Tag> tags;
+    @ManyToOne
+    @JoinColumn(name = "TagID")
+    private Tag tag;
 
-    public Exercise(CreateExerciseRequest createExerciseRequest, List<Tag> tags) {
+    public Exercise(CreateExerciseRequest createExerciseRequest, Tag tag) {
         this.exerciseName = createExerciseRequest.getExerciseName();
-        this.emoji = createExerciseRequest.getEmoji();
-        this.duration = createExerciseRequest.getDuration();
-        this.tags = tags;
+        this.exercisePhoto = createExerciseRequest.getExercisePhoto();
+        this.exerciseVideo = createExerciseRequest.getExerciseVideo();
         this.met = createExerciseRequest.getMet();
-        this.distance = createExerciseRequest.getDistance();
+        this.exerciseDescription = createExerciseRequest.getExerciseDescription();
+        this.tag = tag;
         // Mặc định vừa tạo isAtive true
         this.isActive = true;
     }
+
 }

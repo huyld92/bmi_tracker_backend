@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.Workout;
+import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
@@ -29,7 +30,7 @@ public interface MemberService extends GeneralService<Member> {
 
     public Optional<Member> findByAccountID(int accountID);
 
-    public List<Exercise> getllExerciseResponseInWorkout(Integer accountID);
+    public List<WorkoutExercise> getAllWorkoutExerciseInWorkout(Integer accountID);
 
 //    public Menu getMenuSuggestion(int defaultCalories, String dietaryPreference);
 //

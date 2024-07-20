@@ -81,12 +81,7 @@ public class DailyRecordServiceImpl implements DailyRecordService {
     //chuyển đổi từ DailyRecord sáng FullResponse
     private DailyRecordFullResponse toDailyRecordFullResponse(DailyRecord dailyRecord) {
         List<ActivityLogResponse> activityLogs = dailyRecord.getActivityLogs().stream()
-                .map(activityLog -> new ActivityLogResponse(
-                activityLog.getActivityName(),
-                activityLog.getActivityLogID(),
-                activityLog.getCaloriesBurned(),
-                activityLog.getDuration(),
-                activityLog.getExerciseID()))
+                .map(activityLog -> new ActivityLogResponse(activityLog))
                 .collect(Collectors.toList());
 
         List<MealLogResponse> mealLogs = dailyRecord.getMealLogs().stream()

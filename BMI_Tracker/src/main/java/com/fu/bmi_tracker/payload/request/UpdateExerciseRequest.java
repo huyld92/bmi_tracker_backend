@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -5,15 +9,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 /**
  *
  * @author Duc Huy
@@ -21,7 +20,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateExerciseRequest {
+public class UpdateExerciseRequest {
+
+    @Schema(example = "1")
+    @NotNull(message = "Exercise name is required")
+    private Integer exerciseID;
 
     @Schema(example = "Running")
     @NotNull(message = "Exercise name is required")
@@ -41,7 +44,7 @@ public class CreateExerciseRequest {
     @Schema(example = "A description of the exercise")
     @Size(max = 255, message = "Exercise description must be less than 255 characters")
     private String exerciseDescription;
-
+    
     @NotNull
     @Positive(message = "TagID must be positive")
     @Schema(name = "tagID", example = "17")

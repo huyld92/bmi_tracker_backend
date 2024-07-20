@@ -7,7 +7,6 @@ package com.fu.bmi_tracker.payload.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,23 +18,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateActivityLogRequest {
+public class CreateWorkoutExerciseRequest {
 
-    @Positive
-    @Schema(name = "activityID", example = "1", nullable = true)
-    private Integer activityID;
+    @Schema(example = "1")
+    @NotNull(message = "WorkoutID is required")
+    @Positive(message = "WorkoutID must be a positive number")
+    private Integer workoutID;
 
-    @Size(max = 100)
-    @Schema(name = "activityName", example = "Rope skipping")
-    private String activityName;
+    @Schema(example = "1")
+    @NotNull(message = "ExerciseID is required")
+    @Positive(message = "ExerciseID must be a positive number")
+    private Integer exerciseID;
 
-    @NotNull
-    @Positive
-    @Schema(name = "duration", example = "1")
+    @Schema(example = "1")
+    @NotNull(message = "Duration is required")
+    @Positive(message = "Duration must be a positive number")
     private Integer duration;
-
-    @Positive
-    @Schema(name = "caloriesBurned", example = "500", nullable = true)
-    private Integer caloriesBurned;
-    
 }

@@ -39,10 +39,6 @@ public class CreateActivityLogRequest {
     @Schema(name = "duration", example = "1")
     private Integer duration;
 
-    @Positive
-    @Schema(name = "distance", example = "1")
-    private Float distance;
-
     @NotBlank
     @Schema(name = "dateOfActivity", example = "2024-05-01")
     private String dateOfActivity;

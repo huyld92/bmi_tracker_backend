@@ -57,7 +57,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
 
     @Override
     public ActivityLog createActivityLog(CreateActivityLogRequest activityLogRequest, LocalDate dateOfActivity, Integer accountID) {
-        // kiểm tra tồn tại daily record
+        // kiểm tra tồn tại daily record từ accountID và dateOfActivity
         DailyRecord dailyRecord = existedDailyRecord(accountID, activityLogRequest.getCaloriesBurned(), dateOfActivity);
 
         // kiểm tra activity log với exerciseID đã tồn tại chưa
@@ -71,12 +71,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
             // tính caloriesBurned
             Integer caloriesBurned = optionalActivityLog.get().getCaloriesBurned() + activityLogRequest.getCaloriesBurned();
 
-            if (activityLogRequest.getDistance() != null) {
-                Float distance = optionalActivityLog.get().getDistance() + activityLogRequest.getDistance();
-                optionalActivityLog.get().setDistance(distance);
-
-            }
-
+            // tính lại duration và cập nhật 
             Integer duration = optionalActivityLog.get().getDuration() + activityLogRequest.getDuration();
             optionalActivityLog.get().setCaloriesBurned(caloriesBurned);
             optionalActivityLog.get().setDuration(duration);
@@ -113,7 +108,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
         activityLog.setActivityName(activityLogRequest.getActivityName());
         activityLog.setCaloriesBurned(activityLogRequest.getCaloriesBurned());
         activityLog.setDuration(activityLogRequest.getDuration());
-        activityLog.setDistance(activityLogRequest.getDistance());
+        
         // trả về kết quả cập nhật
         return save(activityLog);
     }

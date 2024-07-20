@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
+import com.fu.bmi_tracker.payload.request.CreateWorkoutExerciseRequest;
 import com.fu.bmi_tracker.repository.ExerciseRepository;
 import java.util.List;
 import java.util.Optional;
@@ -15,15 +16,14 @@ import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.WorkoutExerciseRepository;
 import com.fu.bmi_tracker.repository.WorkoutRepository;
 import com.fu.bmi_tracker.services.WorkoutExerciseService;
+import com.fu.bmi_tracker.util.ExerciseUtils;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 
 @Service
 public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
 
     @Autowired
-    WorkoutExerciseRepository repository;
+    WorkoutExerciseRepository workoutExerciseRepository;
 
     @Autowired
     WorkoutRepository workoutRepository;
@@ -33,66 +33,82 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
 
     @Override
     public Iterable<WorkoutExercise> findAll() {
-        return repository.findAll();
+        return workoutExerciseRepository.findAll();
     }
 
     @Override
     public Optional<WorkoutExercise> findById(Integer id) {
-//        return repository.findById(id);
+//        return workoutExerciseRepository.findById(id);
         return null;
     }
 
     @Override
     public WorkoutExercise save(WorkoutExercise t) {
-        return repository.save(t);
+        return workoutExerciseRepository.save(t);
     }
 
     @Override
     public List<WorkoutExercise> saveAll(List<WorkoutExercise> workoutExercises) {
-        return repository.saveAll(workoutExercises);
+        return workoutExerciseRepository.saveAll(workoutExercises);
     }
 
     @Override
-    public List<Exercise> getAllExerciseByWorkoutID(Integer workoutID) {
-        return repository.findExerciseByWorkout_WorkoutID(workoutID);
+    public void deleteWorkoutExercise(Integer workoutExerciseID) {
+        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseID)
+                .orElseThrow(() -> new EntityNotFoundException("Workout exercise id{" + workoutExerciseID + "} not found"));
+
+        // cập nhật calories burned khi deavtivate exercise
+        Workout workout = workoutExercise.getWorkout();
+        int totalCorlories = workout.getTotalCloriesBurned() - workoutExercise.getCaloriesBurned();
+        workout.setTotalCloriesBurned(totalCorlories);
+        workoutRepository.save(workout);
+
+        // xóa workout exercise 
+        workoutExerciseRepository.delete(workoutExercise);
     }
 
     @Override
-    @Transactional
-    public void deleteWorkoutExercise(Integer workoutID, Integer exerciseID) {
-        repository.deleteByWorkout_WorkoutIDAndExercise_ExerciseID(workoutID, exerciseID);
-    }
-
-    @Override
-    public WorkoutExercise createWorkoutExercise(Integer workoutID, Integer exerciseID) {
+    public WorkoutExercise createWorkoutExercise(CreateWorkoutExerciseRequest workoutExerciseRequest) {
         // Gọi workoutRepository tìm workout
-        Workout workout = workoutRepository.findById(workoutID)
+        Workout workout = workoutRepository.findById(workoutExerciseRequest.getWorkoutID())
                 .orElseThrow(() -> new EntityNotFoundException("Workout not found"));
         // Gọi exerciseRepository tim exercise
-        Exercise exercise = exerciseRepository.findById(exerciseID)
+        Exercise exercise = exerciseRepository.findById(workoutExerciseRequest.getExerciseID())
                 .orElseThrow(() -> new EntityNotFoundException("Exercise not found"));
+
+        // tính calories burned
+        int caloriesBurned = ExerciseUtils.calculateCalories(
+                exercise.getMet(),
+                workout.getStandardWeight(),
+                workoutExerciseRequest.getDuration());
+
+        // cập nhật calories của workout
+        int totalWorkout = workout.getTotalCloriesBurned() + caloriesBurned;
+        workout.setTotalCloriesBurned(totalWorkout);
+        workoutRepository.save(workout);
+
         // Khởi tạo WorkoutExercise
-        WorkoutExercise workoutExercise = new WorkoutExercise(workout, exercise, true);
-        return repository.save(workoutExercise);
+        WorkoutExercise workoutExercise = new WorkoutExercise(
+                workout,
+                exercise,
+                workoutExerciseRequest.getDuration(),
+                caloriesBurned);
+        return workoutExerciseRepository.save(workoutExercise);
     }
 
     @Override
-    public List<WorkoutExercise> createWorkoutExercises(Integer workoutID, List<Integer> exerciseIDs) {
-        // Gọi workoutRepository tìm workout
-        Workout workout = workoutRepository.findById(workoutID)
-                .orElseThrow(() -> new EntityNotFoundException("Workout not found"));
+    public void deactivateWorkoutExercise(Integer workoutExerciseID) {
+        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseID)
+                .orElseThrow(() -> new EntityNotFoundException("Workout exercise id{" + workoutExerciseID + "} not found"));
 
-        List<Exercise> exercises = exerciseRepository.findByExerciseIDIn(exerciseIDs);
-        List<WorkoutExercise> workoutExercises = new ArrayList<>();
+        // cập nhật calories burned khi deavtivate exercise
+        Workout workout = workoutExercise.getWorkout();
+        int totalCorlories = workout.getTotalCloriesBurned() - workoutExercise.getCaloriesBurned();
+        workout.setTotalCloriesBurned(totalCorlories);
+        workoutRepository.save(workout);
 
-        for (Exercise exercise : exercises) {
-            workoutExercises.add(new WorkoutExercise(workout, exercise, true));
-        }
-        return repository.saveAll(workoutExercises);
-    }
-
-    @Override
-    public void deactivateWorkoutExercise(Integer workoutID, Integer exerciseID) {
-        repository.deactivateWorkoutExercise(workoutID, exerciseID);
+        // cập nhật workout exercise
+        workoutExercise.setIsActive(Boolean.FALSE);
+        workoutExerciseRepository.save(workoutExercise);
     }
 }

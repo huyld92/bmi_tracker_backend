@@ -7,8 +7,10 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.Workout;
 import com.fu.bmi_tracker.payload.request.UpdateWorkoutRequest;
 import com.fu.bmi_tracker.payload.response.CountWorkoutResponse;
+import com.fu.bmi_tracker.repository.WorkoutExerciseRepository;
 import com.fu.bmi_tracker.repository.WorkoutRepository;
 import com.fu.bmi_tracker.services.WorkoutService;
+import com.fu.bmi_tracker.util.ExerciseUtils;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +23,9 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Autowired
     WorkoutRepository workoutRepository;
+
+    @Autowired
+    WorkoutExerciseRepository workoutExerciseRepository;
 
     @Override
     public Iterable<Workout> findAll() {
@@ -41,12 +46,38 @@ public class WorkoutServiceImpl implements WorkoutService {
     public Workout updateWorkoutInformation(UpdateWorkoutRequest updateWorkoutRequest) {
         // tìm workout bằng workout id
         Workout workout = workoutRepository.findById(updateWorkoutRequest.getWorkoutID())
-                .orElseThrow(() -> new EntityNotFoundException("Workout not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Workout id{" + updateWorkoutRequest.getWorkoutID() + "} not found"));
+
+        // kiểm tra weight có được cập nhật
+        if (!workout.getStandardWeight().equals(updateWorkoutRequest.getStandardWeight())) {
+            // cập nhật lại calories burned khi weight có thay đổi
+            workout.setTotalCloriesBurned(0);
+            // duyệt danh sách workout exercise
+            workout.getWorkoutExercises().forEach(workoutExercise -> {
+                // tính calories burned
+                int caloriesBurned = ExerciseUtils.calculateCalories(
+                        workoutExercise.getExercise().getMet(),
+                        workout.getStandardWeight(),
+                        workoutExercise.getDuration());
+                
+                // tính totalCaloriesBurned và cập nhât
+                int totalCaloriesBurned = workout.getTotalCloriesBurned() + caloriesBurned;
+                workout.setTotalCloriesBurned(totalCaloriesBurned);
+                
+                // cập nhật calories workout exercise khi thay đổi weight
+                workoutExercise.setCaloriesBurned(caloriesBurned);
+
+                workoutExerciseRepository.save(workoutExercise);
+
+            });
+
+        }
+
         // cập nhật thông tin workout
         workout.setWorkoutName(updateWorkoutRequest.getWorkoutName());
         workout.setWorkoutDescription(updateWorkoutRequest.getWorkoutDescription());
-        workout.setTotalCloriesBurned(updateWorkoutRequest.getTotalCaloriesBurned());
-        workout.setIsActive(updateWorkoutRequest.getIsActive());
+
+//        workout.setIsActive(updateWorkoutRequest.getIsActive());
         // lưu lại thông tin mới và trả Workout
         return workoutRepository.save(workout);
     }

@@ -4,8 +4,8 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.WorkoutExercise;
+import com.fu.bmi_tracker.payload.request.CreateWorkoutExerciseRequest;
 import java.util.List;
 
 /**
@@ -16,14 +16,10 @@ public interface WorkoutExerciseService extends GeneralService<WorkoutExercise> 
 
     public List<WorkoutExercise> saveAll(List<WorkoutExercise> workoutExercises);
 
-    public List<Exercise> getAllExerciseByWorkoutID(Integer workoutID);
+    public void deleteWorkoutExercise(Integer workoutExerciseID);
 
-    public void deleteWorkoutExercise(Integer workoutID, Integer exerciseID);
+    public WorkoutExercise createWorkoutExercise(CreateWorkoutExerciseRequest workoutExerciseRequest);
 
-    public WorkoutExercise createWorkoutExercise(Integer workoutID, Integer exerciseID);
-
-    public List<WorkoutExercise> createWorkoutExercises(Integer workoutID, List<Integer> exerciseIDs);
-
-    public void deactivateWorkoutExercise(Integer workoutID, Integer exerciseID);
+    public void deactivateWorkoutExercise(Integer workoutExerciseID);
 
 }
