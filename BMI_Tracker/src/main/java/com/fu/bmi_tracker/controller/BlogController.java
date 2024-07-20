@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.controller;
 import com.fu.bmi_tracker.model.entities.Blog;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.payload.request.CreateBlogRequest;
+import com.fu.bmi_tracker.payload.response.BlogGetAllResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.BlogService;
 import com.fu.bmi_tracker.services.impl.UpdateBlogRequest;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,14 +44,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class BlogController {
 
     @Autowired
-    BlogService service;
+    BlogService blogService;
 
     @Operation(
             summary = "Create new Blog with form (ADVISOR)",
             description = "Create new blog with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -59,8 +62,8 @@ public class BlogController {
         // tìm accountID từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        //Gọi service để tạo mới blog
-        Blog saveBlog = service.createBlog(blogRequest, principal.getId());
+        //Gọi blogService để tạo mới blog
+        Blog saveBlog = blogService.createBlog(blogRequest, principal.getId());
 
         //If fail to save new blog
         if (saveBlog == null) {
@@ -76,7 +79,7 @@ public class BlogController {
             description = "Get All Blog")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = BlogGetAllResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -85,13 +88,19 @@ public class BlogController {
     //@PreAuthorize("hasRole('ADMIN')") //MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllBlog() {
 
-        Iterable<Blog> blogList = service.findAll();
+        Iterable<Blog> blogList = blogService.findAll();
 
         if (!blogList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(blogList, HttpStatus.OK);
+        // tạo BlogGetAllResponse
+        List<BlogGetAllResponse> blogResponses = new ArrayList<>();
+        blogList.forEach(blog -> {
+            blogResponses.add(new BlogGetAllResponse(blog));
+        });
+
+        return new ResponseEntity<>(blogResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -99,7 +108,7 @@ public class BlogController {
             description = "Get All Blog of advisor personally")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = BlogGetAllResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -110,14 +119,20 @@ public class BlogController {
         // Lấy accountID từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // gọi service tim tất cả blog của advisor
-        Iterable<Blog> blogList = service.findAllOfAdvisor(principal.getId());
+        // gọi blogService tim tất cả blog của advisor
+        Iterable<Blog> blogList = blogService.findAllOfAdvisor(principal.getId());
 
         if (!blogList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(blogList, HttpStatus.OK);
+        // tạo BlogGetAllResponse
+        List<BlogGetAllResponse> blogResponses = new ArrayList<>();
+        blogList.forEach(blog -> {
+            blogResponses.add(new BlogGetAllResponse(blog));
+        });
+
+        return new ResponseEntity<>(blogResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -125,7 +140,7 @@ public class BlogController {
             description = "Get all Blog by AdvisorID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = BlogGetAllResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -134,12 +149,19 @@ public class BlogController {
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllBlogByAdvisorID(@PathVariable("id") int id) {
 
-        Iterable<Blog> blogList = service.findByAdvisorID(id);
+        Iterable<Blog> blogList = blogService.findByAdvisorID(id);
 
         if (!blogList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(blogList, HttpStatus.OK);
+
+        // tạo BlogGetAllResponse
+        List<BlogGetAllResponse> blogResponses = new ArrayList<>();
+        blogList.forEach(blog -> {
+            blogResponses.add(new BlogGetAllResponse(blog));
+        });
+
+        return new ResponseEntity<>(blogResponses, HttpStatus.OK);
     }
 
     @Operation(
@@ -147,7 +169,7 @@ public class BlogController {
             description = "Get blog detials by its ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = BlogGetAllResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -155,21 +177,23 @@ public class BlogController {
     @GetMapping(value = "/getByID/{id}")
     //@PreAuthorize("hasRole('ADVISOR')") MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getByID(@PathVariable("id") int id) {
-        // GỌi service tìm blog by id 
-        Optional<Blog> blog = service.findById(id);
+        // GỌi blogService tìm blog by id 
+        Optional<Blog> blog = blogService.findById(id);
 
         // kiểm tra kết quả
         if (!blog.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        // tạo BlogGetAllResponse
+        BlogGetAllResponse blogResponse = new BlogGetAllResponse(blog.get());
 
-        return new ResponseEntity<>(blog, HttpStatus.OK);
+        return new ResponseEntity<>(blogResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "Update a Blog")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Blog.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "404", content = {
@@ -178,7 +202,7 @@ public class BlogController {
     //@PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> updateBlog(@RequestBody UpdateBlogRequest blogDetails) {
         // Tìm blog bằng ID
-        Optional<Blog> blog = service.findById(blogDetails.getBlogID());
+        Optional<Blog> blog = blogService.findById(blogDetails.getBlogID());
         // kiểm tra kết quả
         if (blog.isPresent()) {
             blog.get().setBlogContent(blogDetails.getBlogContent());
@@ -186,7 +210,7 @@ public class BlogController {
             blog.get().setBlogPhoto(blogDetails.getBlogPhoto());
             blog.get().setLink(blogDetails.getLink());
 
-            return new ResponseEntity<>(service.save(blog.get()), HttpStatus.OK);
+            return new ResponseEntity<>(blogService.save(blog.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new MessageResponse(("Cannot find blog with id{" + blogDetails.getBlogID() + "}")), HttpStatus.NOT_FOUND);
         }
@@ -202,12 +226,12 @@ public class BlogController {
 //    //@PreAuthorize("hasRole('ADVISOR')")
 //    public ResponseEntity<?> deleteBlog(@PathVariable("id") int id) {
 //        // tìm blog bằng ID
-//        Optional<Blog> blog = service.findById(id);
+//        Optional<Blog> blog = blogService.findById(id);
 //
 //        // kiểm tra kết quả
 //        if (blog.isPresent()) {
 //            // Delete blog
-//            service.deleteBlog(blog.get());
+//            blogService.deleteBlog(blog.get());
 //            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //        } else {
 //            return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);
@@ -223,7 +247,7 @@ public class BlogController {
     //@PreAuthorize("hasRole('ADVISOR')")
     public ResponseEntity<?> deactivateBlog(@PathVariable("id") int id) {
         // tìm blog bằng ID
-        service.deactivateBlog(id);
+        blogService.deactivateBlog(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

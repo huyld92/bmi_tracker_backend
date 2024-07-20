@@ -23,4 +23,6 @@ public interface AdvisorService extends GeneralService<Advisor> {
 
     public List<AdvisorCommissionSummary> getAdvisorCommissionSummary();
 
+    public Long countTotalAdvisor();
+
 }

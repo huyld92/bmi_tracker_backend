@@ -22,7 +22,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MenuFoodRepository extends JpaRepository<MenuFood, Integer> {
 
-    @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.mealType = :mealType AND mf.isActive = true")
+    @Query("SELECT mf.food FROM MenuFood mf "
+            + "WHERE mf.menu.menuID = :menuID "
+            + "AND mf.mealType = :mealType "
+            + "AND mf.isActive = true "
+            + "AND mf.food.isActive = true")
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType);
 
     @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID")

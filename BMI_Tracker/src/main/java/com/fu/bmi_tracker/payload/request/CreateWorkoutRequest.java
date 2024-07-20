@@ -5,11 +5,9 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,13 +30,8 @@ public class CreateWorkoutRequest {
     @Schema(name = "workoutDescription", example = "Can be null")
     private String workoutDescription;
 
-    @NotNull
-    @Min(0) // Tổng lượng calo đốt cháy không được null và phải lớn hơn hoặc bằng 0
-    @Schema(name = "totalCaloriesBurned", example = "500")
-    private Integer totalCaloriesBurned;
-
-    @NotEmpty
-    @Schema(name = "exerciseIDs", example = "[1,2,3]")
-    private List<Integer> exerciseIDs;
-
+    @Schema(example = "80")
+    @NotNull(message = "Weight is required")
+    @Positive(message = "Weight must be a positive number")
+    private Integer standardWeight;
 }

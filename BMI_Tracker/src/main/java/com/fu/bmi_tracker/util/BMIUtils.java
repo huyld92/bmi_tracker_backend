@@ -28,6 +28,7 @@ public class BMIUtils {
     // Method to calculate BMR Mifflin St Jeor
     public double calculateBMR(int weight, int height, int age, EGender gender) {
         double bMR;
+        
         if (EGender.Male.equals(gender)) {
             //( 10 x weight (kg) + 6.25 x height (cm) – 5 x age (y) + 5
             bMR = (10 * weight + 6.25 * height) - 5 * age + 5;

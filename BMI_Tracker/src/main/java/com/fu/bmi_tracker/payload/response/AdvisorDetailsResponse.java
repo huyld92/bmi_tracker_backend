@@ -27,7 +27,7 @@ public class AdvisorDetailsResponse {
     private String phoneNumber;
     private EGender gender;
     private LocalDate birthday;
-    private Integer totalBooking;
+    private Integer totalSubscription;
     private Integer totalMenuCreated;
     private Integer totalWorkoutCreated;
 
@@ -39,7 +39,7 @@ public class AdvisorDetailsResponse {
         this.phoneNumber = advisor.getAccount().getPhoneNumber();
         this.gender = advisor.getAccount().getGender();
         this.birthday = advisor.getAccount().getBirthday();
-        this.totalBooking = advisor.getTotalBooking();
+        this.totalSubscription = advisor.getTotalSubscription();
         this.totalMenuCreated = totalMenuCreated;
         this.totalWorkoutCreated = totalWorkoutCreated;
 

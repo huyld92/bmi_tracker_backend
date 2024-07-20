@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,8 +45,9 @@ public class Blog {
     private String link;
 
     @Column(name = "IsActive", nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 
-    @Column(name = "AdvisorID", nullable = false)
-    private Integer advisorID;
+    @ManyToOne
+    @JoinColumn(name = "AdvisorID", nullable = false)
+    private Advisor advisor;
 }

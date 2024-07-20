@@ -5,9 +5,8 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Exercise;
-import com.fu.bmi_tracker.model.entities.TagExercise;
 import com.fu.bmi_tracker.payload.request.CreateExerciseRequest;
-import com.fu.bmi_tracker.payload.request.UpdateExercerRequest;
+import com.fu.bmi_tracker.payload.request.UpdateExerciseRequest;
 import java.util.List;
 
 /**
@@ -20,12 +19,8 @@ public interface ExerciseService extends GeneralService<Exercise> {
 
     public Exercise createExercise(CreateExerciseRequest createExerciseRequest);
 
-    public Exercise updateExercise(UpdateExercerRequest updateExercerRequest);
+    public Exercise updateExercise(UpdateExerciseRequest updateExercerRequest);
 
     public void deactivateExercise(Integer exerciseID);
-
-    public TagExercise addTag(Integer exerciseID, Integer tagID);
-
-    public void deleteTag(Integer exerciseID, Integer tagID);
 
 }

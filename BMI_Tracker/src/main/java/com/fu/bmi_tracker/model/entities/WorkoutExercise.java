@@ -7,8 +7,9 @@ package com.fu.bmi_tracker.model.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -24,20 +25,37 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(WorkoutExercise.class)
 @Table(name = "WorkoutExercise")
 public class WorkoutExercise {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "WorkoutExerciseID", nullable = false)
+    private Integer workoutExerciseID;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "WorkoutID")
     private Workout workout;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "ExerciseID")
     private Exercise exercise;
 
+    @Column(name = "Duration", nullable = false)
+    private Integer duration;
+
+    @Column(name = "CaloriesBurned", nullable = false)
+    private Integer caloriesBurned;
+
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
+
+    public WorkoutExercise(Workout workout, Exercise exercise, Integer duration, Integer caloriesBurned) {
+        this.workout = workout;
+        this.exercise = exercise;
+        this.duration = duration;
+        this.caloriesBurned = caloriesBurned;
+        this.isActive = true;
+    }
+
 }

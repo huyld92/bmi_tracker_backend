@@ -13,6 +13,7 @@ import com.fu.bmi_tracker.model.entities.Exercise;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
+import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.request.CreateMemberRequest;
 import com.fu.bmi_tracker.payload.response.CreateMemberResponse;
@@ -22,6 +23,7 @@ import com.fu.bmi_tracker.payload.response.FoodPageResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MemberInformationResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.payload.response.WorkoutExerciseResponse;
 import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -299,36 +301,36 @@ public class MemberController {
     }
 
     @Operation(
-            summary = "Retrieve All exercise in workout (MEMBER)",
-            description = "Member get exercises list in workout")
+            summary = "Retrieve all workout exercise in workout (MEMBER)",
+            description = "Member get workout exercises list in workout")
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {
-                    @Content(schema = @Schema(implementation = ExerciseResponse.class), mediaType = "application/json")}),
+                    @Content(schema = @Schema(implementation = WorkoutExerciseResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/workout/getAllExercise")
+    @GetMapping(value = "/workout-exercise/getAll")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getAllExerciseOfMemberByWorkoutID() {
+    public ResponseEntity<?> getAllWorkoutExerciseOfMemberByWorkoutID() {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
         // gọi service tìm exercises của workout
-        List<Exercise> exercises = memberService.getllExerciseResponseInWorkout(principal.getId());
+        List<WorkoutExercise> workoutExercises = memberService.getAllWorkoutExerciseInWorkout(principal.getId());
 
         // kiểm tra kết quả nếu empty trả về 204
-        if (exercises.isEmpty()) {
+        if (workoutExercises.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         // tạo exercises response
-        List<ExerciseResponse> exerciseResponses = new ArrayList<>();
+        List<WorkoutExerciseResponse> exerciseResponses = new ArrayList<>();
 
         // chuyển đổi từ list exercise thành list exercise response
-        exercises.forEach(exercise -> {
-            exerciseResponses.add(new ExerciseResponse(exercise));
+        workoutExercises.forEach(workoutExercise -> {
+            exerciseResponses.add(new WorkoutExerciseResponse(workoutExercise));
         });
 
         return new ResponseEntity<>(exerciseResponses, HttpStatus.OK);

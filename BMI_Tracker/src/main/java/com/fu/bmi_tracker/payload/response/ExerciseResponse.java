@@ -20,17 +20,23 @@ public class ExerciseResponse {
 
     private Integer exerciseID;
     private String exerciseName;
-    private String emoji;
-    private Integer duration;
-    private Float distance;
+    private String exercisePhoto;
+    private String exerciseVideo;
+    private Float met;
+    private String exerciseDescription;
+    private Integer tagID;
+    private String tagName;
     private Boolean isActive;
 
     public ExerciseResponse(Exercise exercise) {
         this.exerciseID = exercise.getExerciseID();
         this.exerciseName = exercise.getExerciseName();
-        this.emoji = exercise.getEmoji();
-        this.duration = exercise.getDuration();
-        this.distance = exercise.getDistance();
+        this.exercisePhoto = exercise.getExercisePhoto();
+        this.exerciseVideo = exercise.getExerciseVideo();
+        this.met = exercise.getMet();
+        this.exerciseDescription = exercise.getExerciseDescription();
+        this.tagID = exercise.getTag().getTagID();
+        this.tagName = exercise.getTag().getTagName();
         this.isActive = exercise.getIsActive();
     }
 }

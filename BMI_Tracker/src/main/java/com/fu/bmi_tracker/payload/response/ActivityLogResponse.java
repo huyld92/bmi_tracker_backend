@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
+import com.fu.bmi_tracker.model.entities.ActivityLog;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ActivityLogResponse {
 
-    private String activityName;
     private Integer activityLogID;
+    private String activityName;
     private Integer caloriesBurned;
+    private String emoji;
     private Integer duration;
     private Integer exerciseID;
+
+    public ActivityLogResponse(ActivityLog activityLog) {
+        this.activityLogID = activityLog.getActivityLogID();
+        this.activityName = activityLog.getActivityName();
+        this.caloriesBurned = activityLog.getCaloriesBurned();
+        this.emoji = activityLog.getEmoji();
+        this.duration = activityLog.getDuration();
+        this.exerciseID = activityLog.getExerciseID();
+    }
 
 }

@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.model.entities.MenuHistory;
+import com.fu.bmi_tracker.model.entities.WorkoutExercise;
 import com.fu.bmi_tracker.model.entities.WorkoutHistory;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
@@ -98,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Exercise> getllExerciseResponseInWorkout(Integer accountID) {
+    public List<WorkoutExercise> getAllWorkoutExerciseInWorkout(Integer accountID) {
         // Find member by accountID
         Member member = this.findByAccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
@@ -113,7 +114,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // gọi WorkoutExerciseRepository tìm List exercise
-        return workoutExerciseRepository.findExercisesByWorkoutID(workoutHistory.get().getWorkoutID());
+        return workoutExerciseRepository.findByWorkout_WorkoutIDAndIsActiveTrue(workoutHistory.get().getWorkoutID());
     }
 
     @Override
@@ -292,6 +293,11 @@ public class MemberServiceImpl implements MemberService {
         Page<Food> foods = foodRepository.findAllByTagIDs(tagIDs, tagIDs.size(), pageable);
 
         return foods;
+    }
+
+    @Override
+    public Long countTotalMember() {
+        return foodRepository.count();
     }
 
 }
