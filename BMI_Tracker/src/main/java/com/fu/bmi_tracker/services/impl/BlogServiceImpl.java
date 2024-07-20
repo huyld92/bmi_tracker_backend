@@ -21,43 +21,43 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BlogServiceImpl implements BlogService {
-    
+
     @Autowired
     BlogRepository blogRepository;
-    
+
     @Autowired
     AdvisorRepository advisorRepository;
-    
+
     @Override
     public Blog findByBlogName(String blogName) {
         return blogRepository.findByBlogName(blogName);
     }
-    
+
     @Override
     public Iterable<Blog> findByAdvisorID(int advisorID) {
-        return blogRepository.findByAdvisorID(advisorID);
+        return blogRepository.findByAdvisor_AdvisorID(advisorID);
     }
-    
+
     @Override
     public Iterable<Blog> findAll() {
         return blogRepository.findAll();
     }
-    
+
     @Override
     public Optional<Blog> findById(Integer id) {
         return blogRepository.findById(id);
     }
-    
+
     @Override
     public Blog save(Blog t) {
         return blogRepository.save(t);
     }
-    
+
     @Override
     public void deleteBlog(Blog blog) {
         blogRepository.delete(blog);
     }
-    
+
     @Override
     public Blog createBlog(CreateBlogRequest newBlog, Integer accountID) {
         // tìm Advisor 
@@ -65,17 +65,17 @@ public class BlogServiceImpl implements BlogService {
                 .orElseThrow(() -> new EntityNotFoundException("Advisor not found"));
         // tạo mới object blog để save
         Blog blog = new Blog();
-        blog.setAdvisorID(advisor.getAdvisorID());
+        blog.setAdvisor(advisor);
         blog.setBlogContent(newBlog.getBlogContent());
         blog.setBlogName(newBlog.getBlogName());
         blog.setBlogPhoto(newBlog.getBlogPhoto());
         blog.setLink(newBlog.getLink());
-        blog.setActive(true);
+        blog.setIsActive(true);
 
         //gọi repository để save
         return blogRepository.save(blog);
     }
-    
+
     @Override
     public Iterable<Blog> findAllOfAdvisor(Integer accountID) {
         // Tim advisor từ accountID
@@ -83,9 +83,9 @@ public class BlogServiceImpl implements BlogService {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // gọi repository tìm tất cả blog
-        return blogRepository.findByAdvisorID(advisor.getAdvisorID());
+        return blogRepository.findByAdvisor_AdvisorID(advisor.getAdvisorID());
     }
-    
+
     @Override
     public void deactivateBlog(int blogID) {
         // tìm blog bằng blogID
@@ -93,10 +93,10 @@ public class BlogServiceImpl implements BlogService {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find blog!"));
 
         // deactivate blog bằng set IsActive = false
-        blog.setActive(false);
+        blog.setIsActive(false);
 
         // cập nhaatj BLog vào DB
         save(blog);
     }
-    
+
 }

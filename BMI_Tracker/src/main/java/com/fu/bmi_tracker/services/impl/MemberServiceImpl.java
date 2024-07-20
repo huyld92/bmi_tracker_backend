@@ -294,4 +294,9 @@ public class MemberServiceImpl implements MemberService {
         return foods;
     }
 
+    @Override
+    public Long countTotalMember() {
+        return foodRepository.count();
+    }
+
 }

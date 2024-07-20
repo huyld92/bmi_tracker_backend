@@ -48,4 +48,6 @@ public interface MemberService extends GeneralService<Member> {
 
     public Page<Food> getPaginatedFoodFilterTag(Pageable pageable, List<Integer> tagIDs);
 
+    public Long countTotalMember();
+
 }

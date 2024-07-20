@@ -17,7 +17,7 @@ public interface BlogRepository extends JpaRepository<Blog, Integer>{
     
     public Blog findByBlogName(String blogName);
     
-    public Iterable<Blog> findByAdvisorID(int advisorID);
+    public Iterable<Blog> findByAdvisor_AdvisorID(int advisorID);
     
     public Iterable<Blog> findByIsActiveTrue();
 }

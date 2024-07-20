@@ -12,6 +12,7 @@ import com.fu.bmi_tracker.payload.response.CountMenuResponse;
 import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
 import com.fu.bmi_tracker.payload.response.CountWorkoutResponse;
 import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
+import com.fu.bmi_tracker.payload.response.TotalAdvisorMemberResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.CommissionService;
 import com.fu.bmi_tracker.services.MemberService;
@@ -38,7 +39,7 @@ import com.fu.bmi_tracker.services.WorkoutService;
  */
 @Tag(name = "Statistics", description = "Advisor management APIs")
 @RestController
-@RequestMapping("/api/test/statistics")
+@RequestMapping("/api/statistics")
 public class StatisticsController {
 
     @Autowired
@@ -58,89 +59,89 @@ public class StatisticsController {
 
     @Autowired
     CommissionService commissionService;
+//
+//    @Operation(summary = "Statistics all menu, workout of advisor", description = "Receive advisor information and the total number of menus and the total number of workouts")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = AdvisorSummaryMenuWorkout.class))}),
+//        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping("/advisor-total-menu-workout")
+//    public ResponseEntity<?> getStatisticsMenuWorkoutOfAdvisor() {
+//
+//        // gọi service lấy tất cả advisor và Total menu, workout
+//        List<AdvisorSummaryMenuWorkout> statisticsResponse = advisorService.getAdvisorMenuWorkoutSummary();
+//
+//        if (statisticsResponse.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//
+//        return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
+//    }
 
-    @Operation(summary = "Statistics all menu, workout of advisor", description = "Receive advisor information and the total number of menus and the total number of workouts")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AdvisorSummaryMenuWorkout.class))}),
-        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/advisor-total-menu-workout")
-    public ResponseEntity<?> getStatisticsMenuWorkoutOfAdvisor() {
+//    @Operation(summary = "Statistics booking of advisor in 6 month", description = "")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = AdvisorSubscriptionSummary.class))}),
+//        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping("/advisor-booking-summary")
+//    public ResponseEntity<?> getTotalBookingIn6MonthOfAdvisor() {
+//
+//        List<AdvisorSubscriptionSummary> advisorBookingSummarys = subscriptionService.getAdvisorSubscriptionSummaryByMonth();
+//
+//        if (advisorBookingSummarys.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//
+//        }
+//
+//        return new ResponseEntity<>(advisorBookingSummarys, HttpStatus.OK);
+//    }
 
-        // gọi service lấy tất cả advisor và Total menu, workout
-        List<AdvisorSummaryMenuWorkout> statisticsResponse = advisorService.getAdvisorMenuWorkoutSummary();
+//    @Operation(summary = "Statistics commission of advisor in month", description = "Pass the month and receive advisor information and commission")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = AdvisorCommissionSummary.class))}),
+//        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping("/advisor-commission-summary")
+//    public ResponseEntity<?> getAdvisorCommissionSummary() {
+//        // gọi service tìm thông tin AdvisorCommissionSumary
+//        List<AdvisorCommissionSummary> commissionSumarys = advisorService.getAdvisorCommissionSummary();
+//
+//        if (commissionSumarys.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//
+//        }
+//
+//        return new ResponseEntity<>(commissionSumarys, HttpStatus.OK);
+//
+//    }
 
-        if (statisticsResponse.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(statisticsResponse, HttpStatus.OK);
-    }
-
-    @Operation(summary = "Statistics booking of advisor in 6 month", description = "")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AdvisorSubscriptionSummary.class))}),
-        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/advisor-booking-summary")
-    public ResponseEntity<?> getTotalBookingIn6MonthOfAdvisor() {
-
-        List<AdvisorSubscriptionSummary> advisorBookingSummarys = subscriptionService.getAdvisorSubscriptionSummaryByMonth();
-
-        if (advisorBookingSummarys.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-        }
-
-        return new ResponseEntity<>(advisorBookingSummarys, HttpStatus.OK);
-    }
-
-    @Operation(summary = "Statistics commission of advisor in month", description = "Pass the month and receive advisor information and commission")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AdvisorCommissionSummary.class))}),
-        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/advisor-commission-summary")
-    public ResponseEntity<?> getAdvisorCommissionSummary() {
-        // gọi service tìm thông tin AdvisorCommissionSumary
-        List<AdvisorCommissionSummary> commissionSumarys = advisorService.getAdvisorCommissionSummary();
-
-        if (commissionSumarys.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-        }
-
-        return new ResponseEntity<>(commissionSumarys, HttpStatus.OK);
-
-    }
-
-    @Operation(summary = "Statistics height and weight of member", description = "")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MemberBmiResponse.class))}),
-        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/member-bmi-summary")
-    public ResponseEntity<?> getMemberBMISummary() {
-        // goij service lấy danh sách thông tin member
-        List<MemberBmiResponse> memberBmiResponses = memberService.getMemberBMISummary();
-        if (memberBmiResponses.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(memberBmiResponses, HttpStatus.OK);
-
-    }
+//    @Operation(summary = "Statistics height and weight of member", description = "")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = MemberBmiResponse.class))}),
+//        @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping("/member-bmi-summary")
+//    public ResponseEntity<?> getMemberBMISummary() {
+//        // goij service lấy danh sách thông tin member
+//        List<MemberBmiResponse> memberBmiResponses = memberService.getMemberBMISummary();
+//        if (memberBmiResponses.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(memberBmiResponses, HttpStatus.OK);
+//
+//    }
 
     @Operation(summary = "Statistics total commission in 6 months", description = "")
     @ApiResponses({
@@ -218,5 +219,26 @@ public class StatisticsController {
         }
 
         return new ResponseEntity<>(countSubscriptionResponses, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Statistics total advisor and member", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TotalAdvisorMemberResponse.class))}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/get-total-advisor-member")
+    public ResponseEntity<?> getTotalAdvisorMember() {
+        // gọi advisor service count total advisor
+        Long totalAdvisor = advisorService.countTotalAdvisor();
+        // gọi member service count total member
+        Long totalMember = memberService.countTotalMember();
+
+        // tạo response
+        TotalAdvisorMemberResponse response = new TotalAdvisorMemberResponse(
+                totalAdvisor,
+                totalMember);
+        
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

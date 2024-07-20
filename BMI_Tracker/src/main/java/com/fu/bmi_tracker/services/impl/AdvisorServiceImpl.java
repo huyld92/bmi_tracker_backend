@@ -131,4 +131,9 @@ public class AdvisorServiceImpl implements AdvisorService {
                 .map(entry -> new CommissionSummary(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Long countTotalAdvisor() {
+        return advisorRepository.count();
+    }
 }
