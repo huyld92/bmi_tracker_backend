@@ -30,6 +30,8 @@ public interface MenuFoodService extends GeneralService<MenuFood> {
 
     public void deleteByMenuIdAndFoodId(Integer menuId, Integer foodId);
 
-    public void deactivateMenuFood(Integer menuID, Integer foodID);
+    public void deactivateMenuFood(Integer menuFoodID);
+
+    public void activateMenuFood(Integer menuFoodID);
 
 }

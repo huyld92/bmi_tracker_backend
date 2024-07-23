@@ -106,7 +106,7 @@ public class ActivityLogController {
             description = "Create new activivty log")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = ActivityLog.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = ActivityLog.class), mediaType = "application/json;charset=utf-8")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {

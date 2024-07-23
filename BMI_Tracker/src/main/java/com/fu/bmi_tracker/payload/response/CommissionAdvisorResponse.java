@@ -36,7 +36,6 @@ public class CommissionAdvisorResponse {
     public CommissionAdvisorResponse(Commission commission) {
         this.commissionID = commission.getCommissionID();
         this.commissionAmount = commission.getCommissionAmount();
-        this.commissionRate = commission.getCommissionRate();
         this.paidDate = commission.getPaidDate();
         this.expectedPaymentDate = commission.getExpectedPaymentDate();
         this.paidAmount = commission.getPaidAmount();

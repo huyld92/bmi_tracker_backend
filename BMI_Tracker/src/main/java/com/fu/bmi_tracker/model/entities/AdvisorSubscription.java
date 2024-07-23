@@ -63,6 +63,9 @@ public class AdvisorSubscription {
     @Enumerated(EnumType.STRING)
     private ESubscriptionStatus subscriptionStatus;
 
+    @Column(name = "CommissionRate", nullable = false)
+    private Float commissionRate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MemberID", nullable = false)
     private Member member;
@@ -83,7 +86,8 @@ public class AdvisorSubscription {
             Member member,
             Advisor advisor,
             int transactionID,
-            int commissionID) {
+            int commissionID,
+            Float commissionRate) {
         this.subscriptionDescription = subscriptionRequest.getDescription();
         this.subscriptionNumber = subscriptionRequest.getSubscriptionNumber();
         this.subscriptionAmount = subscriptionRequest.getAmount();
@@ -91,6 +95,7 @@ public class AdvisorSubscription {
         this.startDate = startDate;
         this.endDate = endDate;
         this.member = member;
+        this.commissionRate = commissionRate;
         this.advisor = advisor;
         this.subscriptionStatus = checkSubscriptionStatus(startDate);
         this.commissionID = commissionID;

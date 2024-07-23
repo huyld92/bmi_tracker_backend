@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.MemberRepository;
 import com.fu.bmi_tracker.repository.MenuFoodRepository;
 import com.fu.bmi_tracker.repository.MenuHistoryRepository;
-import com.fu.bmi_tracker.repository.MenuRepository;
 import com.fu.bmi_tracker.repository.WorkoutExerciseRepository;
 import com.fu.bmi_tracker.repository.WorkoutHistoryRepository;
 import com.fu.bmi_tracker.services.MemberService;
@@ -48,9 +47,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     WorkoutExerciseRepository workoutExerciseRepository;
-
-    @Autowired
-    MenuRepository menuRepository;
 
     @Autowired
     WorkoutHistoryRepository workoutHistoryRepository;
@@ -297,7 +293,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Long countTotalMember() {
-        return foodRepository.count();
+        return memberRepository.count();
     }
 
 }

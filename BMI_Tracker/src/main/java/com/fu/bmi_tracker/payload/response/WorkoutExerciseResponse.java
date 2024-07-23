@@ -25,6 +25,7 @@ public class WorkoutExerciseResponse {
     private String exerciseVideo;
     private Float met;
     private String exerciseDescription;
+    private Integer tagID;
     private String tagName;
     private Integer duration;
     private Integer caloriesBurned;
@@ -38,6 +39,7 @@ public class WorkoutExerciseResponse {
         this.exerciseVideo = workoutExercise.getExercise().getExerciseVideo();
         this.met = workoutExercise.getExercise().getMet();
         this.exerciseDescription = workoutExercise.getExercise().getExerciseDescription();
+        this.tagID = workoutExercise.getExercise().getTag().getTagID();
         this.tagName = workoutExercise.getExercise().getTag().getTagName();
         this.duration = workoutExercise.getDuration();
         this.caloriesBurned = workoutExercise.getCaloriesBurned();

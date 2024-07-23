@@ -22,42 +22,42 @@ import java.util.List;
 
 @Service
 public class MenuServiceImpl implements MenuService {
-
+    
     @Autowired
     MenuRepository menuRepository;
-
+    
     @Autowired
     FoodRepository foodRepository;
-
+    
     @Autowired
     MenuFoodRepository menuFoodRepository;
-
+    
     @Override
     public Iterable<Menu> findAll() {
         return menuRepository.findAll();
     }
-
+    
     @Override
     public Optional<Menu> findById(Integer id) {
         return menuRepository.findById(id);
     }
-
+    
     @Override
     public Menu save(Menu t) {
         return menuRepository.save(t);
     }
-
+    
     @Override
     public Iterable<Menu> getAllByAdvisorID(Integer advisorID) {
         return menuRepository.findByAdvisor_AdvisorID(advisorID);
     }
-
+    
     @Override
     public Menu createNewMenu(Menu menu) {
         // lưu trữ Menu
         return save(menu);
     }
-
+    
     @Override
     public List<CountMenuResponse> countTotalMenuIn6Months() {
         // lấy tất cả các commission trước ngày hiện tại trong vòng 6 tháng
@@ -65,7 +65,7 @@ public class MenuServiceImpl implements MenuService {
         LocalDate endDate = LocalDate.now();
         return menuRepository.countTotalMenuPerMonthInBetween(startDate, endDate);
     }
-
+    
     @Override
     public MenuFood createNewMenuFood(CreateMenuFoodRequest menuFoodRequest) {
         // gọi menuRepository tìm Menu
@@ -75,12 +75,17 @@ public class MenuServiceImpl implements MenuService {
         // tìm Food repository
         Food food = foodRepository.findById(menuFoodRequest.getFoodID())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find food id{" + menuFoodRequest.getFoodID() + "}!"));
-    
+
+        // tính calories
+        int totalCalories = menu.getTotalCalories() + food.getFoodCalories();
+        menu.setTotalCalories(totalCalories);
+        menuRepository.save(menu);
+
         // tạo Menu food
         MenuFood menuFood = new MenuFood(menu, food, menuFoodRequest.getMealType(), Boolean.TRUE);
 
         // gọi menuFoodRepository lưu menu food
         return menuFoodRepository.save(menuFood);
     }
-
+    
 }

@@ -4,14 +4,10 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.payload.response.AdvisorSubscriptionSummary;
-import com.fu.bmi_tracker.payload.response.AdvisorCommissionSummary;
-import com.fu.bmi_tracker.payload.response.AdvisorSummaryMenuWorkout;
 import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import com.fu.bmi_tracker.payload.response.CountMenuResponse;
 import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
 import com.fu.bmi_tracker.payload.response.CountWorkoutResponse;
-import com.fu.bmi_tracker.payload.response.MemberBmiResponse;
 import com.fu.bmi_tracker.payload.response.TotalAdvisorMemberResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.CommissionService;
@@ -241,4 +237,7 @@ public class StatisticsController {
         
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    
+    // từ hôm nay lấy ngược 7 ngày trước cho dailyrecord của member
+    //lấy cân nặng trong 30days
 }
