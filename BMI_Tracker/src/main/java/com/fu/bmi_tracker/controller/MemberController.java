@@ -350,12 +350,10 @@ public class MemberController {
     @GetMapping("/foods/getPriority")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAllFoodWithpriorityTagName(Pageable pageable, @RequestParam(required = false) List<Integer> tagIDs) {
-
         Page<Food> page;
 
         // nếu tagIDs có giá trị thì gọi service để filter
         if (tagIDs == null) {
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
             // Lấy account ID từ context
             CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
@@ -429,7 +427,6 @@ public class MemberController {
         );
 
         return new ResponseEntity<>(exercisePageResponse, HttpStatus.OK);
-
     }
 
     // Lấy danh sách daily record trong một ngày 
@@ -461,7 +458,6 @@ public class MemberController {
         DailyRecord dailyRecord = memberService.getDailyRecordOfMember(principal.getId(), localDate);
 
         return new ResponseEntity<>(dailyRecord, HttpStatus.OK);
-
     }
 
 }

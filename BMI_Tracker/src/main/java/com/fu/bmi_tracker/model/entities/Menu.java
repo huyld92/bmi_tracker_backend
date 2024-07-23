@@ -6,15 +6,19 @@ package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.payload.request.CreateMenuRequest;
 import com.fu.bmi_tracker.payload.request.UpdateMenuRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,7 +50,7 @@ public class Menu {
 
     @Column(name = "TotalCalories", nullable = false)
     private Integer totalCalories;
- 
+
     @Column(name = "CreationDate", nullable = false)
     private LocalDate creationDate;
 
@@ -57,11 +61,14 @@ public class Menu {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MenuFood> menuFoods;
+
     public Menu(CreateMenuRequest menuRequest, Integer advisorID) {
         this.menuName = menuRequest.getMenuName();
         this.menuDescription = menuRequest.getMenuDescription();
         this.menuPhoto = menuRequest.getMenuPhoto();
-        this.totalCalories = menuRequest.getTotalCalories();
+        this.totalCalories = 0;
         this.creationDate = LocalDate.now();
         this.isActive = true;
         this.advisor = new Advisor(advisorID);
@@ -71,6 +78,5 @@ public class Menu {
         this.menuName = menuRequest.getMenuName();
         this.menuPhoto = menuRequest.getMenuPhoto();
         this.menuDescription = menuRequest.getMenuDescription();
-        this.totalCalories = menuRequest.getTotalCalories();
     }
 }

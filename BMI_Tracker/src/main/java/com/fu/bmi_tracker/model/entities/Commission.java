@@ -43,9 +43,6 @@ public class Commission {
     @Column(name = "CommissionAmount", nullable = false)
     private BigDecimal commissionAmount;
 
-    @Column(name = "CommissionRate", nullable = false)
-    private Integer commissionRate;
-
     @Column(name = "ExpectedPaymentDate", nullable = false)
     private LocalDate expectedPaymentDate;
 
@@ -66,9 +63,8 @@ public class Commission {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
-    public Commission(BigDecimal commissionAmount, int commissionRate, LocalDateTime paidDate, LocalDate expectedPaymentDate, BigDecimal paidAmount, EPaymentStatus paymentStatus, String commissionDescription, Advisor advisor) {
+    public Commission(BigDecimal commissionAmount, LocalDateTime paidDate, LocalDate expectedPaymentDate, BigDecimal paidAmount, EPaymentStatus paymentStatus, String commissionDescription, Advisor advisor) {
         this.commissionAmount = commissionAmount;
-        this.commissionRate = commissionRate;
         this.paidDate = paidDate;
         this.expectedPaymentDate = expectedPaymentDate;
         this.paidAmount = paidAmount;

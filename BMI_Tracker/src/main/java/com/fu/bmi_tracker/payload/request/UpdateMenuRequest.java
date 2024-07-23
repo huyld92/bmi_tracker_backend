@@ -26,8 +26,6 @@ public class UpdateMenuRequest {
 
     private String menuDescription;
 
-    private Integer totalCalories;
-
     private List<MenuFoodRequest> menuFoods;
 
 }

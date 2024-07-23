@@ -38,7 +38,6 @@ public class MenuFood {
     private Integer menuFoodID;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "MenuID")
     private Menu menu;
 

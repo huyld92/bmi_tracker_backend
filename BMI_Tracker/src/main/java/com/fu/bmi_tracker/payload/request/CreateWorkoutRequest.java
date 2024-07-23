@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,4 +35,7 @@ public class CreateWorkoutRequest {
     @NotNull(message = "Weight is required")
     @Positive(message = "Weight must be a positive number")
     private Integer standardWeight;
+
+    @Schema(description = "List of workout exercise included in the workout")
+    private List<WorkoutExerciseRequest> workoutExerciseRequests;
 }

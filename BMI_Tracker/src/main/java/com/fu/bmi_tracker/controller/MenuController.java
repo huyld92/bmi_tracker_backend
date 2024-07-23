@@ -17,6 +17,7 @@ import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuResponse;
 import com.fu.bmi_tracker.payload.response.MenuResponseAll;
+import com.fu.bmi_tracker.payload.response.MenuResponseBasicFood;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.FoodService;
@@ -65,6 +66,7 @@ public class MenuController {
 
     @Autowired
     FoodService foodService;
+
     @Autowired
     MenuFoodService menuFoodService;
 
@@ -98,23 +100,18 @@ public class MenuController {
         // Create new object
         Menu menu = new Menu(menuRequest, advisor.getAdvisorID());
 
-        // Store to database
-        Menu menuSave = menuService.createNewMenu(menu);
-
-        // check result
-        if (menuSave == null) {
-            return new ResponseEntity<>(new MessageResponse("Failed to create new menu"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         // Tạo danh sách Menu Food object từ menuRequest và menu food reponse
         List<MenuFood> menuFoods = new ArrayList<>();
 
         // tạo menu food responses
         List<MenuFoodResponse> menuFoodResponses = new ArrayList<>();
-
         menuRequest.getMenuFoods().forEach((MenuFoodRequest request) -> {
             Food food = foodService.findById(request.getFoodID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find food id{" + request.getFoodID() + "}!"));
+
+            //tính total calories
+            int totalCalories = menu.getTotalCalories() + food.getFoodCalories();
+            menu.setTotalCalories(totalCalories);
 
             FoodResponse foodResponse = new FoodResponse(food);
 
@@ -125,8 +122,18 @@ public class MenuController {
             menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
         });
 
+        // Store to database
+        Menu menuSave = menuService.createNewMenu(menu);
+
+        // check result
+        if (menuSave == null) {
+            return new ResponseEntity<>(new MessageResponse("Failed to create new menu"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         // lưu danh sách menu food
-        menuFoodService.saveAll(menuFoods);
+        if (!menuFoods.isEmpty()) {
+            menuFoodService.saveAll(menuFoods);
+        }
 
         // tạo menu response
         MenuResponse menuResponse = new MenuResponse(
@@ -147,7 +154,7 @@ public class MenuController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping(value = "menu-food/createNew")
-    public ResponseEntity<?> createNewMenu(@Valid @RequestBody CreateMenuFoodRequest menuFoodRequest) {
+    public ResponseEntity<?> createNewMenuFood(@Valid @RequestBody CreateMenuFoodRequest menuFoodRequest) {
         MenuFood menuFood = menuService.createNewMenuFood(menuFoodRequest);
 
         if (menuFood == null) {
@@ -171,7 +178,6 @@ public class MenuController {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAllMenu")
     //    @PreAuthorize("hasRole('ADMIN')")
-
     public ResponseEntity<?> getAllMenu() {
         // Lấy danh sách menu
         Iterable<Menu> menus = menuService.findAll();
@@ -196,7 +202,7 @@ public class MenuController {
             description = "Get all menu include food of advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuResponseBasicFood.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -224,10 +230,11 @@ public class MenuController {
         }
 
         // tạo menu response
-        List<MenuResponseAll> menuResponses = new ArrayList<>();
+        List<MenuResponseBasicFood> menuResponses = new ArrayList<>();
 
         menus.forEach(menu -> {
-            menuResponses.add(new MenuResponseAll(menu));
+
+            menuResponses.add(new MenuResponseBasicFood(menu, menu.getMenuFoods()));
         });
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
@@ -293,7 +300,7 @@ public class MenuController {
             description = "Update menu don't include deactivate, can update Mealtype of Meal food")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -325,7 +332,7 @@ public class MenuController {
                 }
             }
         }
-        return new ResponseEntity<>("Update menu success", HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Update menu success"), HttpStatus.OK);
     }
 
     @Operation(
@@ -333,7 +340,7 @@ public class MenuController {
             description = "Deactivate menu by meuID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -347,10 +354,32 @@ public class MenuController {
             menuService.save(menu.get());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>("Cannot find menu with id{" + menuID + "}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Deactivate menu failed"), HttpStatus.NOT_FOUND);
         }
     }
 
+    @Operation(
+            summary = "Activate menu",
+            description = "Activate menu by meuID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping("/activate/{menuID}")
+    public ResponseEntity<?> activateMenu(@PathVariable("menuID") int menuID) {
+        Optional<Menu> menu = menuService.findById(menuID);
+
+        if (menu.isPresent()) {
+            menu.get().setIsActive(Boolean.TRUE);
+            menuService.save(menu.get());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(new MessageResponse("Activate menu failed"), HttpStatus.NOT_FOUND);
+        }
+    }
 //    @Operation(
 //            summary = "Delete menu food",
 //            description = "Delete menu food by food id and menu id")
@@ -367,6 +396,7 @@ public class MenuController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
+
     @Operation(
             summary = "Deactivate menu food",
             description = "Deactivate menu food by food id and menu id")
@@ -377,9 +407,26 @@ public class MenuController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping(value = "/menu-food/deactivate/{menuID}/{foodID}")
-    public ResponseEntity<?> deactivateMenuFood(@PathVariable Integer menuID, @PathVariable Integer foodID) {
-        menuFoodService.deactivateMenuFood(menuID, foodID);
+    @DeleteMapping(value = "/menu-food/deactivate")
+    public ResponseEntity<?> deactivateMenuFood(@RequestParam Integer menuFoodID) {
+        menuFoodService.deactivateMenuFood(menuFoodID);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(
+            summary = "Activate menu food",
+            description = "Activate menu food by food id and menu id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/menu-food/activate")
+    public ResponseEntity<?> activateMenuFood(@RequestParam Integer menuFoodID) {
+        menuFoodService.activateMenuFood(menuFoodID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

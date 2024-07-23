@@ -6,9 +6,6 @@ package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,12 +30,11 @@ public class CreateMenuRequest {
     @Schema(example = "A delicious and healthy breakfast option.")
     private String menuDescription;
 
-    @Schema(example = "450")
-    @NotNull(message = "Total calories are required")
-    @PositiveOrZero(message = "Total calories must be zero or positive")
-    private Integer totalCalories;
-
+//    @Schema(example = "450")
+//    @NotNull(message = "Total calories are required")
+//    @PositiveOrZero(message = "Total calories must be zero or positive")
+//    private Integer totalCalories;
     @Schema(description = "List of foods included in the menu")
-    @NotNull(message = "Menu foods are required")
-    private List<@NotNull MenuFoodRequest> menuFoods;
+//    @NotNull(message = "Menu foods are required")
+    private List<MenuFoodRequest> menuFoods;
 }

@@ -18,12 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateWorkoutExerciseRequest {
-
-    @Schema(example = "1")
-    @NotNull(message = "WorkoutID is required")
-    @Positive(message = "WorkoutID must be a positive number")
-    private Integer workoutID;
+public class WorkoutExerciseRequest {
 
     @Schema(example = "1")
     @NotNull(message = "ExerciseID is required")
@@ -34,4 +29,5 @@ public class CreateWorkoutExerciseRequest {
     @NotNull(message = "Duration is required")
     @Positive(message = "Duration must be a positive number")
     private Integer duration;
+
 }

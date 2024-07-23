@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import com.fu.bmi_tracker.services.SubscriptionService;
 import com.fu.bmi_tracker.repository.SubscriptionRepository;
+import com.fu.bmi_tracker.util.CommissionRateUtils;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
@@ -158,18 +159,21 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         advisor.getAdvisorID(),
                         expectedPaymentDate);
 
+        // lấy commission rate từ file text
+        CommissionRateUtils commissionRateUtils = new CommissionRateUtils();
+        Float commissionRate = commissionRateUtils.getCommissionRate();
+
+        // tạo mới commission
         // kiểm tra kết quả
         if (commission == null) {
-            // tạo mới commission
-            BigDecimal commissionRate = BigDecimal.valueOf(50);
+            BigDecimal bigDecimalRate = BigDecimal.valueOf(commissionRate);
+
             BigDecimal commissionAmount = createRequest.getSubscriptionRequest()
                     .getAmount()
-                    .multiply(commissionRate)
-                    .divide(BigDecimal.valueOf(100));
+                    .multiply(bigDecimalRate);
 
             Commission c = new Commission(
                     commissionAmount,
-                    50,
                     null,
                     expectedPaymentDate,
                     BigDecimal.ZERO,
@@ -179,12 +183,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             // lưu commission
             commission = commissionRepository.save(c);
         } else {
-            BigDecimal commissionRate = BigDecimal.valueOf(commission.getCommissionRate());
+            // nếu tồn tại cập nhật 
+            BigDecimal bigDecimalRate = BigDecimal.valueOf(commissionRate);
             BigDecimal commissionAmount = createRequest.getSubscriptionRequest()
                     .getAmount()
-                    .multiply(commissionRate)
-                    .divide(BigDecimal.valueOf(100));
+                    .multiply(bigDecimalRate).add(commission.getCommissionAmount());
             commission.setCommissionAmount(commissionAmount);
+            // cập nhật commission
             commissionRepository.save(commission);
         }
 
@@ -206,7 +211,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 member,
                 advisor,
                 transaction.getTransactionID(),
-                commission.getCommissionID()
+                commission.getCommissionID(),
+                commissionRate
         );
 
         return subscriptionRepository.save(subscription);

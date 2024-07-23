@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -36,8 +37,8 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
 
     @Override
     public MemberBodyMass getLatestBodyMass(Integer memberID) {
-         return repository.findFirstByMemberMemberIDOrderByDateInputDesc(memberID).get();
-
+        return repository.findFirstByMemberMemberIDOrderByDateInputDesc(memberID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find body mass of member!"));
     }
 
     @Override

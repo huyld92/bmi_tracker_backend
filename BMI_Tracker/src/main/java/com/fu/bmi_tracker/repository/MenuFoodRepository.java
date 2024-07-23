@@ -49,9 +49,5 @@ public interface MenuFoodRepository extends JpaRepository<MenuFood, Integer> {
     @Transactional
     @Query("DELETE FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.food.foodID = :foodID")
     void deleteByMenuIdAndFoodId(Integer menuID, Integer foodID);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE MenuFood mf SET mf.isActive = false WHERE mf.menu.menuID = :menuID AND mf.food.foodID = :foodID")
-    void deactivateMenuFood(Integer menuID, Integer foodID);
+ 
 }
