@@ -110,6 +110,35 @@ public class FoodController {
         return new ResponseEntity<>(foodsResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "Retrieve all Foods ")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = FoodResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/get-all-basic")
+    public ResponseEntity<?> getAllFoodsBasic() {
+        // Lấy danh sách food từ service
+        Iterable<Food> foods = foodService.getAllFoodIsActiveTrue();
+
+        // kiểm tra empty
+        if (!foods.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        // chuyển đổi từ food sang FoodEntityResponse
+        List<FoodResponse> foodsResponse = new ArrayList<>();
+        for (Food food : foods) {
+            FoodResponse foodResponse = new FoodResponse(
+                    food);
+
+            foodsResponse.add(foodResponse);
+        }
+
+        return new ResponseEntity<>(foodsResponse, HttpStatus.OK);
+    }
+
     @Operation(summary = "Retrieve a Food by Id", description = "Get a Food object by specifying its id. The response is Food object")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -264,7 +293,6 @@ public class FoodController {
 //        return new ResponseEntity<>(foodPageResponses, HttpStatus.OK);
 //
 //    }
-
     @Operation(summary = "Search food by name", description = "Search food with like name")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -320,5 +348,33 @@ public class FoodController {
         }
 
         return new ResponseEntity<>(recipesResponse, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get food with filter tag")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = RecipeResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("filter-tag")
+    public ResponseEntity<?> getFoodsWithFilterTags(@RequestParam List<Integer> tagIDs) {
+        // Lấy danh sách food từ service
+        Iterable<Food> foods = foodService.getFoodsWithFilterTags(tagIDs);
+
+        // kiểm tra empty
+        if (!foods.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        // chuyển đổi từ recipe sang RecipeResponse
+        List<FoodResponse> foodResponses = new ArrayList<>();
+        for (Food food : foods) {
+            FoodResponse foodResponse = new FoodResponse(food);
+
+            foodResponses.add(foodResponse);
+        }
+
+        return new ResponseEntity<>(foodResponses, HttpStatus.OK);
     }
 }

@@ -202,7 +202,7 @@ public class MenuController {
             description = "Get all menu include food of advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponseBasicFood.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -230,11 +230,11 @@ public class MenuController {
         }
 
         // tạo menu response
-        List<MenuResponseBasicFood> menuResponses = new ArrayList<>();
+        List<MenuResponseAll> menuResponses = new ArrayList<>();
 
         menus.forEach(menu -> {
 
-            menuResponses.add(new MenuResponseBasicFood(menu, menu.getMenuFoods()));
+            menuResponses.add(new MenuResponseAll(menu));
         });
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);

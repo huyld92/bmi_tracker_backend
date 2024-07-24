@@ -72,7 +72,7 @@ public class PlanServiceImpl implements PlanService {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // GỌi repository tìm tất cả plan của advisor
-        return planRepository.findByAdvisor_AdvisorID(advisor.getAdvisorID());
+        return planRepository.findByAdvisor_AdvisorIDAndIsActiveTrue(advisor.getAdvisorID());
     }
 
     @Override

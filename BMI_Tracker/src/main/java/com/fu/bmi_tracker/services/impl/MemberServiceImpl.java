@@ -296,4 +296,9 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.count();
     }
 
+    @Override
+    public Page<Exercise> getPaginatedExerciseFilterTag(Integer tagID, Pageable pageable) {
+        return exerciseRepository.findByTag_TagID(tagID, pageable);
+    }
+
 }
