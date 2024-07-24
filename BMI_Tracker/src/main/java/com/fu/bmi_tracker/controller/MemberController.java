@@ -399,14 +399,18 @@ public class MemberController {
             @Content(schema = @Schema())})})
     @GetMapping("/exercises/getPriority")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getAllExerciseWithpriorityTagName(Pageable pageable) {
+    public ResponseEntity<?> getAllExerciseWithpriorityTagName(Pageable pageable, @RequestParam(required = false) Integer tagID) {
         // Lấy account ID từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-
-        // gọi service tìm danh sách exercise đã phân trang
-        Page<Exercise> page = memberService.getPaginatedExerciseWithPriority(principal.getId(), pageable);
-
+        Page<Exercise> page;
+        if (tagID == null || tagID < 0) {
+            // gọi service tìm danh sách exercise đã phân trang
+            page = memberService.getPaginatedExerciseWithPriority(principal.getId(), pageable);
+        } else {
+            // nếu tagID > 0 kèm didefu kiện khi get Exercise
+            page = memberService.getPaginatedExerciseFilterTag(tagID, pageable);
+        }
         // chuyển dổi từ exercise sang exercise response
         List<ExerciseResponse> exerciseResponses = page.get()
                 .map(exercise -> {
