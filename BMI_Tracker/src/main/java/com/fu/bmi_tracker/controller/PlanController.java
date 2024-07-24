@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -225,6 +226,7 @@ public class PlanController {
 
         // tạo plan response 
         List<PlanAdvisorResponse> planResponses = new ArrayList<>();
+        
         planList.forEach(plan -> {
             planResponses.add(new PlanAdvisorResponse(plan));
         });
@@ -301,4 +303,25 @@ public class PlanController {
             return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(summary = "Approve a Plan by plan Id (MANAGER)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @DeleteMapping("/approve-plan")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<?> approvePlan(@RequestParam int planID) {
+        Optional<Plan> plan = planService.findById(planID);
+
+        if (plan.isPresent()) {
+            plan.get().setIsApproved(Boolean.TRUE);
+            planService.save(plan.get());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + planID + "}"), HttpStatus.NOT_FOUND);
+        }
+    }
+ 
 }

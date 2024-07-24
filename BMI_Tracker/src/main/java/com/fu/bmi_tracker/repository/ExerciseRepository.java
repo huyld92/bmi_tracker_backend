@@ -7,6 +7,8 @@ package com.fu.bmi_tracker.repository;
 import com.fu.bmi_tracker.model.entities.Exercise;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,5 +35,7 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
     @Query("SELECT e FROM Exercise e JOIN Tag t ON e.tag.tagID = t.tagID "
             + "WHERE t.tagName != :tagName AND e.isActive = true")
     public List<Exercise> findExerciseWithoutTagName(String tagName);
+
+    Page<Exercise> findByTag_TagID(Integer tagID, Pageable pageable);
 
 }

@@ -11,7 +11,10 @@ import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.EmailVerificationCodeService;
 import java.util.Optional;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,10 +32,10 @@ public class EmailController {
 
     @Autowired
     private EmailVerificationCodeService verificationService;
-    
+
     @Autowired
     AccountRepository accountRepository;
-    
+
     @Autowired
     private EmailService emailService;
     // Sending a simple Email
@@ -55,23 +58,19 @@ public class EmailController {
 
         return status;
     }
-    
+
     @GetMapping("/verificationEmail")
-    public RedirectView verificationEmail(@RequestParam("oobCode") String oobCode) {
-       
+    public void verificationEmail(@RequestParam("oobCode") String oobCode, HttpServletResponse response) throws IOException {
         String verificationEmail = verificationService.checkVerificationCode(oobCode);
         if (verificationEmail != null) {
-            
             Optional<Account> member = accountRepository.findByEmail(verificationEmail);
             if (!member.isEmpty()) {
                 member.get().setIsVerified(Boolean.TRUE);
                 accountRepository.save(member.get());
             }
-            return new RedirectView("/success");  // redirect to page afte verification success.
-        }
-        else {
-            System.out.println(oobCode);
-            return new RedirectView("/fail");  // redirect to page afte verification success.
+            response.sendRedirect("http://localhost:3000/verification-success");
+        } else {
+            response.sendRedirect("http://localhost:3000/verification-failed");
         }
     }
 }

@@ -36,6 +36,8 @@ public interface MemberService extends GeneralService<Member> {
 
     public Page<Exercise> getPaginatedExerciseWithPriority(Integer accountID, Pageable pageable);
 
+    public Page<Exercise> getPaginatedExerciseFilterTag(Integer tagID, Pageable pageable);
+
     public DailyRecord getDailyRecordOfMember(Integer accountID, LocalDate localDate);
 
     public List<MemberBmiResponse> getMemberBMISummary();
