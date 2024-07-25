@@ -48,4 +48,9 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
     @Query("SELECT f FROM Food f JOIN f.foodTags t WHERE t.tagID IN :tagIDs GROUP BY f HAVING COUNT(t) = :tagCount")
     Page<Food> findAllByTagIDs(List<Integer> tagIDs, Integer tagCount, Pageable pageable);
 
+    @Query("SELECT f FROM Food f JOIN f.foodTags t WHERE t.tagID IN :tagIDs GROUP BY f HAVING COUNT(t) = :tagCount")
+    Iterable<Food> findAllByTagIDs(List<Integer> tagIDs, Integer tagCount);
+
+    public Iterable<Food> findByIsActiveTrue();
+
 }

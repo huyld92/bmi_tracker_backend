@@ -33,4 +33,8 @@ public interface FoodService extends GeneralService<Food> {
 
     public Iterable<Recipe> findAllRecipesByFoodID(Integer foodID);
 
+    public Iterable<Food> getAllFoodIsActiveTrue();
+
+    public Iterable<Food> getFoodsWithFilterTags(List<Integer> tagIDs);
+
 }

@@ -145,4 +145,14 @@ public class FoodServiceImpl implements FoodService {
         return food.getRecipes();
     }
 
+    @Override
+    public Iterable<Food> getAllFoodIsActiveTrue() {
+        return foodRepository.findByIsActiveTrue();
+    }
+
+    @Override
+    public Iterable<Food> getFoodsWithFilterTags(List<Integer> tagIDs) {
+        return foodRepository.findAllByTagIDs(tagIDs, tagIDs.size());
+    }
+
 }
