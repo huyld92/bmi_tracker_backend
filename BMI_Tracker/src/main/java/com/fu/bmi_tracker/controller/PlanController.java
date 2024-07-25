@@ -310,8 +310,7 @@ public class PlanController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @PutMapping("/approve-plan")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PutMapping("/approve-plan") 
     public ResponseEntity<?> approvePlan(@RequestParam int planID) {
         Optional<Plan> plan = planService.findById(planID);
 
