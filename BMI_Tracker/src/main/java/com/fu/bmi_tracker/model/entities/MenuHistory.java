@@ -46,4 +46,12 @@ public class MenuHistory {
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
+
+    public MenuHistory(LocalDate dateOfAssigned, Menu menu, Member member) {
+        this.dateOfAssigned = dateOfAssigned;
+        this.menu = menu;
+        this.member = member;
+        this.isActive = true;
+    }
+
 }

@@ -18,4 +18,6 @@ public interface MemberBodyMassService extends GeneralService<MemberBodyMass> {
     public Iterable<MemberBodyMass> findAllByAccountID(Integer accountID);
 
     public Iterable<MemberBodyMass> findAllWithMonth(Integer accountID, LocalDate localDate);
+
+    public Iterable<MemberBodyMass> getBodyMassInMonthByMemberID(Integer memberID, LocalDate localDate);
 }

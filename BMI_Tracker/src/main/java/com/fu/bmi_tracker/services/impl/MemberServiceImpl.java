@@ -102,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
 
         // gọi workout history tìm tìm tất cả workout hiện tịa của member
         // *chưa kiểm soát việc trả về có nhiều hơn 1 result
-        Optional<WorkoutHistory> workoutHistory = workoutHistoryRepository.findByMemberIDAndIsActiveTrue(member.getMemberID());
+        Optional<WorkoutHistory> workoutHistory = workoutHistoryRepository.findByMember_MemberIDAndIsActiveTrue(member.getMemberID());
 
         // nếu không tìm thấy kết quả return mảng rỗng
         if (!workoutHistory.isPresent()) {
@@ -110,7 +110,8 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // gọi WorkoutExerciseRepository tìm List exercise
-        return workoutExerciseRepository.findByWorkout_WorkoutIDAndIsActiveTrue(workoutHistory.get().getWorkoutID());
+        return workoutExerciseRepository.findByWorkout_WorkoutIDAndIsActiveTrue(
+                workoutHistory.get().getWorkout().getWorkoutID());
     }
 
     @Override

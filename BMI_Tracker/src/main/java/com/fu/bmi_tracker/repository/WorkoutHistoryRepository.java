@@ -16,6 +16,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, Integer> {
 
-    public Optional<WorkoutHistory> findByMemberIDAndIsActiveTrue(Integer memberID);
+    public Optional<WorkoutHistory> findByMember_MemberIDAndIsActiveTrue(Integer memberID);
+
+    public Iterable<WorkoutHistory> findByMember_MemberID(Integer memberID);
+
+    public Iterable<WorkoutHistory> findByIsActiveTrue();
 
 }

@@ -20,4 +20,6 @@ public interface MenuHistoryRepository extends JpaRepository<MenuHistory, Intege
 
     public Iterable<MenuHistory> findByMember_MemberID(Integer memberID);
 
+    public Iterable<MenuHistory> findByIsActiveTrue();
+
 }

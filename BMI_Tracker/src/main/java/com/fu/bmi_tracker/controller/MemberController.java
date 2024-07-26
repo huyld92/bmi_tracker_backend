@@ -183,32 +183,6 @@ public class MemberController {
         return new ResponseEntity<>(foodResponses, HttpStatus.OK);
     }
 
-//    @Operation(
-//            summary = "Assign menu for member (ADVISOR)",
-//            description = "Create new menu with form")
-//    @ApiResponses({
-//        @ApiResponse(responseCode = "200", content = {
-//            @Content(schema = @Schema(implementation = Menu.class), mediaType = "application/json")}),
-//        @ApiResponse(responseCode = "403", content = {
-//            @Content(schema = @Schema())}),
-//        @ApiResponse(responseCode = "500", content = {
-//            @Content(schema = @Schema())})})
-//    @PutMapping(value = "/assignMenu")
-//    @PreAuthorize("hasRole('AVISOR')")
-//    public ResponseEntity<?> assignMenu(@Valid @RequestParam Integer menuID, Integer memberID) {
-//        // find member by member id
-//        Optional<Member> member = memberService.findById(memberID);
-//        // check existed
-//        if (!member.isPresent()) {
-//            return new ResponseEntity<>(new MessageResponse("Cannot find member with id {" + memberID + "}"), HttpStatus.BAD_REQUEST);
-//        }
-//        // set menuID
-//        member.get().setMenuID(menuID);
-//        //Update member
-//        memberService.save(member.get());
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
     @Operation(
             summary = "Retrieve All Food in menu (MEMBER)",
             description = "Member get food list")
@@ -288,6 +262,64 @@ public class MemberController {
                 principal.getFullName(),
                 principal.getGender().toString(),
                 principal.getPhoneNumber(),
+                member.get().getEndDateOfPlan(),
+                member.get().getAccount().getBirthday(),
+                bodyMass.getHeight(),
+                bodyMass.getWeight(),
+                age,
+                bmi,
+                bmr,
+                member.get().getTdee());
+
+        return new ResponseEntity<>(memberInformationResponse, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Retrieve member information by member id",
+            description = "Member get personal information")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = MemberInformationResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/get-information")
+    public ResponseEntity<?> getMemberInformationByID(@RequestParam Integer memberID) {
+
+        // Find member by accountID
+        Optional<Member> member = memberService.findById(memberID);
+
+        if (!member.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: member with id{" + memberID + "} not exists!"));
+        }
+
+        MemberBodyMass bodyMass
+                = memberBodyMassService.getLatestBodyMass(
+                        member.get().getMemberID());
+
+        MemberInformationResponse memberInformationResponse;
+
+        double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+        int age = LocalDate.now().getYear() - member.get().getAccount().getBirthday().getYear();
+
+        double bmr = bMIUtils.calculateBMR(
+                bodyMass.getWeight(),
+                bodyMass.getHeight(),
+                age,
+                member.get().getAccount().getGender());
+
+        memberInformationResponse = new MemberInformationResponse(
+                member.get().getMemberID(),
+                member.get().getAccount().getEmail(),
+                member.get().getAccount().getAccountPhoto(),
+                member.get().getAccount().getFullName(),
+                member.get().getAccount().getGender().toString(),
+                member.get().getAccount().getPhoneNumber(),
                 member.get().getEndDateOfPlan(),
                 member.get().getAccount().getBirthday(),
                 bodyMass.getHeight(),

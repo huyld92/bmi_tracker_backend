@@ -34,4 +34,8 @@ public interface MemberBodyMassRepository extends JpaRepository<MemberBodyMass, 
             + " AND mbm.dateInput >= :startDate AND mbm.dateInput <= :endDate ORDER BY mbm.dateInput DESC")
     List<MemberBodyMass> findRecent30Days(Integer accountID, LocalDateTime startDate, LocalDateTime endDate);
 
+    @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.memberID = :memberID"
+            + " AND mbm.dateInput >= :startDate AND mbm.dateInput <= :endDate ORDER BY mbm.dateInput DESC")
+    List<MemberBodyMass> findRecentIn30DaysByMemberID(Integer memberID, LocalDateTime startDate, LocalDateTime endDate);
+
 }
