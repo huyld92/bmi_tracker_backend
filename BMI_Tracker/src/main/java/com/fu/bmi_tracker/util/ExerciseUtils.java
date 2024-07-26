@@ -18,7 +18,7 @@ public class ExerciseUtils {
      * @param duration Thời gian tập luyện (phút)
      * @return Tổng lượng calo đốt cháy
      */
-    public static int calculateCalories(double mets, double weight, int duration) {
+    public static int calculateCalories(double mets, int weight, int duration) {
         // link công thức
         //https://www.healthline.com/health/what-are-mets#bottom-line
 

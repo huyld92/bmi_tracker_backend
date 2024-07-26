@@ -10,8 +10,10 @@ import com.fu.bmi_tracker.model.entities.MenuHistory;
  *
  * @author Duc Huy
  */
-public interface MenuHistoryService extends GeneralService<MenuHistory>{
+public interface MenuHistoryService extends GeneralService<MenuHistory> {
 
     public Iterable<MenuHistory> getMenuHistoryOfMember(Integer memberID);
-    
+
+    public void assignMenuToMember(Integer menuID, Integer memberID);
+
 }

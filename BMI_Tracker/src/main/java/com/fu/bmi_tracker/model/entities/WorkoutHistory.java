@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -34,13 +36,23 @@ public class WorkoutHistory {
     @Column(name = "DateOfAssigned", nullable = false)
     private LocalDate dateOfAssigned;
 
-    @Column(name = "WorkoutID", nullable = false)
-    private Integer workoutID;
+    @ManyToOne
+    @JoinColumn(name = "WorkoutID", nullable = false)
+    private Workout workout;
 
-    @Column(name = "MemberID", nullable = false)
-    private Integer memberID;
+    @ManyToOne
+    @JoinColumn(name = "MemberID", nullable = false)
+    private Member member;
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
+    public WorkoutHistory(LocalDate dateOfAssigned, Workout workout, Member member) {
+        this.dateOfAssigned = dateOfAssigned;
+        this.workout = workout;
+        this.member = member;
+        this.isActive = true;
+    }
+
+    
 }

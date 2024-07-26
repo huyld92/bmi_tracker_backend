@@ -49,14 +49,26 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
     @Override
     public Iterable<MemberBodyMass> findAllWithMonth(Integer accountID, LocalDate localDate) {
         // Chuyển đổi LocalDate thành LocalDateTime bằng cách thêm thời gian mặc định (ví dụ: 00:00:00)
-        LocalDateTime startDateTime = localDate.atStartOfDay();
+        LocalDateTime endDateTime = localDate.atStartOfDay();
 
         // Trừ đi 30 ngày
-        LocalDateTime startDate = startDateTime.minusDays(30);
+        LocalDateTime startDate = endDateTime.minusDays(30);
 
         // gọi repository tìm tất cả bodymass trong 30 ngày
-        return repository.findRecent30Days(accountID, startDate, localDate.atStartOfDay());
+        return repository.findRecent30Days(accountID, startDate, endDateTime);
 
+    }
+
+    @Override
+    public Iterable<MemberBodyMass> getBodyMassInMonthByMemberID(Integer memberID, LocalDate localDate) {
+        // Chuyển đổi LocalDate thành LocalDateTime bằng cách thêm thời gian mặc định (ví dụ: 00:00:00)
+        LocalDateTime endDateTime = localDate.atStartOfDay();
+
+        // Trừ đi 30 ngày
+        LocalDateTime startDate = endDateTime.minusDays(30);
+
+        // gọi repository tìm tất cả bodymass trong 30 ngày
+        return repository.findRecentIn30DaysByMemberID(memberID, startDate, endDateTime);
     }
 
 }

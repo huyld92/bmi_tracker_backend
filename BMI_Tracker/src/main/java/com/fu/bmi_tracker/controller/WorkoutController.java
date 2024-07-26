@@ -66,7 +66,7 @@ public class WorkoutController {
             summary = "Create new workout (ADVISOR)",
             description = "Create new workout with form")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
+        @ApiResponse(responseCode = "201", content = {
             @Content(schema = @Schema(implementation = WorkoutResonse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
@@ -89,7 +89,7 @@ public class WorkoutController {
         WorkoutEntityResponse workoutEntityResponse = new WorkoutEntityResponse(
                 workoutSaved);
 
-        return new ResponseEntity<>(workoutEntityResponse, HttpStatus.OK);
+        return new ResponseEntity<>(workoutEntityResponse, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Deactivate a Workout by Id")
@@ -334,4 +334,5 @@ public class WorkoutController {
         return new ResponseEntity<>(new MessageResponse("Create workout exercise success"), HttpStatus.CREATED);
 
     }
+    
 }

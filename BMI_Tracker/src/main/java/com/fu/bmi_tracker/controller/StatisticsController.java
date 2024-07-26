@@ -4,13 +4,21 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.exceptions.ErrorMessage;
+import com.fu.bmi_tracker.model.entities.DailyRecord;
+import com.fu.bmi_tracker.model.entities.Member;
+import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import com.fu.bmi_tracker.payload.response.CountMenuResponse;
 import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
 import com.fu.bmi_tracker.payload.response.CountWorkoutResponse;
+import com.fu.bmi_tracker.payload.response.DailyRecordResponse;
+import com.fu.bmi_tracker.payload.response.MemberBodyMassResponse;
 import com.fu.bmi_tracker.payload.response.TotalAdvisorMemberResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.CommissionService;
+import com.fu.bmi_tracker.services.DailyRecordService;
+import com.fu.bmi_tracker.services.MemberBodyMassService;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.services.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +36,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.SubscriptionService;
 import com.fu.bmi_tracker.services.WorkoutService;
+import com.fu.bmi_tracker.util.BMIUtils;
+import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -55,6 +70,12 @@ public class StatisticsController {
 
     @Autowired
     CommissionService commissionService;
+
+    @Autowired
+    DailyRecordService dailyRecordService;
+
+    @Autowired
+    MemberBodyMassService memberBodyMassService;
 //
 //    @Operation(summary = "Statistics all menu, workout of advisor", description = "Receive advisor information and the total number of menus and the total number of workouts")
 //    @ApiResponses({
@@ -97,7 +118,6 @@ public class StatisticsController {
 //
 //        return new ResponseEntity<>(advisorBookingSummarys, HttpStatus.OK);
 //    }
-
 //    @Operation(summary = "Statistics commission of advisor in month", description = "Pass the month and receive advisor information and commission")
 //    @ApiResponses({
 //        @ApiResponse(responseCode = "200", content = {
@@ -119,7 +139,6 @@ public class StatisticsController {
 //        return new ResponseEntity<>(commissionSumarys, HttpStatus.OK);
 //
 //    }
-
 //    @Operation(summary = "Statistics height and weight of member", description = "")
 //    @ApiResponses({
 //        @ApiResponse(responseCode = "200", content = {
@@ -138,7 +157,6 @@ public class StatisticsController {
 //        return new ResponseEntity<>(memberBmiResponses, HttpStatus.OK);
 //
 //    }
-
     @Operation(summary = "Statistics total commission in 6 months", description = "")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -234,10 +252,90 @@ public class StatisticsController {
         TotalAdvisorMemberResponse response = new TotalAdvisorMemberResponse(
                 totalAdvisor,
                 totalMember);
-        
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    
+
     // từ hôm nay lấy ngược 7 ngày trước cho dailyrecord của member
+    @Operation(summary = "Statistics dailyrecord of member in 7 days", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TotalAdvisorMemberResponse.class))}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("dialy-record/week-by-date")
+    public ResponseEntity<?> getDialyRecordIn7Days(@RequestParam Integer memberID, @RequestParam String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate;
+        // Validation date 
+        try {
+            localDate = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // Gọi memberService tìm member bằng memberID
+        Member member = memberService.findById(memberID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member with id{" + memberID + "}!"));
+
+        // Tìm danh sách daily record từ member ID và date trong vòng một tuần
+        List<DailyRecord> dailyRecords = dailyRecordService.getDailyRecordsForWeek(member.getMemberID(), localDate);
+
+        if (dailyRecords.isEmpty()) {
+            // 204 không có 
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo response
+        List<DailyRecordResponse> responses = new ArrayList<>();
+        dailyRecords.forEach((DailyRecord dr) -> responses.add(new DailyRecordResponse(dr)));
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+
+    }
+
     //lấy cân nặng trong 30days
+    @Operation(
+            summary = "Get all bodymass of member in 1 months ")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = MemberBodyMassResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/member-bodymass/getInMonth")
+    public ResponseEntity<?> getAllBodyMassOfMemberIn3Month(@RequestParam Integer memberID, @RequestParam(required = true) String date) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate;
+        // Validation date 
+        try {
+            localDate = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(
+                    HttpStatus.BAD_REQUEST.value(),
+                    new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // tìm tất cả bodymass bawfng memberID
+        Iterable<MemberBodyMass> bodyMasses = memberBodyMassService.getBodyMassInMonthByMemberID(memberID, localDate);
+
+        // tạo member body mass response
+        List<MemberBodyMassResponse> bodyMassResponses = new ArrayList<>();
+        bodyMasses.forEach(bodyMass -> {
+            BMIUtils bMIUtils = new BMIUtils();
+
+            double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+            int age = LocalDate.now().getYear() - bodyMass.getMember().getAccount().getBirthday().getYear();
+
+            bodyMassResponses.add(new MemberBodyMassResponse(bodyMass, age, bmi));
+        }
+        );
+        return ResponseEntity.ok(bodyMassResponses);
+    }
 }
