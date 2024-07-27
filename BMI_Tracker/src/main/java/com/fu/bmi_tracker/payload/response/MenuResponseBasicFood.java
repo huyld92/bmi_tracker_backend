@@ -6,7 +6,6 @@ package com.fu.bmi_tracker.payload.response;
 
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.MenuFood;
-import com.fu.bmi_tracker.model.enums.EMealType;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;

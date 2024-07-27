@@ -17,7 +17,6 @@ import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuResponse;
 import com.fu.bmi_tracker.payload.response.MenuResponseAll;
-import com.fu.bmi_tracker.payload.response.MenuResponseBasicFood;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.FoodService;

@@ -263,8 +263,8 @@ public class StatisticsController {
             @Content(schema = @Schema(implementation = TotalAdvisorMemberResponse.class))}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping("dialy-record/week-by-date")
-    public ResponseEntity<?> getDialyRecordIn7Days(@RequestParam Integer memberID, @RequestParam String date) {
+    @GetMapping("daily-record/week-by-date")
+    public ResponseEntity<?> getDailyRecordIn7Days(@RequestParam Integer memberID, @RequestParam String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate;
         // Validation date 

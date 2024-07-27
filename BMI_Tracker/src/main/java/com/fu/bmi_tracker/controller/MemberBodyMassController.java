@@ -150,7 +150,7 @@ public class MemberBodyMassController {
             @Content(schema = @Schema())})})
     @GetMapping("/member/getInMonth")
     @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<?> getAllBodyMassOfMemberIn3Month(@RequestParam(required = true) String date) {
+    public ResponseEntity<?> getAllBodyMassOfMemberInMonth(@RequestParam(required = true) String date) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate;

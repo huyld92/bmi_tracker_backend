@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +88,51 @@ public class MealLogController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // gọi memberService tìm Member bằng accountID
         Member member = memberService.findByAccountID(principal.getId()).get();
+
+        // gọi dailyRecordService tìm Dailyrecord bằng MemberID và Date
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
+
+        // nếu chưa tồn tại record thì create new và trả về 204
+        if (!dailyRecord.isPresent()) {
+            dailyRecordService.save(new DailyRecord(dateOfMeal, 0, 0, member.getDefaultCalories(), member));
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // Lấy danh sách mealLogs bằng dailyReordID
+        Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.get().getRecordID());
+
+        // check meal empty
+        if (!mealLogs.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(mealLogs, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get meal log list of member", description = "Retrieve meal logs of date by member ID and date")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MealLog.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/member/get-by-date")
+    public ResponseEntity<?> getAllMemberMealLogByDate(
+            @RequestParam String date, @RequestParam Integer memberID) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateOfMeal;
+        // Validation date 
+        try {
+            dateOfMeal = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+        // gọi memberService tìm Member bằng accountID
+        Member member = memberService.findById(memberID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         // gọi dailyRecordService tìm Dailyrecord bằng MemberID và Date
         Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);

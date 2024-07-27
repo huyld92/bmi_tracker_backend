@@ -46,10 +46,14 @@ public class EmailVerificationCode {
     @Column(name = "CreationTime", nullable = false)
     private LocalDateTime creationTime;
 
+    @Column(name = "IsVerified", nullable = false)
+    private Boolean isVerified;
+
     public EmailVerificationCode(String verificationCode, String email) throws Exception {
         this.verificationCode = convertVerificationLink(verificationCode);
         this.email = email;
         this.creationTime = LocalDateTime.now();
+        this.isVerified = false;
     }
 
     private String convertVerificationLink(String verficationLink) throws Exception {

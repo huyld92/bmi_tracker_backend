@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -44,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "ActivityLog", description = "Activity Log management APIs")
 @RestController
-@RequestMapping("/api/activitylog")
+@RequestMapping("/api/test/activitylog")
 public class ActivityLogController {
 
     @Autowired
@@ -83,6 +84,47 @@ public class ActivityLogController {
 
         // gọi service tìm danh sách activity logs
         Member member = memberService.findByAccountID(principal.getId()).get();
+
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfActivity);
+
+        // nếu chưa tồn tại record thì create new
+        if (!dailyRecord.isPresent()) {
+            dailyRecordService.save(new DailyRecord(
+                    dateOfActivity,
+                    0,
+                    0,
+                    member.getDefaultCalories(),
+                    member));
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // trả danh sách activity log
+        return new ResponseEntity<>(dailyRecord.get().getActivityLogs(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retrieve activity log list (Member)", description = "Get list activity log of date")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ActivityLog.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204", description = "There are no activity", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("/member/get-by-date")
+    public ResponseEntity<?> getAllMemberActivityLogByDate(
+            @RequestParam String date, @RequestParam Integer memberID) {
+        // convert từ string date sang LocalDate format yyyy-MM-dd
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateOfActivity;
+        try {
+            dateOfActivity = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // gọi memberService tìm Member bằng accountID
+        Member member = memberService.findById(memberID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfActivity);
 
