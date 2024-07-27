@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.payload.response;
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.model.enums.ERole;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,8 @@ public class AccountResponse {
     private String fullName;
     private String accountPhoto;
     private String phoneNumber;
+    private String gender;
+    private LocalDate birthday;
     private List<ERole> roleNames;
 //    private ERole roleName;
 
@@ -39,6 +42,8 @@ public class AccountResponse {
         this.fullName = account.getFullName();
         this.accountPhoto = account.getAccountPhoto();
         this.phoneNumber = account.getPhoneNumber();
+        this.gender = account.getGender().name();
+        this.birthday = account.getBirthday();
         this.roleNames = new ArrayList<>();
         for (Role role : account.getRoles()) {
             // Add the role name to the roleNames Set

@@ -17,12 +17,14 @@ import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AccountService;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.EmailService;
+import com.fu.bmi_tracker.util.PasswordUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +64,8 @@ public class AccountController {
     @Autowired
     AdvisorService advisorService;
 //    
-//    @Autowired
-//    PasswordUtils passwordUtils;
+    @Autowired
+    PasswordUtils passwordUtils;
 
     @Autowired
     PasswordEncoder encoder;
@@ -82,8 +84,8 @@ public class AccountController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody CreateAccountRequest createAccountRequest) {
         // Generate default password and endcode to save
-        // passwordUtils.generateRandomPassword(10);
-        String defaultPassword = "123456";
+        String defaultPassword = passwordUtils.generateRandomPassword(10);
+//        String defaultPassword = "123456";
 
         // Store to database
         Account accountSave = accountService.createAccount(createAccountRequest,
@@ -133,6 +135,38 @@ public class AccountController {
 
         return new ResponseEntity<>(new MessageResponse("Add role success"), HttpStatus.CREATED);
 
+    }
+
+    @Operation(summary = "Change password")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/change-password")
+    public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
+        // lấy account từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        //gợi service tìm account bằng account id 
+        Account account = accountService.findById(principal.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find account!"));
+
+        //kiểm tra oldPassword match với password hiện tại 
+        System.out.println("oldPassword:" + encoder.matches(oldPassword, account.getPassword()));
+
+        if (encoder.matches(oldPassword, account.getPassword())) {
+            // nếu đúng cập nhật password mới
+            account.setPassword(encoder.encode(newPassword));
+            accountService.save(account);
+            return new ResponseEntity<>(new MessageResponse("Change password success"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new MessageResponse("Change password failed. Your password don't match"), HttpStatus.BAD_REQUEST);
+
+        }
     }
 
     @Operation(summary = "Get all account (ADMIN)", description = "Get all account")

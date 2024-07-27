@@ -137,4 +137,11 @@ public class AccountServiceImpl implements AccountService {
         save(account);
     }
 
+    @Override
+    public Account findByEmail(String email) {
+        return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find acount with email {" + email + "}!"));
+
+    }
+
 }
