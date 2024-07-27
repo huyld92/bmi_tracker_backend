@@ -10,9 +10,8 @@ import com.fu.bmi_tracker.model.entities.EmailVerificationCode;
  *
  * @author BaoLG
  */
-
 public interface EmailVerificationCodeService extends GeneralService<EmailVerificationCode> {
-     
+
     //return email for address to update account status
-    public String checkVerificationCode(String verificationCode);
+    public EmailVerificationCode checkVerificationCode(String verificationCode);
 }

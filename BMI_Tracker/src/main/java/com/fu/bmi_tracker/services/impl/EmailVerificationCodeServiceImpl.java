@@ -17,9 +17,8 @@ import org.springframework.stereotype.Service;
  *
  * @author BaoLG
  */
-
 @Service
-public class EmailVerificationCodeServiceImpl implements EmailVerificationCodeService{
+public class EmailVerificationCodeServiceImpl implements EmailVerificationCodeService {
 
     @Autowired
     EmailVerificationCodeRepository repository;
@@ -37,35 +36,33 @@ public class EmailVerificationCodeServiceImpl implements EmailVerificationCodeSe
     @Override
     public EmailVerificationCode save(EmailVerificationCode t) {
         return repository.save(t);
-    } 
+    }
 
     @Override
-    public String checkVerificationCode(String verificationCode) {
-       Optional<EmailVerificationCode> code = repository.findByVerificationCode(verificationCode);
-       if (!code.isPresent()) {
-           System.out.println("---------------------------------------------");
-           System.out.println("Repository khong tim duoc: " + verificationCode);
-           System.out.println("---------------------------------------------");
-           //Khong tim duoc code => code khong ton tai => verification fail
-           return null;
-       }
-       else {           
-           //checkcode time out
-           if (checkVerificationTimeOut(code.get().getCreationTime())) {
-               //code time out verification fail
-               return null;
-           }
-           else {
-               //code valide in time => verification success.
-                return code.get().getEmail();
-           }
-       }     
+    public EmailVerificationCode checkVerificationCode(String verificationCode) {
+        Optional<EmailVerificationCode> code = repository.findByVerificationCode(verificationCode);
+        if (!code.isPresent()) {
+            System.out.println("---------------------------------------------");
+            System.out.println("Repository khong tim duoc: " + verificationCode);
+            System.out.println("---------------------------------------------");
+            //Khong tim duoc code => code khong ton tai => verification fail
+            return null;
+        } else {
+            //checkcode time out
+            if (checkVerificationTimeOut(code.get().getCreationTime())) {
+                //code time out verification fail
+                return null;
+            } else {
+                //code valide in time => verification success.
+                return code.get();
+            }
+        }
     }
-    
+
     //false mean still in time
     //true mean time out
     private boolean checkVerificationTimeOut(LocalDateTime creationTime) {
-        
+
         //Insert timeout logic here.
         return false;
     }

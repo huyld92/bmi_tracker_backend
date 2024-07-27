@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;

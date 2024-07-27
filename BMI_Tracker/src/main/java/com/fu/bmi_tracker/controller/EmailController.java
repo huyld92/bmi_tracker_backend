@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.EmailDetails;
+import com.fu.bmi_tracker.model.entities.EmailVerificationCode;
 import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.EmailVerificationCodeService;
@@ -14,13 +15,11 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  *
@@ -61,14 +60,25 @@ public class EmailController {
 
     @GetMapping("/verificationEmail")
     public void verificationEmail(@RequestParam("oobCode") String oobCode, HttpServletResponse response) throws IOException {
-        String verificationEmail = verificationService.checkVerificationCode(oobCode);
-        if (verificationEmail != null) {
-            Optional<Account> member = accountRepository.findByEmail(verificationEmail);
-            if (!member.isEmpty()) {
-                member.get().setIsVerified(Boolean.TRUE);
-                accountRepository.save(member.get());
+        // gọi service kiểm tra valid code
+        EmailVerificationCode emailVerificationCode = verificationService.checkVerificationCode(oobCode);
+        // code hêt hạn hoặc không match
+        if (emailVerificationCode != null) {
+            // kiểm tra code đã sử dụng chưa
+            if (emailVerificationCode.getIsVerified()) {
+                response.sendRedirect("http://localhost:3000/account-verified");
+            } else {
+                Optional<Account> member = accountRepository.findByEmail(emailVerificationCode.getEmail());
+                if (!member.isEmpty()) {
+                    // cập nhật trạng thái verified của account
+                    member.get().setIsVerified(Boolean.TRUE);
+                    accountRepository.save(member.get());
+                    // cập nhật trạng thái verified của code
+                    emailVerificationCode.setIsVerified(Boolean.TRUE);
+                    verificationService.save(emailVerificationCode);
+                }
+                response.sendRedirect("http://localhost:3000/verification-success");
             }
-            response.sendRedirect("http://localhost:3000/verification-success");
         } else {
             response.sendRedirect("http://localhost:3000/verification-failed");
         }

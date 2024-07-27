@@ -28,6 +28,7 @@ public class MemberInformationResponse {
     private LocalDate birthday;
     private Integer height;
     private Integer weight;
+    private Integer targetWeight;
     private Integer age;
     private Double BMI;
     private Double BMR;
