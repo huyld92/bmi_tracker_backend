@@ -31,7 +31,6 @@ public class CustomAccountDetailsImpl implements UserDetails {
 
     private String accountPhoto;
 
-    @JsonIgnore
     private String password;
 
     private EGender gender;

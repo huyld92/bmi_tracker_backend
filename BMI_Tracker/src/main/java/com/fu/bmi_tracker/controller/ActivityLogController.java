@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "ActivityLog", description = "Activity Log management APIs")
 @RestController
-@RequestMapping("/api/test/activitylog")
+@RequestMapping("/api/activitylog")
 public class ActivityLogController {
 
     @Autowired
