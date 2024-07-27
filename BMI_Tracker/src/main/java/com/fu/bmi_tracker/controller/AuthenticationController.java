@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.services.RoleService;
 import com.fu.bmi_tracker.util.BMIUtils;
+import com.fu.bmi_tracker.util.PasswordUtils;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -61,6 +62,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -115,7 +117,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) { 
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
@@ -362,4 +364,40 @@ public class AuthenticationController {
         return ResponseEntity.ok(new MessageResponse("Log out successful!"));
     }
 
+    @Operation(summary = "Forgot password",
+            description = "Provide email to receive new password")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        // Generate default password and endcode to save
+        PasswordUtils passwordUtils = new PasswordUtils();
+
+        String defaultPassword = passwordUtils.generateRandomPassword(10);
+
+        //tìm account bằng email
+        Account account = accountService.findByEmail(email);
+
+        // kiểm tra trạng thái active
+        if (!account.getIsActive()) {
+            return new ResponseEntity<>(new MessageResponse("Your account is banned!"), HttpStatus.CREATED);
+        }
+
+        // gửi mail mật khẩu mới về email
+        EmailDetails details = new EmailDetails();
+        details.setRecipient(account.getEmail());
+        details.setSubject("Your New Password");
+        String msgBody = details.sendResetPasswordTemplateGenerator(email, defaultPassword, account.getFullName());
+        details.setMsgBody(msgBody);
+        emailService.sendSimpleMail(details);
+        // cập nhật mật khẩu mới
+        account.setPassword(encoder.encode(defaultPassword));
+        accountService.save(account);
+        return new ResponseEntity<>(new MessageResponse("We've sent new passsword to your mail"), HttpStatus.OK);
+    }
 }

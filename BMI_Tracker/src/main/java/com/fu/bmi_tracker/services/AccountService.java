@@ -31,4 +31,6 @@ public interface AccountService extends GeneralService<Account> {
 
     public void deleteRole(Integer accountID, Integer roleID);
 
+    public Account findByEmail(String email); 
+
 }
