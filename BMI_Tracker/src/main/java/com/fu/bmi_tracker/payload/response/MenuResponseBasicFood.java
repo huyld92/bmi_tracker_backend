@@ -27,7 +27,7 @@ public class MenuResponseBasicFood {
     private String menuDescription;
     private Integer totalCalories;
     private Boolean isActive;
-    private Integer advisorID;
+//    private Integer advisorID;
     private List<MenuFoodBasicResponse> menuFoods;
 
     public MenuResponseBasicFood(Menu menu, List<MenuFood> menuFoods) {
@@ -37,7 +37,7 @@ public class MenuResponseBasicFood {
         this.menuDescription = menu.getMenuDescription();
         this.totalCalories = menu.getTotalCalories();
         this.isActive = menu.getIsActive();
-        this.advisorID = menu.getAdvisor().getAdvisorID();
+//        this.advisorID = menu.getAdvisor().getAdvisorID();
         List<MenuFoodBasicResponse> menuFoodBasicResponses = new ArrayList<>();
         menuFoods.forEach(menuFood -> {
             menuFoodBasicResponses.add(new MenuFoodBasicResponse(menuFood.getMenuFoodID(), menuFood.getFood(), menuFood.getMealType(), menuFood.getIsActive()));

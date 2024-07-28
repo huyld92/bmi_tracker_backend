@@ -158,12 +158,13 @@ public class ControllerExceptionHandler {
     // handles convert role
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        System.out.println("aaa: " + ex.getMessage());
         ErrorMessage message = new ErrorMessage(
-                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 new Date(),
-                "Role with no access.",
-                "");
+                "JSON parse error",
+                ex.getMessage());
 
-        return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 }

@@ -24,4 +24,6 @@ public interface MenuService extends GeneralService<Menu> {
 
     public MenuFood createNewMenuFood(CreateMenuFoodRequest menuFoodRequest);
 
+    public List<MenuFood> createNewMenuFoods(List<CreateMenuFoodRequest> menuFoodRequests);
+
 }

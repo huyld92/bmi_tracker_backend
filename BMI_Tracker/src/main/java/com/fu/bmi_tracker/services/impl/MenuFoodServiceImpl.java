@@ -8,11 +8,10 @@ import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
-import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.MenuFoodRepository;
-import com.fu.bmi_tracker.repository.MenuRepository;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,6 @@ public class MenuFoodServiceImpl implements MenuFoodService {
 
     @Autowired
     MenuFoodRepository menuFoodRepository;
-
-    @Autowired
-    MenuRepository menuRepository;
-
-    @Autowired
-    FoodRepository foodRepository;
 
     @Override
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType) {
@@ -77,8 +70,9 @@ public class MenuFoodServiceImpl implements MenuFoodService {
     }
 
     @Override
-    public void deleteByMenuIdAndFoodId(Integer menuId, Integer foodId) {
-        menuFoodRepository.deleteByMenuIdAndFoodId(menuId, foodId);
+    @Transactional
+    public void deleteByMenuFoodID(Integer menuFoodID) {
+        menuFoodRepository.deleteById(menuFoodID);
     }
 
     @Override
@@ -93,7 +87,7 @@ public class MenuFoodServiceImpl implements MenuFoodService {
 
         // tính tổng calories
         int totalCalories = menuFood.getMenu().getTotalCalories() - menuFood.getFood().getFoodCalories();
-        
+
         // cập nhật total calories của food
         menuFood.getMenu().setTotalCalories(totalCalories);
         menuFood.setIsActive(Boolean.FALSE);
