@@ -151,10 +151,9 @@ public class AccountController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        //gợi service tìm account bằng account id 
+         //gợi service tìm account bằng account id 
         Account account = accountService.findById(principal.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find account!"));
-
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find account!")); 
         //kiểm tra oldPassword match với password hiện tại 
         System.out.println("oldPassword:" + encoder.matches(oldPassword, account.getPassword()));
 
