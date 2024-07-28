@@ -10,7 +10,7 @@ import com.fu.bmi_tracker.payload.request.CreateBlogRequest;
 import com.fu.bmi_tracker.payload.response.BlogGetAllResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.BlogService;
-import com.fu.bmi_tracker.services.impl.UpdateBlogRequest;
+import com.fu.bmi_tracker.payload.request.UpdateBlogRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

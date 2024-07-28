@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.payload.response;
 
 import com.fu.bmi_tracker.model.entities.Food;
+import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,7 +44,7 @@ public class MenuFoodBasicResponse {
 
     private Boolean isActive;
 
-    public MenuFoodBasicResponse(Integer menuFoodID,Food food, EMealType mealType, Boolean isActive) {
+    public MenuFoodBasicResponse(Integer menuFoodID, Food food, EMealType mealType, Boolean isActive) {
         this.menuFoodID = menuFoodID;
         this.foodID = food.getFoodID();
         this.foodName = food.getFoodName();
@@ -56,6 +57,6 @@ public class MenuFoodBasicResponse {
         this.serving = food.getServing();
         this.mealType = mealType;
         this.isActive = isActive;
-    }
+    } 
 
 }
