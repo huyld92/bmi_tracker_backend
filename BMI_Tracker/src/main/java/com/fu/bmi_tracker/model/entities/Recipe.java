@@ -57,16 +57,7 @@ public class Recipe {
         this.ingredient = ingredient;
         this.unit = recipeRequest.getUnit();
         this.quantity = recipeRequest.getQuantity();
-        this.isActive = recipeRequest.getIsActive();
-    }
-
-    public Recipe(Food food, Ingredient ingredient, UpdateFoodRecipeRequest recipeRequest) {
-        this.recipeID = recipeRequest.getRecipeID();
-        this.food = food;
-        this.ingredient = ingredient;
-        this.unit = recipeRequest.getUnit();
-        this.quantity = recipeRequest.getQuantity();
-        this.isActive = recipeRequest.getIsActive();
+        this.isActive = true;
     }
 
     public Recipe(Food food, Ingredient ingredient, Float quantity, String unit, Boolean isActive) {

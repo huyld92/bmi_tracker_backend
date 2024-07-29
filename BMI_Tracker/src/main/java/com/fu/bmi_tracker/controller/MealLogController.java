@@ -341,7 +341,8 @@ public class MealLogController {
         // Get member from acccount id context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Member member = memberService.findByAccountID(principal.getId()).get();
+        Member member = memberService.findByAccountID(principal.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member with account id{" + principal.getId() + "}!"));
 
         // caculate calories of meal type 
         // sáng 30%, trưa 40%, tối 20%, phụ 10% 
@@ -370,15 +371,17 @@ public class MealLogController {
                 defaultSnack));
 
         //find dailyRecord
-        DailyRecord dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal).get();
+        Optional<DailyRecord> dailyRecord = dailyRecordService.findByMemberIDAndDate(member.getMemberID(), dateOfMeal);
 
         // new chưa tồn tại record thì create new
-        if (dailyRecord == null) {
-            dailyRecordService.save(new DailyRecord(dateOfMeal, 0, 0, member.getDefaultCalories(), member));
+        if (!dailyRecord.isPresent()) {
+            dailyRecordService.save(
+                    new DailyRecord(dateOfMeal, 0, 0, member.getDefaultCalories(), member));
+            System.out.println("aaaaaaaaaaaa");
         } else {
             // Nếu tồn tại recore check tiếp meal log
             // Get all Meal log with accountid and date
-            Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.getRecordID());
+            Iterable<MealLog> mealLogs = mealLogService.findByRecordID(dailyRecord.get().getRecordID());
 
             // check meal empty
             if (mealLogs.iterator().hasNext()) {

@@ -33,8 +33,8 @@ public class RecipeRequest {
     @NotNull(message = "Quantity is required")
     @Positive(message = "Quantity must be a positive number")
     private Float quantity;
-
-    @Schema(example = "true")
-    private Boolean isActive;
+//
+//    @Schema(example = "true")
+//    private Boolean isActive;
 
 }

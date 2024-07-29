@@ -4,7 +4,8 @@
  */
 package com.fu.bmi_tracker.payload.request;
 
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,14 +19,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateMenuRequest {
 
+    @Positive
     private Integer menuID;
-    
+
+    @NotBlank
     private String menuName;
-    
-    private String menuPhoto;
 
     private String menuDescription;
-
-    private List<MenuFoodRequest> menuFoods;
 
 }

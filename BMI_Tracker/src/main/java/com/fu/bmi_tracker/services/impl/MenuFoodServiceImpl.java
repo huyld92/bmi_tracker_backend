@@ -5,10 +5,12 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Food;
+import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.model.enums.EMealType;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
 import com.fu.bmi_tracker.repository.MenuFoodRepository;
+import com.fu.bmi_tracker.repository.MenuRepository;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -22,6 +24,9 @@ public class MenuFoodServiceImpl implements MenuFoodService {
 
     @Autowired
     MenuFoodRepository menuFoodRepository;
+
+    @Autowired
+    MenuRepository menuRepository;
 
     @Override
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType) {
@@ -72,6 +77,16 @@ public class MenuFoodServiceImpl implements MenuFoodService {
     @Override
     @Transactional
     public void deleteByMenuFoodID(Integer menuFoodID) {
+        MenuFood menuFood = menuFoodRepository.findById(menuFoodID)
+                .orElseThrow(() -> new EntityNotFoundException("Menu food id{" + menuFoodID + "} not found"));
+
+        // cập nhật calories khi xoas menu food
+        Menu menu = menuFood.getMenu();
+
+        int totalCorlories = menu.getTotalCalories() - menuFood.getFood().getFoodCalories();
+        menu.setTotalCalories(totalCorlories);
+        menuRepository.save(menu);
+
         menuFoodRepository.deleteById(menuFoodID);
     }
 

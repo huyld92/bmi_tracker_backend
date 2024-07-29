@@ -371,30 +371,13 @@ public class MenuController {
     @PutMapping(value = "/update")
     public ResponseEntity<?> updateMenu(@RequestBody UpdateMenuRequest menuRequest) {
         // tim menu 
-        Optional<Menu> menu = menuService.findById(menuRequest.getMenuID());
-        if (!menu.isPresent()) {
-            return new ResponseEntity<>(new MessageResponse("Cannot update menu id{" + menuRequest.getMenuID() + "}"), HttpStatus.OK);
-
-        }
+        Menu menu = menuService.findById(menuRequest.getMenuID())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find menu with id{" + menuRequest.getMenuID() + "}!"));
 
         // cập nhật thông tin menu
-        menu.get().update(menuRequest);
-        menuService.save(menu.get());
+        menu.update(menuRequest);
+        menuService.save(menu);
 
-        List<Integer> foodIds = menuFoodService.getAllFoodIDsByMenuID(menu.get().getMenuID());
-
-        //cập nhật meal type cho menu food
-        if (foodIds.size() == menuRequest.getMenuFoods().size()) {
-            for (MenuFoodRequest request : menuRequest.getMenuFoods()) {
-                if (foodIds.contains(request.getFoodID())) {
-                    // update meal Type
-                    menuFoodService.updateMealTypeByMenuIdAndFoodId(
-                            request.getMealType(),
-                            request.getFoodID(),
-                            menu.get().getMenuID());
-                }
-            }
-        }
         return new ResponseEntity<>(new MessageResponse("Update menu success"), HttpStatus.OK);
     }
 
@@ -454,7 +437,7 @@ public class MenuController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping(value = "/delete/{menuFoodID}")
+    @DeleteMapping(value = "menu-food/delete/{menuFoodID}")
     public ResponseEntity<?> delete(@PathVariable Integer menuFoodID) {
         menuFoodService.deleteByMenuFoodID(menuFoodID);
 
