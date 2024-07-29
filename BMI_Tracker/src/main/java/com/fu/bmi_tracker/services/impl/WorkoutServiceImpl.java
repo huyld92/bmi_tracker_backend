@@ -65,12 +65,13 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (!workout.getStandardWeight().equals(updateWorkoutRequest.getStandardWeight())) {
             // cập nhật lại calories burned khi weight có thay đổi
             workout.setTotalCaloriesBurned(0);
+            
             // duyệt danh sách workout exercise
             workout.getWorkoutExercises().forEach(workoutExercise -> {
                 // tính calories burned
                 int caloriesBurned = ExerciseUtils.calculateCalories(
                         workoutExercise.getExercise().getMet(),
-                        workout.getStandardWeight(),
+                        updateWorkoutRequest.getStandardWeight(),
                         workoutExercise.getDuration());
 
                 // tính totalCaloriesBurned và cập nhât
@@ -86,6 +87,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         }
 
         // cập nhật thông tin workout
+        workout.setStandardWeight(updateWorkoutRequest.getStandardWeight());
         workout.setWorkoutName(updateWorkoutRequest.getWorkoutName());
         workout.setWorkoutDescription(updateWorkoutRequest.getWorkoutDescription());
 

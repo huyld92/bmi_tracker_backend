@@ -13,6 +13,7 @@ import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.IngredientRepository;
+import com.fu.bmi_tracker.repository.RecipeRepository;
 import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.services.FoodService;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +36,9 @@ public class FoodServiceImpl implements FoodService {
 
     @Autowired
     TagRepository tagRepository;
+
+    @Autowired
+    RecipeRepository recipeRepository;
 
     @Override
     public Iterable<Food> findAll() {
@@ -107,16 +111,17 @@ public class FoodServiceImpl implements FoodService {
         List<Recipe> recipes = new ArrayList<>();
 
         foodRequest.getRecipeRequests().forEach(recipeRequest -> {
-            // timf ingredinent
+            Recipe recipe = recipeRepository.findById(recipeRequest.getRecipeID())
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find recipe with id{" + recipeRequest.getRecipeID() + "}!"));
+
             Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with id{" + recipeRequest.getIngredientID() + "}!"));
 
+            recipe.setIngredient(ingredient);
+            recipe.setUnit(recipeRequest.getUnit());
+            recipe.setQuantity(recipeRequest.getQuantity());
             // tạo recipe mới
-            recipes.add(new Recipe(
-                    food,
-                    ingredient,
-                    recipeRequest
-            ));
+            recipes.add(recipe);
         });
 
         // Cập nhật Food 

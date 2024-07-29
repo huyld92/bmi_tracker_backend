@@ -23,6 +23,7 @@ public class WorkoutEntityResponse {
     private String workoutDescription;
     private Integer totalCaloriesBurned;
     private Boolean isActive;
+    private Integer standardWeight;
     private Integer advisorID;
     private String fullName;
 
@@ -31,6 +32,7 @@ public class WorkoutEntityResponse {
         this.workoutName = workout.getWorkoutName();
         this.workoutDescription = workout.getWorkoutDescription();
         this.totalCaloriesBurned = workout.getTotalCaloriesBurned();
+        this.standardWeight = workout.getStandardWeight();
         this.isActive = workout.getIsActive();
         this.advisorID = workout.getAdvisor().getAdvisorID();
         this.fullName = workout.getAdvisor().getAccount().getFullName();

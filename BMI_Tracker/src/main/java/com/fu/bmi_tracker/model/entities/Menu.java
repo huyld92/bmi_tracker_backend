@@ -76,7 +76,7 @@ public class Menu {
 
     public void update(UpdateMenuRequest menuRequest) {
         this.menuName = menuRequest.getMenuName();
-        this.menuPhoto = menuRequest.getMenuPhoto();
+//        this.menuPhoto = menuRequest.getMenuPhoto();
         this.menuDescription = menuRequest.getMenuDescription();
     }
 }

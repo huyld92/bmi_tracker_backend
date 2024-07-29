@@ -115,10 +115,8 @@ public class Food {
         }
         if (!foodRequest.getFoodNutrition().isEmpty()) {
             this.foodNutrition = foodRequest.getFoodNutrition();
-        }
-        if (foodRequest.getCreationDate() != null) {
-            this.creationDate = foodRequest.getCreationDate();
-        }
+        } 
+        
         this.recipes = recipes;
         this.foodTags = foodTags;
     }

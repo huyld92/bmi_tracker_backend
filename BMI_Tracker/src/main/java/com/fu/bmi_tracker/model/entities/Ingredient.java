@@ -69,6 +69,7 @@ public class Ingredient {
         this.unit = ingredientRequest.getUnit().trim();
         this.ingredientCalories = ingredientRequest.getIngredientCalories();
         this.quantity = ingredientRequest.getQuantity();
+        this.nutritionalInformation = ingredientRequest.getNutritionalInformation();
         this.tag = new Tag(ingredientRequest.getTagID());
         this.isActive = true;
     }
@@ -83,6 +84,7 @@ public class Ingredient {
         }
         this.ingredientPhoto = ingredientRequest.getIngredientPhoto();
         this.quantity = ingredientRequest.getQuantity();
+        this.nutritionalInformation = ingredientRequest.getNutritionalInformation();
 
         if (ingredientRequest.getIngredientCalories() > -1) {
             this.ingredientCalories = ingredientRequest.getIngredientCalories();
@@ -92,9 +94,5 @@ public class Ingredient {
             this.tag = new Tag(ingredientRequest.getTagID());
         }
 
-    }
-
-    public Integer get() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

@@ -53,11 +53,7 @@ public class UpdateFoodRequest {
 
     @NotNull
     @Schema(description = "Time required to prepare the food (in minutes)", requiredMode = Schema.RequiredMode.REQUIRED)
-    private int foodTimeProcess;
-
-    @NotNull
-    @Schema(description = "Date when the food was created", requiredMode = Schema.RequiredMode.REQUIRED, example = "2024-06-06")
-    private LocalDate creationDate;
+    private int foodTimeProcess; 
 
 //    @NotNull
 //    @Schema(description = "Status indicating whether the food is active or not", requiredMode = Schema.RequiredMode.REQUIRED)

@@ -226,7 +226,7 @@ public class PlanController {
 
         // tạo plan response 
         List<PlanAdvisorResponse> planResponses = new ArrayList<>();
-        
+
         planList.forEach(plan -> {
             planResponses.add(new PlanAdvisorResponse(plan));
         });
@@ -290,17 +290,17 @@ public class PlanController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @DeleteMapping("/deactivate/{id}")
+    @DeleteMapping("/deactivate/{planID}")
     @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> deactivatePlan(@PathVariable("id") int id) {
-        Optional<Plan> plan = planService.findById(id);
+    public ResponseEntity<?> deactivatePlan(@PathVariable("planID") int planID) {
+        Optional<Plan> plan = planService.findById(planID);
 
         if (plan.isPresent()) {
             plan.get().setIsActive(Boolean.FALSE);
             planService.save(plan.get());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + id + "}"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + planID + "}"), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -310,8 +310,8 @@ public class PlanController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @PutMapping("/approve-plan") 
-    public ResponseEntity<?> approvePlan(@RequestParam int planID) {
+    @PutMapping("/approve-plan/{planID}")
+    public ResponseEntity<?> approvePlan(@PathVariable int planID) {
         Optional<Plan> plan = planService.findById(planID);
 
         if (plan.isPresent()) {
@@ -322,5 +322,5 @@ public class PlanController {
             return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + planID + "}"), HttpStatus.NOT_FOUND);
         }
     }
- 
+
 }
