@@ -119,15 +119,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteRole(Integer accountID, Integer roleID) {
+    public void deleteRole(Integer accountID, ERole roleName) {
         // tìm account bằng account ID
         Account account = accountRepository.findById(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find acount!"));
 
         // remove role trong account
         Set<Role> roles
-                = account.getRoles().stream() // Sử dụng stream để lọc các vai trò mà không có roleID cần xóa
-                        .filter(role -> !role.getRoleID().equals(roleID))// Giữ lại các vai trò không có roleID này
+                = account.getRoles().stream() // Sử dụng stream để lọc các vai trò mà không có roleName cần xóa
+                        .filter(role -> !role.getRoleName().equals(roleName))// Giữ lại các vai trò không có roleName này
                         .collect(Collectors.toSet());  // collect các vai trò còn lại vào một tập hợp mới
 
         // set lại roles cho account

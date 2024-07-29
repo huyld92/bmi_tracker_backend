@@ -23,6 +23,7 @@ public class WorkoutHistoryResponse {
     private Integer workoutID;
     private String workoutName;
     private String workoutDescription;
+    private Integer standardWeight;
     private Integer totalCloriesBurned;
     private Integer memberID;
     private String fullName;

@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.firebase;
 
 import com.fu.bmi_tracker.payload.request.PnsRequest;
+import com.google.firebase.cloud.StorageClient;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -30,5 +31,10 @@ public class FCMService {
             e.printStackTrace();
         }
         return response;
+    }
+    
+    public void uploadImages(){
+        StorageClient storageClient =  StorageClient.getInstance();
+//        Storage b = storageClient.bucket();
     }
 }

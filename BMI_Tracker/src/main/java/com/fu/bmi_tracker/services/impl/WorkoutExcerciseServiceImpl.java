@@ -59,8 +59,8 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
 
         // cập nhật calories burned khi deavtivate exercise
         Workout workout = workoutExercise.getWorkout();
-        int totalCorlories = workout.getTotalCloriesBurned() - workoutExercise.getCaloriesBurned();
-        workout.setTotalCloriesBurned(totalCorlories);
+        int totalCorlories = workout.getTotalCaloriesBurned() - workoutExercise.getCaloriesBurned();
+        workout.setTotalCaloriesBurned(totalCorlories);
         workoutRepository.save(workout);
 
         // xóa workout exercise 
@@ -83,8 +83,8 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
                 workoutExerciseRequest.getDuration());
 
         // cập nhật calories của workout
-        int totalWorkout = workout.getTotalCloriesBurned() + caloriesBurned;
-        workout.setTotalCloriesBurned(totalWorkout);
+        int totalWorkout = workout.getTotalCaloriesBurned() + caloriesBurned;
+        workout.setTotalCaloriesBurned(totalWorkout);
         workoutRepository.save(workout);
 
         // Khởi tạo WorkoutExercise
@@ -103,8 +103,8 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
 
         // cập nhật calories burned khi deavtivate exercise
         Workout workout = workoutExercise.getWorkout();
-        int totalCorlories = workout.getTotalCloriesBurned() - workoutExercise.getCaloriesBurned();
-        workout.setTotalCloriesBurned(totalCorlories);
+        int totalCorlories = workout.getTotalCaloriesBurned() - workoutExercise.getCaloriesBurned();
+        workout.setTotalCaloriesBurned(totalCorlories);
         workoutRepository.save(workout);
 
         // cập nhật workout exercise
@@ -119,8 +119,8 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
 
         // cập nhật calories burned khi deavtivate exercise
         Workout workout = workoutExercise.getWorkout();
-        int totalCorlories = workout.getTotalCloriesBurned() + workoutExercise.getCaloriesBurned();
-        workout.setTotalCloriesBurned(totalCorlories);
+        int totalCorlories = workout.getTotalCaloriesBurned() + workoutExercise.getCaloriesBurned();
+        workout.setTotalCaloriesBurned(totalCorlories);
         workoutRepository.save(workout);
 
         // cập nhật workout exercise

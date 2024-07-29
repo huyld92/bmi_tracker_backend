@@ -7,7 +7,6 @@ package com.fu.bmi_tracker.payload.response;
 import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +24,7 @@ public class SubscriptionResponse {
     private String subscriptionNumber;
     private String subscriptionDescription;
     private BigDecimal amount;
-    private LocalDateTime subscriptionDate;
+    private LocalDate subscriptionDate;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer memberID;
@@ -39,7 +38,7 @@ public class SubscriptionResponse {
         this.subscriptionNumber = subscription.getSubscriptionNumber();
         this.subscriptionDescription = subscription.getSubscriptionDescription();
         this.amount = subscription.getSubscriptionAmount();
-        this.subscriptionDate = subscription.getSubscriptionDate();
+        this.subscriptionDate = subscription.getSubscriptionDate().toLocalDate();
         this.startDate = subscription.getStartDate();
         this.endDate = subscription.getEndDate();
         this.memberID = subscription.getMember().getMemberID();
