@@ -334,5 +334,5 @@ public class WorkoutController {
         return new ResponseEntity<>(new MessageResponse("Create workout exercise success"), HttpStatus.CREATED);
 
     }
-    
+
 }

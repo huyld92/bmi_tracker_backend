@@ -22,7 +22,8 @@ public class WorkoutResonse {
     private Integer workoutID;
     private String workoutName;
     private String workoutDescription;
-    private Integer totalCloriesBurned;
+    private Integer totalCaloriesBurned;
+    private Integer standardWeight;
     private Boolean isActive;
     private Integer advisorID;
     private String fullName;
@@ -32,7 +33,8 @@ public class WorkoutResonse {
         this.workoutID = workout.getWorkoutID();
         this.workoutName = workout.getWorkoutName();
         this.workoutDescription = workout.getWorkoutDescription();
-        this.totalCloriesBurned = workout.getTotalCloriesBurned();
+        this.totalCaloriesBurned = workout.getTotalCaloriesBurned();
+        this.standardWeight = workout.getStandardWeight();
         this.isActive = workout.getIsActive();
         this.advisorID = workout.getAdvisor().getAdvisorID();
         this.fullName = workout.getAdvisor().getAccount().getFullName();

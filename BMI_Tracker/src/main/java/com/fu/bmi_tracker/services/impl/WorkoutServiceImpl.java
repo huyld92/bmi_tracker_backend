@@ -64,7 +64,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         // kiểm tra weight có được cập nhật
         if (!workout.getStandardWeight().equals(updateWorkoutRequest.getStandardWeight())) {
             // cập nhật lại calories burned khi weight có thay đổi
-            workout.setTotalCloriesBurned(0);
+            workout.setTotalCaloriesBurned(0);
             // duyệt danh sách workout exercise
             workout.getWorkoutExercises().forEach(workoutExercise -> {
                 // tính calories burned
@@ -74,8 +74,8 @@ public class WorkoutServiceImpl implements WorkoutService {
                         workoutExercise.getDuration());
 
                 // tính totalCaloriesBurned và cập nhât
-                int totalCaloriesBurned = workout.getTotalCloriesBurned() + caloriesBurned;
-                workout.setTotalCloriesBurned(totalCaloriesBurned);
+                int totalCaloriesBurned = workout.getTotalCaloriesBurned() + caloriesBurned;
+                workout.setTotalCaloriesBurned(totalCaloriesBurned);
 
                 // cập nhật calories workout exercise khi thay đổi weight
                 workoutExercise.setCaloriesBurned(caloriesBurned);
@@ -83,7 +83,6 @@ public class WorkoutServiceImpl implements WorkoutService {
                 workoutExerciseRepository.save(workoutExercise);
 
             });
-
         }
 
         // cập nhật thông tin workout
@@ -127,14 +126,14 @@ public class WorkoutServiceImpl implements WorkoutService {
             // tìm exercise
             Exercise exercise = exerciseRepository.findById(workoutExercise.getExerciseID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find exercise with id{" + workoutExercise.getExerciseID() + "}!"));
-            
+
             // tinhs calories burned
             int caloriesBurned = ExerciseUtils.calculateCalories(
-                    exercise.getMet(), 
-                    workout.getStandardWeight(), 
+                    exercise.getMet(),
+                    workout.getStandardWeight(),
                     workoutExercise.getDuration());
-            int totalCaloriesBurned = workout.getTotalCloriesBurned() + caloriesBurned;
-            workout.setTotalCloriesBurned(totalCaloriesBurned);
+            int totalCaloriesBurned = workout.getTotalCaloriesBurned() + caloriesBurned;
+            workout.setTotalCaloriesBurned(totalCaloriesBurned);
             // tạo workout Exercise
             WorkoutExercise we = new WorkoutExercise(workout, exercise, workoutExercise.getDuration(), caloriesBurned);
             workoutExercises.add(we);

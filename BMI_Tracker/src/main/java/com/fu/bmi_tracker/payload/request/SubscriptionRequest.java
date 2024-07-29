@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 public class SubscriptionRequest {
 
     @Schema(example = "Description for subscription plan")
-    @NotBlank
     @Size(max = 255)
     private String description;
 

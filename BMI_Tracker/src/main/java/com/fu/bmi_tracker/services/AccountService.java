@@ -29,7 +29,7 @@ public interface AccountService extends GeneralService<Account> {
 
     public void updateAccountPhoto(Integer accountID, String imageLink);
 
-    public void deleteRole(Integer accountID, Integer roleID);
+    public void deleteRole(Integer accountID, ERole roleName);
 
     public Account findByEmail(String email); 
 

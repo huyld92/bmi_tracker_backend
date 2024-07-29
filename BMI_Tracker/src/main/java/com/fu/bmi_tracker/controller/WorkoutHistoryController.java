@@ -85,7 +85,8 @@ public class WorkoutHistoryController {
                     workoutHistory.getWorkout().getWorkoutID(),
                     workoutHistory.getWorkout().getWorkoutName(),
                     workoutHistory.getWorkout().getWorkoutDescription(),
-                    workoutHistory.getWorkout().getTotalCloriesBurned(),
+                    workoutHistory.getWorkout().getStandardWeight(),
+                    workoutHistory.getWorkout().getTotalCaloriesBurned(),
                     member.getMemberID(),
                     member.getAccount().getFullName(),
                     workoutHistory.getIsActive()));
@@ -129,7 +130,8 @@ public class WorkoutHistoryController {
                     workoutHistory.getWorkout().getWorkoutID(),
                     workoutHistory.getWorkout().getWorkoutName(),
                     workoutHistory.getWorkout().getWorkoutDescription(),
-                    workoutHistory.getWorkout().getTotalCloriesBurned(),
+                    workoutHistory.getWorkout().getStandardWeight(),
+                    workoutHistory.getWorkout().getTotalCaloriesBurned(),
                     member.getMemberID(),
                     member.getAccount().getFullName(),
                     workoutHistory.getIsActive()));

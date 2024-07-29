@@ -151,9 +151,9 @@ public class AccountController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-         //gợi service tìm account bằng account id 
+        //gợi service tìm account bằng account id 
         Account account = accountService.findById(principal.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find account!")); 
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find account!"));
         //kiểm tra oldPassword match với password hiện tại 
         System.out.println("oldPassword:" + encoder.matches(oldPassword, account.getPassword()));
 
@@ -327,7 +327,7 @@ public class AccountController {
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Update device token", description = "Client send device token to update")
+    @Operation(summary = "Update device token", description = "Login and update link photo")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
@@ -343,7 +343,7 @@ public class AccountController {
 
         // gọi service update account photo
         accountService.updateAccountPhoto(principal.getId(), imageLink);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse(imageLink), HttpStatus.OK);
     }
 
     @Operation(summary = "Delete account role", description = "Admin delete role of account (Manage account)")
@@ -355,10 +355,10 @@ public class AccountController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping(value = "role/delete")
-    public ResponseEntity<?> deleteAcountRole(@RequestParam Integer accountID, @RequestParam Integer roleID) {
+    public ResponseEntity<?> deleteAcountRole(@RequestParam Integer accountID, @RequestParam ERole roleName) {
 
         // gọi service delete role of account
-        accountService.deleteRole(accountID, roleID);
+        accountService.deleteRole(accountID, roleName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -44,7 +44,7 @@ public class Workout {
     private String workoutDescription;
 
     @Column(name = "TotalCloriesBurned", nullable = false)
-    private Integer totalCloriesBurned;
+    private Integer totalCaloriesBurned;
 
     @Column(name = "StandardWeight", nullable = false)
     private Integer standardWeight;
@@ -66,7 +66,7 @@ public class Workout {
     public Workout(String workoutName, Integer standardWeight, String workoutDescription, Advisor advisor) {
         this.workoutName = workoutName;
         this.workoutDescription = workoutDescription;
-        this.totalCloriesBurned = 0;
+        this.totalCaloriesBurned = 0;
         this.standardWeight = standardWeight;
         this.creationDate = LocalDate.now();
         this.advisor = advisor;
