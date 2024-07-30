@@ -273,23 +273,23 @@ public class WorkoutController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(
-            summary = "Deactivate workout exercise",
-            description = "Deactivate workout exercises by exercise ID and workoutID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Delete success!"),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @DeleteMapping(value = "/workout-exercise/deactivate")
-//    @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> deactivateWorkoutExersice(@RequestParam Integer workoutExerciseID) {
-        // gọi service để deactivate workout exercise
-        workoutExerciseService.deactivateWorkoutExercise(workoutExerciseID);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+//    @Operation(
+//            summary = "Deactivate workout exercise",
+//            description = "Deactivate workout exercises by exercise ID and workoutID")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "204", description = "Delete success!"),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @DeleteMapping(value = "/workout-exercise/deactivate")
+////    @PreAuthorize("hasRole('ADVISOR')")
+//    public ResponseEntity<?> deactivateWorkoutExersice(@RequestParam Integer workoutExerciseID) {
+//        // gọi service để deactivate workout exercise
+//        workoutExerciseService.deactivateWorkoutExercise(workoutExerciseID);
+//
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 
     @Operation(
             summary = "Activate workout exercise",

@@ -31,7 +31,7 @@ public class CreateFoodRequest {
     @NotNull
     @Positive
     @Schema(name = "foodCalories", example = "500")
-    private int foodCalories;
+    private Integer foodCalories;
 
     @Size(max = 255)
     @Schema(name = "description", example = "Delicious pizza with cheese and toppings. (Can blank)")

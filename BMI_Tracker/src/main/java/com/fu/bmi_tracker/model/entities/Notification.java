@@ -45,4 +45,7 @@ public class Notification {
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
+
+    @Column(name = "AccountID", nullable = false)
+    private Integer accountID;
 }

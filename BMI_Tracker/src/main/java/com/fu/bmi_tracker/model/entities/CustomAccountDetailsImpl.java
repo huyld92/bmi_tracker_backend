@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fu.bmi_tracker.model.enums.EGender;
 import java.time.LocalDate;
 import java.util.Collection;
