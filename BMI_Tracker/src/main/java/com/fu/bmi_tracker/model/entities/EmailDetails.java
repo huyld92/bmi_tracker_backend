@@ -4,9 +4,7 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  *

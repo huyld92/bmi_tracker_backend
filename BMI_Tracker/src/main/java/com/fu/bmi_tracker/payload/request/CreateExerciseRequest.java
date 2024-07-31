@@ -2,6 +2,7 @@ package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -27,9 +28,11 @@ public class CreateExerciseRequest {
     private String exerciseName;
 
     @Schema(example = "http://example.com/photo.jpg")
+    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String exercisePhoto;
 
     @Schema(example = "http://example.com/video.mp4")
+    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String exerciseVideo;
 
     @Schema(example = "8.0")

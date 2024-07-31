@@ -36,7 +36,6 @@ public class CreateAccountRequest {
     @Schema(name = "phoneNumber", example = "0907111111")
     private String phoneNumber;
 
-    @NotBlank(message = "Gender is required")
     @Schema(name = "gender", examples = {"Male", "Female"})
     private EGender gender;
 

@@ -116,7 +116,7 @@ public class FoodServiceImpl implements FoodService {
 
             Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with id{" + recipeRequest.getIngredientID() + "}!"));
-
+            recipe.setFood(food);
             recipe.setIngredient(ingredient);
             recipe.setUnit(recipeRequest.getUnit());
             recipe.setQuantity(recipeRequest.getQuantity());

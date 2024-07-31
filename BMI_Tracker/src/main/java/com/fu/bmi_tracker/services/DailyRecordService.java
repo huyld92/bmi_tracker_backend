@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.DailyRecord;
-import com.fu.bmi_tracker.payload.response.DailyRecordFullResponse;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,5 @@ public interface DailyRecordService extends GeneralService<DailyRecord> {
     Optional<DailyRecord> findByAccountIDAndDate(Integer accountID, LocalDate date);
 
     public List<DailyRecord> getDailyRecordsForWeek(Integer memberID, LocalDate date);
-
-    public List<DailyRecordFullResponse> Last7DaysByMemberID(Integer memberID, LocalDate endDate);
 
 }

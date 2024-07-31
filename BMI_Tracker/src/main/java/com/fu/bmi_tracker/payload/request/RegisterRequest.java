@@ -48,7 +48,6 @@ public class RegisterRequest {
     @Schema(name = "password", example = "As123456@")
     private String password;
 
-    @NotBlank(message = "Gender is required")
     @Schema(name = "gender", examples = {"Male"})
     private EGender gender;
 

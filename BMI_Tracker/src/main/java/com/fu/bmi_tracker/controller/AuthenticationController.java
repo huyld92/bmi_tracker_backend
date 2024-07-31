@@ -261,11 +261,12 @@ public class AuthenticationController {
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-        if (accountService.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Phone number is already taken!"));
-        }
+        
+//        if (accountService.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Phone number is already taken!"));
+//        }
         // tìm role bằng role name
         Role role = roleService.findByRoleName(ERole.ROLE_MEMBER)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find role!"));

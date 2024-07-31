@@ -31,7 +31,7 @@ public class CreateBlogRequest {
     private String blogContent;
 
     @Schema(example = "http://example.com/photo.jpg")
-    @Pattern(regexp = "(http|https)://.*\\.(jpg|jpeg|png|gif)", message = "Blog photo must be a valid URL ending in .jpg, .jpeg, .png, or .gif")
+    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String blogPhoto;
 
     @Schema(example = "http://example.com")

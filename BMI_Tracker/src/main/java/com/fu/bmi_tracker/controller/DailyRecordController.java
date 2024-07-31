@@ -87,36 +87,5 @@ public class DailyRecordController {
 
         return new ResponseEntity<>(responses, HttpStatus.OK);
 
-    }
-
-    // Lấy danh sách daily record của Member
-    @Operation(summary = "Retrieve daily record by memberID",
-            description = "Get daily record of member by memberID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = DailyRecordFullResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "204", description = "There are no meal", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping("/member/getLast-7-days")
-    public ResponseEntity<?> getLast7Days(@RequestParam Integer memberID, @RequestParam String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate endDate;
-        // Validation date 
-        try {
-            endDate = LocalDate.parse(date, formatter);
-        } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
-                    new Date(),
-                    "Invalid date format. Please provide the date in the format yyyy-MM-dd.",
-                    "");
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-        }
-        // gọi service tìm dailyrecord và trả về daily response
-        List<DailyRecordFullResponse> responses = dailyRecordService.Last7DaysByMemberID(memberID, endDate);
-
-        return new ResponseEntity<>(responses, HttpStatus.OK);
-
-    }
+    } 
 }
