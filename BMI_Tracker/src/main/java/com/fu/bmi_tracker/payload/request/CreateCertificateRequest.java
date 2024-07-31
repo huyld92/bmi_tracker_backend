@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +31,8 @@ public class CreateCertificateRequest {
     @Schema(name = "certificateLink", example = "certificatePhoto.jpg")
     private String certificateLink;
 
-    @NotBlank
+    @Positive
     @Size(max = 100)
     @Schema(name = "advisorID", example = "1")
-    private int advisorID;
+    private Integer advisorID;
 }

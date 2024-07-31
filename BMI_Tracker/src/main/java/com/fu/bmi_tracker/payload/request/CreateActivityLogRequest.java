@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.payload.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,6 @@ public class CreateActivityLogRequest {
     @Schema(name = "dateOfActivity", example = "2024-05-01")
     private String dateOfActivity;
 
-    @Positive
     @Schema(name = "exerciseID", example = "1")
     private Integer exerciseID;
 }

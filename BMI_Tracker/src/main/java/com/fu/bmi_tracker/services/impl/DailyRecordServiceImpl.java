@@ -60,24 +60,6 @@ public class DailyRecordServiceImpl implements DailyRecordService {
         return dailyRecordRepository.findByMemberIDWithStarEndDate(memberID, startDate, endDate);
     }
 
-    @Override
-    public List<DailyRecordFullResponse> Last7DaysByMemberID(Integer memberID, LocalDate endDate) {
-        // lấy 7 ngày gần nhất
-        // Lấy endDate trừ 6 để lấy ngày bắt đầu
-        LocalDate startDate = endDate.minusDays(6);
-
-        // tìm tất cả daily record bằng member ID với 7 ngày gần nhất
-        List<DailyRecord> dailyRecords = dailyRecordRepository.findFullByMemberIDWithStartEndDate(memberID, startDate, endDate);
-
-        // chuyển đổi list thành (Stream<DailyRecord>), cho phép thực hiện biến đổi dữ liệu tuần tự trên từng phần tử.
-        // tách ra thành từng luồn xử lý nhỏ map từng giá trị -> chuyển đổi -> collect tập hợp lại -> Collectors.toList() tạo thành list mới
-        // 'map' là một phương thức của Stream API, dùng để ánh xạ từng phần tử của Stream sang một giá trị mới
-        // 'this::toDailyRecordFullResponse' sử dụng để gọi phương thức toDailyRecordFullResponse tham chiếu từ DailyRecordService 
-        // '.collect(Collectors.toList())' tập hợp các phần tử từ Stream thành List Full Response
-        return dailyRecords.stream().map(this::toDailyRecordFullResponse).collect(Collectors.toList());
-
-    }
-
     //chuyển đổi từ DailyRecord sáng FullResponse
     private DailyRecordFullResponse toDailyRecordFullResponse(DailyRecord dailyRecord) {
         List<ActivityLogResponse> activityLogs = dailyRecord.getActivityLogs().stream()

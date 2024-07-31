@@ -34,6 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -193,13 +194,13 @@ public class ActivityLogController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @PostMapping(value = "/update")
+    @PutMapping(value = "/update")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> updateActivityLog(@Valid @RequestBody UpdateActivityLogRequest activityLogRequest) {
         // gọi activity log service cập nhật thông tin activity log
         ActivityLog activityLogSave = activityLogService.updateActivityLog(activityLogRequest);
 
-        return new ResponseEntity<>(activityLogSave, HttpStatus.CREATED);
+        return new ResponseEntity<>(activityLogSave, HttpStatus.OK);
     }
 
     @Operation(

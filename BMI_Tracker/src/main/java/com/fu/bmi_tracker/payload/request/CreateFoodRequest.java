@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.payload.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -39,10 +40,12 @@ public class CreateFoodRequest {
 
     @Size(max = 255)
     @Schema(name = "foodPhoto", example = "photourl.com/pizza.jpg (Can blank)")
+    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String foodPhoto;
 
     @Size(max = 255)
     @Schema(name = "foodVideo", example = "videourl.com/pizza.mp4 (Can blank)")
+    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String foodVideo;
 
     @NotBlank

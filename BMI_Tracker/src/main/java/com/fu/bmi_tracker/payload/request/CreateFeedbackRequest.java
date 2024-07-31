@@ -19,24 +19,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateFeedbackRequest {
-    
+
     @NotNull
     @Size(max = 100)
     @Schema(name = "title", example = "Các món ăn quá nhiều dầu mỡ")
     private String title;
-    
+
     @Size(max = 100)
     @Schema(name = "description", example = "Tui không thích ăn dầu mỡ (NULL)")
     private String description;
-    
+
     @NotNull
     @Size(max = 100)
     @Schema(name = "type", example = "Menu feedback")
     private String type;
-    
+
     @NotNull
     @Schema(name = "memberID", example = "1")
-    private int memberID;
-    
-    
+    private Integer memberID;
+
 }

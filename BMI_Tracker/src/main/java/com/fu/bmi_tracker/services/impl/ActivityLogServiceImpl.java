@@ -59,6 +59,13 @@ public class ActivityLogServiceImpl implements ActivityLogService {
     public ActivityLog createActivityLog(CreateActivityLogRequest activityLogRequest, LocalDate dateOfActivity, Integer accountID) {
         // kiểm tra tồn tại daily record từ accountID và dateOfActivity
         DailyRecord dailyRecord = existedDailyRecord(accountID, activityLogRequest.getCaloriesBurned(), dateOfActivity);
+        if (activityLogRequest.getExerciseID() < 0) {
+            // ngược lại chưa tồn tại => tạo mới activity log 
+            ActivityLog activityLog = new ActivityLog(activityLogRequest, dailyRecord.getRecordID());
+
+            //gọi repository lưu activity log
+            return activityRepository.save(activityLog);
+        }
 
         // kiểm tra activity log với exerciseID đã tồn tại chưa
         Optional<ActivityLog> optionalActivityLog = dailyRecord.getActivityLogs().stream()
@@ -108,7 +115,7 @@ public class ActivityLogServiceImpl implements ActivityLogService {
         activityLog.setActivityName(activityLogRequest.getActivityName());
         activityLog.setCaloriesBurned(activityLogRequest.getCaloriesBurned());
         activityLog.setDuration(activityLogRequest.getDuration());
-        
+
         // trả về kết quả cập nhật
         return save(activityLog);
     }

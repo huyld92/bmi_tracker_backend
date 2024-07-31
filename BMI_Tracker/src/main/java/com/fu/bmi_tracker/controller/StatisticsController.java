@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.exceptions.ErrorMessage;
+import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
@@ -42,6 +43,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -338,4 +340,97 @@ public class StatisticsController {
         );
         return ResponseEntity.ok(bodyMassResponses);
     }
+
+    // từ hôm nay lấy ngược 7 ngày trước cho dailyrecord của member
+    @Operation(summary = "Statistics dailyrecord of member in 7 days (MEMBER)", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = TotalAdvisorMemberResponse.class))}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("member/daily-record/week-by-date")
+    public ResponseEntity<?> getDailyRecordIn7Days(@RequestParam String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate;
+        // Validation date 
+        try {
+            localDate = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // Get Member id from acccount id context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Gọi memberService tìm member bằng memberID
+        Member member = memberService.findByAccountID(principal.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member with account id{" + principal.getId() + "}!"));
+
+        // Tìm danh sách daily record từ member ID và date trong vòng một tuần
+        List<DailyRecord> dailyRecords = dailyRecordService.getDailyRecordsForWeek(member.getMemberID(), localDate);
+
+        if (dailyRecords.isEmpty()) {
+            // 204 không có 
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // tạo response
+        List<DailyRecordResponse> responses = new ArrayList<>();
+        dailyRecords.forEach((DailyRecord dr) -> responses.add(new DailyRecordResponse(dr)));
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
+    //lấy cân nặng trong 30days
+    @Operation(
+            summary = "Get all bodymass of member in 1 months (MEMBER)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",
+                content = {
+                    @Content(schema = @Schema(implementation = MemberBodyMassResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping("member/member-bodymass/getInMonth")
+    public ResponseEntity<?> getAllBodyMassOfMemberIn3Month(@RequestParam(required = true) String date) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate;
+        // Validation date 
+        try {
+            localDate = LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage(
+                    HttpStatus.BAD_REQUEST.value(),
+                    new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd", "");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+        // Get Member id from acccount id context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Gọi memberService tìm member bằng memberID
+        Member member = memberService.findByAccountID(principal.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find member with account id{" + principal.getId() + "}!"));
+
+        // tìm tất cả bodymass bawfng memberID
+        Iterable<MemberBodyMass> bodyMasses = memberBodyMassService.getBodyMassInMonthByMemberID(member.getMemberID(), localDate);
+
+        // tạo member body mass response
+        List<MemberBodyMassResponse> bodyMassResponses = new ArrayList<>();
+        bodyMasses.forEach(bodyMass -> {
+            BMIUtils bMIUtils = new BMIUtils();
+
+            double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+            int age = LocalDate.now().getYear() - bodyMass.getMember().getAccount().getBirthday().getYear();
+
+            bodyMassResponses.add(new MemberBodyMassResponse(bodyMass, age, bmi));
+        }
+        );
+        return ResponseEntity.ok(bodyMassResponses);
+    }
+
 }

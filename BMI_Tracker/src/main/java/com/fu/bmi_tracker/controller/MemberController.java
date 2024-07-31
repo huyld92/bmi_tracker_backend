@@ -102,6 +102,7 @@ public class MemberController {
                     .badRequest()
                     .body(new MessageResponse("Error: Member already exists!"));
         }
+
         // tính BMI
         double bmi = bMIUtils.calculateBMI(createMemberRequest.getWeight(), createMemberRequest.getHeight());
 
@@ -143,7 +144,7 @@ public class MemberController {
         memberBodyMassService.save(bodyMass);
 
         // Generate suggestion menu
-        CreateMemberResponse createMemberResponse = new CreateMemberResponse(principal.getId(), defaultCalories,
+        CreateMemberResponse createMemberResponse = new CreateMemberResponse(memberSaved.getMemberID(), defaultCalories,
                 createMemberRequest.getHeight(), createMemberRequest.getWeight(), age, bmi, bmr, tdee);
 
         return new ResponseEntity<>(createMemberResponse, HttpStatus.CREATED);
