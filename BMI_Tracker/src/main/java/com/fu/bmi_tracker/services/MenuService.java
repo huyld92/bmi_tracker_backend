@@ -26,4 +26,6 @@ public interface MenuService extends GeneralService<Menu> {
 
     public List<MenuFood> createNewMenuFoods(List<CreateMenuFoodRequest> menuFoodRequests);
 
+    public Iterable<Menu> getMenuActiveByAdvisorID(Integer advisorID);
+
 }

@@ -40,7 +40,7 @@ public class UpdateBlogRequest {
     private String blogPhoto;
 
     @Schema(example = "http://example.com")
-//    @Pattern(regexp = "link", message = "Link must be a valid URL")
+    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String link;
 
     @Schema(example = "true")

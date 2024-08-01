@@ -277,8 +277,8 @@ public class MenuController {
     }
 
     @Operation(
-            summary = "Get menu by advisor by advisorID",
-            description = "Get all menu include food of advisor")
+            summary = "Get menu available by advisor",
+            description = "Get all menu of advisor with isActive true")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
@@ -286,10 +286,20 @@ public class MenuController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "/getMenuByAdvisorID")
-    public ResponseEntity<?> getMenuByAdvisorID(@RequestParam Integer advisorID) {
+    @GetMapping(value = "advisor/get-available")
+    public ResponseEntity<?> getMenuActiveByAdvisorID() {
+        //get account from context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Tìm Advisor 
+        Advisor advisor = advisorService.findByAccountID(principal.getId());
+        if (advisor == null) {
+            return new ResponseEntity<>(new MessageResponse("Cannot find advisor!"), HttpStatus.BAD_REQUEST);
+        }
+
         // Lấy danh sách menu
-        Iterable<Menu> menus = menuService.getAllByAdvisorID(advisorID);
+        Iterable<Menu> menus = menuService.getMenuActiveByAdvisorID(advisor.getAdvisorID());
+
         if (!menus.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -460,7 +470,6 @@ public class MenuController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-
     @Operation(
             summary = "Activate menu food",
             description = "Activate menu food by food id and menu id")

@@ -65,7 +65,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (!workout.getStandardWeight().equals(updateWorkoutRequest.getStandardWeight())) {
             // cập nhật lại calories burned khi weight có thay đổi
             workout.setTotalCaloriesBurned(0);
-            
+
             // duyệt danh sách workout exercise
             workout.getWorkoutExercises().forEach(workoutExercise -> {
                 // tính calories burned
@@ -143,6 +143,12 @@ public class WorkoutServiceImpl implements WorkoutService {
         // set workout exercise cho workout và lưu trữ
         workout.setWorkoutExercises(workoutExercises);
         return save(workout);
+    }
+
+    @Override
+    public Iterable<Workout> getWorkoutActiveByAdvisorID(Integer advisorID) {
+        return workoutRepository.findByAdvisor_AdvisorIDAndIsActiveTrue(advisorID);
+
     }
 
 }

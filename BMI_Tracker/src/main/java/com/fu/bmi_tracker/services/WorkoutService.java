@@ -24,4 +24,6 @@ public interface WorkoutService extends GeneralService<Workout> {
 
     public Workout createNewWorkout(CreateWorkoutRequest createWorkoutRequest, Integer accountID);
 
+    public Iterable<Workout> getWorkoutActiveByAdvisorID(Integer advisorID);
+
 }

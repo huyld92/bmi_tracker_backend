@@ -153,8 +153,11 @@ public class WorkoutHistoryController {
 //    @PreAuthorize("hasRole('AVISOR')")
     public ResponseEntity<?> assignWorkout(@Valid @RequestParam Integer workoutID, @RequestParam Integer memberID) {
         // gọi service assign workout cho member
-        workoutHistoryService.assignWorkoutToMember(workoutID, memberID);
+        WorkoutHistory workoutHistory = workoutHistoryService.assignWorkoutToMember(workoutID, memberID);
+        if (workoutHistory == null) {
+            return new ResponseEntity<>(new MessageResponse("Workout is inactive"), HttpStatus.BAD_REQUEST);
 
+        }
         return new ResponseEntity<>(new MessageResponse("Assign workout to member success"), HttpStatus.OK);
     }
 

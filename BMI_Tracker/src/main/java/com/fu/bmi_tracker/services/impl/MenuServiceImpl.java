@@ -113,4 +113,10 @@ public class MenuServiceImpl implements MenuService {
         return menuFoodRepository.saveAll(menuFoods);
     }
 
+    @Override
+    public Iterable<Menu> getMenuActiveByAdvisorID(Integer advisorID) {
+        return menuRepository.findByAdvisor_AdvisorIDAndIsActiveTrue(advisorID);
+
+    }
+
 }

@@ -37,11 +37,11 @@ public class Advisor {
     @JoinColumn(name = "AccountID", nullable = false, unique = true)
     private Account account;
 
-    @Column(name = "Height", nullable = false)
-    private Integer height;
-
-    @Column(name = "Weight", nullable = false)
-    private Integer weight;
+//    @Column(name = "Height", nullable = false)
+//    private Integer height;
+//
+//    @Column(name = "Weight", nullable = false)
+//    private Integer weight;
 
     @Column(name = "totalSubscription", nullable = false)
     private Integer totalSubscription;
