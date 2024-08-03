@@ -4,11 +4,15 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.payload.request.CreateMenuFoodRequest;
+import com.fu.bmi_tracker.payload.request.CreateMenuRequest;
+import com.fu.bmi_tracker.payload.request.MenuFoodRequest;
 import com.fu.bmi_tracker.payload.response.CountMenuResponse;
+import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.MenuFoodRepository;
 import com.fu.bmi_tracker.services.MenuService;
@@ -26,6 +30,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     MenuRepository menuRepository;
+
+    @Autowired
+    AdvisorRepository advisorRepository;
 
     @Autowired
     FoodRepository foodRepository;
@@ -54,7 +61,34 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Menu createNewMenu(Menu menu) {
+    public Menu createNewMenu(CreateMenuRequest menuRequest, Integer accountID) {
+
+        // Tìm advisor
+        Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("No advisor found!"));
+
+        // Tạo mới menu
+        Menu menu = new Menu(menuRequest, advisor);
+
+        // Tạo danh sách Menu Food object từ menuRequest và menu food reponse
+        List<MenuFood> menuFoods = new ArrayList<>();
+        menuRequest.getMenuFoods().forEach((MenuFoodRequest request) -> {
+            Food food = foodRepository.findById(request.getFoodID())
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find food id{" + request.getFoodID() + "}!"));
+
+            //tính total calories
+            int totalCalories = menu.getTotalCalories() + food.getFoodCalories();
+            menu.setTotalCalories(totalCalories);
+
+//            FoodResponse foodResponse = new FoodResponse(food);
+//
+//            // add menu food response
+//            menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType(), menu.getIsActive()));
+            // add menu food
+            menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
+        });
+
+        menu.setMenuFoods(menuFoods);
         // lưu trữ Menu
         return save(menu);
     }

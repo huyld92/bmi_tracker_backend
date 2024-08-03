@@ -87,58 +87,24 @@ public class MenuController {
         // lấy account iD từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
+        Menu menu = menuService.createNewMenu(menuRequest, principal.getId());
 
-        // Tìm advisor
-        Advisor advisor = advisorService.findByAccountID(principal.getId());
-
-        // Kiểm tra advisor
-        if (advisor == null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Cannot find advisor!"));
+        if (menu == null) {
+            return new ResponseEntity<>(new MessageResponse("Create new menu failed!"), HttpStatus.BAD_REQUEST);
         }
-
-        // Create new object
-        Menu menu = new Menu(menuRequest, advisor.getAdvisorID());
-
-        // Tạo danh sách Menu Food object từ menuRequest và menu food reponse
-        List<MenuFood> menuFoods = new ArrayList<>();
-
         // tạo menu food responses
         List<MenuFoodResponse> menuFoodResponses = new ArrayList<>();
-        menuRequest.getMenuFoods().forEach((MenuFoodRequest request) -> {
-            Food food = foodService.findById(request.getFoodID())
-                    .orElseThrow(() -> new EntityNotFoundException("Cannot find food id{" + request.getFoodID() + "}!"));
+        menu.getMenuFoods().forEach(menuFood -> {
 
-            //tính total calories
-            int totalCalories = menu.getTotalCalories() + food.getFoodCalories();
-            menu.setTotalCalories(totalCalories);
-
-            FoodResponse foodResponse = new FoodResponse(food);
-
-            // add menu food response
-            menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType(), menu.getIsActive()));
-
-            // add menu food
-            menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
+            menuFoodResponses.add(new MenuFoodResponse(
+                    menuFood.getFood(),
+                    menuFood.getMealType(),
+                    menu.getIsActive()));
         });
-
-        // Store to database
-        Menu menuSave = menuService.createNewMenu(menu);
-
-        // check result
-        if (menuSave == null) {
-            return new ResponseEntity<>(new MessageResponse("Failed to create new menu"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        // lưu danh sách menu food
-        if (!menuFoods.isEmpty()) {
-            menuFoodService.saveAll(menuFoods);
-        }
 
         // tạo menu response
         MenuResponse menuResponse = new MenuResponse(
-                menuSave,
+                menu,
                 menuFoodResponses);
 
         return new ResponseEntity<>(menuResponse, HttpStatus.CREATED);

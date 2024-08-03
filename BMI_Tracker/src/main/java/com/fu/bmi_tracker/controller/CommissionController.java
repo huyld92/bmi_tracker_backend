@@ -5,9 +5,12 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Commission;
+import com.fu.bmi_tracker.model.entities.CommissionAllocation;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.payload.request.UpdateCommissionRequest;
 import com.fu.bmi_tracker.payload.response.CommissionAdvisorResponse;
+import com.fu.bmi_tracker.payload.response.CommissionAllocationResponse;
+import com.fu.bmi_tracker.services.CommissionAllocationService;
 import com.fu.bmi_tracker.services.CommissionService;
 import com.fu.bmi_tracker.util.CommissionRateUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +45,9 @@ public class CommissionController {
 
     @Autowired
     CommissionService commissionService;
+
+    @Autowired
+    CommissionAllocationService commissionAllocationService;
 
     @Autowired
     private CommissionRateUtils commissionRateUtils;
@@ -188,4 +194,32 @@ public class CommissionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(summary = "Get all commission by commission ID", description = "Send commission ID and get all commisssion")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CommissionAllocationResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/get-details")
+    public ResponseEntity<?> getCommissionDetails(@RequestParam Integer commissionID) {
+        // Gọi Commission servicce lấy danh sách Commission của advisor
+        Iterable<CommissionAllocation> commissionAllocations = commissionAllocationService.getAllByCommissionID(commissionID);
+
+        // check result
+        if (!commissionAllocations.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // taoj commission response
+        List<CommissionAllocationResponse> commissionResponses = new ArrayList<>();
+
+        commissionAllocations.forEach(commissionAllocation -> {
+            commissionResponses.add(new CommissionAllocationResponse(
+                    commissionAllocation,
+                    commissionAllocation.getSubscription().getSubscriptionNumber()));
+        });
+        return new ResponseEntity<>(commissionResponses, HttpStatus.OK);
+    }
 }

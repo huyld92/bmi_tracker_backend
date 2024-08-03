@@ -261,7 +261,7 @@ public class AuthenticationController {
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-        
+
 //        if (accountService.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
 //            return ResponseEntity
 //                    .badRequest()

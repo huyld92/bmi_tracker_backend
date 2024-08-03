@@ -24,16 +24,9 @@ public class CreateMenuRequest {
     @NotBlank(message = "Menu name is required")
     private String menuName;
 
-    @Schema(example = "http://example.com/photo.jpg (NULL)")
-    private String menuPhoto;
-
     @Schema(example = "A delicious and healthy breakfast option.")
     private String menuDescription;
 
-//    @Schema(example = "450")
-//    @NotNull(message = "Total calories are required")
-//    @PositiveOrZero(message = "Total calories must be zero or positive")
-//    private Integer totalCalories;
     @Schema(description = "List of foods included in the menu")
 //    @NotNull(message = "Menu foods are required")
     private List<MenuFoodRequest> menuFoods;

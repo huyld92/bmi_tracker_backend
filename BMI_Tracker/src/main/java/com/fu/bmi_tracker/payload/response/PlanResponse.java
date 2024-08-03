@@ -21,6 +21,7 @@ public class PlanResponse {
 
     private Integer planID;
     private String planName;
+    private String planCode;
     private BigDecimal price;
     private String description;
     private Integer planDuration;
@@ -30,6 +31,7 @@ public class PlanResponse {
     public PlanResponse(Plan plan) {
         this.planID = plan.getPlanID();
         this.planName = plan.getPlanName();
+        this.planCode = plan.getPlanCode() + planID;
         this.price = plan.getPrice();
         this.description = plan.getDescription();
         this.planDuration = plan.getPlanDuration();

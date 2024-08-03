@@ -20,6 +20,7 @@ import com.fu.bmi_tracker.util.ExerciseUtils;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;

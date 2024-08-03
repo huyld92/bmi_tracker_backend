@@ -33,9 +33,9 @@ public class CreateFeedbackRequest {
     @Size(max = 100)
     @Schema(name = "type", example = "Menu feedback")
     private String type;
-
-    @NotNull
-    @Schema(name = "memberID", example = "1")
-    private Integer memberID;
+//
+//    @NotNull
+//    @Schema(name = "memberID", example = "1")
+//    private Integer memberID;
 
 }

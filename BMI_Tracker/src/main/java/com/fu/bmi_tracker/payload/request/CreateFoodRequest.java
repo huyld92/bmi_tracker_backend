@@ -40,12 +40,12 @@ public class CreateFoodRequest {
 
     @Size(max = 255)
     @Schema(name = "foodPhoto", example = "photourl.com/pizza.jpg (Can blank)")
-    @Pattern(regexp = "link", message = "Link must be a valid URL")
+    @NotBlank
     private String foodPhoto;
 
     @Size(max = 255)
+    @NotBlank
     @Schema(name = "foodVideo", example = "videourl.com/pizza.mp4 (Can blank)")
-    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String foodVideo;
 
     @NotBlank
@@ -56,7 +56,7 @@ public class CreateFoodRequest {
     @NotBlank
     @Size(max = 100)
     @Schema(name = "serving", example = "1 serving")
-    private String serving;
+    private Integer serving;
 
     @NotNull
     @Positive

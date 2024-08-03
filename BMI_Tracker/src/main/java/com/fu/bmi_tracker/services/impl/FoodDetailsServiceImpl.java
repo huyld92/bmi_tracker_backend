@@ -6,23 +6,23 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Ingredient;
-import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.entities.FoodDetails;
 import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.IngredientRepository;
-import com.fu.bmi_tracker.repository.RecipeRepository;
-import com.fu.bmi_tracker.services.RecipeService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fu.bmi_tracker.repository.FoodDetailsRepository;
+import com.fu.bmi_tracker.services.FoodDetailsService;
 
 @Service
-public class RecipeServiceImpl implements RecipeService {
+public class FoodDetailsServiceImpl implements FoodDetailsService {
 
     @Autowired
-    RecipeRepository repository;
+    FoodDetailsRepository repository;
 
     @Autowired
     FoodRepository foodRepository;
@@ -31,23 +31,23 @@ public class RecipeServiceImpl implements RecipeService {
     IngredientRepository ingredientRepository;
 
     @Override
-    public Iterable<Recipe> findAll() {
+    public Iterable<FoodDetails> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<Recipe> findById(Integer id) {
+    public Optional<FoodDetails> findById(Integer id) {
         // return repository.findById(id);
         return null;
     }
 
     @Override
-    public Recipe save(Recipe t) {
+    public FoodDetails save(FoodDetails t) {
         return repository.save(t);
     }
 
     @Override
-    public Recipe createRecipe(CreateRecipeRequest recipeRequest) {
+    public FoodDetails createRecipe(CreateRecipeRequest recipeRequest) {
         // gọi foodRepository tìm food bằng foodID
         Food food = foodRepository.findById(recipeRequest.getFoodID())
                 .orElseThrow(() -> new EntityNotFoundException("Food not found"));
@@ -57,11 +57,10 @@ public class RecipeServiceImpl implements RecipeService {
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
 
         // tạo recipe full contructor
-        Recipe recipe = new Recipe(food,
+        FoodDetails recipe = new FoodDetails(food,
                 ingredient,
                 recipeRequest.getQuantity(),
-                recipeRequest.getUnit(),
-                Boolean.TRUE);
+                recipeRequest.getUnit());
 
         return repository.save(recipe);
 
@@ -69,19 +68,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    public void deleteRecipe(Integer recipeID) {
-        repository.deleteById(recipeID);
-    }
-
-    @Override
-    public void deactivateRecipe(Integer recipeID) {
-        // tìm recipe bằng foodID và ingredientID
-        Recipe recipe = repository.findById(recipeID)
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find recipe!"));
-        // set IsActive  = false để deactivate
-        recipe.setIsActive(false);
-        // lưu lại recipe đã cập nhật
-        save(recipe);
+    public void deleteFoodDetails(Integer foodDetailsID) {
+        repository.deleteById(foodDetailsID);
     }
 
 }

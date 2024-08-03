@@ -5,17 +5,16 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.entities.FoodDetails;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.payload.response.FoodEntityResponse;
 import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
-import com.fu.bmi_tracker.payload.response.RecipeResponse;
+import com.fu.bmi_tracker.payload.response.FoodDetailsResponse;
 import com.fu.bmi_tracker.services.FoodService;
-import com.fu.bmi_tracker.services.RecipeService;
-import com.fu.bmi_tracker.util.RecipeConverter;
+import com.fu.bmi_tracker.util.FoodDetailsConverter;
 
 import com.fu.bmi_tracker.util.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.fu.bmi_tracker.services.FoodDetailsService;
 
 /**
  *
@@ -55,7 +55,7 @@ public class FoodController {
     FoodService foodService;
 
     @Autowired
-    RecipeService recipeService;
+    FoodDetailsService recipeService;
 
     @Operation(summary = "Create new food with form", description = "Create new food with form")
     @ApiResponses({
@@ -74,7 +74,7 @@ public class FoodController {
         // Tạo food entity response
         FoodEntityResponse foodResponse = new FoodEntityResponse(food,
                 TagConverter.convertToTagBasicResponseList(food.getFoodTags()),
-                RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
+                FoodDetailsConverter.convertToFoodDetailsResponseList(food.getFoodDetails()));
 
         return new ResponseEntity<>(foodResponse, HttpStatus.CREATED);
     }
@@ -102,7 +102,7 @@ public class FoodController {
             FoodEntityResponse foodResponse = new FoodEntityResponse(
                     food,
                     TagConverter.convertToTagBasicResponseList(food.getFoodTags()),
-                    RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
+                    FoodDetailsConverter.convertToFoodDetailsResponseList(food.getFoodDetails()));
 
             foodsResponse.add(foodResponse);
         }
@@ -156,7 +156,7 @@ public class FoodController {
             // Tạo food entity response
             FoodEntityResponse foodResponse = new FoodEntityResponse(food.get(),
                     TagConverter.convertToTagBasicResponseList(food.get().getFoodTags()),
-                    RecipeConverter.convertToRecipeResponseList(food.get().getRecipes()));
+                    FoodDetailsConverter.convertToFoodDetailsResponseList(food.get().getFoodDetails()));
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
@@ -182,7 +182,7 @@ public class FoodController {
             // Tạo food entity response
             FoodEntityResponse foodResponse = new FoodEntityResponse(food,
                     TagConverter.convertToTagBasicResponseList(food.getFoodTags()),
-                    RecipeConverter.convertToRecipeResponseList(food.getRecipes()));
+                    FoodDetailsConverter.convertToFoodDetailsResponseList(food.getFoodDetails()));
 
             return new ResponseEntity<>(foodResponse, HttpStatus.OK);
         } else {
@@ -193,7 +193,7 @@ public class FoodController {
     @Operation(summary = "Deactivate a Food by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema(implementation = RecipeResponse.class))}),
+            @Content(schema = @Schema(implementation = FoodDetailsResponse.class))}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deactivate/{id}")
@@ -211,21 +211,20 @@ public class FoodController {
         }
     }
 
-    @Operation(summary = "Deactivate a recipe by recipeID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema(implementation = RecipeResponse.class))}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @DeleteMapping("/recipe/deactivate")
-    // @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deactivateRecipe(@RequestParam Integer recipeID) {
-        // Gọi recipeService deactivate recipe
-        recipeService.deactivateRecipe(recipeID);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
-
+//    @Operation(summary = "Deactivate a recipe by recipeID")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "204", content = {
+//            @Content(schema = @Schema(implementation = FoodDetailsResponse.class))}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @DeleteMapping("/recipe/deactivate")
+//    // @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<?> deactivateRecipe(@RequestParam Integer recipeID) {
+//        // Gọi recipeService deactivate recipe
+//        recipeService.deactivateRecipe(recipeID);
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//
+//    }
     @Operation(summary = "Create food recipe", description = "")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
@@ -236,15 +235,15 @@ public class FoodController {
     // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createFoodRecipe(@RequestBody CreateRecipeRequest recipeRequest) {
         // gọi recipeService tạo mới recipe
-        Recipe recipe = recipeService.createRecipe(recipeRequest);
+        FoodDetails recipe = recipeService.createRecipe(recipeRequest);
 
         // chuyển đổi từ recipe sáng RecipesResponse
-        RecipeResponse recipeResponse = new RecipeResponse(recipe);
+        FoodDetailsResponse recipeResponse = new FoodDetailsResponse(recipe);
 
         return new ResponseEntity<>(recipeResponse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete a recipe of Food by recipeID")
+    @Operation(summary = "Delete a foodDetails of Food by foodDetailsID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
@@ -252,8 +251,8 @@ public class FoodController {
             @Content(schema = @Schema())})})
     @DeleteMapping("/deleteRecipe")
     // @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteRecipe(@RequestParam Integer recipeID) {
-        recipeService.deleteRecipe(recipeID);
+    public ResponseEntity<?> deleteFoodDetails(@RequestParam Integer recipeID) {
+        recipeService.deleteFoodDetails(recipeID);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
@@ -325,7 +324,7 @@ public class FoodController {
     @Operation(summary = "Retrieve all recipes by foodID ")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = RecipeResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodDetailsResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -333,16 +332,16 @@ public class FoodController {
     @GetMapping("recipe/getAll")
     public ResponseEntity<?> getAllRecipesByFoodID(@RequestParam Integer foodID) {
         // Lấy danh sách food từ service
-        Iterable<Recipe> recipes = foodService.findAllRecipesByFoodID(foodID);
+        Iterable<FoodDetails> recipes = foodService.findAllRecipesByFoodID(foodID);
 
         // kiểm tra empty
         if (!recipes.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        // chuyển đổi từ recipe sang RecipeResponse
-        List<RecipeResponse> recipesResponse = new ArrayList<>();
-        for (Recipe recipe : recipes) {
-            RecipeResponse recipeResponse = new RecipeResponse(recipe);
+        // chuyển đổi từ recipe sang FoodDetailsResponse
+        List<FoodDetailsResponse> recipesResponse = new ArrayList<>();
+        for (FoodDetails recipe : recipes) {
+            FoodDetailsResponse recipeResponse = new FoodDetailsResponse(recipe);
 
             recipesResponse.add(recipeResponse);
         }
@@ -353,7 +352,7 @@ public class FoodController {
     @Operation(summary = "Get food with filter tag")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = RecipeResponse.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = FoodDetailsResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "204", description = "There are no Foods", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -367,7 +366,7 @@ public class FoodController {
         if (!foods.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        // chuyển đổi từ recipe sang RecipeResponse
+        // chuyển đổi từ recipe sang FoodDetailsResponse
         List<FoodResponse> foodResponses = new ArrayList<>();
         for (Food food : foods) {
             FoodResponse foodResponse = new FoodResponse(food);

@@ -29,7 +29,6 @@ public class WorkoutExerciseResponse {
     private String tagName;
     private Integer duration;
     private Integer caloriesBurned;
-    private Boolean isActive;
 
     public WorkoutExerciseResponse(WorkoutExercise workoutExercise) {
         this.workoutExerciseID = workoutExercise.getWorkoutExerciseID();
@@ -43,7 +42,6 @@ public class WorkoutExerciseResponse {
         this.tagName = workoutExercise.getExercise().getTag().getTagName();
         this.duration = workoutExercise.getDuration();
         this.caloriesBurned = workoutExercise.getCaloriesBurned();
-        this.isActive = workoutExercise.getIsActive();
     }
 
 }

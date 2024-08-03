@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Plan;
+import com.fu.bmi_tracker.payload.request.CreatePlanRequest;
 
 /**
  *
@@ -18,7 +19,7 @@ public interface PlanService extends GeneralService<Plan> {
     //Find All Plan by isActive = true;
     public Iterable<Plan> findAllAvailablePlan();
 
-    public Plan createPlan(Plan newPlan, Integer accountID);
+    public Plan createPlan(CreatePlanRequest newPlan, Integer accountID);
 
     public Iterable<Plan> findAllPlanFromPersonally(Integer accountID);
 

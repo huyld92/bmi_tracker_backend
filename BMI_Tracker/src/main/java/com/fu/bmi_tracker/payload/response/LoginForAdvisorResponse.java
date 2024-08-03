@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,16 +15,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuHistoryResponse {
+public class LoginForAdvisorResponse {
 
-    private Integer menuHistoryID;
-    private LocalDate dateOfAssigned;
-    private Integer menuID;
-    private Integer totalCalories;
-    private String menuDescription;
-    private String menuName;
     private Integer memberID;
+    private String email;
     private String fullName;
-    private Boolean isActive;
-
+    private String gender;
+    private String phoneNumber;
+    private String bankName;
+    private String bankNumber;
+    private String refreshToken;
+    private String accessToken;
 }

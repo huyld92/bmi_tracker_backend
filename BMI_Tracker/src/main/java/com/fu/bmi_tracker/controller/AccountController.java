@@ -100,8 +100,8 @@ public class AccountController {
         if (createAccountRequest.getRole() == ERole.ROLE_ADVISOR) {
             Advisor advisor = new Advisor(
                     accountSave,
-                    0,
-                    0,
+                    "",
+                    "",
                     0,
                     true
             );
@@ -134,7 +134,6 @@ public class AccountController {
         accountService.addMoreRole(accountID, roleName);
 
         return new ResponseEntity<>(new MessageResponse("Add role success"), HttpStatus.CREATED);
-
     }
 
     @Operation(summary = "Change password")

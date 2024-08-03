@@ -13,33 +13,38 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
-    
+
     @Autowired
     NotificationRepository notificationRepository;
-    
+
     @Override
     public Iterable<Notification> findAll() {
         return notificationRepository.findAll();
     }
-    
+
     @Override
     public Optional<Notification> findById(Integer id) {
         return notificationRepository.findById(id);
     }
-    
+
     @Override
     public Notification save(Notification t) {
         return notificationRepository.save(t);
     }
-    
+
     @Override
     public Iterable<Notification> findByAccountID(Integer accountID) {
         return notificationRepository.findByAccountID(accountID);
     }
-    
+
     @Override
     public void deleteByID(Integer notificationID) {
         notificationRepository.deleteById(notificationID);
     }
-    
+
+    @Override
+    public void markAsReadAll(Integer accountID) {
+        notificationRepository.markNotificationsAsReadByAccountID(accountID);
+    }
+
 }

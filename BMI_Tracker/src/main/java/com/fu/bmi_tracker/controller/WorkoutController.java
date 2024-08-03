@@ -329,23 +329,23 @@ public class WorkoutController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-    @Operation(
-            summary = "Activate workout exercise",
-            description = "Activate workout exercises by exercise ID and workoutID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Activate success!"),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PutMapping(value = "/workout-exercise/activate")
-//    @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> activateWorkoutExersice(@RequestParam Integer workoutExerciseID) {
-        // gọi service để activate workout exercise
-        workoutExerciseService.activateWorkoutExercise(workoutExerciseID);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+//    @Operation(
+//            summary = "Activate workout exercise",
+//            description = "Activate workout exercises by exercise ID and workoutID")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "204", description = "Activate success!"),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @PutMapping(value = "/workout-exercise/activate")
+////    @PreAuthorize("hasRole('ADVISOR')")
+//    public ResponseEntity<?> activateWorkoutExersice(@RequestParam Integer workoutExerciseID) {
+//        // gọi service để activate workout exercise
+//        workoutExerciseService.activateWorkoutExercise(workoutExerciseID);
+//
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 
     @Operation(
             summary = "Create workout exercise")

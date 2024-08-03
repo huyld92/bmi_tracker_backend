@@ -36,9 +36,6 @@ public class CreateIngredientRequest {
     @Positive(message = "Quantity with default value")
     @Schema(name = "quantity", minContains = 0, example = "0")
     private Float quantity;
-  
-    @Schema(name = "nutritionalInformation", example = "carbs: 10, protein: 10, fat: 10")
-    private String nutritionalInformation;
 
     @NotNull
     @Positive(message = "Ingredient calories must be positive")

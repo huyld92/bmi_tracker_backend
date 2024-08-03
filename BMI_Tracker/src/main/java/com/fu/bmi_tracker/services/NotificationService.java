@@ -16,4 +16,6 @@ public interface NotificationService extends GeneralService<Notification> {
 
     public void deleteByID(Integer notificationID);
 
+    public void markAsReadAll(Integer accountID);
+
 }

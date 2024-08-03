@@ -5,7 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.Food;
-import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.entities.FoodDetails;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import java.util.List;
@@ -31,7 +31,7 @@ public interface FoodService extends GeneralService<Food> {
 
     public Iterable<Food> searchLikeFoodName(String foodName);
 
-    public Iterable<Recipe> findAllRecipesByFoodID(Integer foodID);
+    public Iterable<FoodDetails> findAllRecipesByFoodID(Integer foodID);
 
     public Iterable<Food> getAllFoodIsActiveTrue();
 

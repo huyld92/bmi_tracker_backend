@@ -5,9 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
-import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.payload.response.AdvisorResponse;
-import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,10 +19,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -119,47 +114,6 @@ public class AdvisorController {
 
         return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
 
-    }
-
-    @Operation(summary = "Update Advisors information (ADVISOR)")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AdvisorResponse.class))}),
-        @ApiResponse(responseCode = "400", description = "There are no Advisors", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PutMapping("/update")
-    @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> updateAdvisor(@RequestParam Integer height, @RequestParam Integer weight) {
-        // get account from context
-        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
-        // find Advisor
-        Advisor advisor = advisorService.findByAccountID(principal.getId());
-
-        if (advisor == null) {
-            return new ResponseEntity<>(new MessageResponse("Cannot find advisor!"), HttpStatus.BAD_REQUEST);
-        }
-
-        // validate value request
-        if (height > 30) {
-            advisor.setHeight(height);
-        }
-
-        if (weight > 0) {
-            advisor.setWeight(weight);
-        }
-
-        // store advisor
-        advisorService.save(advisor);
-
-        // tạo AdvisorResposne
-        AdvisorResponse advisorResponse = new AdvisorResponse(advisor);
-
-        return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
-
-    }
+    } 
 
 }

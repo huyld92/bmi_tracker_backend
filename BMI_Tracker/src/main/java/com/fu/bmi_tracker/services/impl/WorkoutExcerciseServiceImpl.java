@@ -96,35 +96,34 @@ public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
         return workoutExerciseRepository.save(workoutExercise);
     }
 
-    @Override
-    public void deactivateWorkoutExercise(Integer workoutExerciseID) {
-        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseID)
-                .orElseThrow(() -> new EntityNotFoundException("Workout exercise id{" + workoutExerciseID + "} not found"));
-
-        // cập nhật calories burned khi deavtivate exercise
-        Workout workout = workoutExercise.getWorkout();
-        int totalCorlories = workout.getTotalCaloriesBurned() - workoutExercise.getCaloriesBurned();
-        workout.setTotalCaloriesBurned(totalCorlories);
-        workoutRepository.save(workout);
-
-        // cập nhật workout exercise
-        workoutExercise.setIsActive(Boolean.FALSE);
-        workoutExerciseRepository.save(workoutExercise);
-    }
-
-    @Override
-    public void activateWorkoutExercise(Integer workoutExerciseID) {
-        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseID)
-                .orElseThrow(() -> new EntityNotFoundException("Workout exercise id{" + workoutExerciseID + "} not found"));
-
-        // cập nhật calories burned khi deavtivate exercise
-        Workout workout = workoutExercise.getWorkout();
-        int totalCorlories = workout.getTotalCaloriesBurned() + workoutExercise.getCaloriesBurned();
-        workout.setTotalCaloriesBurned(totalCorlories);
-        workoutRepository.save(workout);
-
-        // cập nhật workout exercise
-        workoutExercise.setIsActive(Boolean.TRUE);
-        workoutExerciseRepository.save(workoutExercise);
-    }
+//    @Override
+//    public void deactivateWorkoutExercise(Integer workoutExerciseID) {
+//        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseID)
+//                .orElseThrow(() -> new EntityNotFoundException("Workout exercise id{" + workoutExerciseID + "} not found"));
+//
+//        // cập nhật calories burned khi deavtivate exercise
+//        Workout workout = workoutExercise.getWorkout();
+//        int totalCorlories = workout.getTotalCaloriesBurned() - workoutExercise.getCaloriesBurned();
+//        workout.setTotalCaloriesBurned(totalCorlories);
+//        workoutRepository.save(workout);
+//
+//        // cập nhật workout exercise
+//        workoutExercise.setIsActive(Boolean.FALSE);
+//        workoutExerciseRepository.save(workoutExercise);
+//    }
+//    @Override
+//    public void activateWorkoutExercise(Integer workoutExerciseID) {
+//        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseID)
+//                .orElseThrow(() -> new EntityNotFoundException("Workout exercise id{" + workoutExerciseID + "} not found"));
+//
+//        // cập nhật calories burned khi deavtivate exercise
+//        Workout workout = workoutExercise.getWorkout();
+//        int totalCorlories = workout.getTotalCaloriesBurned() + workoutExercise.getCaloriesBurned();
+//        workout.setTotalCaloriesBurned(totalCorlories);
+//        workoutRepository.save(workout);
+//
+//        // cập nhật workout exercise
+//        workoutExercise.setIsActive(Boolean.TRUE);
+//        workoutExerciseRepository.save(workoutExercise);
+//    }
 }

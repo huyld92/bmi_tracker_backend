@@ -4,18 +4,21 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Feedback;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.payload.request.CreateFeedbackRequest;
 import com.fu.bmi_tracker.payload.response.FeedbackForAdminRespone;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.FeedbackService;
+import com.fu.bmi_tracker.services.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author BaoLG
  */
-
 @Tag(name = "Feedback", description = "Feedback management APIs")
 @RestController
 @RequestMapping("/api/feedbacks")
@@ -43,6 +46,9 @@ public class FeedbackController {
 
     @Autowired
     FeedbackService feedbackService;
+
+    @Autowired
+    MemberService memberService;
 
     @Operation(
             summary = "Create new Feedback with form",
@@ -57,6 +63,11 @@ public class FeedbackController {
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewFeedBack(@RequestBody CreateFeedbackRequest feedbackRequest) {
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        Member member = memberService.findByAccountID(principal.getId())
+                .orElseThrow(() -> new EntityNotFoundException("No member found!"));
 
         //Convert createRequest to Feedback before save
         Feedback newFeedBack = new Feedback();
@@ -64,7 +75,7 @@ public class FeedbackController {
         newFeedBack.setDescription(feedbackRequest.getDescription());
         newFeedBack.setStatus(Boolean.FALSE);
         newFeedBack.setType(feedbackRequest.getType());
-        newFeedBack.setMember(new Member(feedbackRequest.getMemberID()));
+        newFeedBack.setMember(member);
 
         Feedback feedbackSave = feedbackService.save(newFeedBack);
 

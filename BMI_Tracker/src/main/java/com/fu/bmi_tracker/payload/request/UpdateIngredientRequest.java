@@ -33,9 +33,6 @@ public class UpdateIngredientRequest {
     @Schema(example = "http://example.com/photo.jpg")
     private String ingredientPhoto;
 
-    @Schema(example = "Vitamin C, Fiber")
-    private String nutritionalInformation;
-
     @Schema(example = "100.0")
     @NotNull(message = "Quantity is required")
     @Positive(message = "Quantity must be a positive number")
