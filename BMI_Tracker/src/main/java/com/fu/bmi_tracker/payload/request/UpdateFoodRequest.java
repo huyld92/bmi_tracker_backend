@@ -44,15 +44,28 @@ public class UpdateFoodRequest {
     @Schema(description = "URL of the food video(NULL)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String foodVideo;
 
-    @NotBlank
-    @Schema(description = "Nutritional information of the food", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String foodNutrition;
-
     @NotNull
     @Min(1)
     @Max(10)
     @Schema(description = "Serving information of the food", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer serving;
+
+    @NotNull
+    @NotNull
+    @Min(0)
+    @Schema(name = "serving", example = "1 serving")
+    private Float carbs;
+
+    @NotNull
+    @NotNull
+    @Min(0)
+    @Schema(name = "serving", example = "1 serving")
+    private Float protein;
+
+    @NotNull
+    @Min(0)
+    @Schema(name = "serving", example = "1 serving")
+    private Float fat;
 
     @NotNull
     @Schema(description = "Time required to prepare the food (in minutes)", requiredMode = Schema.RequiredMode.REQUIRED)

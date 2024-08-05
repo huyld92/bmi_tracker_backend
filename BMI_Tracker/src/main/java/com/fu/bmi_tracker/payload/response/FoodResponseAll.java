@@ -32,9 +32,13 @@ public class FoodResponseAll {
 
     private String foodVideo;
 
-    private String foodNutrition;
-
     private Integer foodTimeProcess;
+
+    private Float carbs;
+
+    private Float protein;
+
+    private Float fat;
 
     private Integer serving;
 
@@ -44,18 +48,20 @@ public class FoodResponseAll {
 
     private List<TagBasicResponse> foodTags;
 
-    public FoodResponseAll(Food foodSaved, List<TagBasicResponse> foodTags) {
-        this.foodID = foodSaved.getFoodID();
-        this.foodName = foodSaved.getFoodName();
-        this.foodCalories = foodSaved.getFoodCalories();
-        this.description = foodSaved.getDescription();
-        this.foodPhoto = foodSaved.getFoodPhoto();
-        this.foodVideo = foodSaved.getFoodVideo();
-        this.foodNutrition = foodSaved.getFoodNutrition();
-        this.foodTimeProcess = foodSaved.getFoodTimeProcess();
-        this.creationDate = foodSaved.getCreationDate();
-        this.serving = foodSaved.getServing();
-        this.isActive = foodSaved.getIsActive();
+    public FoodResponseAll(Food food, List<TagBasicResponse> foodTags) {
+        this.foodID = food.getFoodID();
+        this.foodName = food.getFoodName();
+        this.foodCalories = food.getFoodCalories();
+        this.description = food.getDescription();
+        this.foodPhoto = food.getFoodPhoto();
+        this.foodVideo = food.getFoodVideo();
+        this.carbs = food.getCarbs();
+        this.protein = food.getProtein();
+        this.fat = food.getFat();
+        this.foodTimeProcess = food.getFoodTimeProcess();
+        this.creationDate = food.getCreationDate();
+        this.serving = food.getServing();
+        this.isActive = food.getIsActive();
         this.foodTags = foodTags;
     }
 }

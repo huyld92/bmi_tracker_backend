@@ -80,9 +80,11 @@ public class MemberBodyMassController {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
 
         // Save member body mass
-        MemberBodyMass bodyMass = new MemberBodyMass(height,
+        MemberBodyMass bodyMass = new MemberBodyMass(
+                height,
                 weight,
-                now, member.get()
+                now, 
+                member.get()
         );
 
         // tạo bodymass response 

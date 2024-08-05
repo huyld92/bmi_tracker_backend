@@ -56,11 +56,17 @@ public class Food {
     @Column(name = "FoodVideo", nullable = true)
     private String foodVideo;
 
-    @Column(name = "FoodNutrition", nullable = false)
-    private String foodNutrition;
-
     @Column(name = "Serving", nullable = true)
     private Integer serving;
+
+    @Column(name = "Carbs", nullable = true)
+    private Float carbs;
+
+    @Column(name = "Protein", nullable = true)
+    private Float protein;
+
+    @Column(name = "Fat", nullable = true)
+    private Float fat;
 
     @Column(name = "FoodTimeProcess", nullable = false)
     private int foodTimeProcess;
@@ -92,7 +98,9 @@ public class Food {
         this.description = createFoodRequest.getDescription();
         this.foodPhoto = createFoodRequest.getFoodPhoto();
         this.foodVideo = createFoodRequest.getFoodVideo();
-        this.foodNutrition = createFoodRequest.getFoodNutrition();
+        this.carbs = createFoodRequest.getCarbs();
+        this.protein = createFoodRequest.getProtein();
+        this.fat = createFoodRequest.getFat();
         this.serving = createFoodRequest.getServing();
         this.foodTimeProcess = createFoodRequest.getFoodTimeProcess();
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
@@ -110,15 +118,23 @@ public class Food {
         this.serving = foodRequest.getServing();
         this.foodPhoto = foodRequest.getFoodPhoto();
         this.foodVideo = foodRequest.getFoodVideo();
-        
+
         if (foodRequest.getFoodTimeProcess() >= 0) {
             this.foodTimeProcess = foodRequest.getFoodTimeProcess();
         }
-        
-        if (!foodRequest.getFoodNutrition().isEmpty()) {
-            this.foodNutrition = foodRequest.getFoodNutrition();
+
+        if (foodRequest.getCarbs() > 0) {
+            this.carbs = foodRequest.getCarbs();
         }
-        
+
+        if (foodRequest.getProtein() > 0) {
+            this.protein = foodRequest.getProtein();
+        }
+
+        if (foodRequest.getFat() > 0) {
+            this.fat = foodRequest.getFat();
+        }
+
         this.foodTags = foodTags;
     }
 

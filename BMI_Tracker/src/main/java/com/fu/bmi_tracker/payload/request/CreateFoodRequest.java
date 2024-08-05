@@ -5,9 +5,9 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -57,6 +57,23 @@ public class CreateFoodRequest {
     @Size(max = 100)
     @Schema(name = "serving", example = "1 serving")
     private Integer serving;
+
+    @NotNull
+    @NotNull
+    @Min(0)
+    @Schema(name = "serving", example = "1 serving")
+    private Float carbs;
+
+    @NotNull
+    @NotNull
+    @Min(0)
+    @Schema(name = "serving", example = "1 serving")
+    private Float protein;
+
+    @NotNull
+    @Min(0)
+    @Schema(name = "serving", example = "1 serving")
+    private Float fat;
 
     @NotNull
     @Positive
