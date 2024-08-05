@@ -35,14 +35,16 @@ public class UpdateBlogRequest {
     @NotBlank(message = "Blog content is required")
     private String blogContent;
 
+    @NotBlank
     @Schema(example = "http://example.com/photo.jpg")
-    @Pattern(regexp = "(http|https)://.*\\.(jpg|jpeg|png|gif)", message = "Blog photo must be a valid URL ending in .jpg, .jpeg, .png, or .gif")
+//    @Pattern(regexp = "(http|https)://.*\\.(jpg|jpeg|png|gif)", message = "Blog photo must be a valid URL ending in .jpg, .jpeg, .png, or .gif")
     private String blogPhoto;
-
+    
+    @NotBlank
     @Schema(example = "http://example.com")
-    @Pattern(regexp = "link", message = "Link must be a valid URL")
+//    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String link;
 
-    @Schema(example = "true")
-    private Boolean isActive;
+//    @Schema(example = "true")
+//    private Boolean isActive;
 }

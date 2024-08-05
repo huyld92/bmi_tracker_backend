@@ -28,7 +28,7 @@ public class UpdateFoodRecipeRequest {
     @NotNull(message = "Ingredient ID is required")
     private Integer ingredientID;
 
-    @Schema(example = "grams")
+    @Schema(example = "g")
     @NotBlank(message = "Unit is required")
     private String unit;
 

@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -38,41 +40,31 @@ public class CreateFoodRequest {
     @Schema(name = "description", example = "Delicious pizza with cheese and toppings. (Can blank)")
     private String description;
 
-    @Size(max = 255)
     @Schema(name = "foodPhoto", example = "photourl.com/pizza.jpg (Can blank)")
     @NotBlank
     private String foodPhoto;
 
-    @Size(max = 255)
     @NotBlank
     @Schema(name = "foodVideo", example = "videourl.com/pizza.mp4 (Can blank)")
     private String foodVideo;
 
-    @NotBlank
-    @Size(max = 255)
-    @Schema(name = "foodNutrition", example = "100 Protein, 20 Carbs, 200 Fat")
-    private String foodNutrition;
-
-    @NotBlank
-    @Size(max = 100)
     @Schema(name = "serving", example = "1 serving")
+    @Positive
     private Integer serving;
 
     @NotNull
-    @NotNull
     @Min(0)
-    @Schema(name = "serving", example = "1 serving")
+    @Schema(name = "carbs", example = "10")
     private Float carbs;
 
     @NotNull
-    @NotNull
     @Min(0)
-    @Schema(name = "serving", example = "1 serving")
+    @Schema(name = "protein", example = "10")
     private Float protein;
 
     @NotNull
     @Min(0)
-    @Schema(name = "serving", example = "1 serving")
+    @Schema(name = "fat", example = "10")
     private Float fat;
 
     @NotNull
@@ -83,6 +75,7 @@ public class CreateFoodRequest {
     @Schema(name = "tagIDs", example = "[1, 2, 3]")
     private List<Integer> tagIDs;
 
-    private List<RecipeRequest> recipeRequests;
+    @NotEmpty
+    private List<@Valid RecipeRequest> recipeRequests;
 
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,8 @@ public class CreateMenuFoodRequest {
     @Schema(example = "1" , description = "Unique identifier for the menu")
     private Integer menuID;
 
-    @NotNull
-    @Min(1)
+    @NotNull 
+    @Positive
     @Schema(example = "1" , description = "Unique identifier for the food")
     private Integer foodID;
 

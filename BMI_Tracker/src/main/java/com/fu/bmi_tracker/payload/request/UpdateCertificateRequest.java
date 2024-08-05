@@ -22,9 +22,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCertificateRequest {
 
+    @NotNull
     @Positive
     @Schema(name = "certificateID", example = "1")
-    private int certificateID;
+    private Integer certificateID;
 
     @NotBlank
     @Size(max = 100)
@@ -35,8 +36,8 @@ public class UpdateCertificateRequest {
     @Size(max = 100)
     @Schema(name = "certificateLink", example = "certified1.jpg")
     private String certificateLink;
-    
+
     @NotNull
-    @Schema(name= "isActive", example = "true")
+    @Schema(name = "isActive", example = "true")
     private Boolean isActive;
 }

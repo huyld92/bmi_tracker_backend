@@ -85,7 +85,7 @@ public class MenuServiceImpl implements MenuService {
 //            // add menu food response
 //            menuFoodResponses.add(new MenuFoodResponse(foodResponse, request.getMealType(), menu.getIsActive()));
             // add menu food
-            menuFoods.add(new MenuFood(menu, food, request.getMealType(), true));
+            menuFoods.add(new MenuFood(menu, food, request.getMealType()));
         });
 
         menu.setMenuFoods(menuFoods);
@@ -117,7 +117,7 @@ public class MenuServiceImpl implements MenuService {
         menuRepository.save(menu);
 
         // tạo Menu food
-        MenuFood menuFood = new MenuFood(menu, food, menuFoodRequest.getMealType(), Boolean.TRUE);
+        MenuFood menuFood = new MenuFood(menu, food, menuFoodRequest.getMealType());
 
         // gọi menuFoodRepository lưu menu food
         return menuFoodRepository.save(menuFood);
@@ -141,7 +141,7 @@ public class MenuServiceImpl implements MenuService {
             menuRepository.save(menu);
 
             // tạo Menu food
-            MenuFood menuFood = new MenuFood(menu, food, request.getMealType(), Boolean.TRUE);
+            MenuFood menuFood = new MenuFood(menu, food, request.getMealType());
             menuFoods.add(menuFood);
         });
         return menuFoodRepository.saveAll(menuFoods);

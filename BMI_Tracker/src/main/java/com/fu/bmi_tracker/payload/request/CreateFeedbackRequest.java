@@ -21,16 +21,16 @@ import lombok.NoArgsConstructor;
 public class CreateFeedbackRequest {
 
     @NotNull
-    @Size(max = 100)
+    @Size(max = 50)
     @Schema(name = "title", example = "Các món ăn quá nhiều dầu mỡ")
     private String title;
 
-    @Size(max = 100)
+    @Size(max = 255)
     @Schema(name = "description", example = "Tui không thích ăn dầu mỡ (NULL)")
     private String description;
 
     @NotNull
-    @Size(max = 100)
+    @Size(max = 50)
     @Schema(name = "type", example = "Menu feedback")
     private String type;
 //

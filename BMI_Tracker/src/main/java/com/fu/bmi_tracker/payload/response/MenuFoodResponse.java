@@ -22,7 +22,7 @@ public class MenuFoodResponse {
     private FoodResponse food;
     private EMealType mealType;
 
-    public MenuFoodResponse(Food food, EMealType mealType, Boolean isActive) {
+    public MenuFoodResponse(Food food, EMealType mealType) {
         this.food = new FoodResponse(food);
         this.mealType = mealType;
     }

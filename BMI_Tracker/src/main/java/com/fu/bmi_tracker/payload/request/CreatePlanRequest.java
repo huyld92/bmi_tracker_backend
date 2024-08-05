@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreatePlanRequest {
 
-    @NotNull
+    @NotBlank
     @Positive
     @Schema(name = "planName", example = "Kế hoạch giảm cân trong 30 ngày")
     private String planName;

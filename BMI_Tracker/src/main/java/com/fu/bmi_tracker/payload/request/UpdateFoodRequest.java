@@ -51,20 +51,18 @@ public class UpdateFoodRequest {
     private Integer serving;
 
     @NotNull
-    @NotNull
     @Min(0)
-    @Schema(name = "serving", example = "1 serving")
+    @Schema(name = "carbs", example = "10")
     private Float carbs;
 
     @NotNull
-    @NotNull
     @Min(0)
-    @Schema(name = "serving", example = "1 serving")
+    @Schema(name = "protein", example = "10")
     private Float protein;
 
     @NotNull
     @Min(0)
-    @Schema(name = "serving", example = "1 serving")
+    @Schema(name = "fat", example = "10")
     private Float fat;
 
     @NotNull

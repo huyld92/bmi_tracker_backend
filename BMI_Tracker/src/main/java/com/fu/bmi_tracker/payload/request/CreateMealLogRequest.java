@@ -44,11 +44,14 @@ public class CreateMealLogRequest {
     private String dateOfMeal;
 
     @Schema(name = "foodID", example = "1", nullable = true)
+    @Positive
     private Integer foodID;
 
     @Schema(name = "quantity", example = "1", nullable = true)
+    @Positive
     private Float quantity;
 
+    @Size(max = 50, message = "Unit must not exceed 50 characters")
     @Schema(name = "unit", example = "bowl (250g)")
     private String unit;
 }

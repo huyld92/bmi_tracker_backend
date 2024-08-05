@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberInformationResponse {
 
+    private Integer accountID;
     private Integer memberID;
     private String email;
     private String accountPhoto;

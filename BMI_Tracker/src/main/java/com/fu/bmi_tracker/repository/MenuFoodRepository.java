@@ -25,14 +25,13 @@ public interface MenuFoodRepository extends JpaRepository<MenuFood, Integer> {
     @Query("SELECT mf.food FROM MenuFood mf "
             + "WHERE mf.menu.menuID = :menuID "
             + "AND mf.mealType = :mealType "
-            + "AND mf.isActive = true "
             + "AND mf.food.isActive = true")
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType);
 
     @Query("SELECT mf.food FROM MenuFood mf WHERE mf.menu.menuID = :menuID")
     public List<Food> findFoodByMenu_MenuID(Integer menuID);
 
-    @Query("SELECT new com.fu.bmi_tracker.payload.response.MenuFoodResponse(mf.food, mf.mealType, mf.isActive) "
+    @Query("SELECT new com.fu.bmi_tracker.payload.response.MenuFoodResponse(mf.food, mf.mealType) "
             + "FROM MenuFood mf "
             + "WHERE mf.menu.menuID = :menuId")
     List<MenuFoodResponse> findAllFoodAndMealTypeByMenuId(Integer menuId);
@@ -49,5 +48,5 @@ public interface MenuFoodRepository extends JpaRepository<MenuFood, Integer> {
     @Transactional
     @Query("DELETE FROM MenuFood mf WHERE mf.menu.menuID = :menuID AND mf.food.foodID = :foodID")
     void deleteByMenuIdAndFoodId(Integer menuID, Integer foodID);
- 
+
 }

@@ -256,6 +256,7 @@ public class MemberController {
         double bmr = bMIUtils.calculateBMR(bodyMass.getWeight(), bodyMass.getHeight(), age, principal.getGender());
 
         memberInformationResponse = new MemberInformationResponse(
+                principal.getId(),
                 member.get().getMemberID(),
                 principal.getEmail(),
                 principal.getAccountPhoto(),
@@ -315,6 +316,7 @@ public class MemberController {
                 member.get().getAccount().getGender());
 
         memberInformationResponse = new MemberInformationResponse(
+                member.get().getAccount().getAccountID(),
                 member.get().getMemberID(),
                 member.get().getAccount().getEmail(),
                 member.get().getAccount().getAccountPhoto(),
