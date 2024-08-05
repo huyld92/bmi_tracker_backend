@@ -5,11 +5,14 @@
 package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Account;
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
+import com.fu.bmi_tracker.payload.request.UpdateAdvisorProfileRequest;
 import com.fu.bmi_tracker.payload.request.UpdateProfileRequest;
 import com.fu.bmi_tracker.repository.AccountRepository;
+import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.RoleRepository;
 import com.fu.bmi_tracker.services.AccountService;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +31,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    AdvisorRepository advisorRepository;
 
     @Override
     public Iterable<Account> findAll() {
@@ -141,6 +147,31 @@ public class AccountServiceImpl implements AccountService {
     public Account findByEmail(String email) {
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find acount with email {" + email + "}!"));
+
+    }
+
+    @Override
+    public void updateAdvisorProfile(Integer accountID, UpdateAdvisorProfileRequest updateProfileRequest) {
+        // tìm account bằng accountID
+        Account account = findById(accountID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find acount!"));
+        account.setFullName(updateProfileRequest.getFullName());
+        account.setPhoneNumber(updateProfileRequest.getPhoneNumber());
+        account.setGender(updateProfileRequest.getGender());
+        account.setBirthday(updateProfileRequest.getBirthday());
+
+        //tìm thông tin advisor 
+        Advisor advisor
+                = advisorRepository.findByAccount_AccountID(accountID)
+                        .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor with account id{" + accountID + "}!"));
+
+        //cập nhật banknumber
+        if (!advisor.getBankNumber().equals(updateProfileRequest.getBankNumber())) {
+            advisor.setBankNumber(updateProfileRequest.getBankNumber());
+            advisorRepository.save(advisor);
+        }
+        // cập nhật account xuống database
+        save(account);
 
     }
 

@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services;
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
+import com.fu.bmi_tracker.payload.request.UpdateAdvisorProfileRequest;
 import com.fu.bmi_tracker.payload.request.UpdateProfileRequest;
 
 /**
@@ -31,6 +32,8 @@ public interface AccountService extends GeneralService<Account> {
 
     public void deleteRole(Integer accountID, ERole roleName);
 
-    public Account findByEmail(String email); 
+    public Account findByEmail(String email);
+
+    public void updateAdvisorProfile(Integer accountID, UpdateAdvisorProfileRequest updateProfileRequest);
 
 }

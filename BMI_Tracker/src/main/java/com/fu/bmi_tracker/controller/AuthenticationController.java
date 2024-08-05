@@ -20,6 +20,7 @@ import com.fu.bmi_tracker.model.entities.RefreshToken;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
+import com.fu.bmi_tracker.payload.response.AccountResponse;
 import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
 import com.fu.bmi_tracker.services.AccountService;
@@ -199,6 +200,7 @@ public class AuthenticationController {
 
         if (!member.isPresent()) {
             LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
+                    accountDetails.getId(),
                     -1, accountDetails.getEmail(),
                     accountDetails.getFullName(),
                     accountDetails.getGender().toString(),
@@ -228,7 +230,9 @@ public class AuthenticationController {
                 member.get().getAccount().getGender());
 
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
-                member.get().getMemberID(), accountDetails.getEmail(),
+                accountDetails.getId(),
+                member.get().getMemberID(), 
+                accountDetails.getEmail(),
                 accountDetails.getFullName(),
                 accountDetails.getGender().toString(),
                 accountDetails.getPhoneNumber(),
@@ -246,7 +250,8 @@ public class AuthenticationController {
     @Operation(summary = "Register", description = "Register account with default role member", tags = {
         "Authentication"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "404", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "401", content = {
@@ -307,8 +312,8 @@ public class AuthenticationController {
         } catch (FirebaseAuthException e) {
             System.out.println("Error with firebase account creation");
         }
-
-        return ResponseEntity.ok(new MessageResponse("Account registered successfully!"));
+        AccountResponse accountResponse = new AccountResponse(account);
+        return ResponseEntity.ok(accountResponse);
 
     }
 

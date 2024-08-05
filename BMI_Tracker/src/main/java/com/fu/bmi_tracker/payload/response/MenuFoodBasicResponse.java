@@ -32,13 +32,17 @@ public class MenuFoodBasicResponse {
 
     private String foodPhoto;
 
-    private String foodVideo;
-
-    private String foodNutrition;
+    private String foodVideo; 
 
     private Integer foodTimeProcess;
 
     private Integer serving;
+
+    private Float carbs;
+
+    private Float protein;
+
+    private Float fat;
 
     private EMealType mealType;
 
@@ -52,7 +56,9 @@ public class MenuFoodBasicResponse {
         this.description = food.getDescription();
         this.foodPhoto = food.getFoodPhoto();
         this.foodVideo = food.getFoodVideo();
-        this.foodNutrition = food.getFoodNutrition();
+        this.carbs = food.getCarbs();
+        this.protein = food.getProtein();
+        this.fat = food.getFat();
         this.foodTimeProcess = food.getFoodTimeProcess();
         this.serving = food.getServing();
         this.mealType = mealType;

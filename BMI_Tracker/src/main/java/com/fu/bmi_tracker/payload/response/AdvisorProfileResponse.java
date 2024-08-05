@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountResponse {
+public class AdvisorProfileResponse {
 
     private Integer accountID;
     private String email;
@@ -29,12 +29,16 @@ public class AccountResponse {
     private String accountPhoto;
     private String phoneNumber;
     private String gender;
+    private String bankName;
+    private String bankNumber;
     private LocalDate birthday;
     private List<ERole> roleNames;
+//    private ERole roleName;
+
     private Boolean isActive;
     // private String status;
 
-    public AccountResponse(Account account) {
+    public AdvisorProfileResponse(Account account, String bankName, String bankNumber) {
         this.accountID = account.getAccountID();
         this.email = account.getEmail();
         this.fullName = account.getFullName();
@@ -42,6 +46,8 @@ public class AccountResponse {
         this.phoneNumber = account.getPhoneNumber();
         this.gender = account.getGender().name();
         this.birthday = account.getBirthday();
+        this.bankName = bankName;
+        this.bankNumber = bankNumber;
         this.roleNames = new ArrayList<>();
         for (Role role : account.getRoles()) {
             // Add the role name to the roleNames Set
@@ -49,17 +55,5 @@ public class AccountResponse {
         }
         this.isActive = account.getIsActive();
     }
-//    public AccountResponse(Account account) {
-//        this.accountID = account.getAccountID();
-//        this.email = account.getEmail();
-//        this.fullName = account.getFullName();
-//        this.phoneNumber = account.getPhoneNumber();
-////        this.roleName = account.getRoles().iterator().next().getRoleName();
-//        // Handle roles if an account can have multiple roles
-//        if (account.getRoles() != null && !account.getRoles().isEmpty()) {
-//            this.roleName = account.getRoles().iterator().next().getRoleName();
-//        }
-//        this.isActive = account.getIsActive();
-//    }
 
 }

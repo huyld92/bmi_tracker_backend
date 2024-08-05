@@ -32,13 +32,17 @@ public class FoodEntityResponse {
 
     private String foodVideo;
 
-    private String foodNutrition;
-
     private Integer foodTimeProcess;
 
     private LocalDate creationDate;
 
     private Integer serving;
+
+    private Float carbs;
+
+    private Float protein;
+
+    private Float fat;
 
     private Boolean isActive;
 
@@ -53,7 +57,9 @@ public class FoodEntityResponse {
         this.description = food.getDescription();
         this.foodPhoto = food.getFoodPhoto();
         this.foodVideo = food.getFoodVideo();
-        this.foodNutrition = food.getFoodNutrition();
+        this.carbs = food.getCarbs();
+        this.protein = food.getProtein();
+        this.fat = food.getFat();
         this.foodTimeProcess = food.getFoodTimeProcess();
         this.serving = food.getServing();
         this.creationDate = food.getCreationDate();

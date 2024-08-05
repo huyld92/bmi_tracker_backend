@@ -11,8 +11,10 @@ import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateAccountRequest;
 import com.fu.bmi_tracker.payload.request.UpdateAccountRequest;
+import com.fu.bmi_tracker.payload.request.UpdateAdvisorProfileRequest;
 import com.fu.bmi_tracker.payload.request.UpdateProfileRequest;
 import com.fu.bmi_tracker.payload.response.AccountResponse;
+import com.fu.bmi_tracker.payload.response.AdvisorProfileResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AccountService;
 import com.fu.bmi_tracker.services.AdvisorService;
@@ -324,6 +326,61 @@ public class AccountController {
         AccountResponse accountResponse = new AccountResponse(account.get());
 
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Update advisor profile (Advisor)", description = "Profile will be updated for advisor")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "advisor/update-profile")
+    public ResponseEntity<?> updateAdvisorProfile(@Valid @RequestBody UpdateAdvisorProfileRequest updateProfileRequest) {
+        // lấy account từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi service cập nhật profile
+        accountService.updateAdvisorProfile(principal.getId(), updateProfileRequest);
+
+        return new ResponseEntity<>(new MessageResponse("Update profile success!"), HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Get advisor profile", description = "Need to log in with advisor role to get personal information")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AdvisorProfileResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "advisor-/get-profile")
+    public ResponseEntity<?> getAdvisorProfile() {
+        // lấy account từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi account service tìm thoongg tin account
+        Optional<Account> account = accountService.findById(principal.getId());
+
+        // kiểm tra kết quả
+        if (!account.isPresent()) {
+            return new ResponseEntity<>(new MessageResponse(("Cannot find account with account id{" + principal.getId() + "}")), HttpStatus.NOT_FOUND);
+        }
+        //tìm thông tin advisor 
+        Advisor advisor
+                = advisorService.findByAccountID(principal.getId());
+
+        // Tạo account response
+        AdvisorProfileResponse profileResponse = new AdvisorProfileResponse(
+                account.get(),
+                advisor.getBankName(),
+                advisor.getBankNumber());
+
+        return new ResponseEntity<>(profileResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "Update device token", description = "Login and update link photo")
