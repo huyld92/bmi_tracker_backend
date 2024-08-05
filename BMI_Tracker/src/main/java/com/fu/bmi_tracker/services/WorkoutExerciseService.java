@@ -20,8 +20,8 @@ public interface WorkoutExerciseService extends GeneralService<WorkoutExercise> 
 
     public WorkoutExercise createWorkoutExercise(CreateWorkoutExerciseRequest workoutExerciseRequest);
 
-    public void deactivateWorkoutExercise(Integer workoutExerciseID);
-
-    public void activateWorkoutExercise(Integer workoutExerciseID);
+//    public void deactivateWorkoutExercise(Integer workoutExerciseID);
+//
+//    public void activateWorkoutExercise(Integer workoutExerciseID);
 
 }

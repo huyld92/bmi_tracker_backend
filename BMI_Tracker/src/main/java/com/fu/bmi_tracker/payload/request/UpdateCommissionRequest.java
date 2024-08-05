@@ -34,7 +34,6 @@ public class UpdateCommissionRequest {
     private LocalDateTime paidDate;
 
     @Schema(example = "1500.00")
-    @NotNull(message = "Paid amount is required")
     @PositiveOrZero(message = "Paid amount must be zero or a positive number")
     private BigDecimal paidAmount;
 

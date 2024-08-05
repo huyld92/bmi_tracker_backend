@@ -110,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // gọi WorkoutExerciseRepository tìm List exercise
-        return workoutExerciseRepository.findByWorkout_WorkoutIDAndIsActiveTrue(
+        return workoutExerciseRepository.findByWorkout_WorkoutID(
                 workoutHistory.get().getWorkout().getWorkoutID());
     }
 

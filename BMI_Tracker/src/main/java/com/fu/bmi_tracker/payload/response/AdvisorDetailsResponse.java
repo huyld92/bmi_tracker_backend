@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdvisorDetailsResponse {
 
+    private Integer accountID;
     private Integer advisorID;
     private String accountPhoto;
     private String email;
@@ -32,6 +33,7 @@ public class AdvisorDetailsResponse {
     private Integer totalWorkoutCreated;
 
     public AdvisorDetailsResponse(Advisor advisor, Integer totalMenuCreated, Integer totalWorkoutCreated) {
+        this.accountID = advisor.getAccount().getAccountID();
         this.advisorID = advisor.getAdvisorID();
         this.accountPhoto = advisor.getAccount().getAccountPhoto();
         this.email = advisor.getAccount().getEmail();

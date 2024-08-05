@@ -17,7 +17,7 @@ public interface PlanRepository extends JpaRepository<Plan, Integer> {
 
     public Iterable<Plan> findByAdvisor_AdvisorIDAndIsActiveTrue(int advisorID);
 
-    public Iterable<Plan> findByAdvisor_AdvisorIDAndIsActiveTrueAndIsApprovedTrue(Integer advisorID);
+    public Iterable<Plan> findByAdvisor_AdvisorIDAndIsActiveTrueAndPlanStatus(Integer advisorID, String planStatus);
 
     public Iterable<Plan> findByIsActiveTrue();
 }

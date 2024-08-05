@@ -25,6 +25,7 @@ public class UpdateMenuRequest {
     @NotBlank
     private String menuName;
 
+    @NotBlank
     private String menuDescription;
 
 }

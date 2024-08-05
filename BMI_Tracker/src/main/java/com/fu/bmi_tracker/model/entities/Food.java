@@ -60,7 +60,7 @@ public class Food {
     private String foodNutrition;
 
     @Column(name = "Serving", nullable = true)
-    private String serving;
+    private Integer serving;
 
     @Column(name = "FoodTimeProcess", nullable = false)
     private int foodTimeProcess;
@@ -71,8 +71,8 @@ public class Food {
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
-    private List<Recipe> recipes;
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FoodDetails> foodDetails;
 
     @ManyToMany
     @JoinTable(
@@ -99,7 +99,7 @@ public class Food {
         this.isActive = true;
     }
 
-    public void update(UpdateFoodRequest foodRequest, List<Tag> foodTags, List<Recipe> recipes) {
+    public void update(UpdateFoodRequest foodRequest, List<Tag> foodTags) {
         if (foodRequest.getFoodName() != null) {
             this.foodName = foodRequest.getFoodName();
         }
@@ -110,14 +110,15 @@ public class Food {
         this.serving = foodRequest.getServing();
         this.foodPhoto = foodRequest.getFoodPhoto();
         this.foodVideo = foodRequest.getFoodVideo();
+        
         if (foodRequest.getFoodTimeProcess() >= 0) {
             this.foodTimeProcess = foodRequest.getFoodTimeProcess();
         }
+        
         if (!foodRequest.getFoodNutrition().isEmpty()) {
             this.foodNutrition = foodRequest.getFoodNutrition();
-        } 
+        }
         
-        this.recipes = recipes;
         this.foodTags = foodTags;
     }
 

@@ -74,9 +74,6 @@ public class AdvisorSubscription {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
-    @Column(name = "CommissionID", nullable = false)
-    private Integer commissionID;
-
     @Column(name = "TransactionID", nullable = false, unique = true)
     private Integer transactionID;
 
@@ -86,7 +83,6 @@ public class AdvisorSubscription {
             Member member,
             Advisor advisor,
             int transactionID,
-            int commissionID,
             Float commissionRate) {
         this.subscriptionDescription = subscriptionRequest.getDescription();
         this.subscriptionNumber = subscriptionRequest.getSubscriptionNumber();
@@ -98,7 +94,6 @@ public class AdvisorSubscription {
         this.commissionRate = commissionRate;
         this.advisor = advisor;
         this.subscriptionStatus = checkSubscriptionStatus(startDate);
-        this.commissionID = commissionID;
         this.transactionID = transactionID;
     }
 

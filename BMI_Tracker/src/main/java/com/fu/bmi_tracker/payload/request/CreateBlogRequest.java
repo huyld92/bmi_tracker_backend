@@ -31,11 +31,11 @@ public class CreateBlogRequest {
     private String blogContent;
 
     @Schema(example = "http://example.com/photo.jpg")
-    @Pattern(regexp = "link", message = "Link must be a valid URL")
+    @NotBlank
     private String blogPhoto;
 
     @Schema(example = "http://example.com")
-    @Pattern(regexp = "link", message = "Link must be a valid URL")
+    @NotBlank
     private String link;
 
 }

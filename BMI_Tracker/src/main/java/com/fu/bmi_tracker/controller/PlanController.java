@@ -52,7 +52,7 @@ public class PlanController {
             description = "Create new plan with form")
     @ApiResponses({
         @ApiResponse(responseCode = "201", content = {
-            @Content(schema = @Schema(implementation = Plan.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = PlanAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -64,27 +64,16 @@ public class PlanController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        //Convert createRequest to Plan before save
-        Plan newPlan = new Plan();
-        newPlan.setPlanName(createRequest.getPlanName());
-        newPlan.setPrice(createRequest.getPrice());
-        newPlan.setDescription(createRequest.getDescription());
-        newPlan.setPlanDuration(createRequest.getPlanDuration());
-        newPlan.setNumberOfUses(0);
-        // mặc định false đợi manager duyệt
-        newPlan.setIsApproved(Boolean.FALSE);
-        newPlan.setIsActive(Boolean.TRUE);
-
         //Call service to save plan
-        Plan planSave = planService.createPlan(newPlan, principal.getId());
+        Plan plan = planService.createPlan(createRequest, principal.getId());
 
         //If fail to save new plan
-        if (planSave == null) {
+        if (plan == null) {
             return new ResponseEntity<>(new MessageResponse(("Failed to create new plan")), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         //If success to save new plan
-        return new ResponseEntity<>(new MessageResponse("Plan is successfully created"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new PlanAdvisorResponse(planService.save(plan)), HttpStatus.CREATED);
 
     }
 
@@ -262,7 +251,7 @@ public class PlanController {
     @Operation(summary = "Update a Plan by Id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = Plan.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = PlanAdvisorResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "404", content = {
@@ -277,6 +266,7 @@ public class PlanController {
             plan.get().setPrice(updateRequest.getPrice());
             plan.get().setDescription(updateRequest.getDescription());
             plan.get().setPlanDuration(updateRequest.getPlanDuration());
+
             return new ResponseEntity<>(new PlanAdvisorResponse(planService.save(plan.get())), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new MessageResponse("Cannot find plan with id{" + updateRequest.getPlanID() + "}"), HttpStatus.NOT_FOUND);
@@ -314,7 +304,7 @@ public class PlanController {
         Optional<Plan> plan = planService.findById(planID);
 
         if (plan.isPresent()) {
-            plan.get().setIsApproved(Boolean.TRUE);
+            plan.get().setPlanStatus("Approved");
             planService.save(plan.get());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {

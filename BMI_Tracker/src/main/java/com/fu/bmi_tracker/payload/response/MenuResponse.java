@@ -21,7 +21,6 @@ public class MenuResponse {
 
     private Integer menuID;
     private String menuName;
-    private String menuPhoto;
     private String menuDescription;
     private Integer totalCalories;
     private Boolean isActive;
@@ -31,7 +30,6 @@ public class MenuResponse {
     public MenuResponse(Menu menu, List<MenuFoodResponse> menuFoodResponses) {
         this.menuID = menu.getMenuID();
         this.menuName = menu.getMenuName();
-        this.menuPhoto = menu.getMenuPhoto();
         this.menuDescription = menu.getMenuDescription();
         this.totalCalories = menu.getTotalCalories();
         this.isActive = menu.getIsActive();

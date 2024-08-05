@@ -62,7 +62,7 @@ public class WorkoutHistoryServiceImpl implements WorkoutHistoryService {
     }
 
     @Override
-    public void assignWorkoutToMember(Integer workoutID, Integer memberID) {
+    public WorkoutHistory assignWorkoutToMember(Integer workoutID, Integer memberID) {
 
         // gọi member repository tìm member
         Member member = memberRepository.findById(memberID)
@@ -71,6 +71,9 @@ public class WorkoutHistoryServiceImpl implements WorkoutHistoryService {
         Workout workout = workoutRepository.findById(workoutID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find workout with id{" + workoutID + "}!"));
 
+        if (!workout.getIsActive()) {
+            return null;
+        }
         // lấy ngày hiện tại
         LocalDate dateOfAssigned = LocalDate.now();
 
@@ -83,6 +86,6 @@ public class WorkoutHistoryServiceImpl implements WorkoutHistoryService {
         deactivateActiveWorkoutHistories();
 
         // lưu workout history mới
-        save(workoutHistory);
+        return save(workoutHistory);
     }
 }

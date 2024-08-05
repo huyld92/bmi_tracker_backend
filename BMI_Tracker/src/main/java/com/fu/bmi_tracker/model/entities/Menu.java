@@ -42,9 +42,6 @@ public class Menu {
     @Column(name = "MenuName", nullable = false)
     private String menuName;
 
-    @Column(name = "MenuPhoto", nullable = true)
-    private String menuPhoto;
-
     @Column(name = "MenuDescription", nullable = true)
     private String menuDescription;
 
@@ -64,14 +61,13 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MenuFood> menuFoods;
 
-    public Menu(CreateMenuRequest menuRequest, Integer advisorID) {
+    public Menu(CreateMenuRequest menuRequest, Advisor advisor) {
         this.menuName = menuRequest.getMenuName();
         this.menuDescription = menuRequest.getMenuDescription();
-        this.menuPhoto = menuRequest.getMenuPhoto();
         this.totalCalories = 0;
         this.creationDate = LocalDate.now();
         this.isActive = true;
-        this.advisor = new Advisor(advisorID);
+        this.advisor = advisor;
     }
 
     public void update(UpdateMenuRequest menuRequest) {

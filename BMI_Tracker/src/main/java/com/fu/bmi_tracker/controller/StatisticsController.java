@@ -42,6 +42,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -209,7 +210,8 @@ public class StatisticsController {
     public ResponseEntity<?> getTotalWorkout() {
         // gọi service lấy tổng số workout
         List<CountWorkoutResponse> countWorkoutResponses = workoutService.countTotalWorkoutIn6Months();
-
+        countWorkoutResponses
+                .sort(Comparator.comparing(CountWorkoutResponse::getYearMonth));
         if (countWorkoutResponses.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

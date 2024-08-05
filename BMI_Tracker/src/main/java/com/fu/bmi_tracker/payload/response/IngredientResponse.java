@@ -21,7 +21,6 @@ public class IngredientResponse {
     private Integer ingredientID;
     private String ingredientName;
     private String ingredientPhoto;
-    private String nutritionalInformation;
     private Float quantity;
     private String unit;
     private Integer ingredientCalories;
@@ -32,7 +31,6 @@ public class IngredientResponse {
         this.ingredientID = ingredient.getIngredientID();
         this.ingredientName = ingredient.getIngredientName();
         this.ingredientPhoto = ingredient.getIngredientPhoto();
-        this.nutritionalInformation = ingredient.getNutritionalInformation();
         this.quantity = ingredient.getQuantity();
         this.unit = ingredient.getUnit();
         this.ingredientCalories = ingredient.getIngredientCalories();

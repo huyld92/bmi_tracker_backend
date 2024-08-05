@@ -24,7 +24,7 @@ public class WorkoutHistoryResponse {
     private String workoutName;
     private String workoutDescription;
     private Integer standardWeight;
-    private Integer totalCloriesBurned;
+    private Integer totalCaloriesBurned;
     private Integer memberID;
     private String fullName;
     private Boolean isActive;

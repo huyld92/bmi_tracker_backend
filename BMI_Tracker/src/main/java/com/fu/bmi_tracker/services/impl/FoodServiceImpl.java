@@ -6,14 +6,13 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Ingredient;
-import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.entities.FoodDetails;
 import com.fu.bmi_tracker.model.entities.Tag;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
 import com.fu.bmi_tracker.payload.request.RecipeRequest;
 import com.fu.bmi_tracker.payload.request.UpdateFoodRequest;
 import com.fu.bmi_tracker.repository.FoodRepository;
 import com.fu.bmi_tracker.repository.IngredientRepository;
-import com.fu.bmi_tracker.repository.RecipeRepository;
 import com.fu.bmi_tracker.repository.TagRepository;
 import com.fu.bmi_tracker.services.FoodService;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,9 +35,6 @@ public class FoodServiceImpl implements FoodService {
 
     @Autowired
     TagRepository tagRepository;
-
-    @Autowired
-    RecipeRepository recipeRepository;
 
     @Override
     public Iterable<Food> findAll() {
@@ -81,18 +77,18 @@ public class FoodServiceImpl implements FoodService {
         // set tags to food
         food.setFoodTags(tags);
 
-        // Chuyển đổi từ List RecipeRequest thành List Recipe
-        List<Recipe> recipes = new ArrayList<>();
+        // Chuyển đổi từ List RecipeRequest thành List FoodDetails
+        List<FoodDetails> foodDetailses = new ArrayList<>();
         createFoodRequest.getRecipeRequests().forEach((RecipeRequest recipeRequest) -> {
             // gọi ingredient repository tìm ingredient
             Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with ID {" + recipeRequest.getIngredientID() + "}"));
 
-            recipes.add(new Recipe(food, ingredient, recipeRequest));
+            foodDetailses.add(new FoodDetails(food, ingredient, recipeRequest));
         });
 
         //Set recipes vào food
-        food.setRecipes(recipes);
+        food.setFoodDetails(foodDetailses);
 
         // Gọi foodRepository lưu trữ food
         return foodRepository.save(food);
@@ -108,24 +104,23 @@ public class FoodServiceImpl implements FoodService {
         List<Tag> tags = tagRepository.findByTagIDIn(foodRequest.getTagIDs());
 
         // cập nhât lại recipe
-        List<Recipe> recipes = new ArrayList<>();
-
-        foodRequest.getRecipeRequests().forEach(recipeRequest -> {
-            Recipe recipe = recipeRepository.findById(recipeRequest.getRecipeID())
-                    .orElseThrow(() -> new EntityNotFoundException("Cannot find recipe with id{" + recipeRequest.getRecipeID() + "}!"));
-
-            Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
-                    .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with id{" + recipeRequest.getIngredientID() + "}!"));
-            recipe.setFood(food);
-            recipe.setIngredient(ingredient);
-            recipe.setUnit(recipeRequest.getUnit());
-            recipe.setQuantity(recipeRequest.getQuantity());
-            // tạo recipe mới
-            recipes.add(recipe);
-        });
-
+//        List<FoodDetails> recipes = new ArrayList<>();
+//
+//        foodRequest.getRecipeRequests().forEach(recipeRequest -> {
+//            FoodDetails recipe = recipeRepository.findById(recipeRequest.getRecipeID())
+//                    .orElseThrow(() -> new EntityNotFoundException("Cannot find recipe with id{" + recipeRequest.getRecipeID() + "}!"));
+//
+//            Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
+//                    .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with id{" + recipeRequest.getIngredientID() + "}!"));
+//            recipe.setFood(food);
+//            recipe.setIngredient(ingredient);
+//            recipe.setUnit(recipeRequest.getUnit());
+//            recipe.setQuantity(recipeRequest.getQuantity());
+//            // tạo recipe mới
+//            recipes.add(recipe);
+//        });
         // Cập nhật Food 
-        food.update(foodRequest, tags, recipes);
+        food.update(foodRequest, tags);
 
         // Lưu Food đã được cập nhật vào cơ sở dữ liệu
         return foodRepository.save(food);
@@ -142,12 +137,12 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public Iterable<Recipe> findAllRecipesByFoodID(Integer foodID) {
+    public Iterable<FoodDetails> findAllRecipesByFoodID(Integer foodID) {
         // tìm food bằng foodID
         Food food = foodRepository.findByFoodIDAndIsActiveTrue(foodID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find food with id{" + foodID + "}!"));
 
-        return food.getRecipes();
+        return food.getFoodDetails();
     }
 
     @Override

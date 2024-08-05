@@ -14,6 +14,6 @@ public interface MenuHistoryService extends GeneralService<MenuHistory> {
 
     public Iterable<MenuHistory> getMenuHistoryOfMember(Integer memberID);
 
-    public void assignMenuToMember(Integer menuID, Integer memberID);
+    public MenuHistory assignMenuToMember(Integer menuID, Integer memberID);
 
 }

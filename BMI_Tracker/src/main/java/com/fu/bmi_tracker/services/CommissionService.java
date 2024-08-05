@@ -21,6 +21,6 @@ public interface CommissionService extends GeneralService<Commission> {
 
     public Commission updateCommission(UpdateCommissionRequest commissionRequest);
 
-    public List<CommissionSummaryResponse> getCommissionSummaryIn6Months();
+    public List<CommissionSummaryResponse> getCommissionSummaryIn6Months(); 
 
 }

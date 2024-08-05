@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
         Set<Role> accountRoles = new HashSet<>();
         accountRoles.add(role);
 
-        account.setRoles(new HashSet<>(accountRoles));
+        account.setRoles(accountRoles);
 
         account.setPassword(password);
 

@@ -4,8 +4,7 @@
  */
 package com.fu.bmi_tracker.repository;
 
-import com.fu.bmi_tracker.model.entities.WorkoutExercise;
-import java.util.List;
+import com.fu.bmi_tracker.model.entities.CommissionAllocation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +13,8 @@ import org.springframework.stereotype.Repository;
  * @author Duc Huy
  */
 @Repository
-public interface WorkoutExerciseRepository extends JpaRepository<WorkoutExercise, Integer> {
+public interface CommissionAllocationRepository extends JpaRepository<CommissionAllocation, Integer> {
 
-    public List<WorkoutExercise> findByWorkout_WorkoutID(Integer workoutID);
+    public Iterable<CommissionAllocation> findByCommission_CommissionID(Integer commissionID);
 
 }

@@ -30,4 +30,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
             + "ORDER BY YEAR(w.creationDate) DESC, MONTH(w.creationDate) DESC")
     public List<CountWorkoutResponse> countTotalWorkoutPerMonthInBetween(LocalDate startDate, LocalDate endDate);
 
+    public Iterable<Workout> findByAdvisor_AdvisorIDAndIsActiveTrue(Integer advisorID);
+
 }

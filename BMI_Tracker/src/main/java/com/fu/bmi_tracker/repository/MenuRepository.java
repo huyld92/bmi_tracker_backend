@@ -30,4 +30,6 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
             + "ORDER BY YEAR(m.creationDate) DESC, MONTH(m.creationDate) DESC")
     public List<CountMenuResponse> countTotalMenuPerMonthInBetween(LocalDate startDate, LocalDate endDate);
 
+    public Iterable<Menu> findByAdvisor_AdvisorIDAndIsActiveTrue(Integer advisorID);
+
 }

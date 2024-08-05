@@ -5,9 +5,10 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,12 +49,14 @@ public class UpdateFoodRequest {
     private String foodNutrition;
 
     @NotNull
+    @Min(1)
+    @Max(10)
     @Schema(description = "Serving information of the food", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String serving;
+    private Integer serving;
 
     @NotNull
     @Schema(description = "Time required to prepare the food (in minutes)", requiredMode = Schema.RequiredMode.REQUIRED)
-    private int foodTimeProcess; 
+    private int foodTimeProcess;
 
 //    @NotNull
 //    @Schema(description = "Status indicating whether the food is active or not", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -61,5 +64,5 @@ public class UpdateFoodRequest {
     @Schema(example = "[1,2,3]")
     private List<Integer> tagIDs;
 
-    private List<UpdateFoodRecipeRequest> recipeRequests;
+//    private List<UpdateFoodRecipeRequest> recipeRequests;
 }

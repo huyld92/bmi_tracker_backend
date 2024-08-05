@@ -9,6 +9,7 @@ import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Transaction;
 import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
+import com.fu.bmi_tracker.model.entities.CommissionAllocation;
 import com.fu.bmi_tracker.model.entities.Plan;
 import com.fu.bmi_tracker.model.enums.ESubscriptionStatus;
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
@@ -18,6 +19,7 @@ import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
 import com.fu.bmi_tracker.payload.response.CountSubscriptionResponse;
 import com.fu.bmi_tracker.payload.response.SubscriptionSummaryResponse;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
+import com.fu.bmi_tracker.repository.CommissionAllocationRepository;
 import com.fu.bmi_tracker.repository.CommissionRepository;
 import com.fu.bmi_tracker.repository.MemberRepository;
 import com.fu.bmi_tracker.util.DateTimeUtils;
@@ -57,6 +59,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Autowired
     CommissionRepository commissionRepository;
+
+    @Autowired
+    CommissionAllocationRepository commissionAllocationRepository;
 
     @Autowired
     PlanRepository planRepository;
@@ -143,54 +148,73 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             endDateOfPlan = endDateOfPlan.plusDays(planDuration);
         }
 
-        // cập nhật ngày kết thúc cho Member
-        member.setEndDateOfPlan(endDateOfPlan);
-        memberRepository.save(member);
-
         // tìm advisor
         Advisor advisor = advisorRepository.findById(createRequest.getSubscriptionRequest().getAdvisorID())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
-
-        // tính ngày dự kiến thanh toán 
-        // Tìm commission bằng ngày dự kiến và advisorID
-        LocalDate expectedPaymentDate = dateTimeUtils.calculateExpectedPaymentDate(endDateOfPlan);
-        Commission commission = commissionRepository.
-                findByAdvisor_AdvisorIDAndExpectedPaymentDate(
-                        advisor.getAdvisorID(),
-                        expectedPaymentDate);
 
         // lấy commission rate từ file text
         CommissionRateUtils commissionRateUtils = new CommissionRateUtils();
         Float commissionRate = commissionRateUtils.getCommissionRate();
 
-        // tạo mới commission
-        // kiểm tra kết quả
-        if (commission == null) {
-            BigDecimal bigDecimalRate = BigDecimal.valueOf(commissionRate);
+        // tạo subscription kiểm tra trạng thái status
+        AdvisorSubscription subscription
+                = subscriptionRepository.save(new AdvisorSubscription(
+                        createRequest.getSubscriptionRequest(),
+                        startDateOfPlan,
+                        endDateOfPlan,
+                        member,
+                        advisor,
+                        transaction.getTransactionID(),
+                        commissionRate
+                ));
+        String[] milestoneLabels = {"25%", "50%", "75%", "100%"};
 
-            BigDecimal commissionAmount = createRequest.getSubscriptionRequest()
-                    .getAmount()
-                    .multiply(bigDecimalRate);
+        // tính giá tiền cho mốc, mỗi mốc bằng 25% tổng tiền  * tỉ lệ phân chia
+        BigDecimal amount = createRequest.getSubscriptionRequest()
+                .getAmount().multiply(BigDecimal.valueOf(commissionRate * 0.25));
 
-            Commission c = new Commission(
-                    commissionAmount,
-                    null,
-                    expectedPaymentDate,
-                    BigDecimal.ZERO,
-                    EPaymentStatus.UNPAID,
-                    null,
-                    advisor);
-            // lưu commission
-            commission = commissionRepository.save(c);
-        } else {
-            // nếu tồn tại cập nhật 
-            BigDecimal bigDecimalRate = BigDecimal.valueOf(commissionRate);
-            BigDecimal commissionAmount = createRequest.getSubscriptionRequest()
-                    .getAmount()
-                    .multiply(bigDecimalRate).add(commission.getCommissionAmount());
-            commission.setCommissionAmount(commissionAmount);
-            // cập nhật commission
-            commissionRepository.save(commission);
+        for (int i = 1; i <= milestoneLabels.length; i++) {
+            double milestonePercentage = i * 0.25;
+            LocalDate milestoneDate = startDateOfPlan.plusDays((long) (planDuration * milestonePercentage));
+
+            // Tìm commission bằng ngày dự kiến và advisorID
+            LocalDate expectedPaymentDate = dateTimeUtils.calculateExpectedPaymentDate(milestoneDate);
+            Commission commission = commissionRepository.
+                    findByAdvisor_AdvisorIDAndExpectedPaymentDate(
+                            advisor.getAdvisorID(),
+                            expectedPaymentDate);
+
+            // kiểm tra kết quả
+            if (commission == null) {
+                commission = new Commission(
+                        amount,
+                        null,
+                        expectedPaymentDate,
+                        BigDecimal.ZERO,
+                        EPaymentStatus.UNPAID,
+                        null,
+                        advisor);
+            } else {
+                // nếu tồn tại cập nhật 
+                // giá tiền của commission + giá tiền hiện tại
+                amount = commission.getCommissionAmount().add(amount);
+
+                commission.setCommissionAmount(amount);
+            }
+            Commission commissionSaved = commissionRepository.save(commission);
+
+            // Tạo description cho CommissionAllocation
+            String description = String.format("Commission for %s milestone: %s earned for subscription #%s from %s to %s.",
+                    milestoneLabels[i], amount.toString(), subscription.getSubscriptionNumber(), subscription.getStartDate(), subscription.getEndDate());
+
+            CommissionAllocation allocation = new CommissionAllocation(
+                    amount,
+                    description,
+                    milestoneLabels[i],
+                    milestoneDate,
+                    commissionSaved,
+                    subscription);
+            commissionAllocationRepository.save(allocation);
         }
 
         // cập nhật số lần sử dụng cho plan
@@ -200,22 +224,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         int numberOfUses = plan.getNumberOfUses() + 1;
         plan.setNumberOfUses(numberOfUses);
 
+        // cập nhật ngày kết thúc cho Member
+        member.setEndDateOfPlan(endDateOfPlan);
+        memberRepository.save(member);
+
         // cập nhật lại plan
         planRepository.save(plan);
 
-        // tạo subscription kiểm tra trạng thái status
-        AdvisorSubscription subscription = new AdvisorSubscription(
-                createRequest.getSubscriptionRequest(),
-                startDateOfPlan,
-                endDateOfPlan,
-                member,
-                advisor,
-                transaction.getTransactionID(),
-                commission.getCommissionID(),
-                commissionRate
-        );
-
-        return subscriptionRepository.save(subscription);
+        return subscription;
     }
 
     @Override

@@ -35,7 +35,7 @@ public class FoodResponse {
 
     private Integer foodTimeProcess;
 
-    private String serving;
+    private Integer serving;
 
     private LocalDate creationDate;
 

@@ -32,7 +32,6 @@ public class CreateCertificateRequest {
     private String certificateLink;
 
     @Positive
-    @Size(max = 100)
     @Schema(name = "advisorID", example = "1")
     private Integer advisorID;
 }

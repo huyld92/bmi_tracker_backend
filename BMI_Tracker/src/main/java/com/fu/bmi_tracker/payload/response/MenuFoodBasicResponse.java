@@ -38,7 +38,7 @@ public class MenuFoodBasicResponse {
 
     private Integer foodTimeProcess;
 
-    private String serving;
+    private Integer serving;
 
     private EMealType mealType;
 

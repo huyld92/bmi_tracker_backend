@@ -69,22 +69,21 @@ public class MenuHistoryController {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
 
         // Lấy danh sách menu of member
-        Iterable<MenuHistory> menuHistorys = menuHistoryService.getMenuHistoryOfMember(member.getMemberID());
+        Iterable<MenuHistory> menuHistories = menuHistoryService.getMenuHistoryOfMember(member.getMemberID());
 
         // kiểm tra menu trống
-        if (!menuHistorys.iterator().hasNext()) {
+        if (!menuHistories.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         // tạo Menu History Response
         List<MenuHistoryResponse> menuHistoryResponses = new ArrayList<>();
 
-        menuHistorys.forEach(menuHistory -> {
+        menuHistories.forEach(menuHistory -> {
             menuHistoryResponses.add(new MenuHistoryResponse(
                     menuHistory.getMenuHistoryID(),
                     menuHistory.getDateOfAssigned(),
                     menuHistory.getMenu().getMenuID(),
-                    menuHistory.getMenu().getMenuPhoto(),
                     menuHistory.getMenu().getTotalCalories(),
                     menuHistory.getMenu().getMenuDescription(),
                     menuHistory.getMenu().getMenuName(),
@@ -129,7 +128,6 @@ public class MenuHistoryController {
                     menuHistory.getMenuHistoryID(),
                     menuHistory.getDateOfAssigned(),
                     menuHistory.getMenu().getMenuID(),
-                    menuHistory.getMenu().getMenuPhoto(),
                     menuHistory.getMenu().getTotalCalories(),
                     menuHistory.getMenu().getMenuDescription(),
                     menuHistory.getMenu().getMenuName(),
@@ -154,7 +152,11 @@ public class MenuHistoryController {
 //    @PreAuthorize("hasRole('AVISOR')")
     public ResponseEntity<?> assignMenu(@Valid @RequestParam Integer menuID, @RequestParam Integer memberID) {
         // gọi service assign menu cho member
-        menuHistoryService.assignMenuToMember(menuID, memberID);
+        MenuHistory menuHistory = menuHistoryService.assignMenuToMember(menuID, memberID);
+        if (menuHistory == null) {
+            return new ResponseEntity<>(new MessageResponse("Menu is inactive!"), HttpStatus.BAD_REQUEST);
+
+        }
 
         return new ResponseEntity<>(new MessageResponse("Assign menu to member success"), HttpStatus.OK);
     }

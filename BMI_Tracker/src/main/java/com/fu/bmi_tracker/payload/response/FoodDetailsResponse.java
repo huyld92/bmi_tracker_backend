@@ -4,7 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.response;
 
-import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.entities.FoodDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeResponse {
+public class FoodDetailsResponse {
 
     private Integer recipeID;
     private Integer ingredientID;
@@ -24,16 +24,14 @@ public class RecipeResponse {
     private String ingredientPhoto;
     private Float quantity;
     private String unit;
-    private Boolean isActive;
 
-    public RecipeResponse(Recipe recipe) {
-        this.recipeID = recipe.getRecipeID();
-        this.ingredientID = recipe.getIngredient().getIngredientID();
-        this.ingredientName = recipe.getIngredient().getIngredientName();
-        this.ingredientPhoto = recipe.getIngredient().getIngredientPhoto();
-        this.quantity = recipe.getQuantity();
-        this.unit = recipe.getUnit();
-        this.isActive = recipe.getIsActive();
+    public FoodDetailsResponse(FoodDetails foodDetails) {
+        this.recipeID = foodDetails.getFoodDetailsID();
+        this.ingredientID = foodDetails.getIngredient().getIngredientID();
+        this.ingredientName = foodDetails.getIngredient().getIngredientName();
+        this.ingredientPhoto = foodDetails.getIngredient().getIngredientPhoto();
+        this.quantity = foodDetails.getQuantity();
+        this.unit = foodDetails.getUnit();
     }
 
 }

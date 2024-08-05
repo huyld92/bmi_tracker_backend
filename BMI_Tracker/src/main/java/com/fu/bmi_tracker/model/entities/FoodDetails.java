@@ -27,13 +27,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Recipe")
-public class Recipe {
+@Table(name = "FoodDetails")
+public class FoodDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RecipeID", nullable = false)
-    private Integer recipeID;
+    @Column(name = "FoodDetailsID", nullable = false)
+    private Integer foodDetailsID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FoodID")
@@ -49,22 +49,17 @@ public class Recipe {
     @Column(name = "Unit", nullable = false)
     private String unit;
 
-    @Column(name = "IsActive", nullable = false)
-    private Boolean isActive;
-
-    public Recipe(Food food, Ingredient ingredient, RecipeRequest recipeRequest) {
+    public FoodDetails(Food food, Ingredient ingredient, RecipeRequest recipeRequest) {
         this.food = food;
         this.ingredient = ingredient;
         this.unit = recipeRequest.getUnit();
         this.quantity = recipeRequest.getQuantity();
-        this.isActive = true;
     }
 
-    public Recipe(Food food, Ingredient ingredient, Float quantity, String unit, Boolean isActive) {
+    public FoodDetails(Food food, Ingredient ingredient, Float quantity, String unit) {
         this.food = food;
         this.ingredient = ingredient;
         this.unit = unit;
         this.quantity = quantity;
-        this.isActive = isActive;
     }
 }

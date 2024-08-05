@@ -52,9 +52,6 @@ public class Member {
     @Column(name = "DefaultCalories", nullable = false)
     private Integer defaultCalories;
 
-    @Column(name = "IsPrivate", nullable = false)
-    private boolean isPrivate;
-
     @Column(name = "LastUpdatedTime", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime lastUpdatedTime;
@@ -70,26 +67,24 @@ public class Member {
     private ActivityLevel activityLevel;
 
     public Member(Account account, Integer targetWeight, Double tdee, Double bmr,
-            Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
+            Integer defaultCalories, LocalDateTime lastUpdatedTime,
             String dietaryPreferenceName, ActivityLevel activityLevel) {
         this.account = account;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
         this.defaultCalories = defaultCalories;
-        this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
         this.dietaryPreference = dietaryPreferenceName;
         this.activityLevel = activityLevel;
     }
 
     public Member(Account account, Integer targetWeight, Double tdee,
-            Integer defaultCalories, boolean isPrivate, LocalDateTime lastUpdatedTime,
+            Integer defaultCalories, LocalDateTime lastUpdatedTime,
             String dietaryPreferenceName, ActivityLevel activityLevel) {
         this.account = account;
         this.targetWeight = targetWeight;
         this.tdee = tdee;
         this.defaultCalories = defaultCalories;
-        this.isPrivate = isPrivate;
         this.lastUpdatedTime = lastUpdatedTime;
         this.dietaryPreference = dietaryPreferenceName;
         this.activityLevel = activityLevel;
@@ -100,7 +95,9 @@ public class Member {
     }
 
     public MemberResponse toMemberResponse(Member m) {
-        return new MemberResponse(m.getMemberID(),
+        return new MemberResponse(
+                m.getAccount().getAccountID(),
+                m.getMemberID(),
                 m.getAccount().getEmail(),
                 m.getAccount().getAccountPhoto(),
                 m.getAccount().getFullName(),
@@ -110,7 +107,9 @@ public class Member {
     }
 
     public MemberResponse toMemberResponse() {
-        return new MemberResponse(memberID,
+        return new MemberResponse(
+                account.getAccountID(),
+                memberID,
                 account.getEmail(),
                 account.getAccountPhoto(),
                 account.getFullName(),

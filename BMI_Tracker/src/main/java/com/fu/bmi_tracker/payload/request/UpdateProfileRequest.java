@@ -39,7 +39,6 @@ public class UpdateProfileRequest {
     @Schema(description = "URL of the account photo(NULL)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String accountPhoto;
 
-    @NotBlank(message = "Gender is required")
     @Schema(name = "gender", examples = {"Male", "Female"})
     private EGender gender;
 

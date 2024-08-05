@@ -127,7 +127,6 @@ public class MemberController {
                 createMemberRequest.getTargetWeight(),
                 tdee,
                 defaultCalories,
-                false,
                 now,
                 createMemberRequest.getDietaryPreference(),
                 new ActivityLevel(createMemberRequest.getActivityLevelID())

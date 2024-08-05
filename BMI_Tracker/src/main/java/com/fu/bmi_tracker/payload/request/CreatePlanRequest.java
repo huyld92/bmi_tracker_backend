@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.payload.request;
 
+import com.fu.bmi_tracker.model.enums.EPlanStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -42,7 +43,5 @@ public class CreatePlanRequest {
     @NotNull
     @Positive
     @Schema(name = "planDuration", example = "30")
-    private int planDuration;
- 
-
+    private Integer planDuration;
 }

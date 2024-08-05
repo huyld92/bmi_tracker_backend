@@ -64,14 +64,19 @@ public class MenuHistoryServiceImpl implements MenuHistoryService {
     }
 
     @Override
-    public void assignMenuToMember(Integer menuID, Integer memberID) {
+    public MenuHistory assignMenuToMember(Integer menuID, Integer memberID) {
         // gọi member repository tìm member
         Member member = memberRepository.findById(memberID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member with id{" + memberID + "}!"));
+
         // gọi menu repository tìm menu 
         Menu menu = menuRepository.findById(menuID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find menu with id{" + menuID + "}!"));
-
+        
+        if (!menu.getIsActive()) {
+            return null;
+        }
+        
         // lấy ngày hiện tại
         LocalDate dateOfAssigned = LocalDate.now();
 
@@ -84,7 +89,7 @@ public class MenuHistoryServiceImpl implements MenuHistoryService {
         deactivateActiveMenuHistories();
 
         // lưu menu history mới
-        save(menuHistory);
+        return save(menuHistory);
     }
 
 }

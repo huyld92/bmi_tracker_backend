@@ -97,6 +97,25 @@ public class NotificationController {
     }
 
     @Operation(
+            summary = "Mark as read all notification (LOGIN)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Success mark as read notification"),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/read-all")
+    public ResponseEntity<?> markAsReadAll() {
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        // gọi service caajap nhật active notificaion 
+        notificationService.markAsReadAll(principal.getId());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(
             summary = "Delete notification")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Delete notification"),
@@ -108,27 +127,6 @@ public class NotificationController {
     public ResponseEntity<?> deleteNotification(@RequestParam Integer notificationID) {
         // delete notificaion
         notificationService.deleteByID(notificationID);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @Operation(
-            summary = "Deactivate notification")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Deactivate notification success"),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @DeleteMapping(value = "/deactivate")
-    public ResponseEntity<?> deactivateNotification(@RequestParam Integer notificationID) {
-        // tìm notificaion
-        Notification notification = notificationService.findById(notificationID)
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find notification!"));
-
-        //set True is read
-        notification.setIsActive(Boolean.FALSE);
-
-        notificationService.save(notification);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

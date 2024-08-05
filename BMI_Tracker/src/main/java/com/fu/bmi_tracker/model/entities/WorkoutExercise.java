@@ -47,15 +47,11 @@ public class WorkoutExercise {
     @Column(name = "CaloriesBurned", nullable = false)
     private Integer caloriesBurned;
 
-    @Column(name = "IsActive", nullable = false)
-    private Boolean isActive;
-
     public WorkoutExercise(Workout workout, Exercise exercise, Integer duration, Integer caloriesBurned) {
         this.workout = workout;
         this.exercise = exercise;
         this.duration = duration;
         this.caloriesBurned = caloriesBurned;
-        this.isActive = true;
     }
 
 }

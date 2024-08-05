@@ -20,6 +20,7 @@ import com.fu.bmi_tracker.util.ExerciseUtils;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (!workout.getStandardWeight().equals(updateWorkoutRequest.getStandardWeight())) {
             // cập nhật lại calories burned khi weight có thay đổi
             workout.setTotalCaloriesBurned(0);
-            
+
             // duyệt danh sách workout exercise
             workout.getWorkoutExercises().forEach(workoutExercise -> {
                 // tính calories burned
@@ -143,6 +144,12 @@ public class WorkoutServiceImpl implements WorkoutService {
         // set workout exercise cho workout và lưu trữ
         workout.setWorkoutExercises(workoutExercises);
         return save(workout);
+    }
+
+    @Override
+    public Iterable<Workout> getWorkoutActiveByAdvisorID(Integer advisorID) {
+        return workoutRepository.findByAdvisor_AdvisorIDAndIsActiveTrue(advisorID);
+
     }
 
 }

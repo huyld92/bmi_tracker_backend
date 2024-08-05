@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 public class PlanAdvisorResponse {
 
     private Integer planID;
+    private String planCode;
     private String planName;
     private BigDecimal price;
     private String description;
@@ -27,11 +28,12 @@ public class PlanAdvisorResponse {
     private Integer advisorID;
     private String fullName;
     private Integer numberOfUses;
-    private Boolean isApproved;
+    private String planStatus;
     private Boolean isActive;
 
     public PlanAdvisorResponse(Plan plan) {
         this.planID = plan.getPlanID();
+        this.planCode = plan.getPlanCode() + planID;
         this.planName = plan.getPlanName();
         this.price = plan.getPrice();
         this.description = plan.getDescription();
@@ -39,7 +41,7 @@ public class PlanAdvisorResponse {
         this.advisorID = plan.getAdvisor().getAdvisorID();
         this.fullName = plan.getAdvisor().getAccount().getFullName();
         this.numberOfUses = plan.getNumberOfUses();
-        this.isApproved = plan.getIsApproved();
+        this.planStatus = plan.getPlanStatus();
         this.isActive = plan.getIsActive();
     }
 

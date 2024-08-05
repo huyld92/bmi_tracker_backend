@@ -38,15 +38,15 @@ public class FoodEntityResponse {
 
     private LocalDate creationDate;
 
-    private String serving;
+    private Integer serving;
 
     private Boolean isActive;
 
     private List<TagBasicResponse> foodTags;
 
-    private List<RecipeResponse> recipes;
+    private List<FoodDetailsResponse> recipes;
 
-    public FoodEntityResponse(Food food, List<TagBasicResponse> foodTags, List<RecipeResponse> recipes) {
+    public FoodEntityResponse(Food food, List<TagBasicResponse> foodTags, List<FoodDetailsResponse> foodDetails) {
         this.foodID = food.getFoodID();
         this.foodName = food.getFoodName();
         this.foodCalories = food.getFoodCalories();
@@ -59,6 +59,6 @@ public class FoodEntityResponse {
         this.creationDate = food.getCreationDate();
         this.isActive = food.getIsActive();
         this.foodTags = foodTags;
-        this.recipes = recipes;
+        this.recipes = foodDetails;
     }
 }

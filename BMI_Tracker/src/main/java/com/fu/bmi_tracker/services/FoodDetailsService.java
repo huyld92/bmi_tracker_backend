@@ -4,19 +4,17 @@
  */
 package com.fu.bmi_tracker.services;
 
-import com.fu.bmi_tracker.model.entities.Recipe;
+import com.fu.bmi_tracker.model.entities.FoodDetails;
 import com.fu.bmi_tracker.payload.request.CreateRecipeRequest;
 
 /**
  *
  * @author Duc Huy
  */
-public interface RecipeService extends GeneralService<Recipe> {
+public interface FoodDetailsService extends GeneralService<FoodDetails> {
 
-    public void deleteRecipe(Integer recipeID);
+    public void deleteFoodDetails(Integer foodDetailsID);
 
-    public Recipe createRecipe(CreateRecipeRequest recipeRequest);
-
-    public void deactivateRecipe(Integer recipeID);
+    public FoodDetails createRecipe(CreateRecipeRequest recipeRequest);
 
 }
