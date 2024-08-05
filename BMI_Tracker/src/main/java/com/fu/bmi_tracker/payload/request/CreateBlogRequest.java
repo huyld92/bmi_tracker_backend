@@ -31,11 +31,11 @@ public class CreateBlogRequest {
     private String blogContent;
 
     @Schema(example = "http://example.com/photo.jpg")
-    @NotBlank
+    @NotBlank(message = "Blog photo is required")
     private String blogPhoto;
 
     @Schema(example = "http://example.com")
-    @NotBlank
+    @NotBlank(message = "Link is required")
     private String link;
 
 }

@@ -1,6 +1,9 @@
 package com.fu.bmi_tracker.payload.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -27,16 +30,18 @@ public class CreateExerciseRequest {
     @NotNull(message = "Exercise name is required")
     private String exerciseName;
 
+    @NotBlank
     @Schema(example = "http://example.com/photo.jpg")
-    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String exercisePhoto;
 
+    @NotBlank
     @Schema(example = "http://example.com/video.mp4")
-    @Pattern(regexp = "link", message = "Link must be a valid URL")
     private String exerciseVideo;
 
     @Schema(example = "8.0")
     @NotNull(message = "MET is required")
+    @Min(1)
+    @Max(16)
     @PositiveOrZero(message = "MET must be a positive number")
     private Float met;
 

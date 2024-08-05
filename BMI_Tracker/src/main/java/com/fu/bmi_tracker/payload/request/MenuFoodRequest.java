@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 public class MenuFoodRequest {
 
     @NotNull
-    @Min(1)
     @Schema(description = "Unique identifier for the food")
     private Integer foodID;
 

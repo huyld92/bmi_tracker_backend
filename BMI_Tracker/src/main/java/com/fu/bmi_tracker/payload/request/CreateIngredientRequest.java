@@ -23,12 +23,12 @@ import lombok.NoArgsConstructor;
 public class CreateIngredientRequest {
 
     @NotBlank(message = "Ingredient name is required")
-    @Size(max = 2, message = "Ingreadient name must not exceed 100 characters")
+    @Size(max = 100, message = "Ingreadient name must not exceed 100 characters")
     @Schema(name = "ingredientName", example = "Salt")
     private String ingredientName;
 
     @NotBlank(message = "Unit of measurement is required")
-    @Size(max = 100, message = "Ingreadient name must not exceed 100 characters")
+    @Size(max = 20, message = "Ingreadient unit must not exceed 20 characters")
     @Schema(name = "unit", example = "10 Gram")
     private String unit;
 
@@ -48,7 +48,6 @@ public class CreateIngredientRequest {
     private Integer tagID;
 
     @NotBlank(message = "Ingredient photo url is required")
-    @Size(max = 100, message = "Ingreadient photo url must not exceed 100 characters")
     @Schema(name = "ingredientPhoto", example = "photourl.com")
     private String ingredientPhoto;
 

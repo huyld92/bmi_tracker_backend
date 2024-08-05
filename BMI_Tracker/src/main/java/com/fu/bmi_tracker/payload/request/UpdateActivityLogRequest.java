@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class UpdateActivityLogRequest {
 
     @Positive
-    @Schema(name = "activityID", example = "1", nullable = true)
+    @Schema(name = "activityID", example = "1")
     private Integer activityID;
 
     @Size(max = 100)

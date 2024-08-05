@@ -38,7 +38,11 @@ public class MenuResponseBasicFood {
 //        this.advisorID = menu.getAdvisor().getAdvisorID();
         List<MenuFoodBasicResponse> menuFoodBasicResponses = new ArrayList<>();
         menuFoods.forEach(menuFood -> {
-            menuFoodBasicResponses.add(new MenuFoodBasicResponse(menuFood.getMenuFoodID(), menuFood.getFood(), menuFood.getMealType(), menuFood.getIsActive()));
+            menuFoodBasicResponses.add(new MenuFoodBasicResponse(
+                    menuFood.getMenuFoodID(),
+                    menuFood.getFood(),
+                    menuFood.getMealType())
+            );
         });
         this.menuFoods = menuFoodBasicResponses;
     }

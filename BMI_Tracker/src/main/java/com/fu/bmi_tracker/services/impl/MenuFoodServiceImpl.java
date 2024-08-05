@@ -89,47 +89,47 @@ public class MenuFoodServiceImpl implements MenuFoodService {
 
         menuFoodRepository.deleteById(menuFoodID);
     }
-
-    @Override
-    public void deactivateMenuFood(Integer menuFoodID) {
-        MenuFood menuFood = menuFoodRepository.findById(menuFoodID)
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find menu food id{" + menuFoodID + "}!"));
-
-        // nếu menu đang false không cần cập nhật
-        if (!menuFood.getIsActive()) {
-            return;
-        }
-
-        // tính tổng calories
-        int totalCalories = menuFood.getMenu().getTotalCalories() - menuFood.getFood().getFoodCalories();
-
-        // cập nhật total calories của food
-        menuFood.getMenu().setTotalCalories(totalCalories);
-        menuFood.setIsActive(Boolean.FALSE);
-
-        // deactivate menu food
-        menuFoodRepository.save(menuFood);
-    }
-
-    @Override
-    public void activateMenuFood(Integer menuFoodID) {
-        MenuFood menuFood = menuFoodRepository.findById(menuFoodID)
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find menu food id{" + menuFoodID + "}!"));
-
-        if (menuFood.getIsActive()) // tính tổng calories
-        {
-            return;
-        }
-
-        int totalCalories = menuFood.getMenu().getTotalCalories() + menuFood.getFood().getFoodCalories();
-
-        menuFood.getMenu().setTotalCalories(totalCalories);
-        menuFood.setIsActive(Boolean.TRUE);
-        // cập nhật total calories của food
+//
+//    @Override
+//    public void deactivateMenuFood(Integer menuFoodID) {
+//        MenuFood menuFood = menuFoodRepository.findById(menuFoodID)
+//                .orElseThrow(() -> new EntityNotFoundException("Cannot find menu food id{" + menuFoodID + "}!"));
+//
+//        // nếu menu đang false không cần cập nhật
+//        if (!menuFood.getIsActive()) {
+//            return;
+//        }
+//
+//        // tính tổng calories
+//        int totalCalories = menuFood.getMenu().getTotalCalories() - menuFood.getFood().getFoodCalories();
+//
+//        // cập nhật total calories của food
 //        menuFood.getMenu().setTotalCalories(totalCalories);
-//        menuRepository.save(menuFood.getMenu());
-        // deactivate menu food
-        menuFoodRepository.save(menuFood);
-    }
+//        menuFood.setIsActive(Boolean.FALSE);
+//
+//        // deactivate menu food
+//        menuFoodRepository.save(menuFood);
+//    }
+//
+//    @Override
+//    public void activateMenuFood(Integer menuFoodID) {
+//        MenuFood menuFood = menuFoodRepository.findById(menuFoodID)
+//                .orElseThrow(() -> new EntityNotFoundException("Cannot find menu food id{" + menuFoodID + "}!"));
+//
+//        if (menuFood.getIsActive()) // tính tổng calories
+//        {
+//            return;
+//        }
+//
+//        int totalCalories = menuFood.getMenu().getTotalCalories() + menuFood.getFood().getFoodCalories();
+//
+//        menuFood.getMenu().setTotalCalories(totalCalories);
+//        menuFood.setIsActive(Boolean.TRUE);
+//        // cập nhật total calories của food
+////        menuFood.getMenu().setTotalCalories(totalCalories);
+////        menuRepository.save(menuFood.getMenu());
+//        // deactivate menu food
+//        menuFoodRepository.save(menuFood);
+//    }
 
 }

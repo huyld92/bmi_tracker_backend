@@ -357,7 +357,7 @@ public class AccountController {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @GetMapping(value = "advisor-/get-profile")
+    @GetMapping(value = "advisor/get-profile")
     public ResponseEntity<?> getAdvisorProfile() {
         // lấy account từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()

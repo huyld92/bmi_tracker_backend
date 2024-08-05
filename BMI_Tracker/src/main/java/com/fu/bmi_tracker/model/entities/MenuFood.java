@@ -48,14 +48,10 @@ public class MenuFood {
     @Enumerated(EnumType.STRING)
     private EMealType mealType;
 
-    @Column(name = "IsActive", nullable = false)
-    private Boolean isActive;
-
-    public MenuFood(Menu menu, Food food, EMealType mealType, Boolean isActive) {
+    public MenuFood(Menu menu, Food food, EMealType mealType) {
         this.menu = menu;
         this.food = food;
         this.mealType = mealType;
-        this.isActive = isActive;
     }
 
 }

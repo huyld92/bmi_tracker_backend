@@ -6,14 +6,11 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
-import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Menu;
 import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.payload.request.CreateMenuFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateMenuRequest;
-import com.fu.bmi_tracker.payload.request.MenuFoodRequest;
 import com.fu.bmi_tracker.payload.request.UpdateMenuRequest;
-import com.fu.bmi_tracker.payload.response.FoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuFoodBasicResponse;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuResponse;
@@ -21,7 +18,6 @@ import com.fu.bmi_tracker.payload.response.MenuResponseAll;
 import com.fu.bmi_tracker.payload.response.MenuResponseBasicFood;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
-import com.fu.bmi_tracker.services.FoodService;
 import com.fu.bmi_tracker.services.MenuFoodService;
 import com.fu.bmi_tracker.services.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,9 +62,6 @@ public class MenuController {
     AdvisorService advisorService;
 
     @Autowired
-    FoodService foodService;
-
-    @Autowired
     MenuFoodService menuFoodService;
 
     @Operation(
@@ -98,8 +91,7 @@ public class MenuController {
 
             menuFoodResponses.add(new MenuFoodResponse(
                     menuFood.getFood(),
-                    menuFood.getMealType(),
-                    menu.getIsActive()));
+                    menuFood.getMealType()));
         });
 
         // tạo menu response
@@ -131,8 +123,7 @@ public class MenuController {
         MenuFoodBasicResponse menuFoodResponse = new MenuFoodBasicResponse(
                 menuFood.getMenuFoodID(),
                 menuFood.getFood(),
-                menuFood.getMealType(),
-                menuFood.getIsActive());
+                menuFood.getMealType());
         return new ResponseEntity<>(menuFoodResponse, HttpStatus.CREATED);
 
     }
@@ -160,8 +151,7 @@ public class MenuController {
             MenuFoodBasicResponse menuFoodResponse = new MenuFoodBasicResponse(
                     menuFood.getMenuFoodID(),
                     menuFood.getFood(),
-                    menuFood.getMealType(),
-                    menuFood.getIsActive());
+                    menuFood.getMealType());
             menuFoodResponses.add(menuFoodResponse);
         });
         return new ResponseEntity<>(menuFoodResponses, HttpStatus.CREATED);
@@ -436,23 +426,22 @@ public class MenuController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-    @Operation(
-            summary = "Activate menu food",
-            description = "Activate menu food by food id and menu id")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @PutMapping(value = "/menu-food/activate")
-    public ResponseEntity<?> activateMenuFood(@RequestParam Integer menuFoodID) {
-        menuFoodService.activateMenuFood(menuFoodID);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
+//    @Operation(
+//            summary = "Activate menu food",
+//            description = "Activate menu food by food id and menu id")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "204", content = {
+//            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @PutMapping(value = "/menu-food/activate")
+//    public ResponseEntity<?> activateMenuFood(@RequestParam Integer menuFoodID) {
+//        menuFoodService.activateMenuFood(menuFoodID);
+//
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 //    @Operation(
 //            summary = "Get menu by tag name",
 //            description = "Get menu with tag name")

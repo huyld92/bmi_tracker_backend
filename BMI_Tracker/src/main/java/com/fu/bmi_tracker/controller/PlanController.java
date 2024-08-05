@@ -6,6 +6,7 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Plan;
+import com.fu.bmi_tracker.model.enums.EPlanStatus;
 import com.fu.bmi_tracker.payload.request.CreatePlanRequest;
 import com.fu.bmi_tracker.payload.request.UpdatePlanRequest;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -293,18 +295,18 @@ public class PlanController {
         }
     }
 
-    @Operation(summary = "Approve a Plan by plan Id (MANAGER)")
+    @Operation(summary = "Change status a Plan by plan Id (MANAGER)")
     @ApiResponses({
         @ApiResponse(responseCode = "204", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
-    @PutMapping("/approve-plan/{planID}")
-    public ResponseEntity<?> approvePlan(@PathVariable int planID) {
+    @PutMapping("/change-plan-status")
+    public ResponseEntity<?> approvePlan(@RequestParam Integer planID, @RequestParam EPlanStatus planStatus) {
         Optional<Plan> plan = planService.findById(planID);
 
         if (plan.isPresent()) {
-            plan.get().setPlanStatus("Approved");
+            plan.get().setPlanStatus(planStatus.toString());
             planService.save(plan.get());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {

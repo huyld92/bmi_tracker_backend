@@ -32,7 +32,7 @@ public class MenuFoodBasicResponse {
 
     private String foodPhoto;
 
-    private String foodVideo; 
+    private String foodVideo;
 
     private Integer foodTimeProcess;
 
@@ -46,9 +46,7 @@ public class MenuFoodBasicResponse {
 
     private EMealType mealType;
 
-    private Boolean isActive;
-
-    public MenuFoodBasicResponse(Integer menuFoodID, Food food, EMealType mealType, Boolean isActive) {
+    public MenuFoodBasicResponse(Integer menuFoodID, Food food, EMealType mealType) {
         this.menuFoodID = menuFoodID;
         this.foodID = food.getFoodID();
         this.foodName = food.getFoodName();
@@ -62,7 +60,6 @@ public class MenuFoodBasicResponse {
         this.foodTimeProcess = food.getFoodTimeProcess();
         this.serving = food.getServing();
         this.mealType = mealType;
-        this.isActive = isActive;
-    } 
+    }
 
 }

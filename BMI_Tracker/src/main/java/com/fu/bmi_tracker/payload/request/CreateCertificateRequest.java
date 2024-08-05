@@ -27,7 +27,6 @@ public class CreateCertificateRequest {
     private String certificateName;
 
     @NotBlank
-    @Size(max = 100)
     @Schema(name = "certificateLink", example = "certificatePhoto.jpg")
     private String certificateLink;
 

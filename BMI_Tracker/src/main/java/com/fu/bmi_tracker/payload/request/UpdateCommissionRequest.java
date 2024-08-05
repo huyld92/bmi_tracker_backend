@@ -8,6 +8,7 @@ import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ public class UpdateCommissionRequest {
 
     @Schema(example = "123")
     @NotNull
+    @Positive
     private Integer commissionID;
 
     @Schema(example = "2024-07-04T14:30:00 (NULL)")
