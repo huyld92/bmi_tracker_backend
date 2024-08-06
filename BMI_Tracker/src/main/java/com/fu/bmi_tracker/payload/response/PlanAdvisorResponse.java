@@ -33,7 +33,7 @@ public class PlanAdvisorResponse {
 
     public PlanAdvisorResponse(Plan plan) {
         this.planID = plan.getPlanID();
-        this.planCode = plan.getPlanCode() + planID;
+        this.planCode = plan.getPlanCode();
         this.planName = plan.getPlanName();
         this.price = plan.getPrice();
         this.description = plan.getDescription();

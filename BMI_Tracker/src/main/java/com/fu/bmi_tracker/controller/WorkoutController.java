@@ -346,7 +346,6 @@ public class WorkoutController {
 //
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-
     @Operation(
             summary = "Create workout exercise")
     @ApiResponses({

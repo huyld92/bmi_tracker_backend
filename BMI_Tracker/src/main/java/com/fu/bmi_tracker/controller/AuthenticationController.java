@@ -231,7 +231,7 @@ public class AuthenticationController {
 
         LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
                 accountDetails.getId(),
-                member.get().getMemberID(), 
+                member.get().getMemberID(),
                 accountDetails.getEmail(),
                 accountDetails.getFullName(),
                 accountDetails.getGender().toString(),
@@ -281,10 +281,13 @@ public class AuthenticationController {
 
         // Create new member's account
         Account account = new Account(registerRequest.getFullName(),
-                registerRequest.getEmail(), registerRequest.getPhoneNumber(),
-                encoder.encode(registerRequest.getPassword()),
-                registerRequest.getGender(), registerRequest.getBirthday(),
-                true, accountRoles);
+                registerRequest.getEmail(),
+                registerRequest.getPhoneNumber(),
+                encoder.encode(
+                        registerRequest.getPassword()),
+                registerRequest.getGender(),
+                registerRequest.getBirthday(),
+                accountRoles);
 
         // Save thông tin account xuống database
         accountService.save(account);

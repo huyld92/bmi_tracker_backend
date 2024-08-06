@@ -8,7 +8,6 @@ import com.fu.bmi_tracker.exceptions.ErrorMessage;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.model.entities.Member;
-import com.fu.bmi_tracker.payload.response.DailyRecordFullResponse;
 import com.fu.bmi_tracker.payload.response.DailyRecordResponse;
 import com.fu.bmi_tracker.services.DailyRecordService;
 import com.fu.bmi_tracker.services.MemberService;

@@ -5,11 +5,13 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.exceptions.ErrorMessage;
+import com.fu.bmi_tracker.model.entities.ActivityLevel;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.payload.response.MemberBodyMassResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
+import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.util.BMIUtils;
@@ -54,6 +56,9 @@ public class MemberBodyMassController {
     MemberService memberService;
 
     @Autowired
+    ActivityLevelService activityLevelService;
+
+    @Autowired
     BMIUtils bMIUtils;
 
     @Operation(
@@ -83,15 +88,30 @@ public class MemberBodyMassController {
         MemberBodyMass bodyMass = new MemberBodyMass(
                 height,
                 weight,
-                now, 
+                now,
                 member.get()
         );
 
         // tạo bodymass response 
         double bmi = bMIUtils.calculateBMI(weight, height);
 
+        // tinh bmr
         int age = now.getYear() - member.get().getAccount().getBirthday().getYear();
+        double bmr = bMIUtils.calculateBMR(weight,
+                height, age, member.get().getAccount().getGender());
+        // tính tdee
+        ActivityLevel activityLevel = member.get().getActivityLevel();
 
+        double tdee = bMIUtils.calculateTDEE(bmr, activityLevel.getActivityLevel());
+
+        // calculateDefault default Calories
+        int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, member.get().getTargetWeight());
+
+        // cập nhật thông tin member
+        member.get().setDefaultCalories(defaultCalories);
+        member.get().setTdee(tdee);
+        memberService.save(member.get());
+        
         MemberBodyMassResponse bodyMassResponse = new MemberBodyMassResponse(bodyMassService.save(bodyMass), age, bmi);
 
         return new ResponseEntity<>(bodyMassResponse, HttpStatus.CREATED);

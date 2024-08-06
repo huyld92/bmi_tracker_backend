@@ -12,21 +12,22 @@ public enum EPlanStatus {
     PENDING, // Kế hoạch đang chờ duyệt
     APPROVED, // Kế hoạch đã được phê duyệt
     REJECTED;// Kế hoạch bị từ chối
-
-    @Override
-    public String toString() {
-        switch (this) {
-            case PENDING -> {
-                return "Pending";
-            }
-            case APPROVED -> {
-                return "Approved";
-            }
-            case REJECTED -> {
-                return "Rejected";
-            }
-            default ->
-                throw new IllegalArgumentException();
-        }
-    }
+//
+//    @Override
+//    public String toString() {
+//        switch (this) {
+//            case PENDING -> {
+//                return "Pending";
+//            }
+//            case APPROVED -> {
+//                return "Approved";
+//            }
+//            case REJECTED -> {
+//                return "Rejected";
+//            }
+//            default ->
+//                throw new IllegalArgumentException();
+//        }
+//    }
+ 
 }

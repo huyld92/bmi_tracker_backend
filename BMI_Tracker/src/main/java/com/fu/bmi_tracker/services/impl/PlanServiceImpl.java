@@ -23,38 +23,38 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PlanServiceImpl implements PlanService {
-    
+
     @Autowired
     PlanRepository planRepository;
-    
+
     @Autowired
     AdvisorRepository advisorRepository;
-    
+
     @Override
     public List<Plan> findAll() {
         return planRepository.findAll();
     }
-    
+
     @Override
     public Iterable<Plan> findAllPlanByAdvisorID(int advisorID) {
         return planRepository.findByAdvisor_AdvisorID(advisorID);
     }
-    
+
     @Override
     public Iterable<Plan> findAllAvailablePlan() {
         return planRepository.findByIsActiveTrue();
     }
-    
+
     @Override
     public Optional<Plan> findById(Integer id) {
         return planRepository.findById(id);
     }
-    
+
     @Override
     public Plan save(Plan t) {
         return planRepository.save(t);
     }
-    
+
     @Override
     public Plan createPlan(CreatePlanRequest planRequest, Integer accountID) {
         //Convert createRequest to Plan before save
@@ -67,8 +67,8 @@ public class PlanServiceImpl implements PlanService {
         plan.setPlanStatus(EPlanStatus.PENDING.toString());
         plan.setPlanCode("PLAN-");
         // mặc định false đợi manager duyệt
-        plan.setPlanStatus("Pending");
-        plan.setIsActive(Boolean.FALSE);
+        plan.setPlanStatus(EPlanStatus.PENDING.toString());
+        plan.setIsActive(Boolean.TRUE);
 
         // find Advisor
         Advisor advisor = advisorRepository.findByAccount_AccountID(accountID)
@@ -76,10 +76,12 @@ public class PlanServiceImpl implements PlanService {
 
         // set advisor ID
         plan.setAdvisor(advisor);
+        Plan planSaved = save(plan);
+        planSaved.setPlanCode("PLAN-" + planSaved.getPlanID());
         
-        return save(plan);
+        return save(planSaved);
     }
-    
+
     @Override
     public Iterable<Plan> findAllPlanFromPersonally(Integer accountID) {
         // find Advisor
@@ -89,7 +91,7 @@ public class PlanServiceImpl implements PlanService {
         // GỌi repository tìm tất cả plan của advisor
         return planRepository.findByAdvisor_AdvisorIDAndIsActiveTrue(advisor.getAdvisorID());
     }
-    
+
     @Override
     public Iterable<Plan> getAllPlanForSubscription(Integer advisorID) {
         return planRepository.findByAdvisor_AdvisorIDAndIsActiveTrueAndPlanStatus(advisorID, EPlanStatus.APPROVED.toString());
