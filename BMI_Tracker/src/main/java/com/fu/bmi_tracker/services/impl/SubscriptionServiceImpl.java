@@ -173,7 +173,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         BigDecimal amount = createRequest.getSubscriptionRequest()
                 .getAmount().multiply(BigDecimal.valueOf(commissionRate * 0.25));
 
-        for (int i = 1; i <= milestoneLabels.length; i++) {
+        for (int i = 0; i < milestoneLabels.length; i++) {
             double milestonePercentage = i * 0.25;
             LocalDate milestoneDate = startDateOfPlan.plusDays((long) (planDuration * milestonePercentage));
 
@@ -197,9 +197,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             } else {
                 // nếu tồn tại cập nhật 
                 // giá tiền của commission + giá tiền hiện tại
-                amount = commission.getCommissionAmount().add(amount);
+                BigDecimal totalAmount = commission.getCommissionAmount().add(amount);
 
-                commission.setCommissionAmount(amount);
+                commission.setCommissionAmount(totalAmount);
             }
             Commission commissionSaved = commissionRepository.save(commission);
 
@@ -219,11 +219,18 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // cập nhật số lần sử dụng cho plan
         int planID = createRequest.getSubscriptionRequest().getPlanID();
+
         Plan plan = planRepository.findById(planID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find plan with id{" + planID + "}"));
-        int numberOfUses = plan.getNumberOfUses() + 1;
-        plan.setNumberOfUses(numberOfUses);
 
+        int numberOfUses = plan.getNumberOfUses() + 1;
+
+        plan.setNumberOfUses(numberOfUses);
+        // cập nhật tổng số subscription của advisor
+        int totalSubscription = 1 + advisor.getTotalSubscription();
+        advisor.setTotalSubscription(totalSubscription);
+        advisorRepository.save(advisor);
+        
         // cập nhật ngày kết thúc cho Member
         member.setEndDateOfPlan(endDateOfPlan);
         memberRepository.save(member);

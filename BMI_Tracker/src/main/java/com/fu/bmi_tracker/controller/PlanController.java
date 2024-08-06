@@ -302,9 +302,9 @@ public class PlanController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PutMapping("/change-plan-status")
-    public ResponseEntity<?> approvePlan(@RequestParam Integer planID, @RequestParam EPlanStatus planStatus) {
+    public ResponseEntity<?> changePlan(@RequestParam Integer planID, EPlanStatus planStatus) {
+        System.out.println("aaaaaaaaaa");
         Optional<Plan> plan = planService.findById(planID);
-
         if (plan.isPresent()) {
             plan.get().setPlanStatus(planStatus.toString());
             planService.save(plan.get());

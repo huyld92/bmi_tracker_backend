@@ -5,10 +5,15 @@
 package com.fu.bmi_tracker.firebase;
 
 import com.fu.bmi_tracker.payload.request.PnsRequest;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,9 +37,10 @@ public class FCMService {
         }
         return response;
     }
-    
-    public void uploadImages(){
-        StorageClient storageClient =  StorageClient.getInstance();
-//        Storage b = storageClient.bucket();
+
+    public String uploadImages(File imageFile, String fileName) throws FileNotFoundException {
+        Bucket bucket = StorageClient.getInstance().bucket();
+        Blob blob = bucket.create(fileName, new FileInputStream(imageFile), "image/jpg");
+        return blob.getMediaLink();
     }
 }

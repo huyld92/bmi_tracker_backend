@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.firebase.FCMService;
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
@@ -72,6 +73,9 @@ public class AccountController {
     @Autowired
     PasswordEncoder encoder;
 
+    @Autowired
+    private FCMService fcmService;
+
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
     @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
@@ -97,7 +101,6 @@ public class AccountController {
         if (accountSave == null) {
             return new ResponseEntity<>("Failed to create new account", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         // nếu account là advisor thì tạo thông tin mặc định cho advisor
         if (createAccountRequest.getRole() == ERole.ROLE_ADVISOR) {
             Advisor advisor = new Advisor(
@@ -156,9 +159,9 @@ public class AccountController {
         Account account = accountService.findById(principal.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find account!"));
         //kiểm tra oldPassword match với password hiện tại 
-        System.out.println("oldPassword:" + encoder.matches(oldPassword, account.getPassword()));
 
         if (encoder.matches(oldPassword, account.getPassword())) {
+
             // nếu đúng cập nhật password mới
             account.setPassword(encoder.encode(newPassword));
             accountService.save(account);

@@ -85,8 +85,7 @@ public class Account {
     private Set<Role> roles;
 
     public Account(String fullName, String email, String phoneNumber, String password, EGender gender,
-            LocalDate birthday, Boolean isActive, Set<Role> roles
-    ) {
+            LocalDate birthday, Set<Role> roles) {
         this.roles = roles;
         this.fullName = fullName;
         this.email = email;
@@ -94,7 +93,8 @@ public class Account {
         this.password = password;
         this.gender = gender;
         this.birthday = birthday;
-        this.isActive = isActive;
+        this.isActive = true;
+        this.accountPhoto = "https://firebasestorage.googleapis.com/v0/b/test-ultilites.appspot.com/o/default_avatar.jpg?alt=media&token=d02afb30-e231-48a9-8141-d6668caaeb23";
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isVerified = false;
     }
@@ -107,6 +107,7 @@ public class Account {
         this.gender = createAccountRequest.getGender();
         this.birthday = createAccountRequest.getBirthday();
         this.isActive = true;
+        this.accountPhoto = "https://firebasestorage.googleapis.com/v0/b/test-ultilites.appspot.com/o/default_avatar.jpg?alt=media&token=d02afb30-e231-48a9-8141-d6668caaeb23";
         this.creationDate = LocalDate.now(ZoneId.of("GMT+7"));
         this.isVerified = true;
     }
