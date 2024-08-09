@@ -50,10 +50,10 @@ public class DailyRecordServiceImpl implements DailyRecordService {
     @Override
     public List<DailyRecord> getDailyRecordsForWeek(Integer memberID, LocalDate date) {
         // Lấy ngày bắt đầu tuần của date
-        LocalDate startDate = date.with(DayOfWeek.MONDAY);
+        LocalDate startDate = date.minusDays(7);
         // Lấy ngày kết thúc tuần của date
-        LocalDate endDate = date.with(DayOfWeek.SUNDAY);
-        return dailyRecordRepository.findByMemberIDWithStarEndDate(memberID, startDate, endDate);
+//        LocalDate endDate = date.with(DayOfWeek.SUNDAY);
+        return dailyRecordRepository.findByMemberIDWithStarEndDate(memberID, startDate, date);
     }
 
     //chuyển đổi từ DailyRecord sáng FullResponse

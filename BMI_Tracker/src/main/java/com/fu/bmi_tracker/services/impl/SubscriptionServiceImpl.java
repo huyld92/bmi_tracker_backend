@@ -165,7 +165,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         member,
                         advisor,
                         transaction.getTransactionID(),
-                        commissionRate
+                        commissionRate * 10
                 ));
         String[] milestoneLabels = {"25%", "50%", "75%", "100%"};
 
@@ -230,9 +230,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         int totalSubscription = 1 + advisor.getTotalSubscription();
         advisor.setTotalSubscription(totalSubscription);
         advisorRepository.save(advisor);
-        
+
         // cập nhật ngày kết thúc cho Member
         member.setEndDateOfPlan(endDateOfPlan);
+        System.out.println("member:" + member.getEndDateOfPlan());
         memberRepository.save(member);
 
         // cập nhật lại plan
@@ -270,8 +271,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         if (subscription.isPresent()) {
             // tạo advisor response
-            int totalMenu = advisorRepository.countMenusByAdvisorID(accountID);
-            int totalWorkout = advisorRepository.countWorkoutsByAdvisorID(accountID);
+            int totalMenu = advisorRepository.countMenusByAdvisorID(subscription.get().getAdvisor().getAdvisorID());
+            int totalWorkout = advisorRepository.countWorkoutsByAdvisorID(subscription.get().getAdvisor().getAdvisorID());
 
             AdvisorDetailsResponse response = new AdvisorDetailsResponse(
                     subscription.get().getAdvisor(),

@@ -88,7 +88,7 @@ public class BlogController {
     //@PreAuthorize("hasRole('ADMIN')") //MEMBER, ADVISOR, STAFF
     public ResponseEntity<?> getAllBlog() {
 
-        Iterable<Blog> blogList = blogService.findAll();
+        Iterable<Blog> blogList = blogService.findAllWithActive();
 
         if (!blogList.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

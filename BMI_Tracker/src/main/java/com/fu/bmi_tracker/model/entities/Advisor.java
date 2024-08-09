@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class Advisor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AdvisorID", nullable = false)
     private Integer advisorID;
 

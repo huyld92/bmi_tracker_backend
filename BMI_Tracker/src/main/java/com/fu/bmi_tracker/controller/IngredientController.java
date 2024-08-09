@@ -122,7 +122,7 @@ public class IngredientController {
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateIngredient(@RequestBody UpdateIngredientRequest ingredientRequest) {
         Optional<Ingredient> ingredient = service.findById(ingredientRequest.getIngredientID());
-
+        System.out.println("ingredient: " +ingredientRequest.getTagID());
         if (ingredient.isPresent()) {
             ingredient.get().update(ingredientRequest);
             return new ResponseEntity<>(service.save(ingredient.get()), HttpStatus.OK);

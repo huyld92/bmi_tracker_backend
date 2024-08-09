@@ -5,7 +5,6 @@
 package com.fu.bmi_tracker.model.entities;
 
 import com.fu.bmi_tracker.payload.request.RecipeRequest;
-import com.fu.bmi_tracker.payload.request.UpdateFoodRecipeRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,20 +45,15 @@ public class FoodDetails {
     @Column(name = "quantity", nullable = false)
     private Float quantity;
 
-    @Column(name = "Unit", nullable = false)
-    private String unit;
-
     public FoodDetails(Food food, Ingredient ingredient, RecipeRequest recipeRequest) {
         this.food = food;
         this.ingredient = ingredient;
-        this.unit = recipeRequest.getUnit();
         this.quantity = recipeRequest.getQuantity();
     }
 
     public FoodDetails(Food food, Ingredient ingredient, Float quantity, String unit) {
         this.food = food;
         this.ingredient = ingredient;
-        this.unit = unit;
         this.quantity = quantity;
     }
 }

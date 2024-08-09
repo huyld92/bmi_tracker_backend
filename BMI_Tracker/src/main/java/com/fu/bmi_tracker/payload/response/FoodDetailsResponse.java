@@ -31,7 +31,7 @@ public class FoodDetailsResponse {
         this.ingredientName = foodDetails.getIngredient().getIngredientName();
         this.ingredientPhoto = foodDetails.getIngredient().getIngredientPhoto();
         this.quantity = foodDetails.getQuantity();
-        this.unit = foodDetails.getUnit();
+        this.unit = foodDetails.getIngredient().getUnit();
     }
 
 }

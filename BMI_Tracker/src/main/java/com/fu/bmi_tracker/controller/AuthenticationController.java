@@ -177,21 +177,19 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
+        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal(); 
+
         // Lấy danh sách quyền của người dùng
-        Set<String> authorities = accountDetails.getAuthorities().stream()
-                .map(Object::toString)
-                .collect(Collectors.toSet());
-        List<String> stringList = new ArrayList<>(authorities);
+        List<String> roles = authentication.getAuthorities().stream().map(item -> item.getAuthority())
+                .collect(Collectors.toList());
 
-        // Lấy quyền đầu tiên và gán nó cho biến role
-        String role = stringList.get(0);
+        // kiểm tra role mà người dùng muốn truy cập có hơp lệ
+        boolean isRole = roles.contains(loginRequest.getRole().toString());
 
-        if (!role.equals(ERole.ROLE_MEMBER.toString())) {
-            return new ResponseEntity<>(new MessageResponse("Your role is not support!"),
-                    HttpStatus.UNAUTHORIZED);
-        }
-
+        if (!isRole) {
+            return new ResponseEntity<>(new MessageResponse("You do not have permission for this role."), HttpStatus.UNAUTHORIZED);
+        }  
+        
         Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
 
         // generate mã jwt

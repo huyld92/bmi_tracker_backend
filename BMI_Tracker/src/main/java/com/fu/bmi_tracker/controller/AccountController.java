@@ -73,9 +73,6 @@ public class AccountController {
     @Autowired
     PasswordEncoder encoder;
 
-    @Autowired
-    private FCMService fcmService;
-
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
     @Operation(summary = "Create new account (ADMIN)", description = "Create new account with role name (ROLE_ADMIN, ROLE_USER, ROLE_ADVISOR)")
@@ -101,6 +98,7 @@ public class AccountController {
         if (accountSave == null) {
             return new ResponseEntity<>("Failed to create new account", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         // nếu account là advisor thì tạo thông tin mặc định cho advisor
         if (createAccountRequest.getRole() == ERole.ROLE_ADVISOR) {
             Advisor advisor = new Advisor(
@@ -246,7 +244,7 @@ public class AccountController {
                     HttpStatus.NOT_FOUND);
         }
         // update account attribute
-        account.get().updateAccount(accountRequest);
+        account.get().setIsActive(accountRequest.getIsActive());
 
         // Store to database
         Account accountSave = accountService.save(account.get());

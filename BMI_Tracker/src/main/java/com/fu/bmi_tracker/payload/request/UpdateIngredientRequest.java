@@ -33,19 +33,9 @@ public class UpdateIngredientRequest {
     @Schema(example = "http://example.com/photo.jpg")
     private String ingredientPhoto;
 
-    @Schema(example = "100.0")
-    @NotNull(message = "Quantity is required")
-    @Positive(message = "Quantity must be a positive number")
-    private Float quantity;
-
-    @Schema(example = "grams")
+    @Schema(example = "g")
     @NotBlank(message = "Unit is required")
     private String unit;
-
-    @Schema(example = "18")
-    @NotNull(message = "Ingredient calories are required")
-    @PositiveOrZero(message = "Ingredient calories must be zero or a positive number")
-    private Integer ingredientCalories;
 
     @Schema(example = "1")
     private Integer tagID;

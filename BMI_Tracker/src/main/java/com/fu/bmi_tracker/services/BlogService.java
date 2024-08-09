@@ -25,4 +25,6 @@ public interface BlogService extends GeneralService<Blog> {
 
     public void deactivateBlog(int blogID);
 
+    public Iterable<Blog> findAllWithActive();
+
 }

@@ -33,7 +33,6 @@ public class UpdateCertificateRequest {
     private String certificateName;
 
     @NotBlank
-    @Size(max = 100)
     @Schema(name = "certificateLink", example = "certified1.jpg")
     private String certificateLink;
 

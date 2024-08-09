@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
+import com.fu.bmi_tracker.payload.response.AdvisorAllResponse;
 import com.fu.bmi_tracker.payload.response.AdvisorResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +40,7 @@ public class AdvisorController {
     @Operation(summary = "Retrieve all Advisors")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = AdvisorResponse.class))}),
+            @Content(schema = @Schema(implementation = AdvisorAllResponse.class))}),
         @ApiResponse(responseCode = "204", description = "There are no Advisors", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -54,10 +55,10 @@ public class AdvisorController {
         }
 
         // tạo advisor response
-        List<AdvisorResponse> advisorsResponses = new ArrayList<>();
+        List<AdvisorAllResponse> advisorsResponses = new ArrayList<>();
 
         advisors.forEach(advisor -> {
-            advisorsResponses.add(new AdvisorResponse(advisor));
+            advisorsResponses.add(new AdvisorAllResponse(advisor));
         });
 
         return new ResponseEntity<>(advisorsResponses, HttpStatus.OK);
@@ -114,6 +115,6 @@ public class AdvisorController {
 
         return new ResponseEntity<>(advisorResponse, HttpStatus.OK);
 
-    } 
+    }
 
 }
