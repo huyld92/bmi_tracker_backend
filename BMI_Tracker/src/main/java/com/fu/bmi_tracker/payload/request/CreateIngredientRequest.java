@@ -33,16 +33,6 @@ public class CreateIngredientRequest {
     private String unit;
 
     @NotNull
-    @Positive(message = "Quantity with default value")
-    @Schema(name = "quantity", minContains = 0, example = "0")
-    private Float quantity;
-
-    @NotNull
-    @Positive(message = "Ingredient calories must be positive")
-    @Schema(name = "ingredientCalories", minContains = 0, example = "0")
-    private Integer ingredientCalories;
-
-    @NotNull
     @Positive(message = "TagID must be positive")
     @Schema(name = "tagID", example = "17")
     private Integer tagID;

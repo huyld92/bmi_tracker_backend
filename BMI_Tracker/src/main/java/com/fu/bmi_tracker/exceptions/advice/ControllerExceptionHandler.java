@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.exceptions.advice;
 
+import com.fu.bmi_tracker.exceptions.DuplicateRecordException;
 import com.fu.bmi_tracker.exceptions.ErrorMessage;
 import com.fu.bmi_tracker.exceptions.TokenException;
 import jakarta.persistence.EntityNotFoundException;
@@ -163,7 +164,7 @@ public class ControllerExceptionHandler {
     // handles convert role
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        System.out.println("aaa: " + ex.getMessage());
+
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
@@ -173,7 +174,6 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
-    
     // handle validation 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
@@ -185,5 +185,18 @@ public class ControllerExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    // handle Duplicate 
+    @ExceptionHandler(DuplicateRecordException.class)
+    @ResponseBody
+    public ResponseEntity<?> handleDuplicateRecordExceptions(DuplicateRecordException ex) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                null);
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 }

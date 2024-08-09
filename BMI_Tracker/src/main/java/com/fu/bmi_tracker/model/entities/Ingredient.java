@@ -40,14 +40,8 @@ public class Ingredient {
     @Column(name = "IngredientPhoto", nullable = true)
     private String ingredientPhoto;
 
-    @Column(name = "Quantity", nullable = false)
-    private Float quantity;
-
     @Column(name = "Unit", nullable = false)
     private String unit;
-
-    @Column(name = "IngredientCalories", nullable = false)
-    private Integer ingredientCalories;
 
     @ManyToOne
     @JoinColumn(name = "TagID", nullable = false)
@@ -64,8 +58,6 @@ public class Ingredient {
         this.ingredientName = ingredientRequest.getIngredientName().trim();
         this.ingredientPhoto = ingredientRequest.getIngredientPhoto().trim();
         this.unit = ingredientRequest.getUnit().trim();
-        this.ingredientCalories = ingredientRequest.getIngredientCalories();
-        this.quantity = ingredientRequest.getQuantity();
         this.tag = new Tag(ingredientRequest.getTagID());
         this.isActive = true;
     }
@@ -78,14 +70,10 @@ public class Ingredient {
         if (!ingredientRequest.getUnit().isEmpty()) {
             this.unit = ingredientRequest.getUnit();
         }
+        
         this.ingredientPhoto = ingredientRequest.getIngredientPhoto();
-        this.quantity = ingredientRequest.getQuantity();
 
-        if (ingredientRequest.getIngredientCalories() > -1) {
-            this.ingredientCalories = ingredientRequest.getIngredientCalories();
-        }
-
-        if (ingredientRequest.getTagID() <= 0) {
+        if (ingredientRequest.getTagID() > 0) {
             this.tag = new Tag(ingredientRequest.getTagID());
         }
 

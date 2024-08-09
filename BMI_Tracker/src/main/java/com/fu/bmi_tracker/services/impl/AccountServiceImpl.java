@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.exceptions.DuplicateRecordException;
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Role;
@@ -55,6 +56,9 @@ public class AccountServiceImpl implements AccountService {
         // Create new object
         Account account = new Account(createAccountRequest);
 
+        if (accountRepository.existsByEmail(createAccountRequest.getEmail())) {
+            throw new DuplicateRecordException("Email already exists");
+        }
         // gọi repository tìm Role bằng roleName
         Role role = roleRepository.findByRoleName(createAccountRequest.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find role!"));

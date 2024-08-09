@@ -28,10 +28,6 @@ public class UpdateFoodRecipeRequest {
     @NotNull(message = "Ingredient ID is required")
     private Integer ingredientID;
 
-    @Schema(example = "g")
-    @NotBlank(message = "Unit is required")
-    private String unit;
-
     @Schema(example = "100")
     @NotNull(message = "Quantity is required")
     @Positive(message = "Quantity must be a positive number")

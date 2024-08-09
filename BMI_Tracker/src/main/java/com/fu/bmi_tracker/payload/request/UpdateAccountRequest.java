@@ -24,29 +24,29 @@ public class UpdateAccountRequest {
     @Schema(name = "accountID", example = "9")
     private Integer accountID;
 
-    @NotBlank(message = "Full name must not blank")
-    @Size(max = 100, message = "Full name must not exceed 100 characters")
-    @Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z]+)*$", message = "Invalid full name")
-    @Schema(name = "fullName", example = "Nguyen Van A")
+//    @NotBlank(message = "Full name must not blank")
+//    @Size(max = 100, message = "Full name must not exceed 100 characters")
+//    @Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z]+)*$", message = "Invalid full name")
+//    @Schema(name = "fullName", example = "Nguyen Van A")
     private String fullName;
 
-    @Size(min = 10, max = 13, message = "Phone must be from 10 to 13 characters.")
-    @Pattern(regexp = "^(0)([3|5|7|8|9])+([0-9]{8})$", message = "Invalid phone number format (0907111111)")
-    @Schema(name = "phoneNumber", example = "0907111111")
+//    @Size(min = 10, max = 13, message = "Phone must be from 10 to 13 characters.")
+//    @Pattern(regexp = "^(0)([3|5|7|8|9])+([0-9]{8})$", message = "Invalid phone number format (0907111111)")
+//    @Schema(name = "phoneNumber", example = "0907111111")
     private String phoneNumber;
 
-    @Schema(description = "URL of the account photo(NULL)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+//    @Schema(description = "URL of the account photo(NULL)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String accountPhoto;
 
-    @Schema(name = "gender", examples = {"Male", "Female"})
+//    @Schema(name = "gender", examples = {"Male", "Female"})
     private EGender gender;
 
-    @NotNull
-    @Past
-    @Schema(name = "birthday", example = "1990-01-01")
+//    @NotNull
+//    @Past
+//    @Schema(name = "birthday", example = "1990-01-01")
     private LocalDate birthday;
 
-    @NotNull
+//    @NotNull
     private Set<Role> roles;
 
     @NotNull

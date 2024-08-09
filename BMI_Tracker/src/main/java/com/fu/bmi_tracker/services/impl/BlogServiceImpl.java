@@ -35,7 +35,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Iterable<Blog> findByAdvisorID(int advisorID) {
-        return blogRepository.findByAdvisor_AdvisorID(advisorID);
+        return blogRepository.findByAdvisor_AdvisorIDAndIsActiveTrue(advisorID);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class BlogServiceImpl implements BlogService {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find advisor!"));
 
         // gọi repository tìm tất cả blog
-        return blogRepository.findByAdvisor_AdvisorID(advisor.getAdvisorID());
+        return blogRepository.findByAdvisor_AdvisorIDAndIsActiveTrue(advisor.getAdvisorID());
     }
 
     @Override
@@ -97,6 +97,12 @@ public class BlogServiceImpl implements BlogService {
 
         // cập nhaatj BLog vào DB
         save(blog);
+    }
+
+    @Override
+    public Iterable<Blog> findAllWithActive() {
+        return blogRepository.findAllByIsActiveTrue();
+
     }
 
 }
