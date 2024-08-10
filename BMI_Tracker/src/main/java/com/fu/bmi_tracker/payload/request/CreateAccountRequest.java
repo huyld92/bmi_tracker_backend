@@ -32,7 +32,7 @@ public class CreateAccountRequest {
     private String email;
 
     @Size(min = 10, max = 13, message = "Phone must be from 10 to 13 characters.")
-    @Pattern(regexp = "^(0)([3|5|7|8|9])+([0-9]{8})$", message = "Invalid phone number format (0907111111)")
+    @Pattern(regexp = "^(0)([1|2|3|4|5|6|7|8|9])+([0-9]{8})$", message = "Invalid phone number format (0907111111)")
     @Schema(name = "phoneNumber", example = "0907111111")
     private String phoneNumber;
 
