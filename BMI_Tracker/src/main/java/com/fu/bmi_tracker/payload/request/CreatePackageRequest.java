@@ -22,12 +22,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePlanRequest {
+public class CreatePackageRequest {
 
     @NotBlank
     @Positive
-    @Schema(name = "planName", example = "Kế hoạch giảm cân trong 30 ngày")
-    private String planName;
+    @Schema(name = "packageName", example = "Kế hoạch giảm cân trong 30 ngày")
+    private String packageName;
 
     @Schema(example = "99.99")
     @NotNull(message = "Price is required")
@@ -41,6 +41,6 @@ public class CreatePlanRequest {
 
     @NotNull
     @Positive
-    @Schema(name = "planDuration", example = "30")
-    private Integer planDuration;
+    @Schema(name = "packageDuration", example = "30")
+    private Integer packageDuration;
 }

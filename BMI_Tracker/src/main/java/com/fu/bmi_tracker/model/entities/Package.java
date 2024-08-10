@@ -26,19 +26,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "[Plan]")
-public class Plan {
+@Table(name = "[Package]")
+public class Package {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PlanID", nullable = false)
-    private Integer planID;
+    @Column(name = "PackageID", nullable = false)
+    private Integer PackageID;
 
-    @Column(name = "PlanCode", nullable = false)
-    private String planCode;
+    @Column(name = "PackageCode", nullable = false)
+    private String packageCode;
 
-    @Column(name = "PlanName", nullable = false)
-    private String planName;
+    @Column(name = "PackageName", nullable = false)
+    private String packageName;
 
     @Column(name = "Price", nullable = false)
     private BigDecimal price;
@@ -46,8 +46,8 @@ public class Plan {
     @Column(name = "Description", nullable = false)
     private String description;
 
-    @Column(name = "PlanDuration", nullable = false)
-    private Integer planDuration;
+    @Column(name = "PackageDuration", nullable = false)
+    private Integer packageDuration;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "AdvisorID", nullable = false)
@@ -56,22 +56,22 @@ public class Plan {
     @Column(name = "NumberOfUses", nullable = false)
     private Integer numberOfUses;
 
-    @Column(name = "PlanStatus", nullable = false)
-    private String planStatus;
+    @Column(name = "PackageStatus", nullable = false)
+    private String packageStatus;
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
 
-    public Plan(String planName, BigDecimal price, String planCode, String description,
-            Integer planDuration, Integer advisorID, String planStatus, Boolean isActive, Integer numberOfUses) {
-        this.planName = planName;
-        this.planCode = planCode;
+    public Package(String packageName, BigDecimal price, String packageCode, String description,
+            Integer packageDuration, Integer advisorID, String packageStatus, Boolean isActive, Integer numberOfUses) {
+        this.packageName = packageName;
+        this.packageCode = packageCode;
         this.price = price;
         this.description = description;
-        this.planDuration = planDuration;
+        this.packageDuration = packageDuration;
         this.advisor = new Advisor(advisorID);
         this.isActive = isActive;
-        this.planStatus = planStatus;
+        this.packageStatus = packageStatus;
         this.numberOfUses = numberOfUses;
     }
 }

@@ -10,7 +10,7 @@ import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.Transaction;
 import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
 import com.fu.bmi_tracker.model.entities.CommissionAllocation;
-import com.fu.bmi_tracker.model.entities.Plan;
+import com.fu.bmi_tracker.model.entities.Package;
 import com.fu.bmi_tracker.model.enums.ESubscriptionStatus;
 import com.fu.bmi_tracker.model.enums.EPaymentStatus;
 import com.fu.bmi_tracker.payload.request.CreateSubscriptionTransactionRequest;
@@ -34,13 +34,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fu.bmi_tracker.repository.TransactionRepository;
-import com.fu.bmi_tracker.repository.PlanRepository;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Map;
 import com.fu.bmi_tracker.services.SubscriptionService;
 import com.fu.bmi_tracker.repository.SubscriptionRepository;
 import com.fu.bmi_tracker.util.CommissionRateUtils;
+import com.fu.bmi_tracker.repository.PackageRepository;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
@@ -64,7 +64,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     CommissionAllocationRepository commissionAllocationRepository;
 
     @Autowired
-    PlanRepository planRepository;
+    PackageRepository planRepository;
 
     @Autowired
     DateTimeUtils dateTimeUtils;
@@ -220,7 +220,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         // cập nhật số lần sử dụng cho plan
         int planID = createRequest.getSubscriptionRequest().getPlanID();
 
-        Plan plan = planRepository.findById(planID)
+        Package plan = planRepository.findById(planID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find plan with id{" + planID + "}"));
 
         int numberOfUses = plan.getNumberOfUses() + 1;
