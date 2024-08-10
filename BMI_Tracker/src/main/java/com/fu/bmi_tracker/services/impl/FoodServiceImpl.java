@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.exceptions.DuplicateRecordException;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.Ingredient;
 import com.fu.bmi_tracker.model.entities.FoodDetails;
@@ -19,6 +20,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,6 +66,35 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public Food createNewFood(CreateFoodRequest createFoodRequest) {
+        // lấy danh sách tất cả food
+        Iterable<Food> foods = foodRepository.findByIsActiveTrue();
+
+        // kiểm tra tồn tại food name và recipe
+        foods.forEach(food -> {
+            // kiểm tra foodName
+            if (food.getFoodName().equals(createFoodRequest.getFoodName())) {
+                throw new DuplicateRecordException("Food name already exists");
+            } else if (food.getFoodDetails().size() == createFoodRequest.getRecipeRequests().size()) {
+                // Nếu kích thước recipe giống nhau thì kiểm tra thành phần
+
+                // sử dụng Stream tách danh sách ingredientID của foods
+                Set<Integer> ingredientIDs = food.getFoodDetails().stream()
+                        .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
+                        .collect(Collectors.toSet());
+
+                //  sử dụng Stream tách danh sách ingredientID từ  RecipeRequests 
+                Set<Integer> ingredientIDsRequest = createFoodRequest.getRecipeRequests().stream().map(
+                        recipeRequest -> recipeRequest.getIngredientID())
+                        .collect(Collectors.toSet());
+
+                // kiểm tra ingredientIDs có trùng với Set<IngredientID>
+                boolean isDuplicate = ingredientIDsRequest.stream().allMatch(ingredientIDs::contains);
+                if (isDuplicate) {
+                    throw new DuplicateRecordException("Recipe already exists");
+                }
+            }
+        });
+
         // Tạo mới food từ createFoodRequest
         Food food = new Food(createFoodRequest);
 

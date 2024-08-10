@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.exceptions.DuplicateRecordException;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.FoodDetails;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
@@ -68,6 +69,7 @@ public class FoodController {
     @PostMapping(value = "/createNew")
     // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewFood(@Valid @RequestBody CreateFoodRequest createFoodRequest) {
+  
         // gọi foodService Tạo mới food
         Food food = foodService.createNewFood(createFoodRequest);
 

@@ -6,7 +6,7 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Package;
-import com.fu.bmi_tracker.model.enums.EPackageStatus;
+import com.fu.bmi_tracker.model.enums.EStatus;
 import com.fu.bmi_tracker.payload.request.CreatePackageRequest;
 import com.fu.bmi_tracker.payload.request.UpdatePackageRequest;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
@@ -324,7 +324,7 @@ public class PackageController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @PutMapping("/change-package-status")
-    public ResponseEntity<?> changePackage(@RequestParam Integer packageID, EPackageStatus packageStatus) {
+    public ResponseEntity<?> changePackage(@RequestParam Integer packageID, EStatus packageStatus) {
         System.out.println("aaaaaaaaaa");
         Optional<Package> p = packageService.findById(packageID);
         if (p.isPresent()) {

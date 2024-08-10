@@ -6,6 +6,8 @@ package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.UserRequest;
+import com.fu.bmi_tracker.payload.request.CreateUserRequest;
+import com.fu.bmi_tracker.payload.request.UpdateUserRequestProcessing;
 import com.fu.bmi_tracker.payload.response.UserRequestResponse;
 import com.fu.bmi_tracker.services.UserRequestService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -88,7 +93,6 @@ public class UserRequestController {
 
         if (!userRequests.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         }
 
         // tạo menu response
@@ -101,4 +105,56 @@ public class UserRequestController {
 
     }
 
+    @Operation(
+            summary = "Create user request support")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = UserRequestResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/create-new")
+    public ResponseEntity<?> createNewUserRequest(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        // Tìm account id từ context
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // taoj user request
+        UserRequest userRequest = userRequestService.createNewUserRequest(createUserRequest, principal.getId());
+
+        if (userRequest == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // tạo UserRequestResponse
+        UserRequestResponse userRequestResponse = new UserRequestResponse(userRequest);
+
+        return new ResponseEntity<>(userRequestResponse, HttpStatus.OK);
+
+    }
+
+    @Operation(
+            summary = "Update user request support processing")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", content = {
+            @Content(schema = @Schema(implementation = UserRequestResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PutMapping(value = "/update-processing")
+    public ResponseEntity<?> updateProcessing(@Valid @RequestBody UpdateUserRequestProcessing userRequestProcessing) {
+        // cập nhật user request
+        UserRequest userRequest = userRequestService.updateProcessing(userRequestProcessing);
+
+        if (userRequest == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // tạo UserRequestResponse
+        UserRequestResponse userRequestResponse = new UserRequestResponse(userRequest);
+
+        return new ResponseEntity<>(userRequestResponse, HttpStatus.OK);
+
+    }
 }

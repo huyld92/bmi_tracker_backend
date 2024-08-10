@@ -53,4 +53,6 @@ public interface FoodRepository extends JpaRepository<Food, Integer> {
 
     public Iterable<Food> findByIsActiveTrue();
 
+//    public Boolean existsByFoodName(String foodName);
+
 }

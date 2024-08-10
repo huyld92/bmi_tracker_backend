@@ -26,6 +26,7 @@ public class UserRequestResponse {
     private String status;
     private LocalDate creationDate;
     private LocalDate processingDate;
+    private String fullName;
 
     public UserRequestResponse(UserRequest userRequest) {
         this.userRequestID = userRequest.getUserRequestID();
@@ -35,7 +36,7 @@ public class UserRequestResponse {
         this.status = userRequest.getStatus();
         this.creationDate = userRequest.getCreationDate();
         this.processingDate = userRequest.getProcessingDate();
+        this.fullName = userRequest.getAccount().getFullName();
     }
 
-    
 }

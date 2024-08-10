@@ -41,7 +41,7 @@ public class Food {
     @Column(name = "FoodID", nullable = false)
     private int foodID;
 
-    @Column(name = "FoodName", nullable = false)
+    @Column(name = "FoodName", nullable = false,unique = true)
     private String foodName;
 
     @Column(name = "FoodCalories", nullable = false)

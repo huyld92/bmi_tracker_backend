@@ -195,7 +195,7 @@ public class ControllerExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 ex.getMessage(),
-                null);
+                "Duplicate");
 
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }

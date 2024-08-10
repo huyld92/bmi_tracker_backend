@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.model.entities;
 
-import com.fu.bmi_tracker.model.entities.Account;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +15,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.LocalDate;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,7 +41,7 @@ public class UserRequest {
     @Column(name = "Purpose", nullable = false, length = 255)
     private String purpose;
 
-    @Column(name = "ProcessNote", nullable = false, length = 255)
+    @Column(name = "ProcessNote", nullable = true, length = 255)
     private String processNote;
 
     @Column(name = "Status", nullable = false, length = 50)
@@ -60,4 +58,15 @@ public class UserRequest {
     @ManyToOne
     @JoinColumn(name = "AccountID", nullable = false)
     private Account account;
+
+    public UserRequest(String type, String purpose, String status, LocalDate creationDate, String processNote, LocalDate processingDate, Account account) {
+        this.type = type;
+        this.purpose = purpose;
+        this.processNote = processNote;
+        this.status = status;
+        this.creationDate = creationDate;
+        this.processingDate = processingDate;
+        this.account = account;
+    }
+
 }

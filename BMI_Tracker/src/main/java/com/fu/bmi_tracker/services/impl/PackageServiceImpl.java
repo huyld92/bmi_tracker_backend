@@ -6,7 +6,7 @@ package com.fu.bmi_tracker.services.impl;
 
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Package;
-import com.fu.bmi_tracker.model.enums.EPackageStatus;
+import com.fu.bmi_tracker.model.enums.EStatus;
 import com.fu.bmi_tracker.payload.request.CreatePackageRequest;
 import com.fu.bmi_tracker.repository.AdvisorRepository;
 import com.fu.bmi_tracker.repository.PackageRepository;
@@ -64,10 +64,10 @@ public class PackageServiceImpl implements PackageService {
         p.setDescription(packageRequest.getDescription());
         p.setPackageDuration(packageRequest.getPackageDuration());
         p.setNumberOfUses(0);
-        p.setPackageStatus(EPackageStatus.PENDING.toString());
+        p.setPackageStatus(EStatus.PENDING.toString());
         p.setPackageCode("PLAN-");
         // mặc định false đợi manager duyệt
-        p.setPackageStatus(EPackageStatus.PENDING.toString());
+        p.setPackageStatus(EStatus.PENDING.toString());
         p.setIsActive(Boolean.TRUE);
 
         // find Advisor
@@ -94,7 +94,7 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public Iterable<Package> getAllPackageForSubscription(Integer advisorID) {
-        return packageRepository.findByAdvisor_AdvisorIDAndIsActiveTrueAndPackageStatus(advisorID, EPackageStatus.APPROVED.toString());
+        return packageRepository.findByAdvisor_AdvisorIDAndIsActiveTrueAndPackageStatus(advisorID, EStatus.APPROVED.toString());
     }
 
 }

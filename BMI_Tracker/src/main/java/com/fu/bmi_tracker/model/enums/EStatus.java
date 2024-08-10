@@ -8,10 +8,10 @@ package com.fu.bmi_tracker.model.enums;
  *
  * @author Duc Huy
  */
-public enum EPackageStatus {
-    PENDING, // Kế hoạch đang chờ duyệt
-    APPROVED, // Kế hoạch đã được phê duyệt
-    REJECTED;// Kế hoạch bị từ chối
+public enum EStatus {
+    PENDING, //   chờ duyệt
+    APPROVED, //  được phê duyệt
+    REJECTED;//   bị từ chối
 //
 //    @Override
 //    public String toString() {
@@ -29,5 +29,5 @@ public enum EPackageStatus {
 //                throw new IllegalArgumentException();
 //        }
 //    }
- 
+
 }

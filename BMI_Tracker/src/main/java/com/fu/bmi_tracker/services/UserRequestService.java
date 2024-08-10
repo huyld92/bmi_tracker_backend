@@ -5,6 +5,8 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.UserRequest;
+import com.fu.bmi_tracker.payload.request.CreateUserRequest;
+import com.fu.bmi_tracker.payload.request.UpdateUserRequestProcessing;
 
 /**
  *
@@ -13,5 +15,9 @@ import com.fu.bmi_tracker.model.entities.UserRequest;
 public interface UserRequestService extends GeneralService<UserRequest> {
 
     public Iterable<UserRequest> findByAccountID(Integer accountID);
+
+    public UserRequest createNewUserRequest(CreateUserRequest createUserRequest, Integer id);
+
+    public UserRequest updateProcessing(UpdateUserRequestProcessing userRequestProcessing);
 
 }
