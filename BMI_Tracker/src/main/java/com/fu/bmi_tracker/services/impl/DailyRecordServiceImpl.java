@@ -7,7 +7,6 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.DailyRecord;
 import com.fu.bmi_tracker.repository.DailyRecordRepository;
 import com.fu.bmi_tracker.services.DailyRecordService;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

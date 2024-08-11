@@ -233,7 +233,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // cập nhật ngày kết thúc cho Member
         member.setEndDateOfPlan(endDateOfPlan);
-        System.out.println("member:" + member.getEndDateOfPlan());
         memberRepository.save(member);
 
         // cập nhật lại plan

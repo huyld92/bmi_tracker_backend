@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.exceptions.DuplicateRecordException;
 import com.fu.bmi_tracker.model.entities.Food;
 import com.fu.bmi_tracker.model.entities.FoodDetails;
 import com.fu.bmi_tracker.payload.request.CreateFoodRequest;
@@ -40,8 +39,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.FoodDetailsService;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
@@ -69,7 +68,7 @@ public class FoodController {
     @PostMapping(value = "/createNew")
     // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createNewFood(@Valid @RequestBody CreateFoodRequest createFoodRequest) {
-  
+
         // gọi foodService Tạo mới food
         Food food = foodService.createNewFood(createFoodRequest);
 
@@ -303,7 +302,7 @@ public class FoodController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/search-by-name")
-    public ResponseEntity<?> getFoodWithDietPreference(@RequestParam String foodName) {
+    public ResponseEntity<?> searchByName(@RequestParam String foodName) {
         // gọi service tìm food bằng foodName
         Iterable<Food> foods = foodService.searchLikeFoodName(foodName.trim());
 

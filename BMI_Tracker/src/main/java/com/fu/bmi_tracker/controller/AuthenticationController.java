@@ -10,6 +10,7 @@ import com.fu.bmi_tracker.payload.request.RegisterRequest;
 import com.fu.bmi_tracker.payload.response.LoginResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.model.entities.Account;
+import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Role;
 import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.security.jwt.JwtUtils;
@@ -24,6 +25,7 @@ import com.fu.bmi_tracker.payload.response.AccountResponse;
 import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
 import com.fu.bmi_tracker.services.AccountService;
+import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.EmailService;
 import com.fu.bmi_tracker.services.EmailVerificationCodeService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
@@ -37,7 +39,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -102,6 +103,9 @@ public class AuthenticationController {
     MemberService memberService;
 
     @Autowired
+    AdvisorService advisorService;
+
+    @Autowired
     MemberBodyMassService memberBodyMassService;
 
     @Operation(summary = "login by phone number and password", description = "Authenticate accounts by phone number and password. Returned will be account information and will not include a password", tags = {
@@ -144,6 +148,73 @@ public class AuthenticationController {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(accountDetails.getId());
 
+        // nếu đăng nhập với role Advisor 
+        if (loginRequest.getRole() == ERole.ROLE_ADVISOR) {
+            // kiểm tra thông tin advisor
+            Advisor advisor = advisorService.findByAccountID(accountDetails.getId());
+            // nếu trạng thía advisor inactive response 202 
+            if (!advisor.getIsActive()) {
+                return new ResponseEntity(new LoginResponse(
+                        accountDetails.getId(),
+                        accountDetails.getEmail(),
+                        accountDetails.getAccountPhoto(),
+                        loginRequest.getRole(),
+                        refreshToken.getRefreshToken(),
+                        jwt), HttpStatus.ACCEPTED);
+            }
+        } else if (loginRequest.getRole() == ERole.ROLE_MEMBER) {
+            Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
+
+            if (!member.isPresent()) {
+                LoginForMemberResponse forMemberResponse = new LoginForMemberResponse(
+                        accountDetails.getId(),
+                        -1, accountDetails.getEmail(),
+                        accountDetails.getFullName(),
+                        accountDetails.getGender().toString(),
+                        accountDetails.getPhoneNumber(),
+                        -1, -1, -1, -1, -1, -1,
+                        refreshToken.getRefreshToken(),
+                        jwt);
+
+                return new ResponseEntity<>(forMemberResponse, HttpStatus.ACCEPTED);
+            }
+            MemberBodyMass bodyMass
+                    = memberBodyMassService.getLatestBodyMass(
+                            member.get().getMemberID());
+
+            // tính tuổi
+            int age = LocalDate.now().getYear() - member.get().getAccount().getBirthday().getYear();
+
+            // tính BMI
+            BMIUtils bMIUtils = new BMIUtils();
+            double bmi = bMIUtils.calculateBMI(bodyMass.getWeight(), bodyMass.getHeight());
+
+            // tính BMR
+            double bmr = bMIUtils.calculateBMR(
+                    bodyMass.getWeight(),
+                    bodyMass.getHeight(),
+                    age,
+                    member.get().getAccount().getGender());
+
+            LoginForMemberResponse memberResponse = new LoginForMemberResponse(
+                    accountDetails.getId(),
+                    member.get().getMemberID(),
+                    accountDetails.getEmail(),
+                    accountDetails.getFullName(),
+                    accountDetails.getGender().toString(),
+                    accountDetails.getPhoneNumber(),
+                    bodyMass.getHeight(),
+                    bodyMass.getWeight(),
+                    age,
+                    bmi,
+                    bmr,
+                    member.get().getTdee(),
+                    refreshToken.getRefreshToken(),
+                    jwt);
+
+            return new ResponseEntity(memberResponse, HttpStatus.OK);
+        }
+
         return ResponseEntity.ok(new LoginResponse(
                 accountDetails.getId(),
                 accountDetails.getEmail(),
@@ -177,7 +248,7 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal(); 
+        CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
 
         // Lấy danh sách quyền của người dùng
         List<String> roles = authentication.getAuthorities().stream().map(item -> item.getAuthority())
@@ -188,8 +259,8 @@ public class AuthenticationController {
 
         if (!isRole) {
             return new ResponseEntity<>(new MessageResponse("You do not have permission for this role."), HttpStatus.UNAUTHORIZED);
-        }  
-        
+        }
+
         Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
 
         // generate mã jwt
@@ -316,6 +387,91 @@ public class AuthenticationController {
         AccountResponse accountResponse = new AccountResponse(account);
         return ResponseEntity.ok(accountResponse);
 
+    }
+
+    @Operation(summary = "Register as advisor", description = "Register account with default role advisor", tags = {
+        "Authentication"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = AccountResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "404", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "401", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping("/register-as-advisor")
+    public ResponseEntity<?> registerWithAdvisor(@Valid @RequestBody RegisterRequest registerRequest) throws Exception {
+
+        if (accountService.existsByEmail(registerRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
+
+//        if (accountService.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Phone number is already taken!"));
+//        }
+        // tìm role bằng role name
+        Role role = roleService.findByRoleName(ERole.ROLE_ADVISOR)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find role!"));
+
+        // set Role
+        Set<Role> accountRoles = new HashSet<>();
+
+        accountRoles.add(role);
+
+        // Create new member's account
+        Account account = new Account(registerRequest.getFullName(),
+                registerRequest.getEmail(),
+                registerRequest.getPhoneNumber(),
+                encoder.encode(
+                        registerRequest.getPassword()),
+                registerRequest.getGender(),
+                registerRequest.getBirthday(),
+                accountRoles);
+
+        // Save thông tin account xuống database
+        Account accountSave = accountService.save(account);
+
+        Advisor advisor = new Advisor(
+                accountSave,
+                "",
+                "",
+                0,
+                false
+        );
+        advisorService.save(advisor);
+
+        // Create New User in firebase
+        try {
+            UserRecord.CreateRequest createRequest = new CreateRequest();
+            createRequest.setEmail(registerRequest.getEmail());
+            createRequest.setEmailVerified(false);
+            createRequest.setPassword(registerRequest.getPassword());
+
+            // Creating new user
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(createRequest);
+
+            //Generate Veritification Link
+            String link = FirebaseAuth.getInstance().generateEmailVerificationLink(registerRequest.getEmail());
+
+            EmailVerificationCode verificationCode = new EmailVerificationCode(link, registerRequest.getEmail());
+
+            verificationCodeService.save(verificationCode);
+
+            //Send mail with vertificaiton link
+            EmailDetails details = new EmailDetails(userRecord.getEmail(), link, registerRequest.getFullName());
+            emailService.sendSimpleMail(details);
+        } catch (FirebaseAuthException e) {
+            System.out.println("Error with firebase account creation");
+        }
+
+        AccountResponse accountResponse = new AccountResponse(account);
+
+        return ResponseEntity.ok(accountResponse);
     }
 
     @Operation(summary = "Refresh token", description = "Using refresh token to get new access token when expired", tags = {

@@ -132,6 +132,20 @@ public class FoodServiceImpl implements FoodService {
         Food food = foodRepository.findByFoodIDAndIsActiveTrue(foodRequest.getFoodID())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find food with id{" + foodRequest.getFoodID() + "}!"));
 
+        //validate foodName
+        if (!food.getFoodName().equals(foodRequest.getFoodName())) {
+            // lấy danh sách tất cả food
+            Iterable<Food> foods = foodRepository.findByIsActiveTrue();
+
+            // kiểm tra tồn tại food name và recipe
+            foods.forEach(f -> {
+                // kiểm tra foodName
+                if (f.getFoodName().equals(food.getFoodName())) {
+                    throw new DuplicateRecordException("Food name already exists");
+                }
+            });
+        }
+
         // tìm tag từ list Tag ids
         List<Tag> tags = tagRepository.findByTagIDIn(foodRequest.getTagIDs());
 
