@@ -62,7 +62,6 @@ public class AdvisorController {
         });
 
         return new ResponseEntity<>(advisorsResponses, HttpStatus.OK);
-
     }
 
     @Operation(summary = "Retrieve all Advisors (MEMBER)", description = "Member don't get isActive = false")

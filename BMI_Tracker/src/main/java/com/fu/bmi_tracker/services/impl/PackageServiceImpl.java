@@ -65,7 +65,7 @@ public class PackageServiceImpl implements PackageService {
         p.setPackageDuration(packageRequest.getPackageDuration());
         p.setNumberOfUses(0);
         p.setPackageStatus(EStatus.PENDING.toString());
-        p.setPackageCode("PLAN-");
+        p.setPackageCode("PACK-");
         // mặc định false đợi manager duyệt
         p.setPackageStatus(EStatus.PENDING.toString());
         p.setIsActive(Boolean.TRUE);
@@ -77,7 +77,7 @@ public class PackageServiceImpl implements PackageService {
         // set advisor ID
         p.setAdvisor(advisor);
         Package packageSaved = save(p);
-        packageSaved.setPackageCode("PA-" + packageSaved.getPackageID());
+        packageSaved.setPackageCode("PACK-" + packageSaved.getPackageID());
 
         return save(packageSaved);
     }
