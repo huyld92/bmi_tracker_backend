@@ -54,6 +54,13 @@ public class Certificate {
         this.advisor = advisor;
     }
 
+    public Certificate(String certificateName, String certificateLink, Advisor advisor) {
+        this.certificateName = certificateName;
+        this.certificateLink = certificateLink;
+        this.isActive = false;
+        this.advisor = advisor;
+    }
+
     public void updateCertificate(UpdateCertificateRequest certificateRequest) {
         this.certificateName = certificateRequest.getCertificateName();
         this.certificateLink = certificateRequest.getCertificateLink();

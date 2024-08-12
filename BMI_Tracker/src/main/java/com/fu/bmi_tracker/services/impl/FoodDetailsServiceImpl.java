@@ -77,11 +77,13 @@ public class FoodDetailsServiceImpl implements FoodDetailsService {
                     Set<Integer> ingredientIDs = f.getFoodDetails().stream()
                             .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
                             .collect(Collectors.toSet());
+                    System.out.println("ingredientIDs:"+ingredientIDs.toString());
 
                     //  sử dụng Stream tách danh sách ingredientID từ  RecipeRequests 
                     Set<Integer> ingredientIDsRequest = food.getFoodDetails().stream()
                             .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
                             .collect(Collectors.toSet());
+                    System.out.println("ingredientIDsRequest:"+ingredientIDsRequest.toString());
                     // kiểm tra ingredientIDs có trùng với Set<IngredientID>
                     boolean isDuplicate = ingredientIDsRequest.stream().allMatch(ingredientIDs::contains);
                     if (isDuplicate) {

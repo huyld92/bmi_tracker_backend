@@ -294,11 +294,18 @@ public class SubscriptionController {
     @GetMapping(value = "/advisor/getByMember")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAdvisorFromSubscription() {
+        // lây thông tin của advisor cho member với trạng thái subscription pending
+        
         // lấy thông tin đăng nhập từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // GỌi subscription service tìm advisor 
         AdvisorDetailsResponse advisorDetailsResponse = subscriptionService.getAdvisorOfMember(principal.getId());
+
+        if (advisorDetailsResponse == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        }
 
         return new ResponseEntity<>(advisorDetailsResponse, HttpStatus.OK);
 
