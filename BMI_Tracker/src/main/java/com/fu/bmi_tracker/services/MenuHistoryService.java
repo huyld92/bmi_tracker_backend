@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.MenuHistory;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,7 @@ public interface MenuHistoryService extends GeneralService<MenuHistory> {
     public Iterable<MenuHistory> getMenuHistoryOfMember(Integer memberID);
 
     public MenuHistory assignMenuToMember(Integer menuID, Integer memberID);
+
+    public List<String> getMemberNameUsingMenu(Integer menuID);
 
 }

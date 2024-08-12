@@ -28,8 +28,9 @@ public class MenuResponseBasicFood {
     private Boolean isActive;
 //    private Integer advisorID;
     private List<MenuFoodBasicResponse> menuFoods;
+    private List<String> membersUsing;
 
-    public MenuResponseBasicFood(Menu menu, List<MenuFood> menuFoods) {
+    public MenuResponseBasicFood(Menu menu, List<MenuFood> menuFoods, List<String> membersUsing) {
         this.menuID = menu.getMenuID();
         this.menuName = menu.getMenuName();
         this.menuDescription = menu.getMenuDescription();
@@ -44,6 +45,7 @@ public class MenuResponseBasicFood {
                     menuFood.getMealType())
             );
         });
+        this.membersUsing = membersUsing;
         this.menuFoods = menuFoodBasicResponses;
     }
 }

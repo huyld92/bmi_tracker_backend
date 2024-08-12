@@ -56,9 +56,6 @@ public class MemberBodyMassController {
     MemberService memberService;
 
     @Autowired
-    ActivityLevelService activityLevelService;
-
-    @Autowired
     BMIUtils bMIUtils;
 
     @Operation(
@@ -159,7 +156,7 @@ public class MemberBodyMassController {
     }
 
     @Operation(
-            summary = "Get all bodymass of member in 3 months (MEMBER)")
+            summary = "Get all bodymass of member in 1 months (MEMBER)")
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {

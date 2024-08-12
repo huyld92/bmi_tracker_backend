@@ -14,6 +14,7 @@ import com.fu.bmi_tracker.services.MenuHistoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,8 +55,8 @@ public class MenuHistoryServiceImpl implements MenuHistoryService {
     }
 
     @Transactional
-    public void deactivateActiveMenuHistories() {
-        Iterable<MenuHistory> activeMenuHistories = menuHistoryRepository.findByIsActiveTrue();
+    public void deactivateActiveMenuHistories(Integer memberID) {
+        Iterable<MenuHistory> activeMenuHistories = menuHistoryRepository.findByIsActiveTrueAndMember_MemberID(memberID);
 
         for (MenuHistory menuHistory : activeMenuHistories) {
             menuHistory.setIsActive(false);
@@ -72,11 +73,11 @@ public class MenuHistoryServiceImpl implements MenuHistoryService {
         // gọi menu repository tìm menu 
         Menu menu = menuRepository.findById(menuID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find menu with id{" + menuID + "}!"));
-        
+
         if (!menu.getIsActive()) {
             return null;
         }
-        
+
         // lấy ngày hiện tại
         LocalDate dateOfAssigned = LocalDate.now();
 
@@ -85,11 +86,17 @@ public class MenuHistoryServiceImpl implements MenuHistoryService {
                 dateOfAssigned,
                 menu,
                 member);
+
         // Deactivate menu đang hoạt động của Member
-        deactivateActiveMenuHistories();
+        deactivateActiveMenuHistories(member.getMemberID());
 
         // lưu menu history mới
         return save(menuHistory);
+    }
+
+    @Override
+    public List<String> getMemberNameUsingMenu(Integer menuID) {
+        return menuHistoryRepository.findActiveMemberNamesByMenuID(menuID);
     }
 
 }

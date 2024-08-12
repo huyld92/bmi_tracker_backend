@@ -63,28 +63,30 @@ public class FoodDetailsServiceImpl implements FoodDetailsService {
                 ingredient,
                 recipeRequest.getQuantity(),
                 recipeRequest.getUnit());
+
         food.getFoodDetails().add(recipe);
 
         // validate recipe của food 
         Iterable<Food> foods = foodRepository.findByIsActiveTrue();
         // kiểm tra tồn tại food name và recipe
         foods.forEach(f -> {
-            // Nếu kích thước recipe giống nhau thì kiểm tra thành phần
-            if (f.getFoodDetails().size() == food.getFoodDetails().size()) {
-                // sử dụng Stream tách danh sách ingredientID của foods
-                Set<Integer> ingredientIDs = f.getFoodDetails().stream()
-                        .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
-                        .collect(Collectors.toSet());
+            if (f.getFoodID() != food.getFoodID()) {
+                // Nếu kích thước recipe giống nhau thì kiểm tra thành phần
+                if (f.getFoodDetails().size() == food.getFoodDetails().size()) {
+                    // sử dụng Stream tách danh sách ingredientID của foods (Tất cả food)
+                    Set<Integer> ingredientIDs = f.getFoodDetails().stream()
+                            .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
+                            .collect(Collectors.toSet());
 
-                //  sử dụng Stream tách danh sách ingredientID từ  RecipeRequests 
-                Set<Integer> ingredientIDsRequest = food.getFoodDetails().stream()
-                        .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
-                        .collect(Collectors.toSet());
-
-                // kiểm tra ingredientIDs có trùng với Set<IngredientID>
-                boolean isDuplicate = ingredientIDsRequest.stream().allMatch(ingredientIDs::contains);
-                if (isDuplicate) {
-                    throw new DuplicateRecordException("Recipe already exists");
+                    //  sử dụng Stream tách danh sách ingredientID từ  RecipeRequests 
+                    Set<Integer> ingredientIDsRequest = food.getFoodDetails().stream()
+                            .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
+                            .collect(Collectors.toSet());
+                    // kiểm tra ingredientIDs có trùng với Set<IngredientID>
+                    boolean isDuplicate = ingredientIDsRequest.stream().allMatch(ingredientIDs::contains);
+                    if (isDuplicate) {
+                        throw new DuplicateRecordException("Recipe already exists");
+                    }
                 }
             }
         });
@@ -94,7 +96,7 @@ public class FoodDetailsServiceImpl implements FoodDetailsService {
 
     @Override
     @Transactional
-    public void deleteFoodDetails(Integer foodDetailsID) {      
+    public void deleteFoodDetails(Integer foodDetailsID) {
         repository.deleteById(foodDetailsID);
     }
 
