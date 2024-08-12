@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.WorkoutHistory;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,7 @@ public interface WorkoutHistoryService extends GeneralService<WorkoutHistory> {
     public Iterable<WorkoutHistory> getWorkoutHistoryOfMember(Integer memberID);
 
     public WorkoutHistory assignWorkoutToMember(Integer workoutID, Integer memberID);
+
+    public List<String> getMemberNameUsingWorkout(Integer workoutID);
 
 }

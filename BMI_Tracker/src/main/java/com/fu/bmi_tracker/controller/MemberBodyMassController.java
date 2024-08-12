@@ -11,7 +11,6 @@ import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.payload.response.MemberBodyMassResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
-import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.util.BMIUtils;

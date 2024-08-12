@@ -28,8 +28,9 @@ public class WorkoutResonse {
     private Integer advisorID;
     private String fullName;
     private List<WorkoutExerciseResponse> workoutExercises;
+    private List<String> membersUsing;
 
-    public WorkoutResonse(Workout workout, List<WorkoutExerciseResponse> workoutExercisesResponses) {
+    public WorkoutResonse(Workout workout, List<WorkoutExerciseResponse> workoutExercisesResponses,List<String> membersUsing) {
         this.workoutID = workout.getWorkoutID();
         this.workoutName = workout.getWorkoutName();
         this.workoutDescription = workout.getWorkoutDescription();
@@ -38,6 +39,7 @@ public class WorkoutResonse {
         this.isActive = workout.getIsActive();
         this.advisorID = workout.getAdvisor().getAdvisorID();
         this.fullName = workout.getAdvisor().getAccount().getFullName();
+        this.membersUsing = membersUsing;
         this.workoutExercises = workoutExercisesResponses;
     }
 

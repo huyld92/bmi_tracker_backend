@@ -8,10 +8,8 @@ import com.fu.bmi_tracker.model.entities.EmailDetails;
 import com.fu.bmi_tracker.services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -66,12 +64,13 @@ public class EmailServiceImpl implements EmailService {
                     details.getSubject());
 
             // Adding the attachment
-            FileSystemResource file
-                    = new FileSystemResource(
-                            new File(details.getAttachment()));
+//            FileSystemResource file
+//                    = new FileSystemResource(
+//                            new File(details.getAttachment())
+//                    );
 
-            mimeMessageHelper.addAttachment(
-                    file.getFilename(), file);
+//            mimeMessageHelper.addAttachment(
+//                    file.getFilename(), file);
 
             // Sending the mail
             javaMailSender.send(mimeMessage);
