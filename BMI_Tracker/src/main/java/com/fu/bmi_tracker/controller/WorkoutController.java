@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.WorkoutExerciseService;
+import com.fu.bmi_tracker.services.WorkoutHistoryService;
 import com.fu.bmi_tracker.util.WorkoutExerciseConverter;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,6 +62,9 @@ public class WorkoutController {
 
     @Autowired
     WorkoutExerciseService workoutExerciseService;
+
+    @Autowired
+    WorkoutHistoryService workoutHistoryService;
 
     @Operation(
             summary = "Create new workout (ADVISOR)",
@@ -153,10 +157,12 @@ public class WorkoutController {
 
         // duyệt list workout
         workouts.forEach(workout -> {
+            List<String> membersUsing = workoutHistoryService.getMemberNameUsingWorkout(workout.getWorkoutID());
+
             workoutResonses.add(new WorkoutResonse(
                     workout,
                     WorkoutExerciseConverter.convertToWorkoutExerciseResponseList(
-                            workout.getWorkoutExercises())));
+                            workout.getWorkoutExercises()), membersUsing));
         });
 
         return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
@@ -186,11 +192,12 @@ public class WorkoutController {
         workout.get().getWorkoutExercises().forEach(workoutExercise -> {
             workoutExercisesResponses.add(new WorkoutExerciseResponse(workoutExercise));
         });
+        List<String> membersUsing = workoutHistoryService.getMemberNameUsingWorkout(workout.get().getWorkoutID());
 
         // tạo workout response
         WorkoutResonse response = new WorkoutResonse(
                 workout.get(),
-                workoutExercisesResponses);
+                workoutExercisesResponses, membersUsing);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -270,7 +277,6 @@ public class WorkoutController {
         });
 
         return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
-
     }
 
     @Operation(

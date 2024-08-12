@@ -10,14 +10,14 @@ import lombok.Data;
  *
  * @author Duc Huy
  */
-@Data 
+@Data
 public final class EmailDetails {
     // Class data members
 
     private String recipient;
     private String msgBody;
     private String subject;
-    private String attachment;
+//    private String attachment;
 
     public EmailDetails() {
     }
@@ -33,8 +33,6 @@ public final class EmailDetails {
         this.subject = subject;
         this.msgBody = sendNewPasswordAccountTemplateGenerator(recipient, password, fullName);
     }
-    
-    
 
     public String VerificationEmailBodyTemplateGenerator(String verificationLink, String fullname) {
         return "Hello " + fullname + ","
@@ -61,6 +59,16 @@ public final class EmailDetails {
                 + "Username: " + email + "\n"
                 + "Password: " + password + "\n\n"
                 + "For security reasons, we recommend that you log in and change this temporary password as soon as possible. "
+                + "If you did not request a password reset, please contact our support team immediately at [Support Email: huyddse63197@fpt.edu.vn].\n\n"
+                + "Thank you for choosing BMI.\n\n"
+                + "Best regards,\n\n"
+                + "BMI Support Team";
+    }
+
+    public String sendActiveAdvisorTemplateGenerator(String fullname) {
+        return "Dear " + fullname + ",\n\n"
+                + "We are pleased to inform you that your account has been successfully activated.\n"
+                + "You can now log in and start exploring all the features and services we offer.\n"
                 + "If you did not request a password reset, please contact our support team immediately at [Support Email: huyddse63197@fpt.edu.vn].\n\n"
                 + "Thank you for choosing BMI.\n\n"
                 + "Best regards,\n\n"
