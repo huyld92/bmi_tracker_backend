@@ -59,13 +59,13 @@ public class NotificationScheduler {
 
                         String memberName = memberList.get(i).getAccount().getFullName();
                         //Tao thong tin cho reminder Notify
-                        String titile = "Your subcription have 7 days left.";
+                        String title = "Your subcription have 7 days left.";
                         String body = memberName + "'s subcription is end at " + memberPackageEndDate + " Please extend your subcription if you want continue using the package";
                         String deviceToken = memberList.get(i).getAccount().getDeviceToken();
                         //Sao luu Notification 
                         Notification notify = new Notification();
                         notify.setAccountID(memberList.get(i).getAccount().getAccountID());
-                        notify.setTitle(titile);
+                        notify.setTitle(title);
                         notify.setContent(body);
                         notify.setCreatedTime(LocalDateTime.now());
                         notify.setIsRead(Boolean.FALSE);
@@ -73,7 +73,7 @@ public class NotificationScheduler {
 
                         //Send notify to Account that have token (Still login)
                         if (deviceToken != null) {
-                            notificationServiceImpl.sendNotification(titile, body, deviceToken);
+                            notificationServiceImpl.sendNotification(title, body, deviceToken);
                         }
 
                     }
@@ -91,18 +91,18 @@ public class NotificationScheduler {
                 String deviceToken = dailyRecordList.get(i).getMember().getAccount().getDeviceToken();
                 if (record.getTotalCaloriesIn() == 0) {
                     //Tao thong tin cho reminder Notify
-                    String titile = "You forgot input today record.";
+                    String title = "You forgot input today record.";
                     String body = "For accurate calculation, please enter your record today.";
                     //Sao luu Notification 
                     Notification notify = new Notification();
                     notify.setAccountID(dailyRecordList.get(i).getMember().getAccount().getAccountID());
-                    notify.setTitle(titile);
+                    notify.setTitle(title);
                     notify.setContent(body);
                     notify.setCreatedTime(LocalDateTime.now());
                     notify.setIsRead(Boolean.FALSE);
                     notificationRepository.save(notify);
                     if (deviceToken != null) {
-                        notificationServiceImpl.sendNotification(titile, body, deviceToken);
+                        notificationServiceImpl.sendNotification(title, body, deviceToken);
                     }
                 }
             }
@@ -119,20 +119,20 @@ public class NotificationScheduler {
 
                     //Neu lan cuoi cap nhat Body Mass truoc ngay hien tai 7 ngay thi send Notify
                     if (memberBodyMass.get().getDateInput().toLocalDate().isBefore(LocalDate.now().minusDays(7))) {
-                        String titile = "Update your weight.";
+                        String title = "Update your weight.";
                         String body = "You have not update your Body Mass in 7 day, Please update it to ensure calculate is accurate";
                         String deviceToken = memberList.get(i).getAccount().getDeviceToken();
 
                         Notification notify = new Notification();
                         notify.setAccountID(memberList.get(i).getAccount().getAccountID());
-                        notify.setTitle(titile);
+                        notify.setTitle(title);
                         notify.setContent(body);
                         notify.setCreatedTime(LocalDateTime.now());
                         notify.setIsRead(Boolean.FALSE);
                         notificationRepository.save(notify);
 
                         if (deviceToken != null) {
-                            notificationServiceImpl.sendNotification(titile, body, deviceToken);
+                            notificationServiceImpl.sendNotification(title, body, deviceToken);
                         }
                     }
                 }
