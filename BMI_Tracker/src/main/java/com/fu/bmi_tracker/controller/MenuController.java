@@ -11,6 +11,7 @@ import com.fu.bmi_tracker.model.entities.MenuFood;
 import com.fu.bmi_tracker.payload.request.CreateMenuFoodRequest;
 import com.fu.bmi_tracker.payload.request.CreateMenuRequest;
 import com.fu.bmi_tracker.payload.request.UpdateMenuRequest;
+import com.fu.bmi_tracker.payload.response.MenuBasicResponse;
 import com.fu.bmi_tracker.payload.response.MenuFoodBasicResponse;
 import com.fu.bmi_tracker.payload.response.MenuFoodResponse;
 import com.fu.bmi_tracker.payload.response.MenuResponse;
@@ -19,6 +20,7 @@ import com.fu.bmi_tracker.payload.response.MenuResponseBasicFood;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
 import com.fu.bmi_tracker.services.AdvisorService;
 import com.fu.bmi_tracker.services.MenuFoodService;
+import com.fu.bmi_tracker.services.MenuHistoryService;
 import com.fu.bmi_tracker.services.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -63,6 +65,9 @@ public class MenuController {
 
     @Autowired
     MenuFoodService menuFoodService;
+
+    @Autowired
+    MenuHistoryService menuHistoryService;
 
     @Operation(
             summary = "Create new menu (Advisor)",
@@ -183,7 +188,8 @@ public class MenuController {
         List<MenuResponseAll> menuResponses = new ArrayList<>();
 
         menus.forEach(menu -> {
-            menuResponses.add(new MenuResponseAll(menu));
+            List<String> membersUsing = menuHistoryService.getMemberNameUsingMenu(menu.getMenuID());
+            menuResponses.add(new MenuResponseAll(menu, membersUsing));
         });
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
@@ -194,7 +200,7 @@ public class MenuController {
             description = "Get all menu include food of advisor")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuBasicResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -222,11 +228,10 @@ public class MenuController {
         }
 
         // tạo menu response
-        List<MenuResponseAll> menuResponses = new ArrayList<>();
+        List<MenuBasicResponse> menuResponses = new ArrayList<>();
 
         menus.forEach(menu -> {
-
-            menuResponses.add(new MenuResponseAll(menu));
+            menuResponses.add(new MenuBasicResponse(menu));
         });
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
@@ -237,7 +242,7 @@ public class MenuController {
             description = "Get all menu of advisor with isActive true")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuBasicResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
@@ -261,11 +266,12 @@ public class MenuController {
         }
 
         // tạo menu response
-        List<MenuResponseAll> menuResponses = new ArrayList<>();
+        List<MenuBasicResponse> menuResponses = new ArrayList<>();
 
         menus.forEach(menu -> {
-            menuResponses.add(new MenuResponseAll(menu));
+            menuResponses.add(new MenuBasicResponse(menu));
         });
+
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
     }
 
@@ -302,24 +308,31 @@ public class MenuController {
             description = "Get menu details include food with menu id")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = MenuResponseBasicFood.class), mediaType = "application/json")}),
+            @Content(schema = @Schema(implementation = MenuResponseAll.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/get-details")
     public ResponseEntity<?> getMenuDetails(@RequestParam Integer menuID) {
+        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
 
         // Tìm menu bằng menuID
-        Optional<Menu> menu = menuService.findById(menuID);
-        if (!menu.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        Menu menu = menuService.findById(menuID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find menu id{" + menuID + "}!"));
 
         // tạo menu response
+        List<String> membersUsing;
+        // nếu menu được tạo bỏi đúng advisor thì show danh sách tên member
+        if (principal.getId().equals(menu.getAdvisor().getAccount().getAccountID())) {
+            membersUsing = menuHistoryService.getMemberNameUsingMenu(menuID);
+        } else {
+            membersUsing = new ArrayList<>();
+        }
         MenuResponseBasicFood menuResponses = new MenuResponseBasicFood(
-                menu.get(),
-                menu.get().getMenuFoods());
+                menu,
+                menu.getMenuFoods(), membersUsing);
 
         return new ResponseEntity<>(menuResponses, HttpStatus.OK);
     }
@@ -397,8 +410,7 @@ public class MenuController {
             summary = "Delete menu food",
             description = "Delete menu food by food id and menu id")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", content = {
-            @Content(schema = @Schema(implementation = MenuResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "204"),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
         @ApiResponse(responseCode = "500", content = {

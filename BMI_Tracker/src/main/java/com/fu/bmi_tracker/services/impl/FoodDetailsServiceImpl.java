@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class FoodDetailsServiceImpl implements FoodDetailsService {
 
     @Autowired
-    FoodDetailsRepository repository;
+    FoodDetailsRepository foodDetailsRepository;
 
     @Autowired
     FoodRepository foodRepository;
@@ -35,18 +35,18 @@ public class FoodDetailsServiceImpl implements FoodDetailsService {
 
     @Override
     public Iterable<FoodDetails> findAll() {
-        return repository.findAll();
+        return foodDetailsRepository.findAll();
     }
 
     @Override
     public Optional<FoodDetails> findById(Integer id) {
-        // return repository.findById(id);
+        // return foodDetailsRepository.findById(id);
         return null;
     }
 
     @Override
     public FoodDetails save(FoodDetails t) {
-        return repository.save(t);
+        return foodDetailsRepository.save(t);
     }
 
     @Override
@@ -63,39 +63,75 @@ public class FoodDetailsServiceImpl implements FoodDetailsService {
                 ingredient,
                 recipeRequest.getQuantity(),
                 recipeRequest.getUnit());
+
         food.getFoodDetails().add(recipe);
 
         // validate recipe của food 
         Iterable<Food> foods = foodRepository.findByIsActiveTrue();
         // kiểm tra tồn tại food name và recipe
         foods.forEach(f -> {
-            // Nếu kích thước recipe giống nhau thì kiểm tra thành phần
-            if (f.getFoodDetails().size() == food.getFoodDetails().size()) {
-                // sử dụng Stream tách danh sách ingredientID của foods
-                Set<Integer> ingredientIDs = f.getFoodDetails().stream()
-                        .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
-                        .collect(Collectors.toSet());
+            if (f.getFoodID() != food.getFoodID()) {
+                // Nếu kích thước recipe giống nhau thì kiểm tra thành phần
+                if (f.getFoodDetails().size() == food.getFoodDetails().size()) {
+                    // sử dụng Stream tách danh sách ingredientID của foods (Tất cả food)
+                    Set<Integer> ingredientIDs = f.getFoodDetails().stream()
+                            .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
+                            .collect(Collectors.toSet());
 
-                //  sử dụng Stream tách danh sách ingredientID từ  RecipeRequests 
-                Set<Integer> ingredientIDsRequest = food.getFoodDetails().stream()
-                        .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
-                        .collect(Collectors.toSet());
+                    //  sử dụng Stream tách danh sách ingredientID từ  RecipeRequests 
+                    Set<Integer> ingredientIDsRequest = food.getFoodDetails().stream()
+                            .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
+                            .collect(Collectors.toSet());
 
-                // kiểm tra ingredientIDs có trùng với Set<IngredientID>
-                boolean isDuplicate = ingredientIDsRequest.stream().allMatch(ingredientIDs::contains);
-                if (isDuplicate) {
-                    throw new DuplicateRecordException("Recipe already exists");
+                    // kiểm tra ingredientIDs có trùng với Set<IngredientID>
+                    boolean isDuplicate = ingredientIDsRequest.stream().allMatch(ingredientIDs::contains);
+                    if (isDuplicate) {
+                        throw new DuplicateRecordException("Recipe already exists");
+                    }
                 }
             }
         });
 
-        return repository.save(recipe);
+        return foodDetailsRepository.save(recipe);
     }
 
     @Override
     @Transactional
-    public void deleteFoodDetails(Integer foodDetailsID) {      
-        repository.deleteById(foodDetailsID);
+    public void deleteFoodDetails(Integer foodDetailsID) {
+        // gọi foodRepository tìm food bằng foodID
+        FoodDetails fDetails = foodDetailsRepository.findById(foodDetailsID)
+                .orElseThrow(() -> new EntityNotFoundException("FoodDetails not found"));
+
+        Food food = foodRepository.findById(fDetails.getFood().getFoodID())
+                .orElseThrow(() -> new EntityNotFoundException("Food not found"));
+        food.getFoodDetails().remove(fDetails);
+
+        // validate recipe của food 
+        Iterable<Food> foods = foodRepository.findByIsActiveTrue();
+        // kiểm tra tồn tại food name và recipe
+        foods.forEach(f -> {
+            if (f.getFoodID() != food.getFoodID()) {
+                // Nếu kích thước recipe giống nhau thì kiểm tra thành phần
+                if (f.getFoodDetails().size() == food.getFoodDetails().size()) {
+                    // sử dụng Stream tách danh sách ingredientID của foods (Tất cả food)
+                    Set<Integer> ingredientIDs = f.getFoodDetails().stream()
+                            .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
+                            .collect(Collectors.toSet());
+
+                    //  sử dụng Stream tách danh sách ingredientID từ  RecipeRequests 
+                    Set<Integer> ingredientIDsRequest = food.getFoodDetails().stream()
+                            .map(foodDetails -> foodDetails.getIngredient().getIngredientID())
+                            .collect(Collectors.toSet());
+
+                    // kiểm tra ingredientIDs có trùng với Set<IngredientID>
+                    boolean isDuplicate = ingredientIDsRequest.stream().allMatch(ingredientIDs::contains);
+                    if (isDuplicate) {
+                        throw new DuplicateRecordException("Recipe already exists! Cannot delete Ingredient");
+                    }
+                }
+            }
+        });
+        foodDetailsRepository.deleteById(foodDetailsID);
     }
 
 }

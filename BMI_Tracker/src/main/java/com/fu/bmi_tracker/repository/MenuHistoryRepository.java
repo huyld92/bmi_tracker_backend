@@ -5,8 +5,10 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.MenuHistory;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -22,4 +24,8 @@ public interface MenuHistoryRepository extends JpaRepository<MenuHistory, Intege
 
     public Iterable<MenuHistory> findByIsActiveTrue();
 
+    @Query("SELECT mh.member.account.fullName FROM MenuHistory mh WHERE mh.menu.menuID = :menuID AND mh.isActive = true")
+    List<String> findActiveMemberNamesByMenuID(Integer menuID);
+
+    public Iterable<MenuHistory> findByIsActiveTrueAndMember_MemberID(Integer memberID);
 }

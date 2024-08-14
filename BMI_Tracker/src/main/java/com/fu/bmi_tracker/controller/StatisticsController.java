@@ -312,7 +312,7 @@ public class StatisticsController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("/member-bodymass/getInMonth")
-    public ResponseEntity<?> getAllBodyMassOfMemberIn3Month(@RequestParam Integer memberID, @RequestParam(required = true) String date) {
+    public ResponseEntity<?> getAllBodyMassOfMemberInMonth(@RequestParam Integer memberID, @RequestParam(required = true) String date) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate;
@@ -397,7 +397,7 @@ public class StatisticsController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping("member/member-bodymass/getInMonth")
-    public ResponseEntity<?> getAllBodyMassOfMemberIn3Month(@RequestParam(required = true) String date) {
+    public ResponseEntity<?> getAllBodyMassOfMemberInMonth(@RequestParam(required = true) String date) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate;

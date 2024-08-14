@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.controller;
 
-import com.fu.bmi_tracker.firebase.FCMService;
 import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;

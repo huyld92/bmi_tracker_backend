@@ -11,7 +11,6 @@ import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.payload.response.MemberBodyMassResponse;
 import com.fu.bmi_tracker.payload.response.MessageResponse;
-import com.fu.bmi_tracker.services.ActivityLevelService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import com.fu.bmi_tracker.services.MemberService;
 import com.fu.bmi_tracker.util.BMIUtils;
@@ -54,9 +53,6 @@ public class MemberBodyMassController {
 
     @Autowired
     MemberService memberService;
-
-    @Autowired
-    ActivityLevelService activityLevelService;
 
     @Autowired
     BMIUtils bMIUtils;
@@ -159,7 +155,7 @@ public class MemberBodyMassController {
     }
 
     @Operation(
-            summary = "Get all bodymass of member in 3 months (MEMBER)")
+            summary = "Get all bodymass of member in 1 months (MEMBER)")
     @ApiResponses({
         @ApiResponse(responseCode = "200",
                 content = {

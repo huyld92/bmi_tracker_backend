@@ -33,9 +33,9 @@ public class PurgeTask {
         tokenService.deleteAllExpiredSince(LocalDateTime.now());
     }
 
+    // cập nhật trạng thái cho subscription PENDING or FINISHED
     @Scheduled(cron = "${purge.cron.subscriptionstatus}")
     public void updateSubscriptionStatus() {
         subscriptionService.updateSubscriptionStatus();
-
     }
 }

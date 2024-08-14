@@ -8,6 +8,7 @@ import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.payload.response.CommissionSummaryResponse;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommissionRepository extends JpaRepository<Commission, Integer> {
 
-    Commission findByAdvisor_AdvisorIDAndExpectedPaymentDate(Integer advisorID, LocalDate expectedPaymentDate);
+    Optional<Commission> findByAdvisor_AdvisorIDAndExpectedPaymentDate(Integer advisorID, LocalDate expectedPaymentDate);
 
     public Iterable<Commission> findByAdvisor_AdvisorID(Integer advisorID);
 

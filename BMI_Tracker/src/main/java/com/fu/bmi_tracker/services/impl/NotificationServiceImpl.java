@@ -8,6 +8,7 @@ import com.fu.bmi_tracker.model.entities.Notification;
 import com.fu.bmi_tracker.repository.NotificationRepository;
 import com.fu.bmi_tracker.services.NotificationService;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             String response = FirebaseMessaging.getInstance().send(message);
             return "Successfully sent message: " + response;
-        } catch (Exception e) {
+        } catch (FirebaseMessagingException e) {
             e.printStackTrace();
             return "Failed to send message: " + e.getMessage();
         }

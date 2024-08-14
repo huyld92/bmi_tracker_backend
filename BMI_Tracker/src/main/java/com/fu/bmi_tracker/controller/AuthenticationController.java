@@ -154,13 +154,14 @@ public class AuthenticationController {
             Advisor advisor = advisorService.findByAccountID(accountDetails.getId());
             // nếu trạng thía advisor inactive response 202 
             if (!advisor.getIsActive()) {
-                return new ResponseEntity(new LoginResponse(
+                LoginResponse loginResponse = new LoginResponse(
                         accountDetails.getId(),
                         accountDetails.getEmail(),
                         accountDetails.getAccountPhoto(),
                         loginRequest.getRole(),
                         refreshToken.getRefreshToken(),
-                        jwt), HttpStatus.ACCEPTED);
+                        jwt);
+                return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
             }
         } else if (loginRequest.getRole() == ERole.ROLE_MEMBER) {
             Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
@@ -212,7 +213,7 @@ public class AuthenticationController {
                     refreshToken.getRefreshToken(),
                     jwt);
 
-            return new ResponseEntity(memberResponse, HttpStatus.OK);
+            return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         }
 
         return ResponseEntity.ok(new LoginResponse(
@@ -530,7 +531,7 @@ public class AuthenticationController {
     @Operation(summary = "Forgot password",
             description = "Provide email to receive new password")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
+        @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
@@ -548,7 +549,7 @@ public class AuthenticationController {
 
         // kiểm tra trạng thái active
         if (!account.getIsActive()) {
-            return new ResponseEntity<>(new MessageResponse("Your account is banned!"), HttpStatus.CREATED);
+            return new ResponseEntity<>(new MessageResponse("Your account is banned!"), HttpStatus.BAD_REQUEST);
         }
 
         // gửi mail mật khẩu mới về email
