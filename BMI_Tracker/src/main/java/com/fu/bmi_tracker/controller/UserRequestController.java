@@ -5,11 +5,15 @@
 package com.fu.bmi_tracker.controller;
 
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
+import com.fu.bmi_tracker.model.entities.Notification;
 import com.fu.bmi_tracker.model.entities.UserRequest;
 import com.fu.bmi_tracker.payload.request.CreateUserRequest;
 import com.fu.bmi_tracker.payload.request.UpdateUserRequestProcessing;
 import com.fu.bmi_tracker.payload.response.UserRequestResponse;
+import com.fu.bmi_tracker.repository.AccountRepository;
+import com.fu.bmi_tracker.repository.NotificationRepository;
 import com.fu.bmi_tracker.services.UserRequestService;
+import com.fu.bmi_tracker.services.impl.NotificationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +47,15 @@ public class UserRequestController {
 
     @Autowired
     UserRequestService userRequestService;
+
+    @Autowired
+    NotificationRepository notificationRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
+    NotificationServiceImpl notificationServiceImpl;
 
     @Operation(
             summary = "Get all userRequest for user",
@@ -151,6 +165,24 @@ public class UserRequestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        //Create Notify
+        String titile = "Your request has been processed";
+        String body = "Your request has been processed";
+        String deviceToken = accountRepository.findDeviceTokenByAccountID(userRequest.getUserRequestID());
+
+        Notification notify = new Notification();
+        notify.setAccountID(userRequest.getAccount().getAccountID());
+        notify.setTitle(titile);
+        notify.setContent(body);
+        notify.setCreatedTime(LocalDateTime.now());
+        notify.setIsRead(Boolean.FALSE);
+        notificationRepository.save(notify);
+
+        if (deviceToken != null) {
+            notificationServiceImpl.sendNotification(titile, body, deviceToken);
+        }
+        
+        
         // tạo UserRequestResponse
         UserRequestResponse userRequestResponse = new UserRequestResponse(userRequest);
 
