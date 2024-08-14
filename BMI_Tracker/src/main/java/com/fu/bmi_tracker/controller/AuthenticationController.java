@@ -531,7 +531,7 @@ public class AuthenticationController {
     @Operation(summary = "Forgot password",
             description = "Provide email to receive new password")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
+        @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
@@ -549,7 +549,7 @@ public class AuthenticationController {
 
         // kiểm tra trạng thái active
         if (!account.getIsActive()) {
-            return new ResponseEntity<>(new MessageResponse("Your account is banned!"), HttpStatus.CREATED);
+            return new ResponseEntity<>(new MessageResponse("Your account is banned!"), HttpStatus.BAD_REQUEST);
         }
 
         // gửi mail mật khẩu mới về email

@@ -4,6 +4,7 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
+import com.fu.bmi_tracker.exceptions.DuplicateRecordException;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
@@ -64,7 +65,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     CommissionAllocationRepository commissionAllocationRepository;
 
     @Autowired
-    PackageRepository planRepository;
+    PackageRepository packageRepository;
 
     @Autowired
     DateTimeUtils dateTimeUtils;
@@ -127,25 +128,25 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         // lấy ngày hiện tại
         LocalDate currentDate = LocalDate.now();
 
-        // Tạo ngày bắt đầu plan
-        // nếu endPlan không còn hiệu lực startPlan = currentDate
-        // ngược lại startDateOfPlan bằng enDateOfPlan
-        LocalDate startDateOfPlan = currentDate;
+        // Tạo ngày bắt đầu package
+        // nếu endPackage không còn hiệu lực startPackage = currentDate
+        // ngược lại startDateOfPackage bằng enDateOfPackage
+        LocalDate startDateOfPackage = currentDate;
 
-        // kiểm tra và cập nhật endDateOfPlan của member
-        LocalDate endDateOfPlan = member.getEndDateOfPlan();
-        int planDuration = createRequest.getSubscriptionRequest().getPlanDuration();
+        // kiểm tra và cập nhật endDateOfPackage của member
+        LocalDate endDateOfPackage = member.getEndDateOfPlan();
+        int packageDuration = createRequest.getSubscriptionRequest().getPackageDuration();
 
-        if (endDateOfPlan == null || endDateOfPlan.isBefore(currentDate)) {
+        if (endDateOfPackage == null || endDateOfPackage.isBefore(currentDate)) {
             // nếu ngày kết thúc không tồn tại hoặc ngày kết thúc bé hơn ngày hiện tại
-            // => lấy currentDate + cho PlanDuration của new plan
-            endDateOfPlan = currentDate.plusDays(planDuration);
+            // => lấy currentDate + cho PackageDuration của new package
+            endDateOfPackage = currentDate.plusDays(packageDuration);
         } else {
-            // ngược lại plan vẫn còn hiệu lực 
-            // start plan = ngày sau của endplan
-            //=> cộng thêm plan duaration vào endDateOfPlan
-            startDateOfPlan = endDateOfPlan.plusDays(1);
-            endDateOfPlan = endDateOfPlan.plusDays(planDuration);
+            // ngược lại package vẫn còn hiệu lực 
+            // start package = ngày sau của endpackage
+            //=> cộng thêm package duaration vào endDateOfPackage
+            startDateOfPackage = endDateOfPackage.plusDays(1);
+            endDateOfPackage = endDateOfPackage.plusDays(packageDuration);
         }
 
         // tìm advisor
@@ -160,12 +161,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         AdvisorSubscription subscription
                 = subscriptionRepository.save(new AdvisorSubscription(
                         createRequest.getSubscriptionRequest(),
-                        startDateOfPlan,
-                        endDateOfPlan,
+                        startDateOfPackage,
+                        endDateOfPackage,
                         member,
                         advisor,
                         transaction.getTransactionID(),
-                        commissionRate * 10
+                        commissionRate * 100
                 ));
         String[] milestoneLabels = {"25%", "50%", "75%", "100%"};
 
@@ -175,14 +176,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         for (int i = 0; i < milestoneLabels.length; i++) {
             double milestonePercentage = i * 0.25;
-            LocalDate milestoneDate = startDateOfPlan.plusDays((long) (planDuration * milestonePercentage));
+            LocalDate milestoneDate = startDateOfPackage.plusDays((long) (packageDuration * milestonePercentage));
 
             // Tìm commission bằng ngày dự kiến và advisorID
             LocalDate expectedPaymentDate = dateTimeUtils.calculateExpectedPaymentDate(milestoneDate);
+
             Commission commission = commissionRepository.
                     findByAdvisor_AdvisorIDAndExpectedPaymentDate(
                             advisor.getAdvisorID(),
-                            expectedPaymentDate);
+                            expectedPaymentDate)
+                    .orElseThrow(() -> new DuplicateRecordException("Commission is not unique date!"));
 
             // kiểm tra kết quả
             if (commission == null) {
@@ -206,6 +209,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             // Tạo description cho CommissionAllocation
             String description = String.format("Commission for %s milestone: %s earned for subscription #%s from %s to %s.",
                     milestoneLabels[i], amount.toString(), subscription.getSubscriptionNumber(), subscription.getStartDate(), subscription.getEndDate());
+            System.out.println("description: " + description);
 
             CommissionAllocation allocation = new CommissionAllocation(
                     amount,
@@ -217,26 +221,28 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             commissionAllocationRepository.save(allocation);
         }
 
-        // cập nhật số lần sử dụng cho plan
-        int planID = createRequest.getSubscriptionRequest().getPlanID();
+        // cập nhật số lần sử dụng cho package
+        int packageID = createRequest.getSubscriptionRequest().getPackageID();
 
-        Package plan = planRepository.findById(planID)
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find plan with id{" + planID + "}"));
+        Package packageService = packageRepository.findById(packageID)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find package with id{" + packageID + "}"));
 
-        int numberOfUses = plan.getNumberOfUses() + 1;
+        int numberOfUses = packageService.getNumberOfUses() + 1;
+        System.out.println("numberOfUses: " + numberOfUses);
 
-        plan.setNumberOfUses(numberOfUses);
+        packageService.setNumberOfUses(numberOfUses);
         // cập nhật tổng số subscription của advisor
         int totalSubscription = 1 + advisor.getTotalSubscription();
         advisor.setTotalSubscription(totalSubscription);
         advisorRepository.save(advisor);
+        System.out.println("endDateOfPackage: " + endDateOfPackage);
 
         // cập nhật ngày kết thúc cho Member
-        member.setEndDateOfPlan(endDateOfPlan);
+        member.setEndDateOfPlan(endDateOfPackage);
         memberRepository.save(member);
 
-        // cập nhật lại plan
-        planRepository.save(plan);
+        // cập nhật lại package
+        packageRepository.save(packageService);
 
         return subscription;
     }

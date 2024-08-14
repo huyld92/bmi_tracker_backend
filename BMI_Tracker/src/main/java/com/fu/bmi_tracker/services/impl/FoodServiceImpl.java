@@ -136,12 +136,14 @@ public class FoodServiceImpl implements FoodService {
         if (!food.getFoodName().equals(foodRequest.getFoodName())) {
             // lấy danh sách tất cả food
             Iterable<Food> foods = foodRepository.findByIsActiveTrue();
-
+            
             // kiểm tra tồn tại food name và recipe
             foods.forEach(f -> {
-                // kiểm tra foodName
-                if (f.getFoodName().equals(food.getFoodName())) {
-                    throw new DuplicateRecordException("Food name already exists");
+                if (food.getFoodID() != f.getFoodID()) {
+                    // kiểm tra foodName
+                    if (f.getFoodName().equals(food.getFoodName())) {
+                        throw new DuplicateRecordException("Food name already exists");
+                    }
                 }
             });
         }
