@@ -40,12 +40,12 @@ public class SubscriptionRequest {
     @Schema(example = "1")
     @NotNull
     @Positive
-    private Integer planID;
+    private Integer packageID;
 
     @Schema(example = "30")
     @NotNull
     @Positive
-    private Integer planDuration;
+    private Integer packageDuration;
 
     @Schema(example = "323232323256")
     @NotBlank
