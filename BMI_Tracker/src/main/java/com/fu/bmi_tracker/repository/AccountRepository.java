@@ -23,6 +23,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Optional<Account> findByEmailAndIsActiveTrue(String email);
 
+    @Query("SELECT a.deviceToken FROM Account a WHERE a.accountID = :accountID")
+    String findDeviceTokenByAccountID(Integer accountID);
+
     public boolean existsByEmail(String email);
 
     public boolean existsByPhoneNumber(String phoneNumber);

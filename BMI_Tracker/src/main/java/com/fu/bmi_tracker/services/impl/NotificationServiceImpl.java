@@ -50,10 +50,12 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.markNotificationsAsReadByAccountID(accountID);
     }
 
-    public String sendNotification(String title, String content, String deviceToken) {
+    @Override
+    public String sendNotification(String title, String body, String deviceToken) {
+
         Message message = Message.builder()
                 .putData("titile", title)
-                .putData("body", content)
+                .putData("body", body)
                 .setToken(deviceToken)
                 .build();
         try {
@@ -63,4 +65,5 @@ public class NotificationServiceImpl implements NotificationService {
             return "Failed to send message: " + e.getMessage();
         }
     }
+
 }

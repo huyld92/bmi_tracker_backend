@@ -36,4 +36,6 @@ public interface AccountService extends GeneralService<Account> {
 
     public void updateAdvisorProfile(Integer accountID, UpdateAdvisorProfileRequest updateProfileRequest);
 
+    public String findDeviceTokenByAccountID(Integer accountID);
+
 }

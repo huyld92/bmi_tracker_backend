@@ -76,7 +76,6 @@ public class UserRequestServiceImpl implements UserRequestService {
         userRequest.setProcessNote(userRequestProcessing.getProcessNote());
         userRequest.setProcessingDate(LocalDate.now());
         userRequest.setStatus(userRequestProcessing.getStatus().toString());
-      
         return save(userRequest);
     }
 

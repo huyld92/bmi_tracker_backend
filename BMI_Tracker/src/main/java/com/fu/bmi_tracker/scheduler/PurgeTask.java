@@ -29,7 +29,6 @@ public class PurgeTask {
 
     @Scheduled(cron = "${purge.cron.expression}")
     public void purgeExpired() {
-
         tokenService.deleteAllExpiredSince(LocalDateTime.now());
     }
 
