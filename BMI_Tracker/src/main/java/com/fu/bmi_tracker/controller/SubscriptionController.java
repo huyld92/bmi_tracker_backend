@@ -7,10 +7,13 @@ package com.fu.bmi_tracker.controller;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
+import com.fu.bmi_tracker.model.entities.Notification;
 import com.fu.bmi_tracker.payload.request.CreateSubscriptionTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.SubscriptionResponse;
+import com.fu.bmi_tracker.repository.AccountRepository;
+import com.fu.bmi_tracker.repository.NotificationRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.SubscriptionService;
+import com.fu.bmi_tracker.services.impl.NotificationServiceImpl;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -46,6 +51,15 @@ public class SubscriptionController {
 
     @Autowired
     SubscriptionService subscriptionService;
+    
+    @Autowired
+    NotificationRepository notificationRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
+    NotificationServiceImpl notificationServiceImpl;
 
     @Operation(
             summary = "Create new subscription include transaction (MEMBER)",
@@ -64,8 +78,8 @@ public class SubscriptionController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // gọi subscription service tạo transaction và subscription
-        AdvisorSubscription subscription = subscriptionService.createSubscriptionTransaction(createRequest, principal.getId());
-
+        AdvisorSubscription subscription = subscriptionService.createSubscriptionTransaction(createRequest, principal.getId());      
+        
         // taọ subscription response
         SubscriptionResponse subscriptionResponse = new SubscriptionResponse(subscription);
 
