@@ -13,6 +13,7 @@ import com.fu.bmi_tracker.payload.response.UserRequestResponse;
 import com.fu.bmi_tracker.services.AccountService;
 import com.fu.bmi_tracker.services.NotificationService;
 import com.fu.bmi_tracker.services.UserRequestService;
+import com.fu.bmi_tracker.services.impl.NotificationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -175,7 +176,6 @@ public class UserRequestController {
         if (deviceToken != null) {
             notificationService.sendNotification(title, body, deviceToken);
         }
-
         // tạo UserRequestResponse
         UserRequestResponse userRequestResponse = new UserRequestResponse(userRequest);
 

@@ -62,6 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
             String response = FirebaseMessaging.getInstance().send(message);
             return "Successfully sent message: " + response;
         } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
             return "Failed to send message: " + e.getMessage();
         }
     }

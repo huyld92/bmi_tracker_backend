@@ -22,6 +22,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findByEmail(String email);
 
     Optional<Account> findByEmailAndIsActiveTrue(String email);
+    
+    String findDeviceTokenByAccountID(Integer accountID);
 
     @Query("SELECT a.deviceToken FROM Account a WHERE a.accountID = :accountID")
     String findDeviceTokenByAccountID(Integer accountID);
