@@ -14,6 +14,8 @@ import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.SubscriptionResponse;
 import com.fu.bmi_tracker.repository.AccountRepository;
 import com.fu.bmi_tracker.repository.NotificationRepository;
+import com.fu.bmi_tracker.services.AccountService;
+import com.fu.bmi_tracker.services.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,15 +53,12 @@ public class SubscriptionController {
 
     @Autowired
     SubscriptionService subscriptionService;
-    
-    @Autowired
-    NotificationRepository notificationRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    NotificationService notificationService;
 
     @Autowired
-    NotificationServiceImpl notificationServiceImpl;
+    AccountService accountService;
 
     @Operation(
             summary = "Create new subscription include transaction (MEMBER)",
@@ -78,8 +77,26 @@ public class SubscriptionController {
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // gọi subscription service tạo transaction và subscription
-        AdvisorSubscription subscription = subscriptionService.createSubscriptionTransaction(createRequest, principal.getId());      
-        
+        AdvisorSubscription subscription = subscriptionService.createSubscriptionTransaction(createRequest, principal.getId());
+
+        String titile = "You have new subcription";
+        String body = principal.getFullName() + " has subcribe to you";
+        String deviceToken = accountService.findDeviceTokenByAccountID(createRequest.getSubscriptionRequest().getAdvisorID());
+        //Sao luu Notification 
+
+        Notification notify = new Notification();
+        notify.setAccountID(createRequest.getSubscriptionRequest().getAdvisorID());
+        notify.setTitle(titile);
+        notify.setContent(body);
+        notify.setCreatedTime(LocalDateTime.now());
+        notify.setIsRead(Boolean.FALSE);
+        notificationService.save(notify);
+
+        //Send notify to Account that have token (Still login)
+        if (deviceToken != null) {
+            notificationService.sendNotification(titile, body, deviceToken);
+        }
+
         // taọ subscription response
         SubscriptionResponse subscriptionResponse = new SubscriptionResponse(subscription);
 
@@ -309,7 +326,7 @@ public class SubscriptionController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAdvisorFromSubscription() {
         // lây thông tin của advisor cho member với trạng thái subscription pending
-        
+
         // lấy thông tin đăng nhập từ context
         CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

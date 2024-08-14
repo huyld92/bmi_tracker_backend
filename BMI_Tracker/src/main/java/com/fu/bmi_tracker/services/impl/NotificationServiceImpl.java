@@ -54,7 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
     public String sendNotification(String title, String body, String deviceToken) {
 
         Message message = Message.builder()
-                .putData("titile", title)
+                .putData("title", title)
                 .putData("body", body)
                 .setToken(deviceToken)
                 .build();

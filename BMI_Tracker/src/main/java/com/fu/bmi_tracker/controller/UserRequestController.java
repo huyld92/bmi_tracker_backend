@@ -4,9 +4,11 @@
  */
 package com.fu.bmi_tracker.controller;
 
+import com.fu.bmi_tracker.model.entities.Account;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Notification;
 import com.fu.bmi_tracker.model.entities.UserRequest;
+import com.fu.bmi_tracker.model.enums.ERole;
 import com.fu.bmi_tracker.payload.request.CreateUserRequest;
 import com.fu.bmi_tracker.payload.request.UpdateUserRequestProcessing;
 import com.fu.bmi_tracker.payload.response.UserRequestResponse;
@@ -136,6 +138,28 @@ public class UserRequestController {
         if (userRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        String title = "You have new request";
+        String body = createUserRequest.getType() + " request need to be resolve";
+
+        Iterable<Account> accountList = accountService.findAll();
+        accountList.forEach(account -> {
+            if (account.getRoles().iterator().next().getRoleName().equals(ERole.ROLE_MANAGER)) {
+                String deviceToken = account.getDeviceToken();
+
+                Notification notify = new Notification();
+                notify.setAccountID(account.getAccountID());
+                notify.setTitle(title);
+                notify.setContent(body);
+                notify.setCreatedTime(LocalDateTime.now());
+                notify.setIsRead(Boolean.FALSE);
+                notificationService.save(notify);
+
+                if (deviceToken != null) {
+                    notificationService.sendNotification(title, body, deviceToken);
+                }
+            }
+        });
 
         // tạo UserRequestResponse
         UserRequestResponse userRequestResponse = new UserRequestResponse(userRequest);
