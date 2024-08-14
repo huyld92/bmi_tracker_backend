@@ -18,4 +18,6 @@ public interface NotificationService extends GeneralService<Notification> {
 
     public void markAsReadAll(Integer accountID);
 
+    public String sendNotification(String titile, String body, String deviceToken);
+
 }

@@ -50,12 +50,14 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.markNotificationsAsReadByAccountID(accountID);
     }
 
-    public String sendNotification(String titile, String body, String deviceToken) {
+    @Override
+    public String sendNotification(String title, String body, String deviceToken) {
+
         Message message = Message.builder()
-            .putData("titile", titile)
-            .putData("body", body)
-            .setToken(deviceToken)
-            .build();
+                .putData("titile", title)
+                .putData("body", body)
+                .setToken(deviceToken)
+                .build();
         try {
             String response = FirebaseMessaging.getInstance().send(message);
             return "Successfully sent message: " + response;
@@ -64,4 +66,5 @@ public class NotificationServiceImpl implements NotificationService {
             return "Failed to send message: " + e.getMessage();
         }
     }
+
 }

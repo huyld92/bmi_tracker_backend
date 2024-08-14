@@ -179,4 +179,9 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public String findDeviceTokenByAccountID(Integer accountID) {
+        return accountRepository.findDeviceTokenByAccountID(accountID);
+    }
+
 }

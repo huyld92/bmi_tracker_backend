@@ -10,8 +10,8 @@ import com.fu.bmi_tracker.model.entities.UserRequest;
 import com.fu.bmi_tracker.payload.request.CreateUserRequest;
 import com.fu.bmi_tracker.payload.request.UpdateUserRequestProcessing;
 import com.fu.bmi_tracker.payload.response.UserRequestResponse;
-import com.fu.bmi_tracker.repository.AccountRepository;
-import com.fu.bmi_tracker.repository.NotificationRepository;
+import com.fu.bmi_tracker.services.AccountService;
+import com.fu.bmi_tracker.services.NotificationService;
 import com.fu.bmi_tracker.services.UserRequestService;
 import com.fu.bmi_tracker.services.impl.NotificationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,13 +49,10 @@ public class UserRequestController {
     UserRequestService userRequestService;
 
     @Autowired
-    NotificationRepository notificationRepository;
+    AccountService accountService;
 
     @Autowired
-    AccountRepository accountRepository;
-
-    @Autowired
-    NotificationServiceImpl notificationServiceImpl;
+    NotificationService notificationService;
 
     @Operation(
             summary = "Get all userRequest for user",
@@ -122,7 +119,7 @@ public class UserRequestController {
     @Operation(
             summary = "Create user request support")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
+        @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = UserRequestResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
@@ -150,7 +147,7 @@ public class UserRequestController {
     @Operation(
             summary = "Update user request support processing")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", content = {
+        @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = UserRequestResponse.class), mediaType = "application/json")}),
         @ApiResponse(responseCode = "403", content = {
             @Content(schema = @Schema())}),
@@ -160,29 +157,25 @@ public class UserRequestController {
     public ResponseEntity<?> updateProcessing(@Valid @RequestBody UpdateUserRequestProcessing userRequestProcessing) {
         // cập nhật user request
         UserRequest userRequest = userRequestService.updateProcessing(userRequestProcessing);
-
         if (userRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         //Create Notify
-        String titile = "Your request has been processed";
+        String title = "Result " + userRequest.getType();
         String body = "Your request has been processed";
-        String deviceToken = accountRepository.findDeviceTokenByAccountID(userRequest.getUserRequestID());
-
+        String deviceToken = accountService.findDeviceTokenByAccountID(userRequest.getAccount().getAccountID());
         Notification notify = new Notification();
         notify.setAccountID(userRequest.getAccount().getAccountID());
-        notify.setTitle(titile);
+        notify.setTitle(title);
         notify.setContent(body);
         notify.setCreatedTime(LocalDateTime.now());
         notify.setIsRead(Boolean.FALSE);
-        notificationRepository.save(notify);
+        notificationService.save(notify);
 
         if (deviceToken != null) {
-            notificationServiceImpl.sendNotification(titile, body, deviceToken);
+            notificationService.sendNotification(title, body, deviceToken);
         }
-        
-        
         // tạo UserRequestResponse
         UserRequestResponse userRequestResponse = new UserRequestResponse(userRequest);
 

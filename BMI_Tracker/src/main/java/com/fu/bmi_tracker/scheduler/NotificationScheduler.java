@@ -63,8 +63,6 @@ public class NotificationScheduler {
                         String body = memberName + "'s subcription is end at " + memberPackageEndDate + " Please extend your subcription if you want continue using the package";
                         String deviceToken = memberList.get(i).getAccount().getDeviceToken();
                         //Sao luu Notification 
-                        
-                        
                         Notification notify = new Notification();
                         notify.setAccountID(memberList.get(i).getAccount().getAccountID());
                         notify.setTitle(titile);
@@ -121,8 +119,7 @@ public class NotificationScheduler {
 
                     //Neu lan cuoi cap nhat Body Mass truoc ngay hien tai 7 ngay thi send Notify
                     if (memberBodyMass.get().getDateInput().toLocalDate().isBefore(LocalDate.now().minusDays(7))) {
-
-                        String titile = "Your subcription have 7 days left.";
+                        String titile = "Update your weight.";
                         String body = "You have not update your Body Mass in 7 day, Please update it to ensure calculate is accurate";
                         String deviceToken = memberList.get(i).getAccount().getDeviceToken();
 

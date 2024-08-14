@@ -41,5 +41,6 @@ public interface DailyRecordRepository extends JpaRepository<DailyRecord, Intege
     
     public List<DailyRecord> findByDate(LocalDate currentDay);
 
+    public List<DailyRecord> findByDate(LocalDate now);
 
 }
