@@ -202,45 +202,44 @@ public class WorkoutController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Get workout by advisor (ADVISOR)",
-            description = "Get workout by advisor ")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", content = {
-            @Content(schema = @Schema(implementation = WorkoutEntityResponse.class), mediaType = "application/json")}),
-        @ApiResponse(responseCode = "403", content = {
-            @Content(schema = @Schema())}),
-        @ApiResponse(responseCode = "500", content = {
-            @Content(schema = @Schema())})})
-    @GetMapping(value = "/getByAdvisor")
-    @PreAuthorize("hasRole('ADVISOR')")
-    public ResponseEntity<?> getWorkoutByAdvisor() {
-        //get account from context
-        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // Tìm Advisor 
-        Advisor advisor = advisorService.findByAccountID(principal.getId());
-        if (advisor == null) {
-            return new ResponseEntity<>(new MessageResponse("Cannot find advisor!"), HttpStatus.BAD_REQUEST);
-        }
-        // lấy danh sách workouts
-        Iterable<Workout> workouts = workoutService.getWorkoutByAdvisorID(advisor.getAdvisorID());
-
-        if (!workouts.iterator().hasNext()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        // tạo workout response
-        List<WorkoutEntityResponse> workoutResonses = new ArrayList<>();
-        // duyeejt list workout
-        workouts.forEach(workout -> {
-            workoutResonses.add(new WorkoutEntityResponse(workout));
-        });
-
-        return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
-
-    }
-
+//    @Operation(
+//            summary = "Get workout by advisor (ADVISOR)",
+//            description = "Get workout by advisor ")
+//    @ApiResponses({
+//        @ApiResponse(responseCode = "200", content = {
+//            @Content(schema = @Schema(implementation = WorkoutEntityResponse.class), mediaType = "application/json")}),
+//        @ApiResponse(responseCode = "403", content = {
+//            @Content(schema = @Schema())}),
+//        @ApiResponse(responseCode = "500", content = {
+//            @Content(schema = @Schema())})})
+//    @GetMapping(value = "/getByAdvisor")
+//    @PreAuthorize("hasRole('ADVISOR')")
+//    public ResponseEntity<?> getWorkoutByAdvisor() {
+//        //get account from context
+//        CustomAccountDetailsImpl principal = (CustomAccountDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
+//        // Tìm Advisor 
+//        Advisor advisor = advisorService.findByAccountID(principal.getId());
+//        if (advisor == null) {
+//            return new ResponseEntity<>(new MessageResponse("Cannot find advisor!"), HttpStatus.BAD_REQUEST);
+//        }
+//        // lấy danh sách workouts
+//        Iterable<Workout> workouts = workoutService.getWorkoutByAdvisorID(advisor.getAdvisorID());
+//
+//        if (!workouts.iterator().hasNext()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//
+//        // tạo workout response
+//        List<WorkoutEntityResponse> workoutResonses = new ArrayList<>();
+//        // duyeejt list workout
+//        workouts.forEach(workout -> {
+//            workoutResonses.add(new WorkoutEntityResponse(workout));
+//        });
+//
+//        return new ResponseEntity<>(workoutResonses, HttpStatus.OK);
+//
+//    }
     @Operation(
             summary = "Get workout available by advisor (ADVISOR)",
             description = "Get workout by advisor with isActive true")
