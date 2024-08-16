@@ -7,14 +7,14 @@ package com.fu.bmi_tracker.controller;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
+import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.model.entities.Notification;
 import com.fu.bmi_tracker.payload.request.CreateSubscriptionTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.SubscriptionResponse;
-import com.fu.bmi_tracker.repository.AccountRepository;
-import com.fu.bmi_tracker.repository.NotificationRepository;
 import com.fu.bmi_tracker.services.AccountService;
+import com.fu.bmi_tracker.services.MemberBodyMassService;
 import com.fu.bmi_tracker.services.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +38,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.SubscriptionService;
-import com.fu.bmi_tracker.services.impl.NotificationServiceImpl;
 import java.time.LocalDateTime;
 
 /**
@@ -59,6 +57,9 @@ public class SubscriptionController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    MemberBodyMassService memberBodyMassService;
 
     @Operation(
             summary = "Create new subscription include transaction (MEMBER)",
@@ -306,9 +307,13 @@ public class SubscriptionController {
         List<Member> members = subscriptionService.getCurrentMemeberOfAdvisor(principal.getId());
 
         // Chuyển đổi member sang member response
-        List<MemberResponse> memberResponses = members.stream().map(
-                (member)
-                -> member.toMemberResponse()).collect(Collectors.toList());
+        List<MemberResponse> memberResponses = new ArrayList<>();
+        
+        members.forEach(member -> {
+            MemberBodyMass bodyMass = memberBodyMassService.getLatestBodyMass(member.getMemberID());
+            memberResponses.add(new MemberResponse(member, bodyMass.getWeight()));
+        });
+        
         return new ResponseEntity<>(memberResponses, HttpStatus.OK);
     }
 

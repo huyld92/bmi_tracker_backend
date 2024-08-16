@@ -130,7 +130,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // Tạo ngày bắt đầu package
         // nếu endPackage không còn hiệu lực startPackage = currentDate
-        // ngược lại startDateOfPackage bằng enDateOfPackage
+        // ngược lại startDateOfPackage bằng enDateOfPackage + 1
         LocalDate startDateOfPackage = currentDate;
 
         // kiểm tra và cập nhật endDateOfPackage của member
@@ -144,9 +144,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         } else {
             // ngược lại package vẫn còn hiệu lực 
             // start package = ngày sau của endpackage
-            //=> cộng thêm package duaration vào endDateOfPackage
+            //=> cộng thêm package duaration vào startDateOfPackage
             startDateOfPackage = endDateOfPackage.plusDays(1);
-            endDateOfPackage = endDateOfPackage.plusDays(packageDuration);
+            endDateOfPackage = startDateOfPackage.plusDays(packageDuration);
         }
 
         // tìm advisor
@@ -209,7 +209,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             // Tạo description cho CommissionAllocation
             String description = String.format("Commission for %s milestone: %s earned for subscription #%s from %s to %s.",
                     milestoneLabels[i], amount.toString(), subscription.getSubscriptionNumber(), subscription.getStartDate(), subscription.getEndDate());
-            System.out.println("description: " + description);
 
             CommissionAllocation allocation = new CommissionAllocation(
                     amount,
@@ -228,14 +227,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find package with id{" + packageID + "}"));
 
         int numberOfUses = packageService.getNumberOfUses() + 1;
-        System.out.println("numberOfUses: " + numberOfUses);
 
         packageService.setNumberOfUses(numberOfUses);
         // cập nhật tổng số subscription của advisor
         int totalSubscription = 1 + advisor.getTotalSubscription();
         advisor.setTotalSubscription(totalSubscription);
         advisorRepository.save(advisor);
-        System.out.println("endDateOfPackage: " + endDateOfPackage);
 
         // cập nhật ngày kết thúc cho Member
         member.setEndDateOfPlan(endDateOfPackage);
