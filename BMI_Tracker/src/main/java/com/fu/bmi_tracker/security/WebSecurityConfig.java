@@ -67,6 +67,7 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
+        configuration.addAllowedOrigin("https://tracker-bmi.netlify.app");
         configuration.addAllowedOriginPattern("*"); // Allows any origin
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("GET");

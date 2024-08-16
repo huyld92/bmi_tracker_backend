@@ -32,6 +32,6 @@ public class MemberInformationResponse {
     private Integer targetWeight;
     private Integer age;
     private Double BMI;
-    private Double BMR;
-    private Double TDEE;
+    private String dietaryPreference;
+
 }

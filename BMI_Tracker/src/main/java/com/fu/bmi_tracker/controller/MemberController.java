@@ -253,8 +253,6 @@ public class MemberController {
 
         int age = LocalDate.now().getYear() - member.get().getAccount().getBirthday().getYear();
 
-        double bmr = bMIUtils.calculateBMR(bodyMass.getWeight(), bodyMass.getHeight(), age, principal.getGender());
-
         memberInformationResponse = new MemberInformationResponse(
                 principal.getId(),
                 member.get().getMemberID(),
@@ -270,8 +268,7 @@ public class MemberController {
                 member.get().getTargetWeight(),
                 age,
                 bmi,
-                bmr,
-                member.get().getTdee());
+                member.get().getDietaryPreference());
 
         return new ResponseEntity<>(memberInformationResponse, HttpStatus.OK);
     }
@@ -309,12 +306,6 @@ public class MemberController {
 
         int age = LocalDate.now().getYear() - member.get().getAccount().getBirthday().getYear();
 
-        double bmr = bMIUtils.calculateBMR(
-                bodyMass.getWeight(),
-                bodyMass.getHeight(),
-                age,
-                member.get().getAccount().getGender());
-
         memberInformationResponse = new MemberInformationResponse(
                 member.get().getAccount().getAccountID(),
                 member.get().getMemberID(),
@@ -330,8 +321,7 @@ public class MemberController {
                 member.get().getTargetWeight(),
                 age,
                 bmi,
-                bmr,
-                member.get().getTdee());
+                member.get().getDietaryPreference());
 
         return new ResponseEntity<>(memberInformationResponse, HttpStatus.OK);
     }
