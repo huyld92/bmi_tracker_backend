@@ -45,7 +45,7 @@ public class UpdateAdvisorProfileRequest {
     private LocalDate birthday;
 
     @Size(max = 20, message = "Max bank number 20 characters.")
-    @Schema(name = "bankNumber", example = "0907111111")
+    @Schema(name = "bankNumber", example = "02590897562")
     private String bankNumber;
 
 }
