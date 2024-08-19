@@ -63,7 +63,7 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
     public Iterable<MemberBodyMass> getBodyMassInMonthByMemberID(Integer memberID, LocalDate localDate) {
         // Chuyển đổi LocalDate thành LocalDateTime bằng cách thêm thời gian mặc định (ví dụ: 00:00:00)
         LocalDateTime endDateTime = localDate.atTime(23, 59, 59);
-        System.out.println("endDateTime:" + endDateTime.toString());
+
         // Trừ đi 30 ngày
         LocalDateTime startDate = localDate.minusDays(30).atStartOfDay();
 

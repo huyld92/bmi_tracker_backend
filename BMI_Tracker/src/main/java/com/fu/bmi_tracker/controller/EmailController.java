@@ -66,7 +66,7 @@ public class EmailController {
         if (emailVerificationCode != null) {
             // kiểm tra code đã sử dụng chưa
             if (emailVerificationCode.getIsVerified()) {
-                response.sendRedirect("http://localhost:3000/auth/account-verified");
+                response.sendRedirect("https://tracker-bmi.netlify.app/auth/account-verified");
             } else {
                 Optional<Account> member = accountRepository.findByEmail(emailVerificationCode.getEmail());
                 if (!member.isEmpty()) {
@@ -77,10 +77,10 @@ public class EmailController {
                     emailVerificationCode.setIsVerified(Boolean.TRUE);
                     verificationService.save(emailVerificationCode);
                 }
-                response.sendRedirect("http://localhost:3000/auth/verification-success");
+                response.sendRedirect("https://tracker-bmi.netlify.app/auth/verification-success");
             }
         } else {
-            response.sendRedirect("http://localhost:3000/auth/verification-failed");
+            response.sendRedirect("https://tracker-bmi.netlify.app/auth/verification-failed");
         }
     }
 }
