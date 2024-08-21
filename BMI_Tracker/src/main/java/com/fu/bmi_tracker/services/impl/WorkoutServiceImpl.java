@@ -29,16 +29,16 @@ import org.springframework.stereotype.Service;
 public class WorkoutServiceImpl implements WorkoutService {
 
     @Autowired
-    WorkoutRepository workoutRepository;
+    private WorkoutRepository workoutRepository;
 
     @Autowired
-    ExerciseRepository exerciseRepository;
+    private ExerciseRepository exerciseRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Autowired
-    WorkoutExerciseRepository workoutExerciseRepository;
+    private WorkoutExerciseRepository workoutExerciseRepository;
 
     @Override
     public Iterable<Workout> findAll() {

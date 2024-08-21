@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class ActivityLevelServiceImpl implements ActivityLevelService {
 
     @Autowired
-    ActivityLevelRepository repository;
+    private ActivityLevelRepository repository;
 
     @Override
     public Iterable<ActivityLevel> findAll() {

@@ -30,16 +30,16 @@ import java.util.stream.Collectors;
 public class AdvisorServiceImpl implements AdvisorService {
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Autowired
-    MenuRepository menuRepository;
+    private MenuRepository menuRepository;
 
     @Autowired
-    WorkoutRepository workoutRepository;
+    private WorkoutRepository workoutRepository;
 
     @Autowired
-    CommissionRepository commissionRepository;
+    private CommissionRepository commissionRepository;
 
     @Override
     public Iterable<Advisor> findAll() {

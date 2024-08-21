@@ -86,7 +86,7 @@ public class SubscriptionController {
         //Sao luu Notification 
 
         Notification notify = new Notification();
-        notify.setAccountID(createRequest.getSubscriptionRequest().getAdvisorID());
+        notify.setAccountID(subscription.getAdvisor().getAccount().getAccountID());
         notify.setTitle(titile);
         notify.setContent(body);
         notify.setCreatedTime(LocalDateTime.now());

@@ -52,8 +52,7 @@ public class Member {
     private Integer defaultCalories;
 
     @Column(name = "LastUpdatedTime", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime lastUpdatedTime;
+    private LocalDate lastUpdatedTime;
 
     @Column(name = "DietaryPreference", nullable = false)
     private String dietaryPreference;
@@ -66,7 +65,7 @@ public class Member {
     private ActivityLevel activityLevel;
 
     public Member(Account account, Integer targetWeight, Double tdee, Double bmr,
-            Integer defaultCalories, LocalDateTime lastUpdatedTime,
+            Integer defaultCalories, LocalDate lastUpdatedTime,
             String dietaryPreferenceName, ActivityLevel activityLevel) {
         this.account = account;
         this.targetWeight = targetWeight;
@@ -78,7 +77,7 @@ public class Member {
     }
 
     public Member(Account account, Integer targetWeight, Double tdee,
-            Integer defaultCalories, LocalDateTime lastUpdatedTime,
+            Integer defaultCalories, LocalDate lastUpdatedTime,
             String dietaryPreferenceName, ActivityLevel activityLevel) {
         this.account = account;
         this.targetWeight = targetWeight;

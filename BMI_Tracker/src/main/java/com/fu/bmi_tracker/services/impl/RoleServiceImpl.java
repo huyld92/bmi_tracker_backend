@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
-    RoleRepository repository;
+    private RoleRepository repository;
 
     @Override
     public Iterable<Role> findAll() {

@@ -28,13 +28,13 @@ import org.springframework.stereotype.Service;
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Override
     public Iterable<Account> findAll() {

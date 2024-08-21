@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public class MemberBodyMassController {
         if (!member.isPresent()) {
             return new ResponseEntity<>(new MessageResponse("Cannot find member!"), HttpStatus.NOT_FOUND);
         }
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
+        LocalDate now = LocalDate.now(ZoneId.of("GMT+7"));
 
         // Save member body mass
         MemberBodyMass bodyMass = new MemberBodyMass(

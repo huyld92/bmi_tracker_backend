@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class IngredientServiceImpl implements IngredientService {
 
     @Autowired
-    IngredientRepository repository;
+    private IngredientRepository repository;
 
     @Override
     public Iterable<Ingredient> findAll() {

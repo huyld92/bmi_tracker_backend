@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.util.BMIUtils;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.fu.bmi_tracker.services.MemberService;
 import java.time.ZoneId;
@@ -119,7 +118,7 @@ public class MemberController {
         // calculateDefault default Calories
         int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createMemberRequest.getTargetWeight());
 
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("GMT+7"));
+        LocalDate now = LocalDate.now(ZoneId.of("GMT+7"));
 
         // Save member  Bổ sung menuID
         Member member = new Member(

@@ -23,13 +23,13 @@ import jakarta.persistence.EntityNotFoundException;
 public class WorkoutExcerciseServiceImpl implements WorkoutExerciseService {
 
     @Autowired
-    WorkoutExerciseRepository workoutExerciseRepository;
+    private WorkoutExerciseRepository workoutExerciseRepository;
 
     @Autowired
-    WorkoutRepository workoutRepository;
+    private WorkoutRepository workoutRepository;
 
     @Autowired
-    ExerciseRepository exerciseRepository;
+    private ExerciseRepository exerciseRepository;
 
     @Override
     public Iterable<WorkoutExercise> findAll() {

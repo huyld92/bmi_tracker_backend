@@ -110,17 +110,17 @@ public class FoodServiceImpl implements FoodService {
         food.setFoodTags(tags);
 
         // Chuyển đổi từ List RecipeRequest thành List FoodDetails
-        List<FoodDetails> foodDetailses = new ArrayList<>();
+        List<FoodDetails> foodDetailsList = new ArrayList<>();
         createFoodRequest.getRecipeRequests().forEach((RecipeRequest recipeRequest) -> {
             // gọi ingredient repository tìm ingredient
             Ingredient ingredient = ingredientRepository.findByIngredientIDAndIsActiveTrue(recipeRequest.getIngredientID())
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find ingredient with ID {" + recipeRequest.getIngredientID() + "}"));
 
-            foodDetailses.add(new FoodDetails(food, ingredient, recipeRequest));
+            foodDetailsList.add(new FoodDetails(food, ingredient, recipeRequest));
         });
 
         //Set recipes vào food
-        food.setFoodDetails(foodDetailses);
+        food.setFoodDetails(foodDetailsList);
 
         // Gọi foodRepository lưu trữ food
         return foodRepository.save(food);
@@ -136,7 +136,7 @@ public class FoodServiceImpl implements FoodService {
         if (!food.getFoodName().equals(foodRequest.getFoodName())) {
             // lấy danh sách tất cả food
             Iterable<Food> foods = foodRepository.findByIsActiveTrue();
-            
+
             // kiểm tra tồn tại food name và recipe
             foods.forEach(f -> {
                 if (food.getFoodID() != f.getFoodID()) {

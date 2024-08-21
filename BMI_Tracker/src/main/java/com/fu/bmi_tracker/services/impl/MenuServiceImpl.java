@@ -29,16 +29,16 @@ import java.util.List;
 public class MenuServiceImpl implements MenuService {
 
     @Autowired
-    MenuRepository menuRepository;
+    private MenuRepository menuRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Autowired
-    FoodRepository foodRepository;
+    private FoodRepository foodRepository;
 
     @Autowired
-    MenuFoodRepository menuFoodRepository;
+    private MenuFoodRepository menuFoodRepository;
 
     @Override
     public Iterable<Menu> findAll() {

@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service;
 public class TagServiceImpl implements TagService {
     
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
     
     @Autowired
-    TagTypeRepository tagTypeRepository;
+    private TagTypeRepository tagTypeRepository;
     
     @Override
     public Iterable<Tag> findAll() {

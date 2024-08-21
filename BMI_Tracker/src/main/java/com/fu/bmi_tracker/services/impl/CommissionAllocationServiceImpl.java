@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class CommissionAllocationServiceImpl implements CommissionAllocationService {
 
     @Autowired
-    CommissionAllocationRepository allocationRepository;
+    private CommissionAllocationRepository allocationRepository;
 
     @Override
     public Iterable<CommissionAllocation> getAllByCommissionID(Integer commissionID) {

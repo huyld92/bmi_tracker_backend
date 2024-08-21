@@ -40,31 +40,31 @@ import org.springframework.data.domain.Pageable;
 public class MemberServiceImpl implements MemberService {
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
-    MemberBodyMassRepository bodyMassRepository;
+    private MemberBodyMassRepository bodyMassRepository;
 
     @Autowired
-    WorkoutExerciseRepository workoutExerciseRepository;
+    private WorkoutExerciseRepository workoutExerciseRepository;
 
     @Autowired
-    WorkoutHistoryRepository workoutHistoryRepository;
+    private WorkoutHistoryRepository workoutHistoryRepository;
 
     @Autowired
-    MenuHistoryRepository menuHistoryRepository;
+    private MenuHistoryRepository menuHistoryRepository;
 
     @Autowired
-    MenuFoodRepository menuFoodRepository;
+    private MenuFoodRepository menuFoodRepository;
 
     @Autowired
-    FoodRepository foodRepository;
+    private FoodRepository foodRepository;
 
     @Autowired
-    ExerciseRepository exerciseRepository;
+    private ExerciseRepository exerciseRepository;
 
     @Autowired
-    DailyRecordRepository dailyRecordRepository;
+    private DailyRecordRepository dailyRecordRepository;
 
     @Autowired
     BMIUtils bMIUtils;
@@ -239,7 +239,7 @@ public class MemberServiceImpl implements MemberService {
 
             memberBmiResponses.add(new MemberBmiResponse(
                     member.getMemberID(),
-                    bodyMass.getDateInput().toLocalDate(),
+                    bodyMass.getDateInput(),
                     bmi));
         });
         return memberBmiResponses;

@@ -26,10 +26,10 @@ import org.springframework.stereotype.Service;
 public class ExerciseServiceImpl implements ExerciseService {
 
     @Autowired
-    ExerciseRepository repository;
+    private ExerciseRepository repository;
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     @Override
     public Iterable<Exercise> findAll() {

@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 public class CertificateServiceImpl implements CertificateService {
 
     @Autowired
-    CertificateRepository certificateRepository;
+    private CertificateRepository certificateRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Override
     public Iterable<Certificate> findAll() {

@@ -23,9 +23,9 @@ import org.springframework.stereotype.Service;
 public class ActivityLogServiceImpl implements ActivityLogService {
 
     @Autowired
-    ActivityLogRepository activityRepository;
+    private ActivityLogRepository activityRepository;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     DailyRecordRepository dailyRecordRepository;

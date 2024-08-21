@@ -22,10 +22,10 @@ import org.springframework.stereotype.Service;
 public class UserRequestServiceImpl implements UserRequestService {
 
     @Autowired
-    UserRequestRepository userRequestRepository;
+    private UserRequestRepository userRequestRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Override
     public Iterable<UserRequest> findAll() {

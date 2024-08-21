@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class DailyRecordServiceImpl implements DailyRecordService {
 
     @Autowired
-    DailyRecordRepository dailyRecordRepository;
+    private DailyRecordRepository dailyRecordRepository;
 
     @Override
     public Iterable<DailyRecord> findAll() {

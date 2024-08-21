@@ -25,10 +25,10 @@ import com.fu.bmi_tracker.services.PackageService;
 public class PackageServiceImpl implements PackageService {
 
     @Autowired
-    PackageRepository packageRepository;
+    private PackageRepository packageRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Override
     public List<Package> findAll() {

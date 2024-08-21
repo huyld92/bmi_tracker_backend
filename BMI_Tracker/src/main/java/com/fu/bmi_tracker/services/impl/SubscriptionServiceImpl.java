@@ -42,33 +42,39 @@ import com.fu.bmi_tracker.services.SubscriptionService;
 import com.fu.bmi_tracker.repository.SubscriptionRepository;
 import com.fu.bmi_tracker.util.CommissionRateUtils;
 import com.fu.bmi_tracker.repository.PackageRepository;
+import jakarta.transaction.Transactional;
+import java.math.RoundingMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
 
-    @Autowired
-    SubscriptionRepository subscriptionRepository;
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
 
     @Autowired
-    MemberRepository memberRepository;
+    private SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
-    TransactionRepository transactionRepository;
+    private AdvisorRepository advisorRepository;
 
     @Autowired
-    CommissionRepository commissionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    CommissionAllocationRepository commissionAllocationRepository;
+    private CommissionRepository commissionRepository;
 
     @Autowired
-    PackageRepository packageRepository;
+    private CommissionAllocationRepository commissionAllocationRepository;
 
     @Autowired
-    DateTimeUtils dateTimeUtils;
+    private PackageRepository packageRepository;
+
+    @Autowired
+    private DateTimeUtils dateTimeUtils;
 
     @Override
     public Iterable<AdvisorSubscription> findAll() {
@@ -111,8 +117,24 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscriptionRepository.findByAdvisor_AdvisorIDAndSubscriptionDateBetweenOrderBySubscriptionDateDesc(advisorID, startOfMonth, endOfMonth);
     }
 
+    /**
+     * Phương thức này được đánh dấu với annotation `@Transactional`. Điều này
+     * đảm bảo rằng tất cả các thao tác trong phương thức sẽ được thực thi trong
+     * một giao dịch (transaction). Nếu có bất kỳ lỗi nào xảy ra trong quá trình
+     * xử lý (ví dụ: lỗi kết nối cơ sở dữ liệu, lỗi logic, hoặc lỗi ngoại lệ
+     * khác), toàn bộ các thay đổi sẽ được rollback (hoàn tác) tự động, đảm bảo
+     * tính nhất quán của dữ liệu trong cơ sở dữ liệu.
+     *
+     * *
+     * @param createRequest
+     * @param accountID
+     * @return
+     */
     @Override
+    @Transactional
     public AdvisorSubscription createSubscriptionTransaction(CreateSubscriptionTransactionRequest createRequest, Integer accountID) {
+        logger.info("Start creating subscription transaction for accountID: {}", accountID);
+
         // Tìm member băng accountID
         Member member = memberRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
@@ -172,13 +194,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // tính giá tiền cho mốc, mỗi mốc bằng 25% tổng tiền  * tỉ lệ phân chia
         BigDecimal amount = createRequest.getSubscriptionRequest()
-                .getAmount().multiply(BigDecimal.valueOf(commissionRate * 0.25));
+                .getAmount()
+                .multiply(BigDecimal.valueOf(commissionRate * 0.25))
+                .setScale(2, RoundingMode.HALF_UP);
 
         for (int i = 0; i < milestoneLabels.length; i++) {
             double milestonePercentage = i * 0.25;
             LocalDate milestoneDate = startDateOfPackage.plusDays((long) (packageDuration * milestonePercentage));
 
-            // Tìm commission bằng ngày dự kiến và advisorID
+            // Tìm commission bằng ngày dự kiến là 10 hay 25 và advisorID
             LocalDate expectedPaymentDate = dateTimeUtils.calculateExpectedPaymentDate(milestoneDate);
 
             Commission commission = commissionRepository.
@@ -200,7 +224,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             } else {
                 // nếu tồn tại cập nhật 
                 // giá tiền của commission + giá tiền hiện tại
-                BigDecimal totalAmount = commission.getCommissionAmount().add(amount);
+                BigDecimal totalAmount = commission.getCommissionAmount()
+                        .add(amount)
+                        .setScale(2, RoundingMode.HALF_UP);
 
                 commission.setCommissionAmount(totalAmount);
             }
@@ -241,6 +267,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         // cập nhật lại package
         packageRepository.save(packageService);
 
+        logger.info("Subscription created successfully with Code: {}", subscription.getSubscriptionNumber());
         return subscription;
     }
 
