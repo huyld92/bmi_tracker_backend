@@ -7,13 +7,16 @@ package com.fu.bmi_tracker.controller;
 import com.fu.bmi_tracker.model.entities.CustomAccountDetailsImpl;
 import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.AdvisorSubscription;
+import com.fu.bmi_tracker.model.entities.CommissionAllocation;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.model.entities.Notification;
 import com.fu.bmi_tracker.payload.request.CreateSubscriptionTransactionRequest;
 import com.fu.bmi_tracker.payload.response.AdvisorDetailsResponse;
+import com.fu.bmi_tracker.payload.response.CommissionAllocationEntityResponse;
 import com.fu.bmi_tracker.payload.response.MemberResponse;
 import com.fu.bmi_tracker.payload.response.SubscriptionResponse;
 import com.fu.bmi_tracker.services.AccountService;
+import com.fu.bmi_tracker.services.CommissionAllocationService;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import com.fu.bmi_tracker.services.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,6 +63,9 @@ public class SubscriptionController {
 
     @Autowired
     MemberBodyMassService memberBodyMassService;
+
+    @Autowired
+    CommissionAllocationService commissionAllocationService;
 
     @Operation(
             summary = "Create new subscription include transaction (MEMBER)",
@@ -115,7 +121,7 @@ public class SubscriptionController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getAll")
-    public ResponseEntity<?> getAllOder() {
+    public ResponseEntity<?> getAllSubscription() {
         Iterable<AdvisorSubscription> subscriptions = subscriptionService.findAll();
 
         if (!subscriptions.iterator().hasNext()) {
@@ -142,7 +148,7 @@ public class SubscriptionController {
         @ApiResponse(responseCode = "500", content = {
             @Content(schema = @Schema())})})
     @GetMapping(value = "/getOderByID")
-    public ResponseEntity<?> getOderByID(@RequestParam Integer subscriptionID) {
+    public ResponseEntity<?> getSubscriptionByID(@RequestParam Integer subscriptionID) {
         Optional<AdvisorSubscription> subscription = subscriptionService.findById(subscriptionID);
 
         if (!subscription.isPresent()) {
@@ -308,12 +314,12 @@ public class SubscriptionController {
 
         // Chuyển đổi member sang member response
         List<MemberResponse> memberResponses = new ArrayList<>();
-        
+
         members.forEach(member -> {
             MemberBodyMass bodyMass = memberBodyMassService.getLatestBodyMass(member.getMemberID());
             memberResponses.add(new MemberResponse(member, bodyMass.getWeight()));
         });
-        
+
         return new ResponseEntity<>(memberResponses, HttpStatus.OK);
     }
 
@@ -345,5 +351,34 @@ public class SubscriptionController {
 
         return new ResponseEntity<>(advisorDetailsResponse, HttpStatus.OK);
 
+    }
+
+    @Operation(
+            summary = "Receive a list of the commission payment milestones for the subscription.",
+            description = "Get by subscription number")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CommissionAllocationEntityResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @GetMapping(value = "/payment-milestones")
+    public ResponseEntity<?> getPaymentMilestones(@RequestParam String subscriptionNumber) {
+        // nhận danh sách các mốc thanh toán bằng subscriptionNumber
+        Iterable<CommissionAllocation> commissionAllocations = commissionAllocationService.getBySubscriptionNumber(subscriptionNumber);
+
+        // kiểm tra rỗng
+        if (!commissionAllocations.iterator().hasNext()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        }
+        // tạo CommissionAllocationEntityResponse
+        List<CommissionAllocationEntityResponse> allocationEntityResponses = new ArrayList<>();
+        commissionAllocations.forEach(allocation -> {
+            allocationEntityResponses.add(new CommissionAllocationEntityResponse(allocation));
+        });
+
+        return new ResponseEntity<>(allocationEntityResponses, HttpStatus.OK);
     }
 }

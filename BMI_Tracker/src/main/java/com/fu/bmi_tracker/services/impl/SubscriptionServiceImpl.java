@@ -44,6 +44,7 @@ import com.fu.bmi_tracker.util.CommissionRateUtils;
 import com.fu.bmi_tracker.repository.PackageRepository;
 import jakarta.transaction.Transactional;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,8 +134,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     @Transactional
     public AdvisorSubscription createSubscriptionTransaction(CreateSubscriptionTransactionRequest createRequest, Integer accountID) {
-        logger.info("Start creating subscription transaction for accountID: {}", accountID);
-
         // Tìm member băng accountID
         Member member = memberRepository.findByAccount_AccountID(accountID)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find member!"));
@@ -146,7 +145,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // nhận transaction sao khi lưu xuống database
         Transaction transaction = transactionRepository.save(memberTrasaction);
-
         // lấy ngày hiện tại
         LocalDate currentDate = LocalDate.now();
 
@@ -162,7 +160,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if (endDateOfPackage == null || endDateOfPackage.isBefore(currentDate)) {
             // nếu ngày kết thúc không tồn tại hoặc ngày kết thúc bé hơn ngày hiện tại
             // => lấy currentDate + cho PackageDuration của new package
-            endDateOfPackage = currentDate.plusDays(packageDuration);
+            endDateOfPackage = startDateOfPackage.plusDays(packageDuration);
         } else {
             // ngược lại package vẫn còn hiệu lực 
             // start package = ngày sau của endpackage
@@ -179,70 +177,103 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         CommissionRateUtils commissionRateUtils = new CommissionRateUtils();
         Float commissionRate = commissionRateUtils.getCommissionRate();
 
-        // tạo subscription kiểm tra trạng thái status
+        // tạo subscription
         AdvisorSubscription subscription
-                = subscriptionRepository.save(new AdvisorSubscription(
-                        createRequest.getSubscriptionRequest(),
-                        startDateOfPackage,
-                        endDateOfPackage,
-                        member,
-                        advisor,
-                        transaction.getTransactionID(),
-                        commissionRate * 100
-                ));
+                = subscriptionRepository.save(
+                        new AdvisorSubscription(
+                                createRequest.getSubscriptionRequest(),
+                                startDateOfPackage,
+                                endDateOfPackage,
+                                member,
+                                advisor,
+                                transaction.getTransactionID(),
+                                commissionRate * 100
+                        )
+                );
+        // Tạo ra các mốc thời gian (25%, 50%, 75%, 100%)
         String[] milestoneLabels = {"25%", "50%", "75%", "100%"};
+        int numberOfMilestones = milestoneLabels.length;
 
-        // tính giá tiền cho mốc, mỗi mốc bằng 25% tổng tiền  * tỉ lệ phân chia
-        BigDecimal amount = createRequest.getSubscriptionRequest()
+        // Tính số tiền cho mỗi mốc
+        BigDecimal milestoneAmount = createRequest.getSubscriptionRequest()
                 .getAmount()
                 .multiply(BigDecimal.valueOf(commissionRate * 0.25))
                 .setScale(2, RoundingMode.HALF_UP);
 
-        for (int i = 0; i < milestoneLabels.length; i++) {
-            double milestonePercentage = i * 0.25;
-            LocalDate milestoneDate = startDateOfPackage.plusDays((long) (packageDuration * milestonePercentage));
+        // Tạo Map để lưu trữ các ngày thanh toán và gộp milestoneLabels tương ứng
+        Map<LocalDate, Map<String, BigDecimal>> paymentDates = new HashMap<>();
 
-            // Tìm commission bằng ngày dự kiến là 10 hay 25 và advisorID
+        // Gộp các vòng lặp lại để tính toán ngày thanh toán, gộp số tiền và lưu Commission cùng CommissionAllocation
+        for (int i = 0; i < numberOfMilestones; i++) {
+            double milestonePercentage = (i + 1) * 0.25; // 25%, 50%, 75%, 100%
+            LocalDate milestoneDate = startDateOfPackage.plusDays((long) (packageDuration * milestonePercentage));
             LocalDate expectedPaymentDate = dateTimeUtils.calculateExpectedPaymentDate(milestoneDate);
 
-            Commission commission = commissionRepository.
-                    findByAdvisor_AdvisorIDAndExpectedPaymentDate(
-                            advisor.getAdvisorID(),
-                            expectedPaymentDate)
-                    .orElseThrow(() -> new DuplicateRecordException("Commission is not unique date!"));
+            // Gộp các milestoneLabels và số tiền cho cùng một ngày thanh toán
+            paymentDates.computeIfAbsent(expectedPaymentDate, k -> new HashMap<>())
+                    .merge(milestoneLabels[i], milestoneAmount, BigDecimal::add);
+        }
 
-            // kiểm tra kết quả
-            if (commission == null) {
-                commission = new Commission(
-                        amount,
-                        null,
-                        expectedPaymentDate,
-                        BigDecimal.ZERO,
-                        EPaymentStatus.UNPAID,
-                        null,
-                        advisor);
-            } else {
-                // nếu tồn tại cập nhật 
-                // giá tiền của commission + giá tiền hiện tại
-                BigDecimal totalAmount = commission.getCommissionAmount()
-                        .add(amount)
-                        .setScale(2, RoundingMode.HALF_UP);
+        // Tạo và lưu trữ Commission và CommissionAllocation
+        for (Map.Entry<LocalDate, Map<String, BigDecimal>> entry : paymentDates.entrySet()) {
+            LocalDate expectedPaymentDate = entry.getKey();
+            Map<String, BigDecimal> milestonesForDate = entry.getValue();
 
-                commission.setCommissionAmount(totalAmount);
+            // Gộp số tiền cho tất cả các mốc thanh toán tại ngày thanh toán
+            BigDecimal totalAmountForDate = BigDecimal.ZERO;
+            StringBuilder milestonesLabelsDescription = new StringBuilder();
+
+            for (Map.Entry<String, BigDecimal> milestoneEntry : milestonesForDate.entrySet()) {
+                String milestoneLabel = milestoneEntry.getKey();
+                BigDecimal amount = milestoneEntry.getValue();
+
+                // Cộng dồn số tiền cho ngày thanh toán và xây dựng mô tả
+                totalAmountForDate = totalAmountForDate.add(amount).setScale(2, RoundingMode.HALF_UP);
+                if (milestonesLabelsDescription.length() > 0) {
+                    milestonesLabelsDescription.append(", ");
+                }
+                milestonesLabelsDescription.append(milestoneLabel);
             }
+
+            // Tìm hoặc tạo mới Commission theo Advisor ID và ExpectedPaymentDate
+            Commission commission = commissionRepository
+                    .findByAdvisor_AdvisorIDAndExpectedPaymentDate(advisor.getAdvisorID(), expectedPaymentDate)
+                    .orElse(new Commission(
+                            totalAmountForDate,
+                            null,
+                            expectedPaymentDate,
+                            BigDecimal.ZERO,
+                            EPaymentStatus.UNPAID,
+                            null,
+                            advisor));
+
+            // Cập nhật tổng số tiền cho Commission
+            commission.setCommissionAmount(
+                    commission.getCommissionAmount()
+                            .add(totalAmountForDate)
+                            .setScale(2, RoundingMode.HALF_UP));
+
+            // Lưu lại Commission
             Commission commissionSaved = commissionRepository.save(commission);
+            
+            // Tạo mô tả cho CommissionAllocation
+            String description = String.format(
+                    "Commission for %s milestone: %s VND earned for subscription #%s from %s to %s.",
+                    milestonesLabelsDescription.toString(), // Gộp các nhãn mốc thành một chuỗi
+                    totalAmountForDate.toString(),
+                    createRequest.getSubscriptionRequest().getSubscriptionNumber(),
+                    startDateOfPackage,
+                    endDateOfPackage);
 
-            // Tạo description cho CommissionAllocation
-            String description = String.format("Commission for %s milestone: %s earned for subscription #%s from %s to %s.",
-                    milestoneLabels[i], amount.toString(), subscription.getSubscriptionNumber(), subscription.getStartDate(), subscription.getEndDate());
-
+            // Tạo và lưu lại CommissionAllocation
             CommissionAllocation allocation = new CommissionAllocation(
-                    amount,
+                    totalAmountForDate,
                     description,
-                    milestoneLabels[i],
-                    milestoneDate,
-                    commissionSaved,
-                    subscription);
+                    milestonesLabelsDescription.toString(), // Gán các mốc thanh toán đã gộp
+                    expectedPaymentDate, // Ngày dự kiến thanh toán
+                    commissionSaved, // Liên kết với Commission đã lưu
+                    subscription);  // Liên kết với Subscription
+
             commissionAllocationRepository.save(allocation);
         }
 
@@ -266,8 +297,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         // cập nhật lại package
         packageRepository.save(packageService);
-
-        logger.info("Subscription created successfully with Code: {}", subscription.getSubscriptionNumber());
         return subscription;
     }
 

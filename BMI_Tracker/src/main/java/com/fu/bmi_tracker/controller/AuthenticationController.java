@@ -62,6 +62,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -410,11 +412,6 @@ public class AuthenticationController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-//        if (accountService.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Phone number is already taken!"));
-//        }
         // tìm role bằng role name
         Role role = roleService.findByRoleName(ERole.ROLE_ADVISOR)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find role!"));
@@ -563,5 +560,42 @@ public class AuthenticationController {
         account.setPassword(encoder.encode(defaultPassword));
         accountService.save(account);
         return new ResponseEntity<>(new MessageResponse("We've sent new passsword to your mail"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Reverify account",
+            description = "Provide email to reverify account")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
+        @ApiResponse(responseCode = "403", content = {
+            @Content(schema = @Schema())}),
+        @ApiResponse(responseCode = "500", content = {
+            @Content(schema = @Schema())})})
+    @PostMapping(value = "/reverify-account")
+    public ResponseEntity<?> reverifyAccount(@RequestParam String email) {
+        // tìm account bằng email 
+        Account account = accountService.findByEmail(email);
+
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().getUserByEmail(email);
+
+            //Generate Veritification Link
+            String link = FirebaseAuth.getInstance().generateEmailVerificationLink(email);
+
+            EmailVerificationCode verificationCode = new EmailVerificationCode(link, email);
+
+            verificationCodeService.save(verificationCode);
+
+            //Send mail with vertificaiton link
+            EmailDetails details = new EmailDetails(userRecord.getEmail(), link, account.getFullName());
+            emailService.sendSimpleMail(details);
+        } catch (Exception e) {
+            System.out.println("Failed to send email verification: " + e.getMessage());
+            return new ResponseEntity<>(
+                    new MessageResponse("Failed to send email verification: " + e.getMessage()), HttpStatus.OK);
+
+        }
+
+        return new ResponseEntity<>(new MessageResponse("Email verification sent successfully."), HttpStatus.OK);
     }
 }

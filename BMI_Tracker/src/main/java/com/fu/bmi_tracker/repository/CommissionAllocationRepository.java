@@ -17,4 +17,6 @@ public interface CommissionAllocationRepository extends JpaRepository<Commission
 
     public Iterable<CommissionAllocation> findByCommission_CommissionID(Integer commissionID);
 
+    public Iterable<CommissionAllocation> findBySubscription_SubscriptionNumber(String subscriptionNumber);
+
 }

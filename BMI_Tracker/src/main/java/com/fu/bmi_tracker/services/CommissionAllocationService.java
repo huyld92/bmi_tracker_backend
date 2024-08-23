@@ -14,4 +14,6 @@ public interface CommissionAllocationService extends GeneralService<CommissionAl
 
     public Iterable<CommissionAllocation> getAllByCommissionID(Integer commissionID);
 
+    public Iterable<CommissionAllocation> getBySubscriptionNumber(String subscriptionNumber);
+
 }

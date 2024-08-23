@@ -37,4 +37,10 @@ public class CommissionAllocationServiceImpl implements CommissionAllocationServ
         return allocationRepository.save(t);
     }
 
+    @Override
+    public Iterable<CommissionAllocation> getBySubscriptionNumber(String subscriptionNumber) {
+        return allocationRepository.findBySubscription_SubscriptionNumber(subscriptionNumber);
+
+    }
+
 }
