@@ -9,7 +9,6 @@ import com.fu.bmi_tracker.repository.MemberBodyMassRepository;
 import com.fu.bmi_tracker.services.MemberBodyMassService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class MemberBodyMassServiceImpl implements MemberBodyMassService {
 
     @Autowired
-    MemberBodyMassRepository repository;
+    private MemberBodyMassRepository repository;
 
     @Override
     public Iterable<MemberBodyMass> findAll() {
@@ -47,28 +46,24 @@ public class MemberBodyMassServiceImpl implements MemberBodyMassService {
     }
 
     @Override
-    public Iterable<MemberBodyMass> findAllWithMonth(Integer accountID, LocalDate localDate) {
-        // Chuyển đổi LocalDate thành LocalDateTime bằng cách thêm thời gian mặc định (ví dụ: 00:00:00)
-        LocalDateTime endDateTime = localDate.atStartOfDay();
+    public Iterable<MemberBodyMass> findAllWithMonth(Integer accountID, LocalDate endDate) {
 
         // Trừ đi 30 ngày
-        LocalDateTime startDate = endDateTime.minusDays(30);
+        LocalDate startDate = endDate.minusDays(30);
 
         // gọi repository tìm tất cả bodymass trong 30 ngày
-        return repository.findRecent30Days(accountID, startDate, endDateTime);
+        return repository.findRecent30Days(accountID, startDate, endDate);
 
     }
 
     @Override
-    public Iterable<MemberBodyMass> getBodyMassInMonthByMemberID(Integer memberID, LocalDate localDate) {
-        // Chuyển đổi LocalDate thành LocalDateTime bằng cách thêm thời gian mặc định (ví dụ: 00:00:00)
-        LocalDateTime endDateTime = localDate.atTime(23, 59, 59);
+    public Iterable<MemberBodyMass> getBodyMassInMonthByMemberID(Integer memberID, LocalDate endDate) {
 
         // Trừ đi 30 ngày
-        LocalDateTime startDate = localDate.minusDays(30).atStartOfDay();
+        LocalDate startDate = endDate.minusDays(30);
 
         // gọi repository tìm tất cả bodymass trong 30 ngày
-        return repository.findRecentIn30DaysByMemberID(memberID, startDate, endDateTime);
+        return repository.findRecentIn30DaysByMemberID(memberID, startDate, endDate);
     }
 
 }

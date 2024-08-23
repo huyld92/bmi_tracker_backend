@@ -19,7 +19,7 @@ import com.fu.bmi_tracker.services.FeedbackService;
 public class FeedbackServiceImpl implements FeedbackService{
     
     @Autowired
-    FeedbackRepository feedbackRepository;
+    private FeedbackRepository feedbackRepository;
     
     
 

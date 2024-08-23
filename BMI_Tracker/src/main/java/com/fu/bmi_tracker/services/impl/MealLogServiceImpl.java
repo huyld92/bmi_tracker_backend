@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class MealLogServiceImpl implements MealLogService {
 
     @Autowired
-    MealLogRepository repository;
+    private MealLogRepository repository;
 
     @Override
     public Iterable<MealLog> findAll() {

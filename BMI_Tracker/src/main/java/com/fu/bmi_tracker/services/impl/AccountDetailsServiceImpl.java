@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class AccountDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 public class FoodDetailsServiceImpl implements FoodDetailsService {
 
     @Autowired
-    FoodDetailsRepository foodDetailsRepository;
+    private FoodDetailsRepository foodDetailsRepository;
 
     @Autowired
-    FoodRepository foodRepository;
+    private FoodRepository foodRepository;
 
     @Autowired
-    IngredientRepository ingredientRepository;
+    private IngredientRepository ingredientRepository;
 
     @Override
     public Iterable<FoodDetails> findAll() {

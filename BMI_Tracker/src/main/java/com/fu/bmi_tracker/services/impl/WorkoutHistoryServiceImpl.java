@@ -22,13 +22,13 @@ import org.springframework.stereotype.Service;
 public class WorkoutHistoryServiceImpl implements WorkoutHistoryService {
 
     @Autowired
-    WorkoutHistoryRepository workoutHistoryRepository;
+    private WorkoutHistoryRepository workoutHistoryRepository;
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
-    WorkoutRepository workoutRepository;
+    private WorkoutRepository workoutRepository;
 
     @Override
     public Iterable<WorkoutHistory> findAll() {

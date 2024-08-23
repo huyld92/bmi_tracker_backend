@@ -5,7 +5,7 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,10 +32,10 @@ public interface MemberBodyMassRepository extends JpaRepository<MemberBodyMass, 
 
     @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.account.accountID = :accountID"
             + " AND mbm.dateInput >= :startDate AND mbm.dateInput <= :endDate ORDER BY mbm.dateInput DESC")
-    List<MemberBodyMass> findRecent30Days(Integer accountID, LocalDateTime startDate, LocalDateTime endDate);
+    List<MemberBodyMass> findRecent30Days(Integer accountID, LocalDate startDate, LocalDate endDate);
 
     @Query("SELECT mbm FROM MemberBodyMass mbm WHERE mbm.member.memberID = :memberID"
             + " AND mbm.dateInput >= :startDate AND mbm.dateInput <= :endDate ORDER BY mbm.dateInput DESC")
-    List<MemberBodyMass> findRecentIn30DaysByMemberID(Integer memberID, LocalDateTime startDate, LocalDateTime endDate);
+    List<MemberBodyMass> findRecentIn30DaysByMemberID(Integer memberID, LocalDate startDate, LocalDate endDate);
 
 }

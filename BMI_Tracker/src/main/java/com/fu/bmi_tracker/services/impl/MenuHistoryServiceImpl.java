@@ -23,13 +23,13 @@ import org.springframework.stereotype.Service;
 public class MenuHistoryServiceImpl implements MenuHistoryService {
 
     @Autowired
-    MenuHistoryRepository menuHistoryRepository;
+    private MenuHistoryRepository menuHistoryRepository;
 
     @Autowired
-    MenuRepository menuRepository;
+    private MenuRepository menuRepository;
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Override
     public Iterable<MenuHistory> getMenuHistoryOfMember(Integer memberID) {

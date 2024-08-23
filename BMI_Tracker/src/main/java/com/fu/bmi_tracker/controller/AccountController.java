@@ -103,7 +103,7 @@ public class AccountController {
             Advisor advisor = new Advisor(
                     accountSave,
                     "",
-                    "",
+                    "TPBank",
                     0,
                     true
             );

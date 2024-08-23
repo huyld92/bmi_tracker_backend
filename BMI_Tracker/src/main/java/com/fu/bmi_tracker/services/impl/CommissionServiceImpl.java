@@ -22,10 +22,10 @@ import org.springframework.stereotype.Service;
 public class CommissionServiceImpl implements CommissionService {
 
     @Autowired
-    CommissionRepository commissionRepository;
+    private CommissionRepository commissionRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Override
     public Iterable<Commission> findAll() {

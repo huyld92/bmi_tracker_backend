@@ -16,7 +16,7 @@ import com.fu.bmi_tracker.repository.TagFoodRepository;
 public class FoodTagServiceImpl implements FoodTagService {
 
     @Autowired
-    TagFoodRepository repository;
+    private TagFoodRepository repository;
 
     @Override
     public Iterable<TagFood> findAll() {

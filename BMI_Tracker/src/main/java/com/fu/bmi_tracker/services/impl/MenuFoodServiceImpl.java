@@ -23,10 +23,10 @@ import org.springframework.stereotype.Service;
 public class MenuFoodServiceImpl implements MenuFoodService {
 
     @Autowired
-    MenuFoodRepository menuFoodRepository;
+    private MenuFoodRepository menuFoodRepository;
 
     @Autowired
-    MenuRepository menuRepository;
+    private MenuRepository menuRepository;
 
     @Override
     public List<Food> findFoodByMenu_MenuIDAndMealType(Integer menuID, EMealType mealType) {

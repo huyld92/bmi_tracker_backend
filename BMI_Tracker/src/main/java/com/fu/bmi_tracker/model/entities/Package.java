@@ -32,7 +32,7 @@ public class Package {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PackageID", nullable = false)
-    private Integer PackageID;
+    private Integer packageID;
 
     @Column(name = "PackageCode", nullable = false)
     private String packageCode;

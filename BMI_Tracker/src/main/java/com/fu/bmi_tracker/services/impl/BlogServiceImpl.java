@@ -23,10 +23,10 @@ import org.springframework.stereotype.Service;
 public class BlogServiceImpl implements BlogService {
 
     @Autowired
-    BlogRepository blogRepository;
+    private BlogRepository blogRepository;
 
     @Autowired
-    AdvisorRepository advisorRepository;
+    private AdvisorRepository advisorRepository;
 
     @Override
     public Blog findByBlogName(String blogName) {

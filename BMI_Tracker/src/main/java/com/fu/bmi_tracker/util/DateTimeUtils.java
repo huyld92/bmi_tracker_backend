@@ -26,25 +26,25 @@ public class DateTimeUtils {
         return localDateTime;
     }
 
-    
-    //Tính ngày dự kiến thanh toán cho advisor
+    // Tính ngày dự kiến thanh toán cho advisor
     public LocalDate calculateExpectedPaymentDate(LocalDate endDate) {
-        // lấy month và year từ endDate
+        // Lấy month và year từ endDate
         int month = endDate.getMonthValue();
         int year = endDate.getYear();
 
-        // Mặc định là ngày 30
-        int dayOfMonth = 30;
+        // Mặc định là ngày 25
+        int dayOfMonth = 25;
 
-        // kiểm tra nếu ngày kế thúc trước ngày 15 thì Ngày kết toán là 15
-        if (endDate.getDayOfMonth() < 15) {
-            dayOfMonth = 15; // Set to 15th day of the month
+        // Kiểm tra nếu ngày kết thúc trước ngày 10 thì Ngày kết toán là 10
+        if (endDate.getDayOfMonth() < 10) {
+            dayOfMonth = 10; // Set to 10th day of the month
         } else if (dayOfMonth > endDate.lengthOfMonth()) {
-            // kiểm tra nếu tháng không có ngày 30
+            // Kiểm tra nếu tháng không có ngày 25 (ví dụ tháng 2)
             dayOfMonth = endDate.lengthOfMonth();
         }
 
-        // tạo ExpectedPaymentDate ngày dự kiến thanh toán 
+        // Tạo ExpectedPaymentDate ngày dự kiến thanh toán 
         return LocalDate.of(year, month, dayOfMonth);
     }
+
 }

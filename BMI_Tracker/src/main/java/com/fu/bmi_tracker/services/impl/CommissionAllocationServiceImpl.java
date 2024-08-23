@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class CommissionAllocationServiceImpl implements CommissionAllocationService {
 
     @Autowired
-    CommissionAllocationRepository allocationRepository;
+    private CommissionAllocationRepository allocationRepository;
 
     @Override
     public Iterable<CommissionAllocation> getAllByCommissionID(Integer commissionID) {
@@ -35,6 +35,12 @@ public class CommissionAllocationServiceImpl implements CommissionAllocationServ
     @Override
     public CommissionAllocation save(CommissionAllocation t) {
         return allocationRepository.save(t);
+    }
+
+    @Override
+    public Iterable<CommissionAllocation> getBySubscriptionNumber(String subscriptionNumber) {
+        return allocationRepository.findBySubscription_SubscriptionNumber(subscriptionNumber);
+
     }
 
 }

@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,10 +48,10 @@ public class MemberBodyMassResponse {
     @PositiveOrZero(message = "BMI must be zero or a positive number")
     private Double bmi;
 
-    @Schema(example = "2024-06-16T14:30:00")
+    @Schema(example = "2024-06-16")
     @NotNull(message = "Date input is required")
     @PastOrPresent(message = "Date input must be in the past or present")
-    private LocalDateTime dateInput;
+    private LocalDate dateInput;
 
     public MemberBodyMassResponse(MemberBodyMass bodyMass, int age, double bmi) {
         this.memberBodyMassID = bodyMass.getMemberBodyMassID();
