@@ -7,6 +7,7 @@ package com.fu.bmi_tracker.services.impl;
 import com.fu.bmi_tracker.model.entities.CommissionAllocation;
 import com.fu.bmi_tracker.repository.CommissionAllocationRepository;
 import com.fu.bmi_tracker.services.CommissionAllocationService;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class CommissionAllocationServiceImpl implements CommissionAllocationServ
     }
 
     @Override
-    public Iterable<CommissionAllocation> getBySubscriptionNumber(String subscriptionNumber) {
+    public List<CommissionAllocation> getBySubscriptionNumber(String subscriptionNumber) {
         return allocationRepository.findBySubscription_SubscriptionNumber(subscriptionNumber);
 
     }

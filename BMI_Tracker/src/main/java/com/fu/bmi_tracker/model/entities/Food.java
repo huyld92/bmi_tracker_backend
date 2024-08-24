@@ -24,6 +24,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
@@ -33,6 +34,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLRestriction(value = "IsActive = 1")
 @Table(name = "Food")
 public class Food {
 
@@ -41,7 +43,7 @@ public class Food {
     @Column(name = "FoodID", nullable = false)
     private int foodID;
 
-    @Column(name = "FoodName", nullable = false,unique = true)
+    @Column(name = "FoodName", nullable = false, unique = true)
     private String foodName;
 
     @Column(name = "FoodCalories", nullable = false)
@@ -81,11 +83,7 @@ public class Food {
     private List<FoodDetails> foodDetails;
 
     @ManyToMany
-    @JoinTable(
-            name = "TagFood",
-            joinColumns = @JoinColumn(name = "FoodID"),
-            inverseJoinColumns = @JoinColumn(name = "TagID")
-    )
+    @JoinTable(name = "TagFood", joinColumns = @JoinColumn(name = "FoodID"), inverseJoinColumns = @JoinColumn(name = "TagID"))
     private List<Tag> foodTags;
 
     public Food(int foodID) {

@@ -32,7 +32,7 @@ public interface SubscriptionRepository extends JpaRepository<AdvisorSubscriptio
 
     List<AdvisorSubscription> findByAdvisor_AdvisorIDOrderBySubscriptionDateDesc(Integer advisorID);
 
-    List<AdvisorSubscription> findByAdvisor_Account_AccountIDAndEndDateGreaterThan(Integer accountID, LocalDate currentDate);
+    List<AdvisorSubscription> findByAdvisor_Account_AccountIDAndSubscriptionStatusAndEndDateGreaterThan(Integer accountID, ESubscriptionStatus subscriptionStatus, LocalDate currentDate);
 
     Optional<AdvisorSubscription> findByMember_Account_AccountIDAndSubscriptionStatus(Integer accountID, ESubscriptionStatus subscriptionStatus);
 

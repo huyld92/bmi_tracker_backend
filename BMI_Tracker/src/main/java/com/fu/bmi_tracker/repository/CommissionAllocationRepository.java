@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.repository;
 
 import com.fu.bmi_tracker.model.entities.CommissionAllocation;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,6 @@ public interface CommissionAllocationRepository extends JpaRepository<Commission
 
     public Iterable<CommissionAllocation> findByCommission_CommissionID(Integer commissionID);
 
-    public Iterable<CommissionAllocation> findBySubscription_SubscriptionNumber(String subscriptionNumber);
+    public List<CommissionAllocation> findBySubscription_SubscriptionNumber(String subscriptionNumber);
 
 }
