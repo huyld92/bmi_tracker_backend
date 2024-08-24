@@ -5,6 +5,7 @@
 package com.fu.bmi_tracker.services;
 
 import com.fu.bmi_tracker.model.entities.CommissionAllocation;
+import java.util.List;
 
 /**
  *
@@ -14,6 +15,6 @@ public interface CommissionAllocationService extends GeneralService<CommissionAl
 
     public Iterable<CommissionAllocation> getAllByCommissionID(Integer commissionID);
 
-    public Iterable<CommissionAllocation> getBySubscriptionNumber(String subscriptionNumber);
+    public List<CommissionAllocation> getBySubscriptionNumber(String subscriptionNumber);
 
 }

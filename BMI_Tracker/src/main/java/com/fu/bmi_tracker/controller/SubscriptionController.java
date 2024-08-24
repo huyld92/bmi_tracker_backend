@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fu.bmi_tracker.services.SubscriptionService;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 /**
  *
@@ -366,18 +367,22 @@ public class SubscriptionController {
     @GetMapping(value = "/payment-milestones")
     public ResponseEntity<?> getPaymentMilestones(@RequestParam String subscriptionNumber) {
         // nhận danh sách các mốc thanh toán bằng subscriptionNumber
-        Iterable<CommissionAllocation> commissionAllocations = commissionAllocationService.getBySubscriptionNumber(subscriptionNumber);
+        List<CommissionAllocation> commissionAllocations = commissionAllocationService.getBySubscriptionNumber(subscriptionNumber);
 
         // kiểm tra rỗng
         if (!commissionAllocations.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         }
+
         // tạo CommissionAllocationEntityResponse
         List<CommissionAllocationEntityResponse> allocationEntityResponses = new ArrayList<>();
         commissionAllocations.forEach(allocation -> {
             allocationEntityResponses.add(new CommissionAllocationEntityResponse(allocation));
         });
+        
+        allocationEntityResponses
+                .sort(Comparator.comparing(CommissionAllocationEntityResponse::getMilestoneDate));
 
         return new ResponseEntity<>(allocationEntityResponses, HttpStatus.OK);
     }

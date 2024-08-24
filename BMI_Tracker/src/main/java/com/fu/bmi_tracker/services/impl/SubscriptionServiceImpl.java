@@ -255,7 +255,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
             // Lưu lại Commission
             Commission commissionSaved = commissionRepository.save(commission);
-            
+
             // Tạo mô tả cho CommissionAllocation
             String description = String.format(
                     "Commission for %s milestone: %s VND earned for subscription #%s from %s to %s.",
@@ -316,7 +316,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         LocalDate currentDate = LocalDate.now();
 
         // gợi Subscription repository tìm danh sách Subscription bằng accountID và endDate > currentDate
-        List<AdvisorSubscription> subscriptions = subscriptionRepository.findByAdvisor_Account_AccountIDAndEndDateGreaterThan(accountID, currentDate);
+        List<AdvisorSubscription> subscriptions
+                = subscriptionRepository.
+                        findByAdvisor_Account_AccountIDAndSubscriptionStatusAndEndDateGreaterThan(
+                                accountID,
+                                ESubscriptionStatus.PENDING,
+                                currentDate);
 
         // chuyển đổi từ subscription sang List<Member> bằng stream(), distinct đảm bảo không trùng Member
         return subscriptions.stream().map(AdvisorSubscription::getMember).distinct()

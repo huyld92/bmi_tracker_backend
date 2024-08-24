@@ -71,7 +71,7 @@ public class CommissionServiceImpl implements CommissionService {
     @Override
     public List<CommissionSummaryResponse> getCommissionSummaryIn6Months() {
         // lấy tất cả các commission trước ngày hiện tại trong vòng 6 tháng
-        LocalDate startDate = LocalDate.now().minusMonths(6).withDayOfMonth(1);
+        LocalDate startDate = LocalDate.now().minusMonths(5).withDayOfMonth(1);
         LocalDate endDate = LocalDate.now();
         return commissionRepository.countCommissionsPerMonth(startDate, endDate);
     }
