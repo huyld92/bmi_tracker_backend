@@ -43,4 +43,10 @@ public class IngredientServiceImpl implements IngredientService {
         return repository.findByIngredientNameContains(ingredientName);
     }
 
+    @Override
+    public Iterable<Ingredient> getAllByActiveTrue() {
+        return repository.findByIsActiveTrue();
+
+    }
+
 }

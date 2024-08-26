@@ -23,4 +23,6 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Integer>
 
     public Optional<Ingredient> findByIngredientIDAndIsActiveTrue(Integer ingredientID);
 
+    public Iterable<Ingredient> findByIsActiveTrue();
+
 }

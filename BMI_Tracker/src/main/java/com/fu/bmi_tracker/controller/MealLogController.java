@@ -74,13 +74,13 @@ public class MealLogController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAllMealLogByDate(
             @RequestParam(required = true) String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfMeal;
         // Validation date 
         try {
             dateOfMeal = LocalDate.parse(date, formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
@@ -120,13 +120,13 @@ public class MealLogController {
     @GetMapping("/member/get-by-date")
     public ResponseEntity<?> getAllMemberMealLogByDate(
             @RequestParam String date, @RequestParam Integer memberID) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfMeal;
         // Validation date 
         try {
             dateOfMeal = LocalDate.parse(date, formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
@@ -168,13 +168,13 @@ public class MealLogController {
             @RequestParam(required = true) String date,
             @RequestParam(required = true) EMealType mealType) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfMeal;
         // Validation date 
         try {
             dateOfMeal = LocalDate.parse(date, formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
@@ -215,15 +215,15 @@ public class MealLogController {
     @PostMapping(value = "/createNew")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewMealLog(@Valid @RequestBody CreateMealLogRequest mealLogRequest) {
-        // conver từ String date sáng LocalDate format yyyy-MM-dd
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // conver từ String date sáng LocalDate format dd-MM-yyyy
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfMeal;
 
         // Validation date 
         try {
             dateOfMeal = LocalDate.parse(mealLogRequest.getDateOfMeal(), formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
@@ -328,13 +328,13 @@ public class MealLogController {
     public ResponseEntity<?> getCaloriesOfMeal(
             @RequestParam(required = true) String date) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfMeal;
         // Validation date 
         try {
             dateOfMeal = LocalDate.parse(date, formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 

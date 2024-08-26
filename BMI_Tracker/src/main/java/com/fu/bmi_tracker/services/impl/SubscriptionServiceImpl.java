@@ -4,7 +4,6 @@
  */
 package com.fu.bmi_tracker.services.impl;
 
-import com.fu.bmi_tracker.exceptions.DuplicateRecordException;
 import com.fu.bmi_tracker.model.entities.Advisor;
 import com.fu.bmi_tracker.model.entities.Commission;
 import com.fu.bmi_tracker.model.entities.Member;
@@ -45,13 +44,9 @@ import com.fu.bmi_tracker.repository.PackageRepository;
 import jakarta.transaction.Transactional;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
-
-    private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;

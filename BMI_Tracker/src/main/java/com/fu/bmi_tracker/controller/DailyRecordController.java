@@ -59,13 +59,13 @@ public class DailyRecordController {
     @GetMapping("/getAllDailyRecordOfWeekByDate")
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAllDailyRecordOfWeekByDate(@RequestParam String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate localDate;
         // Validation date 
         try {
             localDate = LocalDate.parse(date, formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         // Get Member id from acccount id context
