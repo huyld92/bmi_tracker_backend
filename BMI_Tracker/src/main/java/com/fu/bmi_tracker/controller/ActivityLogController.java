@@ -70,13 +70,13 @@ public class ActivityLogController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAllActivityLogByDate(
             @RequestParam(required = true) String date) {
-        // convert từ string date sang LocalDate format yyyy-MM-dd
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // convert từ string date sang LocalDate format dd-MM-yyyy
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfActivity;
         try {
             dateOfActivity = LocalDate.parse(date, formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
@@ -114,13 +114,13 @@ public class ActivityLogController {
     @GetMapping("/member/get-by-date")
     public ResponseEntity<?> getAllMemberActivityLogByDate(
             @RequestParam String date, @RequestParam Integer memberID) {
-        // convert từ string date sang LocalDate format yyyy-MM-dd
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // convert từ string date sang LocalDate format dd-MM-yyyy
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfActivity;
         try {
             dateOfActivity = LocalDate.parse(date, formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
         // gọi memberService tìm Member bằng accountID
@@ -158,14 +158,14 @@ public class ActivityLogController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> createNewActivityLog(@Valid @RequestBody CreateActivityLogRequest activityLogRequest) {
         // conver date theo format
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateOfActivity;
 
         // Validation date 
         try {
             dateOfActivity = LocalDate.parse(activityLogRequest.getDateOfActivity(), formatter);
         } catch (Exception e) {
-            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd.", "");
+            ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy.", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 

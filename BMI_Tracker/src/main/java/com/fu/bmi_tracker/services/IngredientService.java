@@ -17,4 +17,6 @@ public interface IngredientService extends GeneralService<Ingredient> {
 
     public Iterable<Ingredient> searchLikeIngredientName(String ingredientName);
 
+    public Iterable<Ingredient> getAllByActiveTrue();
+
 }

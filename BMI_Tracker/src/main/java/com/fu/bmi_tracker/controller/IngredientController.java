@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IngredientController {
 
     @Autowired
-    IngredientService service;
+    IngredientService ingredientService;
 
     @Operation(
             summary = "Create new ingredient with form (Admin)",
@@ -59,7 +59,7 @@ public class IngredientController {
     public ResponseEntity<?> createNewIngredient(@RequestBody CreateIngredientRequest createIngredientRequest) {
         Ingredient ingredient = new Ingredient(createIngredientRequest);
 
-        Ingredient ingredientSave = service.save(ingredient);
+        Ingredient ingredientSave = ingredientService.save(ingredient);
 
         if (ingredientSave == null) {
             return new ResponseEntity<>("Failed to create new ingredient", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,7 +81,7 @@ public class IngredientController {
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('ADVISOR')")
     public ResponseEntity<?> getAllIngredients() {
 
-        Iterable<Ingredient> ingredients = service.findAll();
+        Iterable<Ingredient> ingredients = ingredientService.getAllByActiveTrue();
 
         if (!ingredients.iterator().hasNext()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -101,7 +101,7 @@ public class IngredientController {
             @Content(schema = @Schema())})})
     @GetMapping("/getByID/{id}")
     public ResponseEntity<?> getIngredientById(@PathVariable("id") int id) {
-        Optional<Ingredient> ingredient = service.findById(id);
+        Optional<Ingredient> ingredient = ingredientService.findById(id);
 
         if (ingredient.isPresent()) {
             return new ResponseEntity<>(ingredient, HttpStatus.OK);
@@ -121,11 +121,11 @@ public class IngredientController {
     @PutMapping("/update")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateIngredient(@RequestBody UpdateIngredientRequest ingredientRequest) {
-        Optional<Ingredient> ingredient = service.findById(ingredientRequest.getIngredientID());
+        Optional<Ingredient> ingredient = ingredientService.findById(ingredientRequest.getIngredientID());
         System.out.println("ingredient: " +ingredientRequest.getTagID());
         if (ingredient.isPresent()) {
             ingredient.get().update(ingredientRequest);
-            return new ResponseEntity<>(service.save(ingredient.get()), HttpStatus.OK);
+            return new ResponseEntity<>(ingredientService.save(ingredient.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find ingredient with id{" + ingredientRequest.getIngredientID() + "}",
                     HttpStatus.NOT_FOUND);
@@ -141,11 +141,11 @@ public class IngredientController {
     @DeleteMapping("/delete/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteIngredient(@PathVariable("id") int id) {
-        Optional<Ingredient> ingredient = service.findById(id);
+        Optional<Ingredient> ingredient = ingredientService.findById(id);
 
         if (ingredient.isPresent()) {
             ingredient.get().setIsActive(Boolean.FALSE);
-            return new ResponseEntity<>(service.save(ingredient.get()), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(ingredientService.save(ingredient.get()), HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>("Cannot find ingredient with id{" + id + "}", HttpStatus.NOT_FOUND);
         }
@@ -163,8 +163,8 @@ public class IngredientController {
             @Content(schema = @Schema())})})
     @GetMapping("/search-by-name")
     public ResponseEntity<?> searchIngredientByName(@RequestParam String ingredientName) {
-        // gọi service tìm ingredient bằng ingredientName
-        Iterable<Ingredient> ingredients = service.searchLikeIngredientName(ingredientName.trim());
+        // gọi ingredientService tìm ingredient bằng ingredientName
+        Iterable<Ingredient> ingredients = ingredientService.searchLikeIngredientName(ingredientName.trim());
 
         // kiểm tra empty
         if (!ingredients.iterator().hasNext()) {

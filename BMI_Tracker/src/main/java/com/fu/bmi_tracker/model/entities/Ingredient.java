@@ -17,7 +17,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
 
 /**
  *
@@ -27,7 +26,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLRestriction(value = "IsActive = 1")
 @Table(name = "Ingredient")
 public class Ingredient {
 
@@ -72,7 +70,7 @@ public class Ingredient {
         if (!ingredientRequest.getUnit().isEmpty()) {
             this.unit = ingredientRequest.getUnit();
         }
-        
+
         this.ingredientPhoto = ingredientRequest.getIngredientPhoto();
 
         if (ingredientRequest.getTagID() > 0) {

@@ -169,7 +169,7 @@ public class MemberBodyMassController {
     @PreAuthorize("hasRole('MEMBER')")
     public ResponseEntity<?> getAllBodyMassOfMemberInMonth(@RequestParam(required = true) String date) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate localDate;
         // Validation date 
         try {
@@ -177,7 +177,7 @@ public class MemberBodyMassController {
         } catch (Exception e) {
             ErrorMessage errorMessage = new ErrorMessage(
                     HttpStatus.BAD_REQUEST.value(),
-                    new Date(), "Invalid date format. Please provide the date in the format yyyy-MM-dd", "");
+                    new Date(), "Invalid date format. Please provide the date in the format dd-MM-yyyy", "");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 

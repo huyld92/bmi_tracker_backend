@@ -62,8 +62,6 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -437,7 +435,7 @@ public class AuthenticationController {
         Advisor advisor = new Advisor(
                 accountSave,
                 "",
-                "",
+                "TP Bank",
                 0,
                 false
         );

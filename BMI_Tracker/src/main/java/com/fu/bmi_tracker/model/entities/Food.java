@@ -34,7 +34,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLRestriction(value = "IsActive = 1")
+//@SQLRestriction(value = "IsActive = 1")
 @Table(name = "Food")
 public class Food {
 
