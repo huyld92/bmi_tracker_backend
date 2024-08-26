@@ -32,18 +32,31 @@ public class DateTimeUtils {
         int month = endDate.getMonthValue();
         int year = endDate.getYear();
 
-        // Mặc định là ngày 25
-        int dayOfMonth = 25;
+        // Xác định ngày dự kiến thanh toán
+        int dayOfMonth;
 
-        // Kiểm tra nếu ngày kết thúc trước ngày 10 thì Ngày kết toán là 10
+        // Kiểm tra nếu ngày kết thúc trước ngày 10 thì ngày thanh toán là ngày 10
         if (endDate.getDayOfMonth() < 10) {
-            dayOfMonth = 10; // Set to 10th day of the month
-        } else if (dayOfMonth > endDate.lengthOfMonth()) {
-            // Kiểm tra nếu tháng không có ngày 25 (ví dụ tháng 2)
-            dayOfMonth = endDate.lengthOfMonth();
+            dayOfMonth = 10;
+        } else {
+            // Nếu ngày kết thúc là ngày 25, thanh toán vào ngày 10 tháng sau
+            if (endDate.getDayOfMonth() == 25) {
+                month += 1; // Tăng tháng
+
+                // Nếu tháng vượt quá 12, tăng năm và đặt tháng về 1
+                if (month > 12) {
+                    month = 1;
+                    year += 1;
+                }
+
+                return LocalDate.of(year, month, 10);
+            } else {
+                // Ngày thanh toán mặc định là ngày 25
+                dayOfMonth = 25;
+            }
         }
 
-        // Tạo ExpectedPaymentDate ngày dự kiến thanh toán 
+        // Tạo ExpectedPaymentDate và kiểm tra xem ngày có hợp lệ không 
         return LocalDate.of(year, month, dayOfMonth);
     }
 

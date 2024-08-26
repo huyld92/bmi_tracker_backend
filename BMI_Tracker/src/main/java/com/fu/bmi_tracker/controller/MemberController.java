@@ -116,7 +116,10 @@ public class MemberController {
         double tdee = bMIUtils.calculateTDEE(bmr, activityLevel.getActivityLevel());
 
         // calculateDefault default Calories
-        int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, createMemberRequest.getTargetWeight());
+        int defaultCalories = bMIUtils.calculateDefaultCalories(
+                tdee,
+                createMemberRequest.getTargetWeight(),
+                createMemberRequest.getWeight());
 
         LocalDate now = LocalDate.now(ZoneId.of("GMT+7"));
 

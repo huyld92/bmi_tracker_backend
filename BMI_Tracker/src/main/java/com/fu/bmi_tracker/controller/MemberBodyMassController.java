@@ -100,13 +100,13 @@ public class MemberBodyMassController {
         double tdee = bMIUtils.calculateTDEE(bmr, activityLevel.getActivityLevel());
 
         // calculateDefault default Calories
-        int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, member.get().getTargetWeight());
+        int defaultCalories = bMIUtils.calculateDefaultCalories(tdee, member.get().getTargetWeight(), weight);
 
         // cập nhật thông tin member
         member.get().setDefaultCalories(defaultCalories);
         member.get().setTdee(tdee);
         memberService.save(member.get());
-        
+
         MemberBodyMassResponse bodyMassResponse = new MemberBodyMassResponse(bodyMassService.save(bodyMass), age, bmi);
 
         return new ResponseEntity<>(bodyMassResponse, HttpStatus.CREATED);

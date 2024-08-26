@@ -80,6 +80,7 @@ public class AdvisorSubscription {
     public AdvisorSubscription(SubscriptionRequest subscriptionRequest,
             LocalDate startDate,
             LocalDate endDate,
+            LocalDateTime subscriptionDate,
             Member member,
             Advisor advisor,
             int transactionID,
@@ -87,7 +88,7 @@ public class AdvisorSubscription {
         this.subscriptionDescription = subscriptionRequest.getDescription();
         this.subscriptionNumber = subscriptionRequest.getSubscriptionNumber();
         this.subscriptionAmount = subscriptionRequest.getAmount();
-        this.subscriptionDate = LocalDateTime.now(ZoneId.of("GMT+7"));
+        this.subscriptionDate = subscriptionDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.member = member;
@@ -106,7 +107,7 @@ public class AdvisorSubscription {
             //ngày hiện tại bằng  startDate
             return ESubscriptionStatus.PENDING;
         } else {
-            return ESubscriptionStatus.CANCELLED;
+            return ESubscriptionStatus.FINISHED;
         }
     }
 }

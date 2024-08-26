@@ -135,6 +135,8 @@ public class SubscriptionController {
             SubscriptionResponse subscriptionResponse = new SubscriptionResponse(subscription);
             subscriptionResponses.add(subscriptionResponse);
         });
+
+        subscriptionResponses.sort(Comparator.comparing(SubscriptionResponse::getSubscriptionDate));
         return ResponseEntity.ok(subscriptionResponses);
     }
 
@@ -192,6 +194,9 @@ public class SubscriptionController {
             SubscriptionResponse subscriptionResponse = new SubscriptionResponse(subscription);
             subscriptionResponses.add(subscriptionResponse);
         });
+
+        subscriptionResponses.sort(Comparator.comparing(SubscriptionResponse::getSubscriptionDate));
+
         return ResponseEntity.ok(subscriptionResponses);
     }
 
@@ -222,6 +227,9 @@ public class SubscriptionController {
             SubscriptionResponse subscriptionResponse = new SubscriptionResponse(subscription);
             subscriptionResponses.add(subscriptionResponse);
         });
+
+        subscriptionResponses.sort(Comparator.comparing(SubscriptionResponse::getSubscriptionDate));
+
         return ResponseEntity.ok(subscriptionResponses);
     }
 
@@ -256,6 +264,8 @@ public class SubscriptionController {
             SubscriptionResponse subscriptionResponse = new SubscriptionResponse(subscription);
             subscriptionResponses.add(subscriptionResponse);
         });
+        subscriptionResponses.sort(Comparator.comparing(SubscriptionResponse::getSubscriptionDate));
+
         return ResponseEntity.ok(subscriptionResponses);
     }
 
@@ -290,6 +300,9 @@ public class SubscriptionController {
             SubscriptionResponse subscriptionResponse = new SubscriptionResponse(subscription);
             subscriptionResponses.add(subscriptionResponse);
         });
+
+        subscriptionResponses.sort(Comparator.comparing(SubscriptionResponse::getSubscriptionDate));
+
         return ResponseEntity.ok(subscriptionResponses);
     }
 
@@ -380,7 +393,7 @@ public class SubscriptionController {
         commissionAllocations.forEach(allocation -> {
             allocationEntityResponses.add(new CommissionAllocationEntityResponse(allocation));
         });
-        
+
         allocationEntityResponses
                 .sort(Comparator.comparing(CommissionAllocationEntityResponse::getMilestoneDate));
 

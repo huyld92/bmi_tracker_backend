@@ -28,7 +28,7 @@ public class BMIUtils {
     // Method to calculate BMR Mifflin St Jeor
     public double calculateBMR(int weight, int height, int age, EGender gender) {
         double bMR;
-        
+
         if (EGender.Male.equals(gender)) {
             //( 10 x weight (kg) + 6.25 x height (cm) – 5 x age (y) + 5
             bMR = (10 * weight + 6.25 * height) - 5 * age + 5;
@@ -46,10 +46,13 @@ public class BMIUtils {
     }
 
     // Phương pháp tính lượng calo mặc định
-    public int calculateDefaultCalories(double tdee, double targetWeight) {
-        // Calculation based on TDEE and weight goal
-        // Adjust this based on your specific requirements
-        return (int) (tdee + targetWeight);
+    public int calculateDefaultCalories(double tdee, double targetWeight, double weight) {
+        if (targetWeight < weight) {
+            return (int) (tdee - 500);
+        } else if (targetWeight > weight) {
+            return (int) (tdee + 500);
+        }
+        return (int) (tdee);
     }
 
     // Phương thức phân loại BMI
