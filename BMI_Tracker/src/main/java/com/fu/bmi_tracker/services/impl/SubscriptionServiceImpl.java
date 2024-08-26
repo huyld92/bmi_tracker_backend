@@ -43,6 +43,7 @@ import com.fu.bmi_tracker.util.CommissionRateUtils;
 import com.fu.bmi_tracker.repository.PackageRepository;
 import jakarta.transaction.Transactional;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 @Service
@@ -179,6 +180,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                                 createRequest.getSubscriptionRequest(),
                                 startDateOfPackage,
                                 endDateOfPackage,
+                                LocalDateTime.now(),
                                 member,
                                 advisor,
                                 transaction.getTransactionID(),
@@ -250,12 +252,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
             // Lưu lại Commission
             Commission commissionSaved = commissionRepository.save(commission);
+            // format định dạng số đơn vì nghìn
+            DecimalFormat df = new DecimalFormat("#,##0.00");
 
             // Tạo mô tả cho CommissionAllocation
             String description = String.format(
                     "Commission for %s milestone: %s VND earned for subscription #%s from %s to %s.",
                     milestonesLabelsDescription.toString(), // Gộp các nhãn mốc thành một chuỗi
-                    totalAmountForDate.toString(),
+                    df.format(totalAmountForDate),
                     createRequest.getSubscriptionRequest().getSubscriptionNumber(),
                     startDateOfPackage,
                     endDateOfPackage);
