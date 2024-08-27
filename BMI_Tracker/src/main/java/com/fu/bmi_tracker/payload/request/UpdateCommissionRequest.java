@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,9 +31,9 @@ public class UpdateCommissionRequest {
     @Positive
     private Integer commissionID;
 
-    @Schema(example = "2024-07-04T14:30:00 (NULL)")
+    @Schema(example = "2024-07-04 ")
     @PastOrPresent(message = "Paid date must be in the past or present")
-    private LocalDateTime paidDate;
+    private LocalDate paidDate;
 
     @Schema(example = "1500.00")
     @PositiveOrZero(message = "Paid amount must be zero or a positive number")

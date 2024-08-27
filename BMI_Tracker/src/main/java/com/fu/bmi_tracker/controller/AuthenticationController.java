@@ -22,6 +22,7 @@ import com.fu.bmi_tracker.model.entities.Member;
 import com.fu.bmi_tracker.model.entities.MemberBodyMass;
 import com.fu.bmi_tracker.payload.request.TokenRefreshRequest;
 import com.fu.bmi_tracker.payload.response.AccountResponse;
+import com.fu.bmi_tracker.payload.response.LoginForAdvisorResponse;
 import com.fu.bmi_tracker.payload.response.LoginForMemberResponse;
 import com.fu.bmi_tracker.payload.response.TokenRefreshResponse;
 import com.fu.bmi_tracker.services.AccountService;
@@ -131,7 +132,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // generate mã jwt
-        String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
+        String accessToken = jwtUtils.generateJwtToken(loginRequest.getEmail());
 
         CustomAccountDetailsImpl accountDetails = (CustomAccountDetailsImpl) authentication.getPrincipal();
 
@@ -152,16 +153,20 @@ public class AuthenticationController {
         if (loginRequest.getRole() == ERole.ROLE_ADVISOR) {
             // kiểm tra thông tin advisor
             Advisor advisor = advisorService.findByAccountID(accountDetails.getId());
+            LoginForAdvisorResponse loginForAdvisorResponse = new LoginForAdvisorResponse(
+                    accountDetails.getId(),
+                    accountDetails.getAccountPhoto(),
+                    accountDetails.getEmail(),
+                    accountDetails.getFullName(),
+                    accountDetails.getPhoneNumber(),
+                    refreshToken.getRefreshToken(),
+                    accessToken);
             // nếu trạng thía advisor inactive response 202 
             if (!advisor.getIsActive()) {
-                LoginResponse loginResponse = new LoginResponse(
-                        accountDetails.getId(),
-                        accountDetails.getEmail(),
-                        accountDetails.getAccountPhoto(),
-                        loginRequest.getRole(),
-                        refreshToken.getRefreshToken(),
-                        jwt);
-                return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(loginForAdvisorResponse, HttpStatus.ACCEPTED);
+            } else {
+                return new ResponseEntity<>(
+                        loginForAdvisorResponse, HttpStatus.OK);
             }
         } else if (loginRequest.getRole() == ERole.ROLE_MEMBER) {
             Optional<Member> member = memberService.findByAccountID(accountDetails.getId());
@@ -175,7 +180,7 @@ public class AuthenticationController {
                         accountDetails.getPhoneNumber(),
                         -1, -1, -1, -1, -1, -1,
                         refreshToken.getRefreshToken(),
-                        jwt);
+                        accessToken);
 
                 return new ResponseEntity<>(forMemberResponse, HttpStatus.ACCEPTED);
             }
@@ -211,7 +216,7 @@ public class AuthenticationController {
                     bmr,
                     member.get().getTdee(),
                     refreshToken.getRefreshToken(),
-                    jwt);
+                    accessToken);
 
             return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         }
@@ -222,7 +227,7 @@ public class AuthenticationController {
                 accountDetails.getAccountPhoto(),
                 loginRequest.getRole(),
                 refreshToken.getRefreshToken(),
-                jwt));
+                accessToken));
     }
 
     @Operation(summary = "Login for member by phone number and password", description = "Authenticate accounts by phone number and password. Returned will member information", tags = {

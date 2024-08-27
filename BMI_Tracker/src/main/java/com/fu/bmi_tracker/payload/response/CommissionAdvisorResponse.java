@@ -25,7 +25,7 @@ public class CommissionAdvisorResponse {
     private Integer commissionID;
     private BigDecimal commissionAmount;
     private Integer commissionRate;
-    private LocalDateTime paidDate;
+    private LocalDate paidDate;
     private LocalDate expectedPaymentDate;
     private BigDecimal paidAmount;
     private EPaymentStatus paymentStatus;
