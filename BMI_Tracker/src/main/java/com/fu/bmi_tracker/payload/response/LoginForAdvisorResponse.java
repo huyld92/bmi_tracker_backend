@@ -17,13 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginForAdvisorResponse {
 
-    private Integer memberID;
+    private Integer accountID;
+    private String accountPhoto;
     private String email;
     private String fullName;
-    private String gender;
     private String phoneNumber;
-    private String bankName;
-    private String bankNumber;
     private String refreshToken;
     private String accessToken;
+
 }

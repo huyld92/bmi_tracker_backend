@@ -19,7 +19,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,7 +46,7 @@ public class Commission {
     private LocalDate expectedPaymentDate;
 
     @Column(name = "PaidDate", nullable = true)
-    private LocalDateTime paidDate;
+    private LocalDate paidDate;
 
     @Column(name = "PaidAmount", nullable = false)
     private BigDecimal paidAmount;
@@ -63,7 +62,7 @@ public class Commission {
     @JoinColumn(name = "AdvisorID", nullable = false)
     private Advisor advisor;
 
-    public Commission(BigDecimal commissionAmount, LocalDateTime paidDate, LocalDate expectedPaymentDate, BigDecimal paidAmount, EPaymentStatus paymentStatus, String commissionDescription, Advisor advisor) {
+    public Commission(BigDecimal commissionAmount, LocalDate paidDate, LocalDate expectedPaymentDate, BigDecimal paidAmount, EPaymentStatus paymentStatus, String commissionDescription, Advisor advisor) {
         this.commissionAmount = commissionAmount;
         this.paidDate = paidDate;
         this.expectedPaymentDate = expectedPaymentDate;

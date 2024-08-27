@@ -29,7 +29,6 @@ public class RegisterRequest {
 
     @NotBlank(message = "Full name must not blank")
     @Size(max = 100, message = "Full name must not exceed 100 characters")
-    @Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z]+)*$", message = "Invalid full name")
     @Schema(name = "fullName", example = "Nguyen Van A")
     private String fullName;
 
